@@ -46,7 +46,9 @@ request('http://localhost:8080/ExperimentDesigner/listing', function (error, res
             var mvn = require('maven').create({
                 cwd: __dirname
             });
-            mvn.execute(['clean', 'install'], {'skipTests': true, 'experiment.configuration.name': listing[index].experimentName});
+            mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': listing[index].buildName});
+            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': listing[index].buildName});
+            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin', 'experiment.configuration.name': listing[index].buildName});
         }
     }
 });
