@@ -24,11 +24,16 @@
  */
 
 /*
+ * This script is intended to query the Frinex Designer webservice and build each experiment that has been set to the published state but has not yet been built.
+ * 
  * Prerequisites for this script:
  *        npm install request
+ *        npm install maven
  */
 
 var request = require('request');
+
+// it is assumed that git update has been called before this script is run
 
 request('http://localhost:8080/ExperimentDesigner/listing', function (error, response, body) {
     if (!error && response.statusCode === 200) {
@@ -36,6 +41,12 @@ request('http://localhost:8080/ExperimentDesigner/listing', function (error, res
         var listing = JSON.parse(body);
         for (index = 0; index < listing.length; index++) {
             console.log(listing[index]);
+            console.log(__dirname);
+            // mvn build
+            var mvn = require('maven').create({
+                cwd: __dirname
+            });
+            mvn.execute(['clean', 'install'], {'skipTests': true, 'experiment.configuration.name': listing[index].experimentName});
         }
     }
 });
