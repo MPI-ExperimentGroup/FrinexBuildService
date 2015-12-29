@@ -32,10 +32,12 @@
  */
 
 var request = require('request');
+var configServer = 'http://localhost:8080';
+var destinationServer = 'http://localhost:8080';
 
 // it is assumed that git update has been called before this script is run
 
-request('http://localhost:8080/ExperimentDesigner/listing', function (error, response, body) {
+request(configServer + '/ExperimentDesigner/listing', function (error, response, body) {
     if (!error && response.statusCode === 200) {
         console.log(body);
         var listing = JSON.parse(body);
@@ -47,8 +49,8 @@ request('http://localhost:8080/ExperimentDesigner/listing', function (error, res
                 cwd: __dirname
             });
             mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': listing[index].buildName});
-            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': listing[index].buildName});
-            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin', 'experiment.configuration.name': listing[index].buildName});
+            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': listing[index].buildName, 'experiment.webservice': destinationServer});
+            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin', 'experiment.configuration.name': listing[index].buildName, 'experiment.webservice': destinationServer});
         }
     }
 });
