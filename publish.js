@@ -32,30 +32,44 @@
  */
 
 var request = require('request');
-var configServer = 'http://localhost:8080';
+
+var configServer = 'http://localhost:8080/frinex-experiment-designer';
 var destinationServer = 'localhost';
 var destinationServerUrl = 'http://localhost:8080';
 
 // it is assumed that git update has been called before this script is run
 
-request(configServer + '/ExperimentDesigner/listing', function (error, response, body) {
+var mvn = require('maven').create({
+    cwd: __dirname
+});
+
+//mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-experiment-designer',
+//    'experiment.destinationName': destinationServer,
+//    'experiment.destinationUrl': destinationServerUrl}).then(function (value) {
+//    console.log(value);
+//    console.log("frinex-experiment-designer finished");
+request(configServer + '/listing', function (error, response, body) {
     if (!error && response.statusCode === 200) {
         console.log(body);
         var listing = JSON.parse(body);
         console.log(__dirname);
-        // mvn build
-        var mvn = require('maven').create({
-            cwd: __dirname
-        });
         buildExperiment(mvn, listing);
     }
 });
+//}, function (reason) {
+//    console.log(reason);
+//    console.log("frinex-experiment-designer failed");
+//});
 
 buildExperiment = function (mvn, listing) {
     if (listing.length > 0) {
         var currentEntry = listing.pop();
         console.log(currentEntry);
-        mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': currentEntry.buildName}).then(function (value) {
+        mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': currentEntry.buildName,
+            'experiment.webservice': configServer,
+            'experiment.destinationName': destinationServer,
+            'experiment.destinationUrl': destinationServerUrl
+        }).then(function (value) {
             console.log(value);
             console.log("frinex-parent finished");
             mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': currentEntry.buildName,
