@@ -42,24 +42,40 @@ request(configServer + '/ExperimentDesigner/listing', function (error, response,
     if (!error && response.statusCode === 200) {
         console.log(body);
         var listing = JSON.parse(body);
-        for (index = 0; index < listing.length; index++) {
-            console.log(listing[index]);
-            console.log(__dirname);
-            // mvn build
-            var mvn = require('maven').create({
-                cwd: __dirname
-            });
-            mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': listing[index].buildName});
-            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': listing[index].buildName, 
+        var index = 0;
+        console.log(listing[index]);
+        console.log(__dirname);
+        // mvn build
+        var mvn = require('maven').create({
+            cwd: __dirname
+        });
+        mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': listing[index].buildName}).then(function (value) {
+            console.log(value);
+            console.log("frinex-parent finished");
+            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': listing[index].buildName,
                 'experiment.webservice': configServer,
                 'experiment.destinationName': destinationServer,
                 'experiment.destinationUrl': destinationServerUrl
+            }).then(function (value) {
+                console.log(value);
+                console.log("frinex-gui finished");
+                mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin', 'experiment.configuration.name': listing[index].buildName,
+                    'experiment.webservice': configServer,
+                    'experiment.destinationName': destinationServer,
+                    'experiment.destinationUrl': destinationServerUrl}).then(function (value) {
+                    console.log(value);
+                    console.log("frinex-admin finished");
+                }, function (reason) {
+                    console.log(reason);
+                    console.log("frinex-admin failed");
+                });
+            }, function (reason) {
+                console.log(reason);
+                console.log("frinex-gui failed");
             });
-            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin', 'experiment.configuration.name': listing[index].buildName, 
-                'experiment.webservice': configServer,
-                'experiment.destinationName': destinationServer,
-                'experiment.destinationUrl': destinationServerUrl
-            });
-        }
+        }, function (reason) {
+            console.log(reason);
+            console.log("frinex-parent failed");
+        });
     }
 });
