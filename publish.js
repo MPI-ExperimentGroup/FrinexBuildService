@@ -42,29 +42,36 @@ request(configServer + '/ExperimentDesigner/listing', function (error, response,
     if (!error && response.statusCode === 200) {
         console.log(body);
         var listing = JSON.parse(body);
-        var index = 0;
-        console.log(listing[index]);
         console.log(__dirname);
         // mvn build
         var mvn = require('maven').create({
             cwd: __dirname
         });
-        mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': listing[index].buildName}).then(function (value) {
+        buildExperiment(mvn, listing);
+    }
+});
+
+buildExperiment = function (mvn, listing) {
+    if (listing.length > 0) {
+        var currentEntry = listing.pop();
+        console.log(currentEntry);
+        mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': currentEntry.buildName}).then(function (value) {
             console.log(value);
             console.log("frinex-parent finished");
-            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': listing[index].buildName,
+            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': currentEntry.buildName,
                 'experiment.webservice': configServer,
                 'experiment.destinationName': destinationServer,
                 'experiment.destinationUrl': destinationServerUrl
             }).then(function (value) {
                 console.log(value);
                 console.log("frinex-gui finished");
-                mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin', 'experiment.configuration.name': listing[index].buildName,
+                mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin', 'experiment.configuration.name': currentEntry.buildName,
                     'experiment.webservice': configServer,
                     'experiment.destinationName': destinationServer,
                     'experiment.destinationUrl': destinationServerUrl}).then(function (value) {
                     console.log(value);
                     console.log("frinex-admin finished");
+                    buildExperiment(mvn, listing);
                 }, function (reason) {
                     console.log(reason);
                     console.log("frinex-admin failed");
@@ -78,4 +85,4 @@ request(configServer + '/ExperimentDesigner/listing', function (error, response,
             console.log("frinex-parent failed");
         });
     }
-});
+};
