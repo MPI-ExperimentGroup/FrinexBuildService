@@ -65,21 +65,27 @@ buildExperiment = function (mvn, listing) {
     if (listing.length > 0) {
         var currentEntry = listing.pop();
         console.log(currentEntry);
-        mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent', 'experiment.configuration.name': currentEntry.buildName,
+        mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent',
+            'experiment.configuration.name': currentEntry.buildName,
+            'experiment.configuration.displayName': currentEntry.displayName,
             'experiment.webservice': configServer,
             'experiment.destinationName': destinationServer,
             'experiment.destinationUrl': destinationServerUrl
         }).then(function (value) {
             console.log(value);
             console.log("frinex-parent finished");
-            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui', 'experiment.configuration.name': currentEntry.buildName,
+            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui',
+                'experiment.configuration.name': currentEntry.buildName,
+                'experiment.configuration.displayName': currentEntry.displayName,
                 'experiment.webservice': configServer,
                 'experiment.destinationName': destinationServer,
                 'experiment.destinationUrl': destinationServerUrl
             }).then(function (value) {
                 console.log(value);
                 console.log("frinex-gui finished");
-                mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin', 'experiment.configuration.name': currentEntry.buildName,
+                mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin',
+                    'experiment.configuration.name': currentEntry.buildName,
+                    'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                     'experiment.webservice': configServer,
                     'experiment.destinationName': destinationServer,
                     'experiment.destinationUrl': destinationServerUrl}).then(function (value) {
