@@ -32,77 +32,89 @@
  */
 
 var request = require('request');
-
-var configServer = 'http://localhost:8080/frinex-experiment-designer';
+var exec = require('child_process').exec;
+var http = require('http');
+var fs = require('fs');
+var configServer = 'http://localhost:8080/ExperimentDesigner';
 var destinationServer = 'localhost';
 var destinationServerUrl = 'http://localhost:8080';
-
 // it is assumed that git update has been called before this script is run
 
-var mvn = require('maven').create({
-    cwd: __dirname
-});
-
-//mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-experiment-designer',
-//    'experiment.destinationName': destinationServer,
-//    'experiment.destinationUrl': destinationServerUrl}).then(function (value) {
-//    console.log(value);
-//    console.log("frinex-experiment-designer finished");
 request(configServer + '/listing', function (error, response, body) {
     if (!error && response.statusCode === 200) {
         console.log(body);
         var listing = JSON.parse(body);
         console.log(__dirname);
-        buildExperiment(mvn, listing);
+        buildExperiment(listing);
+    } else {
+        console.log("loading listing from frinex-experiment-designer failed");
     }
 });
-//}, function (reason) {
-//    console.log(reason);
-//    console.log("frinex-experiment-designer failed");
-//});
 
-buildExperiment = function (mvn, listing) {
+buildApk = function () {
+    var cordovaProcess = exec('bash gwt-cordova/target/setup-cordova.sh', function (error, stdout, stderr) {
+        if (error !== null) {
+            console.log(error);
+        }
+        process.stdout.write(stdout);
+        process.stderr.write(stderr);
+    });
+}
+
+buildExperiment = function (listing) {
     if (listing.length > 0) {
         var currentEntry = listing.pop();
         console.log(currentEntry);
-        mvn.execute(['clean', 'install'], {'skipTests': true, '-pl': 'frinex-parent',
-            'experiment.configuration.name': currentEntry.buildName,
-            'experiment.configuration.displayName': currentEntry.displayName,
-            'experiment.webservice': configServer,
-            'experiment.destinationName': destinationServer,
-            'experiment.destinationUrl': destinationServerUrl
-        }).then(function (value) {
-            console.log(value);
-            console.log("frinex-parent finished");
-            mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui',
-                'experiment.configuration.name': currentEntry.buildName,
-                'experiment.configuration.displayName': currentEntry.displayName,
-                'experiment.webservice': configServer,
-                'experiment.destinationName': destinationServer,
-                'experiment.destinationUrl': destinationServerUrl
-            }).then(function (value) {
-                console.log(value);
-                console.log("frinex-gui finished");
-                mvn.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin',
+        // get the configuration file
+        var request = http.get(configServer + "/configuration/" + currentEntry.buildName, function (response) {
+            if (response.statusCode === 200) {
+                var outputFile = fs.createWriteStream("frinex-rest-output/" + currentEntry.buildName + ".xml");
+                response.pipe(outputFile);
+
+                // we create a new mvn instance for each child pom
+                var mvngui = require('maven').create({
+                    cwd: __dirname + "/gwt-cordova"
+                });
+                mvngui.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui',
                     'experiment.configuration.name': currentEntry.buildName,
-                    'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+                    'experiment.configuration.displayName': currentEntry.displayName,
                     'experiment.webservice': configServer,
                     'experiment.destinationName': destinationServer,
-                    'experiment.destinationUrl': destinationServerUrl}).then(function (value) {
+                    'experiment.destinationUrl': destinationServerUrl
+                }).then(function (value) {
                     console.log(value);
-                    console.log("frinex-admin finished");
-                    buildExperiment(mvn, listing);
+                    console.log("frinex-gui finished");
+                    // build cordova 
+                    buildApk();
+                    console.log("buildApk finished");
+                    var mvnadmin = require('maven').create({
+                        cwd: __dirname + "/registration"
+                    });
+                    mvnadmin.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin',
+                        'experiment.configuration.name': currentEntry.buildName,
+                        'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+                        'experiment.webservice': configServer,
+                        'experiment.destinationName': destinationServer,
+                        'experiment.destinationUrl': destinationServerUrl}).then(function (value) {
+                        console.log(value);
+                        console.log("frinex-admin finished");
+                        buildExperiment(listing);
+                    }, function (reason) {
+                        console.log(reason);
+                        console.log("frinex-admin failed");
+                        buildExperiment(listing);
+                    });
                 }, function (reason) {
                     console.log(reason);
-                    console.log("frinex-admin failed");
+                    console.log("frinex-gui failed");
+                    buildExperiment(listing);
                 });
-            }, function (reason) {
-                console.log(reason);
-                console.log("frinex-gui failed");
-            });
-        }, function (reason) {
-            console.log(reason);
-            console.log("frinex-parent failed");
+            } else {
+                console.log("loading listing from frinex-experiment-designer failed");
+                buildExperiment(listing);
+            }
         });
+    } else {
+        console.log("build process from frinex-experiment-designer listing completed");
     }
 };
