@@ -32,7 +32,7 @@
  */
 
 var request = require('request');
-var exec = require('child_process').exec;
+var execSync = require('child_process').execSync;
 var http = require('http');
 var fs = require('fs');
 var configServer = 'http://localhost:8080/ExperimentDesigner';
@@ -52,13 +52,9 @@ request(configServer + '/listing', function (error, response, body) {
 });
 
 buildApk = function () {
-    var cordovaProcess = exec('bash gwt-cordova/target/setup-cordova.sh', function (error, stdout, stderr) {
-        if (error !== null) {
-            console.log(error);
-        }
-        process.stdout.write(stdout);
-        process.stderr.write(stderr);
-    });
+    console.log("starting cordova build");
+    execSync('bash gwt-cordova/target/setup-cordova.sh');
+    console.log("build cordova finished");
 }
 
 buildExperiment = function (listing) {
@@ -82,7 +78,6 @@ buildExperiment = function (listing) {
                     'experiment.destinationName': destinationServer,
                     'experiment.destinationUrl': destinationServerUrl
                 }).then(function (value) {
-                    console.log(value);
                     console.log("frinex-gui finished");
                     // build cordova 
                     buildApk();
