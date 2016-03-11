@@ -75,8 +75,8 @@ buildExperiment = function (listing) {
                     'experiment.configuration.name': currentEntry.buildName,
                     'experiment.configuration.displayName': currentEntry.displayName,
                     'experiment.webservice': configServer,
-                    'experiment.destinationName': destinationServer,
-                    'experiment.destinationUrl': destinationServerUrl
+                    'experiment.destinationServer': destinationServer,
+                    'experiment.destinationServerUrl': destinationServerUrl
                 }).then(function (value) {
                     console.log("frinex-gui finished");
                     // build cordova 
@@ -89,8 +89,8 @@ buildExperiment = function (listing) {
                         'experiment.configuration.name': currentEntry.buildName,
                         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                         'experiment.webservice': configServer,
-                        'experiment.destinationName': destinationServer,
-                        'experiment.destinationUrl': destinationServerUrl}).then(function (value) {
+                        'experiment.destinationServer': destinationServer,
+                        'experiment.destinationServerUrl': destinationServerUrl}).then(function (value) {
                         console.log(value);
                         console.log("frinex-admin finished");
                         buildExperiment(listing);
