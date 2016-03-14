@@ -73,7 +73,7 @@ buildExperiment = function (listing) {
                 });
                 mvngui.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui',
                     'experiment.configuration.name': currentEntry.buildName,
-                    'experiment.configuration.displayName': currentEntry.displayName,
+                    'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                     'experiment.webservice': configServer,
                     'experiment.destinationServer': destinationServer,
                     'experiment.destinationServerUrl': destinationServerUrl
