@@ -36,8 +36,12 @@ var execSync = require('child_process').execSync;
 var http = require('http');
 var fs = require('fs');
 var configServer = 'http://localhost:8080/ExperimentDesigner';
-var destinationServer = 'localhost';
-var destinationServerUrl = 'http://localhost:8080';
+//var stagingServer = '';
+//var stagingServerUrl = '';
+var productionServer = '';
+var productionServerUrl = '';
+var stagingServer = 'localhost';
+var stagingServerUrl = 'http://localhost:8080';
 // it is assumed that git update has been called before this script is run
 
 request(configServer + '/listing', function (error, response, body) {
@@ -66,17 +70,21 @@ buildExperiment = function (listing) {
             if (response.statusCode === 200) {
                 var outputFile = fs.createWriteStream("frinex-rest-output/" + currentEntry.buildName + ".xml");
                 response.pipe(outputFile);
-
+//                console.log("starting generate stimulus");
+//                execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
+//                
                 // we create a new mvn instance for each child pom
                 var mvngui = require('maven').create({
                     cwd: __dirname + "/gwt-cordova"
                 });
-                mvngui.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-gui',
+                mvngui.execute(['clean', 'install', 'tomcat7:redeploy'], {
+                    'skipTests': true, '-pl': 'frinex-gui',
+//                mvngui.execute(['clean', 'gwt:run'], {'skipTests': true, '-pl': 'frinex-gui',
                     'experiment.configuration.name': currentEntry.buildName,
                     'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                     'experiment.webservice': configServer,
-                    'experiment.destinationServer': destinationServer,
-                    'experiment.destinationServerUrl': destinationServerUrl
+                    'experiment.destinationServer': stagingServer,
+                    'experiment.destinationServerUrl': stagingServerUrl
                 }).then(function (value) {
                     console.log("frinex-gui finished");
                     // build cordova 
@@ -85,15 +93,53 @@ buildExperiment = function (listing) {
                     var mvnadmin = require('maven').create({
                         cwd: __dirname + "/registration"
                     });
-                    mvnadmin.execute(['clean', 'install', 'tomcat7:redeploy'], {'skipTests': true, '-pl': 'frinex-admin',
+                    mvnadmin.execute(['clean', 'install', 'tomcat7:redeploy'], {
+                        'skipTests': true, '-pl': 'frinex-admin',
                         'experiment.configuration.name': currentEntry.buildName,
                         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                         'experiment.webservice': configServer,
-                        'experiment.destinationServer': destinationServer,
-                        'experiment.destinationServerUrl': destinationServerUrl}).then(function (value) {
+                        'experiment.destinationServer': stagingServer,
+                        'experiment.destinationServerUrl': stagingServerUrl
+                    }).then(function (value) {
                         console.log(value);
+//                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
                         console.log("frinex-admin finished");
-                        buildExperiment(listing);
+                        mvngui.execute(['clean', 'install', 'tomcat7:deploy'/*, 'gwt:run'*/], {
+                            'skipTests': true, '-pl': 'frinex-gui',
+//                    'altDeploymentRepository.snapshot-repo.default.file': '~/Desktop/FrinexAPKs/',
+//                    'altDeploymentRepository': 'default:file:file://~/Desktop/FrinexAPKs/',
+                            'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
+//                    'maven.repo.local': '~/Desktop/FrinexAPKs/',
+                            'experiment.configuration.name': currentEntry.buildName,
+                            'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+                            'experiment.webservice': configServer,
+                            'experiment.destinationServer': productionServer,
+                            'experiment.destinationServerUrl': productionServerUrl
+                        }).then(function (value) {
+                            console.log("frinex-gui production finished");
+                            mvnadmin.execute(['clean', 'install', 'tomcat7:deploy'], {
+                                'skipTests': true, '-pl': 'frinex-admin',
+                                'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
+                                'experiment.configuration.name': currentEntry.buildName,
+                                'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+                                'experiment.webservice': configServer,
+                                'experiment.destinationServer': productionServer,
+                                'experiment.destinationServerUrl': productionServerUrl
+                            }).then(function (value) {
+                                console.log(value);
+//                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
+                                console.log("frinex-admin production finished");
+                                buildExperiment(listing);
+                            }, function (reason) {
+                                console.log(reason);
+                                console.log("frinex-admin production failed");
+                                buildExperiment(listing);
+                            });
+                        }, function (reason) {
+                            console.log(reason);
+                            console.log("frinex-gui production failed");
+                            buildExperiment(listing);
+                        });
                     }, function (reason) {
                         console.log(reason);
                         console.log("frinex-admin failed");
@@ -101,7 +147,7 @@ buildExperiment = function (listing) {
                     });
                 }, function (reason) {
                     console.log(reason);
-                    console.log("frinex-gui failed");
+                    console.log("frinex-gui staging failed");
                     buildExperiment(listing);
                 });
             } else {
