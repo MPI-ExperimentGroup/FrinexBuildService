@@ -44,16 +44,37 @@ var productionServerUrl = '';
 //var stagingServerUrl = 'http://localhost:8080';
 // it is assumed that git update has been called before this script is run
 
-request(configServer + '/listing', function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-        console.log(body);
-        var listing = JSON.parse(body);
-        console.log(__dirname);
-        buildExperiment(listing);
-    } else {
-        console.log("loading listing from frinex-experiment-designer failed");
-    }
-});
+buildFromListing = function () {
+    request(configServer + '/listing', function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            console.log(body);
+            var listing = JSON.parse(body);
+            console.log(__dirname);
+            buildExperiment(listing);
+        } else {
+            console.log("loading listing from frinex-experiment-designer failed");
+        }
+    });
+}
+
+installDesignServer = function () {
+    var mvngui = require('maven').create({
+        cwd: __dirname + "/ExperimentDesigner"
+    });
+    mvngui.execute(['clean', 'tomcat7:redeploy'], {
+        'skipTests': true, '-pl': 'ExperimentDesigner',
+        'destination.name': 'ExperimentDesigner',
+        'experiment.destinationServer': stagingServer,
+        'experiment.destinationServerUrl': stagingServerUrl
+    }).then(function (value) {
+//        console.log(value);
+        console.log("ExperimentDesigner finished");
+        buildFromListing();
+    }, function (reason) {
+        console.log(reason);
+        console.log("ExperimentDesigner failed");
+    });
+}
 
 buildApk = function () {
     console.log("starting cordova build");
@@ -77,7 +98,7 @@ buildExperiment = function (listing) {
                 var mvngui = require('maven').create({
                     cwd: __dirname + "/gwt-cordova"
                 });
-                mvngui.execute(['clean', 'tomcat7:deploy'], {
+                mvngui.execute(['clean', 'tomcat7:redeploy'], {
 //                mvngui.execute(['clean', 'gwt:run'], {
                     'skipTests': true, '-pl': 'frinex-gui',
                     'experiment.configuration.name': currentEntry.buildName,
@@ -213,4 +234,6 @@ buildGuiOnly = function (listing) {
     }
 };
 //buildGuiOnly([{"compileDate": "2016-07-30", "expiryDate": "2016-07-30", "isWebApp": true, "isiOS": true, "isAndroid": true, "buildName": "rosselfieldkit", "state": "published", "experimentInternalName": "rosselfieldkit", "experimentDisplayName": "RosselFieldKit"}]);
+
+installDesignServer();
 
