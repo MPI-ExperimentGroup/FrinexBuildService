@@ -35,11 +35,12 @@ var request = require('request');
 var execSync = require('child_process').execSync;
 var http = require('http');
 var fs = require('fs');
-var configServer = 'http://localhost:8080/ExperimentDesigner';
-var stagingServer = '';
-var stagingServerUrl = '';
-var productionServer = '';
-var productionServerUrl = '';
+var configServer = 'http://.../ExperimentDesigner';
+var stagingServer = '...';
+var stagingServerUrl = 'http://...';
+var stagingGroupsSocketUrl = 'ws://...';
+//var productionServer = '...';
+//var productionServerUrl = 'http://...';
 //var stagingServer = 'localhost';
 //var stagingServerUrl = 'http://localhost:8080';
 // it is assumed that git update has been called before this script is run
@@ -69,7 +70,8 @@ installDesignServer = function () {
     }).then(function (value) {
 //        console.log(value);
         console.log("ExperimentDesigner finished");
-        buildFromListing();
+        console.log("Waiting before buildFromListing");
+        setTimeout(buildFromListing, 60000);
     }, function (reason) {
         console.log(reason);
         console.log("ExperimentDesigner failed");
@@ -106,6 +108,7 @@ buildExperiment = function (listing) {
                     'experiment.webservice': configServer,
                     'experiment.destinationServer': stagingServer,
                     'experiment.destinationServerUrl': stagingServerUrl,
+                    'experiment.groupsSocketUrl': stagingGroupsSocketUrl
 //                    'experiment.scriptSrcUrl': stagingServerUrl,
 //                    'experiment.staticFilesUrl': stagingServerUrl
                 }).then(function (value) {
@@ -144,7 +147,8 @@ buildExperiment = function (listing) {
                                     'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                                     'experiment.webservice': configServer,
                                     'experiment.destinationServer': productionServer,
-                                    'experiment.destinationServerUrl': productionServerUrl
+                                    'experiment.destinationServerUrl': productionServerUrl,
+                                    'experiment.groupsSocketUrl': productionGroupsSocketUrl
 //                            'experiment.scriptSrcUrl': productionServerUrl,
 //                            'experiment.staticFilesUrl': productionServerUrl
                                 }).then(function (value) {
@@ -161,7 +165,7 @@ buildExperiment = function (listing) {
                                         console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
                                         console.log("frinex-admin production finished");
-                                        buildExperiment(listing);
+                        buildExperiment(listing);
                                     }, function (reason) {
                                         console.log(reason);
                                         console.log("frinex-admin production failed");
@@ -235,5 +239,5 @@ buildGuiOnly = function (listing) {
 };
 //buildGuiOnly([{"compileDate": "2016-07-30", "expiryDate": "2016-07-30", "isWebApp": true, "isiOS": true, "isAndroid": true, "buildName": "rosselfieldkit", "state": "published", "experimentInternalName": "rosselfieldkit", "experimentDisplayName": "RosselFieldKit"}]);
 
-installDesignServer();
-
+//installDesignServer();
+buildFromListing();
