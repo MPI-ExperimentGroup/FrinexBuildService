@@ -76,13 +76,13 @@ installDesignServer = function () {
         console.log(reason);
         console.log("ExperimentDesigner failed");
     });
-}
+};
 
 buildApk = function () {
     console.log("starting cordova build");
     execSync('bash gwt-cordova/target/setup-cordova.sh');
     console.log("build cordova finished");
-}
+};
 
 buildExperiment = function (listing) {
     if (listing.length > 0) {
@@ -108,7 +108,9 @@ buildExperiment = function (listing) {
                     'experiment.webservice': configServer,
                     'experiment.destinationServer': stagingServer,
                     'experiment.destinationServerUrl': stagingServerUrl,
-                    'experiment.groupsSocketUrl': stagingGroupsSocketUrl
+                    'experiment.groupsSocketUrl': stagingGroupsSocketUrl,
+                    'experiment.isScaleable': currentEntry.isScaleable,
+                    'experiment.defaultScale': currentEntry.defaultScale
 //                    'experiment.scriptSrcUrl': stagingServerUrl,
 //                    'experiment.staticFilesUrl': stagingServerUrl
                 }).then(function (value) {
@@ -148,7 +150,9 @@ buildExperiment = function (listing) {
                                     'experiment.webservice': configServer,
                                     'experiment.destinationServer': productionServer,
                                     'experiment.destinationServerUrl': productionServerUrl,
-                                    'experiment.groupsSocketUrl': productionGroupsSocketUrl
+                                    'experiment.groupsSocketUrl': productionGroupsSocketUrl,
+                                    'experiment.isScaleable': currentEntry.isScaleable,
+                                    'experiment.defaultScale': currentEntry.defaultScale
 //                            'experiment.scriptSrcUrl': productionServerUrl,
 //                            'experiment.staticFilesUrl': productionServerUrl
                                 }).then(function (value) {
@@ -165,7 +169,7 @@ buildExperiment = function (listing) {
                                         console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
                                         console.log("frinex-admin production finished");
-                        buildExperiment(listing);
+                                        buildExperiment(listing);
                                     }, function (reason) {
                                         console.log(reason);
                                         console.log("frinex-admin production failed");
