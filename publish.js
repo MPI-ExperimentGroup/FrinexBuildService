@@ -41,6 +41,7 @@ var stagingServerUrl = 'http://...';
 var stagingGroupsSocketUrl = 'ws://...';
 //var productionServer = '...';
 //var productionServerUrl = 'http://...';
+var productionGroupsSocketUrl = '';
 //var stagingServer = 'localhost';
 //var stagingServerUrl = 'http://localhost:8080';
 // it is assumed that git update has been called before this script is run
