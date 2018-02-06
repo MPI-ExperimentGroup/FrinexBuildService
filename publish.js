@@ -29,21 +29,24 @@
  * Prerequisites for this script:
  *        npm install request
  *        npm install maven
+ *        npm install properties-reader
  */
 
+var PropertiesReader = require('properties-reader');
+var properties = PropertiesReader('publish.properties');
 var request = require('request');
 var execSync = require('child_process').execSync;
 var http = require('http');
 var fs = require('fs');
-var configServer = 'http://.../ExperimentDesigner';
-var stagingServer = '...';
-var stagingServerUrl = 'http://...';
-var stagingGroupsSocketUrl = 'ws://...';
-//var productionServer = '...';
-//var productionServerUrl = 'http://...';
-var productionGroupsSocketUrl = '';
-//var stagingServer = 'localhost';
-//var stagingServerUrl = 'http://localhost:8080';
+var configServer = properties.get('webservice.configServer');
+var stagingServer = properties.get('staging.serverName');
+var stagingServerUrl = properties.get('staging.serverUrl');
+var stagingGroupsSocketUrl = properties.get('staging.groupsSocketUrl');
+var configServer = properties.get('webservice.configServer');
+var productionServer = properties.get('production.serverName');
+var productionServerUrl = properties.get('production.serverUrl');
+var productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
+
 // it is assumed that git update has been called before this script is run
 
 buildFromListing = function () {
