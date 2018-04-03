@@ -48,7 +48,7 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-function deployStagingGui(currentEntry) {
+function deployStagingGui(listing, currentEntry) {
     // we create a new mvn instance for each child pom
     var mvngui = require('maven').create({
         cwd: __dirname + "/gwt-cordova",
@@ -73,7 +73,8 @@ function deployStagingGui(currentEntry) {
 //                    buildApk();
 //                    console.log("buildApk finished");
         buildElectron();
-        deployStagingAdmin(currentEntry);
+//        deployStagingAdmin(listing, currentEntry);
+        buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-gui staging failed");
@@ -81,7 +82,7 @@ function deployStagingGui(currentEntry) {
 //                    buildNextExperiment(listing);
     });
 }
-function deployStagingAdmin(currentEntry) {
+function deployStagingAdmin(listing, currentEntry) {
     var mvnadmin = require('maven').create({
         cwd: __dirname + "/registration",
         settings: m2Settings
@@ -97,7 +98,8 @@ function deployStagingAdmin(currentEntry) {
         console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin finished");
-        deployProductionGui(currentEntry);
+//        deployProductionGui(listing, currentEntry);
+        buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin staging failed");
@@ -105,7 +107,7 @@ function deployStagingAdmin(currentEntry) {
 //                        buildNextExperiment(listing);
     });
 }
-function deployProductionGui(currentEntry) {
+function deployProductionGui(listing, currentEntry) {
     console.log(productionServerUrl + '/' + currentEntry.buildName);
     http.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
         if (response.statusCode !== 404) {
@@ -135,7 +137,8 @@ function deployProductionGui(currentEntry) {
 //                            'experiment.staticFilesUrl': productionServerUrl
             }).then(function (value) {
                 console.log("frinex-gui production finished");
-                deployProductionAdmin(currentEntry);
+//                deployProductionAdmin(listing, currentEntry);
+                buildNextExperiment(listing);
             }, function (reason) {
                 console.log(reason);
                 console.log("frinex-gui production failed");
@@ -145,7 +148,7 @@ function deployProductionGui(currentEntry) {
         }
     });
 }
-function deployProductionAdmin(currentEntry) {
+function deployProductionAdmin(listing, currentEntry) {
     var mvnadmin = require('maven').create({
         cwd: __dirname + "/registration",
         settings: m2Settings
@@ -194,7 +197,7 @@ function buildNextExperiment(listing) {
                 response.pipe(outputFile);
 //                console.log("starting generate stimulus");
 //                execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
-                deployStagingGui(currentEntry);
+                deployStagingGui(listing, currentEntry);
             } else {
                 console.log("loading listing from frinex-experiment-designer failed");
 //                buildNextExperiment(listing);
@@ -204,3 +207,17 @@ function buildNextExperiment(listing) {
         console.log("build process from frinex-experiment-designer listing completed");
     }
 }
+function buildFromListing() {
+    request(configServer + '/listing', function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            console.log(body);
+            var listing = JSON.parse(body);
+            console.log(__dirname);
+            buildNextExperiment(listing);
+        } else {
+            console.log("loading listing from frinex-experiment-designer failed");
+        }
+    });
+}
+
+buildFromListing();
