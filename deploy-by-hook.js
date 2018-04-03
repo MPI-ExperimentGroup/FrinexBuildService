@@ -52,9 +52,15 @@ const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
 var resultsFile = fs.createWriteStream(buildResultsFile, {flags: 'w'})
 
-function storeResult(message) {
-    resultsFile.write(new Date().toISOString() + " - " + message + "<br/>");
+function storeResult(message, isError) {
+    if (isError) {
+        resultsFile.write("<div style='background: #F3C3C3'>");
+    } else {
+        resultsFile.write("<div style='background: #C3F3C3'>");
+    }
+    resultsFile.write(new Date().toISOString() + " - " + message + "</div>");
 }
+
 function deployStagingGui(listing, currentEntry) {
     // we create a new mvn instance for each child pom
     var mvngui = require('maven').create({
@@ -77,7 +83,7 @@ function deployStagingGui(listing, currentEntry) {
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui finished");
-        storeResult(currentEntry.buildName + " - frinex-gui finished");
+        storeResult(currentEntry.buildName + " - frinex-gui finished", false);
         // build cordova 
 //                    buildApk();
 //                    console.log("buildApk finished");
@@ -88,7 +94,7 @@ function deployStagingGui(listing, currentEntry) {
         console.log(reason);
         console.log("frinex-gui staging failed");
         console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName + " - frinex-gui failed");
+        storeResult(currentEntry.buildName + " - frinex-gui failed", true);
         buildNextExperiment(listing);
     });
 }
@@ -109,14 +115,14 @@ function deployStagingAdmin(listing, currentEntry) {
         console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin finished");
-        storeResult(currentEntry.buildName + " - frinex-admin finished");
+        storeResult(currentEntry.buildName + " - frinex-admin finished", false);
 //        deployProductionGui(listing, currentEntry);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin staging failed");
         console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName + " - frinex-admin failed");
+        storeResult(currentEntry.buildName + " - frinex-admin failed", true);
 //                        buildNextExperiment(listing);
     });
 }
@@ -126,7 +132,7 @@ function deployProductionGui(listing, currentEntry) {
         if (response.statusCode !== 404) {
             console.log("existing frinex-gui production found, aborting build!");
             console.log(response.statusCode);
-            storeResult(currentEntry.buildName + " - existing frinex-gui production found, aborting build!");
+            storeResult(currentEntry.buildName + " - existing frinex-gui production found, aborting build!", true);
         } else {
             console.log(response.statusCode);
             var mvngui = require('maven').create({
@@ -152,14 +158,14 @@ function deployProductionGui(listing, currentEntry) {
 //                            'experiment.staticFilesUrl': productionServerUrl
             }).then(function (value) {
                 console.log("frinex-gui production finished");
-                storeResult(currentEntry.buildName + " - frinex-gui production finished");
+                storeResult(currentEntry.buildName + " - frinex-gui production finished", false);
 //                deployProductionAdmin(listing, currentEntry);
                 buildNextExperiment(listing);
             }, function (reason) {
                 console.log(reason);
                 console.log("frinex-gui production failed");
                 console.log(currentEntry.experimentDisplayName);
-                storeResult(currentEntry.buildName + " - frinex-gui production failed");
+                storeResult(currentEntry.buildName + " - frinex-gui production failed", true);
 //                            buildNextExperiment(listing);
             });
         }
@@ -183,13 +189,13 @@ function deployProductionAdmin(listing, currentEntry) {
 //        console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin production finished");
-        storeResult(currentEntry.buildName + " - frinex-admin production finished");
+        storeResult(currentEntry.buildName + " - frinex-admin production finished", false);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin production failed");
         console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName + " - frinex-admin production failed");
+        storeResult(currentEntry.buildName + " - frinex-admin production failed", true);
 //                                buildNextExperiment(listing);
     });
 }
@@ -198,14 +204,14 @@ function buildApk() {
     console.log("starting cordova build");
     execSync('bash gwt-cordova/target/setup-cordova.sh');
     console.log("build cordova finished");
-    storeResult("build cordova finished");
+    storeResult("build cordova finished", false);
 }
 
 function buildElectron() {
     console.log("starting electron build");
     execSync('bash gwt-cordova/target/setup-electron.sh');
     console.log("build electron finished");
-    storeResult("build electron finished");
+    storeResult("build electron finished", false);
 }
 
 function buildNextExperiment(listing) {
@@ -217,7 +223,7 @@ function buildNextExperiment(listing) {
         deployStagingGui(listing, currentEntry);
     } else {
         console.log("build process from listing completed");
-        storeResult("build process from listing completed");
+        storeResult("build process from listing completed", false);
     }
 }
 
