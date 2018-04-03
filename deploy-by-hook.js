@@ -38,16 +38,23 @@ const request = require('request');
 const execSync = require('child_process').execSync;
 const http = require('http');
 const fs = require('fs');
+const path = require('path');
 const m2Settings = properties.get('settings.m2Settings');
+const configDirectory = properties.get('settings.configDirectory');
+const buildResultsFile = properties.get('settings.buildResultsFile');
 const configServer = properties.get('webservice.configServer');
 const stagingServer = properties.get('staging.serverName');
 const stagingServerUrl = properties.get('staging.serverUrl');
 const stagingGroupsSocketUrl = properties.get('staging.groupsSocketUrl');
-const configServer = properties.get('webservice.configServer');
 const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
+var resultsFile = fs.createWriteStream(buildResultsFile, {flags: 'w'})
+
+function storeResult(message) {
+    resultsFile.write(new Date().toISOString() + " - " + message + "<br/>");
+}
 function deployStagingGui(listing, currentEntry) {
     // we create a new mvn instance for each child pom
     var mvngui = require('maven').create({
@@ -55,11 +62,12 @@ function deployStagingGui(listing, currentEntry) {
         settings: m2Settings
     });
     mvngui.execute(['clean', 'install'], {
-//                mvngui.execute(['clean', 'gwt:run'], {
+//    mvngui.execute(['clean', 'gwt:run'], {
         'skipTests': true, '-pl': 'frinex-gui',
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
+        'experiment.configuration.path': configDirectory,
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl,
         'experiment.groupsSocketUrl': stagingGroupsSocketUrl,
@@ -69,17 +77,19 @@ function deployStagingGui(listing, currentEntry) {
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui finished");
+        storeResult(currentEntry.buildName + " - frinex-gui finished");
         // build cordova 
 //                    buildApk();
 //                    console.log("buildApk finished");
-        buildElectron();
+//        buildElectron();
 //        deployStagingAdmin(listing, currentEntry);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-gui staging failed");
         console.log(currentEntry.experimentDisplayName);
-//                    buildNextExperiment(listing);
+        storeResult(currentEntry.buildName + " - frinex-gui failed");
+        buildNextExperiment(listing);
     });
 }
 function deployStagingAdmin(listing, currentEntry) {
@@ -92,18 +102,21 @@ function deployStagingAdmin(listing, currentEntry) {
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
+        'experiment.configuration.path': configDirectory,
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl
     }).then(function (value) {
         console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin finished");
+        storeResult(currentEntry.buildName + " - frinex-admin finished");
 //        deployProductionGui(listing, currentEntry);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin staging failed");
         console.log(currentEntry.experimentDisplayName);
+        storeResult(currentEntry.buildName + " - frinex-admin failed");
 //                        buildNextExperiment(listing);
     });
 }
@@ -113,6 +126,7 @@ function deployProductionGui(listing, currentEntry) {
         if (response.statusCode !== 404) {
             console.log("existing frinex-gui production found, aborting build!");
             console.log(response.statusCode);
+            storeResult(currentEntry.buildName + " - existing frinex-gui production found, aborting build!");
         } else {
             console.log(response.statusCode);
             var mvngui = require('maven').create({
@@ -128,6 +142,7 @@ function deployProductionGui(listing, currentEntry) {
                 'experiment.configuration.name': currentEntry.buildName,
                 'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                 'experiment.webservice': configServer,
+                'experiment.configuration.path': configDirectory,
                 'experiment.destinationServer': productionServer,
                 'experiment.destinationServerUrl': productionServerUrl,
                 'experiment.groupsSocketUrl': productionGroupsSocketUrl,
@@ -137,12 +152,14 @@ function deployProductionGui(listing, currentEntry) {
 //                            'experiment.staticFilesUrl': productionServerUrl
             }).then(function (value) {
                 console.log("frinex-gui production finished");
+                storeResult(currentEntry.buildName + " - frinex-gui production finished");
 //                deployProductionAdmin(listing, currentEntry);
                 buildNextExperiment(listing);
             }, function (reason) {
                 console.log(reason);
                 console.log("frinex-gui production failed");
                 console.log(currentEntry.experimentDisplayName);
+                storeResult(currentEntry.buildName + " - frinex-gui production failed");
 //                            buildNextExperiment(listing);
             });
         }
@@ -159,17 +176,20 @@ function deployProductionAdmin(listing, currentEntry) {
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
+        'experiment.configuration.path': configDirectory,
         'experiment.destinationServer': productionServer,
         'experiment.destinationServerUrl': productionServerUrl
     }).then(function (value) {
-        console.log(value);
+//        console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin production finished");
+        storeResult(currentEntry.buildName + " - frinex-admin production finished");
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin production failed");
         console.log(currentEntry.experimentDisplayName);
+        storeResult(currentEntry.buildName + " - frinex-admin production failed");
 //                                buildNextExperiment(listing);
     });
 }
@@ -178,44 +198,57 @@ function buildApk() {
     console.log("starting cordova build");
     execSync('bash gwt-cordova/target/setup-cordova.sh');
     console.log("build cordova finished");
+    storeResult("build cordova finished");
 }
 
 function buildElectron() {
     console.log("starting electron build");
     execSync('bash gwt-cordova/target/setup-electron.sh');
     console.log("build electron finished");
+    storeResult("build electron finished");
 }
 
 function buildNextExperiment(listing) {
     if (listing.length > 0) {
         var currentEntry = listing.pop();
         console.log(currentEntry);
-        // get the configuration file
-        var request = http.get(configServer + "/configuration/" + currentEntry.buildName, function (response) {
-            if (response.statusCode === 200) {
-                var outputFile = fs.createWriteStream("frinex-rest-output/" + currentEntry.buildName + ".xml");
-                response.pipe(outputFile);
 //                console.log("starting generate stimulus");
 //                execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
-                deployStagingGui(listing, currentEntry);
-            } else {
-                console.log("loading listing from frinex-experiment-designer failed");
-//                buildNextExperiment(listing);
-            }
-        });
+        deployStagingGui(listing, currentEntry);
     } else {
-        console.log("build process from frinex-experiment-designer listing completed");
+        console.log("build process from listing completed");
+        storeResult("build process from listing completed");
     }
 }
+
 function buildFromListing() {
-    request(configServer + '/listing', function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            console.log(body);
-            var listing = JSON.parse(body);
-            console.log(__dirname);
-            buildNextExperiment(listing);
+    fs.readdir(configDirectory, function (error, list) {
+        if (error) {
+            console.error(error);
         } else {
-            console.log("loading listing from frinex-experiment-designer failed");
+            var listing = [];
+            var remainingFiles = list.length;
+
+            list.forEach(function (filename) {
+                console.log(filename);
+                console.log(path.extname(filename));
+                if (path.extname(filename) !== ".xml") {
+                    remainingFiles--;
+                } else {
+                    filename = path.resolve(configDirectory, filename);
+                    console.log(filename);
+                    listing.push({
+//                    configPath: path,
+                        buildName: path.parse(filename).name,
+                        experimentDisplayName: path.parse(filename).name
+                    });
+                    remainingFiles--;
+                    if (remainingFiles <= 0) {
+                        buildNextExperiment(listing);
+                        console.log(JSON.stringify(listing));
+                    }
+                }
+            });
         }
     });
 }
