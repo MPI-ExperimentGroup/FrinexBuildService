@@ -41,7 +41,7 @@ const fs = require('fs');
 const path = require('path');
 const m2Settings = properties.get('settings.m2Settings');
 const configDirectory = properties.get('settings.configDirectory');
-const buildResultsFile = properties.get('settings.buildResultsFile');
+const targetDirectory = properties.get('settings.targetDirectory');
 const configServer = properties.get('webservice.configServer');
 const stagingServer = properties.get('staging.serverName');
 const stagingServerUrl = properties.get('staging.serverUrl');
@@ -50,7 +50,8 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-var resultsFile = fs.createWriteStream(buildResultsFile, {flags: 'w'})
+var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w'})
+var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 'w'})
 
 function startResult(listing) {
     resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}</style>");
@@ -73,22 +74,50 @@ function startResult(listing) {
         resultsFile.write("</tr>");
     }
     resultsFile.write("</table>");
+
+    updatesFile.write("function doUpdate() {\n");
+//    resultsFile.write("<script  type='text/javascript' id='updateScript' src='updates.js'/>");
+
+    updatesFile.write("var headTag = document.getElementsByTagName('head')[0];");
+    updatesFile.write("var updateScriptTag = document.getElementById('updateScript');");
+    updatesFile.write("if (updateScriptTag) headTag.removeChild(updateScriptTag);");
+    updatesFile.write("var scriptTag = document.createElement('script');");
+    updatesFile.write("scriptTag.type = 'text/javascript';");
+    updatesFile.write("scriptTag.id = 'updateScript';");
+    updatesFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();");
+    updatesFile.write("headTag.appendChild(scriptTag);");
+//    updatesFile.write("document.getElementById('updateScript').src = 'updates.js?date='+ new Date().getTime();\n");
+    updatesFile.write("}\n");
+    updatesFile.write("var updateTimer = window.setTimeout(doUpdate, 1000);\n");
+
+    resultsFile.write("<script>");
+    resultsFile.write("var headTag = document.getElementsByTagName('head')[0];");
+    resultsFile.write("var scriptTag = document.createElement('script');");
+    resultsFile.write("scriptTag.type = 'text/javascript';");
+    resultsFile.write("scriptTag.id = 'updateScript';");
+    resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();");
+    resultsFile.write("headTag.appendChild(scriptTag);");
+    resultsFile.write("</script>");
 }
 
 
 function storeResult(name, message, stage, type, isError, isBuilding) {
-    resultsFile.write("<script>");
-    resultsFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').innerHTML = '" + message + "';");
-    resultsFile.write("document.getElementById('" + name + "_date').innerHTML = '" + new Date().toISOString() + "';");
+    updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').innerHTML = '" + message + "';\n");
+    updatesFile.write("document.getElementById('" + name + "_date').innerHTML = '" + new Date().toISOString() + "';\n");
     if (isError) {
-        resultsFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #F3C3C3';");
+        updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #F3C3C3';\n");
     } else if (isBuilding) {
-        resultsFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #C3C3F3';");
+        updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #C3C3F3';\n");
     } else {
-        resultsFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #C3F3C3';");
+        updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #C3F3C3';\n");
     }
-    resultsFile.write("</script>");
 }
+
+function stopUpdatingResults() {
+    storeResult("", "build process from listing completed", "", "buildNextExperiment", false, false);
+    updatesFile.write("window.clearTimeout(updateTimer);\n");
+}
+
 
 function deployStagingGui(listing, currentEntry) {
     // we create a new mvn instance for each child pom
@@ -260,7 +289,7 @@ function buildNextExperiment(listing) {
         deployStagingGui(listing, currentEntry);
     } else {
         console.log("build process from listing completed");
-        storeResult("", "build process from listing completed", "", "buildNextExperiment", false, false);
+        stopUpdatingResults();
     }
 }
 
