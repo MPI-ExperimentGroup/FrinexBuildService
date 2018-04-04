@@ -55,8 +55,8 @@ var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 
 
 function startResult(listing) {
     resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}</style>");
-    resultsFile.write("<div id='_buildNextExperiment_'>Building...</div>");
-    resultsFile.write("<div id='_buildNextExperiment_date'></div>");
+    resultsFile.write("<div id='buildLabel'>Building...</div>");
+    resultsFile.write("<div id='buildDate'></div>");
     resultsFile.write("<table>");
     resultsFile.write("<tr><td>experiment</td><td>last update</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>");
     for (let currentEntry of listing) {
@@ -102,6 +102,8 @@ function startResult(listing) {
 
 
 function storeResult(name, message, stage, type, isError, isBuilding) {
+    updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Building " + name + "';\n");
+    updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
     updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').innerHTML = '" + message + "';\n");
     updatesFile.write("document.getElementById('" + name + "_date').innerHTML = '" + new Date().toISOString() + "';\n");
     if (isError) {
@@ -114,7 +116,8 @@ function storeResult(name, message, stage, type, isError, isBuilding) {
 }
 
 function stopUpdatingResults() {
-    storeResult("", "build process from listing completed", "", "buildNextExperiment", false, false);
+    updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Build process complete';\n");
+    updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
     updatesFile.write("window.clearTimeout(updateTimer);\n");
 }
 
@@ -126,7 +129,7 @@ function deployStagingGui(listing, currentEntry) {
         settings: m2Settings
     });
     storeResult(currentEntry.buildName, "building", "staging", "web", false, true);
-    mvngui.execute(['clean', 'install'], {
+    mvngui.execute(['clean'], {
 //    mvngui.execute(['clean', 'gwt:run'], {
         'skipTests': true, '-pl': 'frinex-gui',
         'experiment.configuration.name': currentEntry.buildName,
