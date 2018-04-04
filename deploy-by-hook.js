@@ -54,31 +54,36 @@ var resultsFile = fs.createWriteStream(buildResultsFile, {flags: 'w'})
 
 function startResult(listing) {
     resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}</style>");
-    resultsFile.write("<div id='_buildNextExperiment'>Building...</div>");
+    resultsFile.write("<div id='_buildNextExperiment_'>Building...</div>");
+    resultsFile.write("<div id='_buildNextExperiment_date'></div>");
     resultsFile.write("<table>");
-    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>web</td><td>android</td><td>desktop</td><td>admin</td><tr>");
+    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>");
     for (let currentEntry of listing) {
         resultsFile.write("<tr>");
         resultsFile.write("<td id='" + currentEntry.buildName + "_experiment'>" + currentEntry.buildName + "</td>");
         resultsFile.write("<td id='" + currentEntry.buildName + "_date'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_web'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_android'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_desktop'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_admin'/>");
+        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_web'/>");
+        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_android'/>");
+        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_desktop'/>");
+        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_admin'/>");
+        resultsFile.write("<td id='" + currentEntry.buildName + "_production_web'/>");
+        resultsFile.write("<td id='" + currentEntry.buildName + "_production_android'/>");
+        resultsFile.write("<td id='" + currentEntry.buildName + "_production_desktop'/>");
+        resultsFile.write("<td id='" + currentEntry.buildName + "_production_admin'/>");
         resultsFile.write("</tr>");
     }
     resultsFile.write("</table>");
 }
 
 
-function storeResult(name, message, stage, isError) {
+function storeResult(name, message, stage, type, isError) {
     resultsFile.write("<script>");
-    resultsFile.write("document.getElementById('" + name + "_" + stage + "').innerHTML = '" + message + "';");
+    resultsFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').innerHTML = '" + message + "';");
     resultsFile.write("document.getElementById('" + name + "_date').innerHTML = '" + new Date().toISOString() + "';");
     if (isError) {
-        resultsFile.write("document.getElementById('" + name + "_" + stage + "').style='background: #F3C3C3';");
+        resultsFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #F3C3C3';");
     } else {
-        resultsFile.write("document.getElementById('" + name + "_" + stage + "').style='background: #C3F3C3';");
+        resultsFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #C3F3C3';");
     }
     resultsFile.write("</script>");
 }
@@ -105,18 +110,17 @@ function deployStagingGui(listing, currentEntry) {
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui finished");
-        storeResult(currentEntry.buildName, "frinex-gui finished", "web", false);
+        storeResult(currentEntry.buildName, "deployed", "staging", "web", false);
         // build cordova 
-//                    buildApk();
-//                    console.log("buildApk finished");
-//        buildElectron();
-//        deployStagingAdmin(listing, currentEntry);
-        buildNextExperiment(listing);
+        buildApk(currentEntry.buildName, "staging");
+        buildElectron(currentEntry.buildName, "staging");
+        deployStagingAdmin(listing, currentEntry);
+//        buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-gui staging failed");
         console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName, "frinex-gui failed", "web", true);
+        storeResult(currentEntry.buildName, "failed", "staging", "web", true);
         buildNextExperiment(listing);
     });
 }
@@ -125,7 +129,7 @@ function deployStagingAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
-    mvnadmin.execute(['clean', 'install'], {
+    mvnadmin.execute(['clean'], {
         'skipTests': true, '-pl': 'frinex-admin',
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
@@ -137,14 +141,14 @@ function deployStagingAdmin(listing, currentEntry) {
         console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin finished");
-        storeResult(currentEntry.buildName, "frinex-admin finished", "admin", false);
-//        deployProductionGui(listing, currentEntry);
-        buildNextExperiment(listing);
+        storeResult(currentEntry.buildName, "deployed", "staging", "admin", false);
+        deployProductionGui(listing, currentEntry);
+//        buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin staging failed");
         console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName, "frinex-admin failed", "admin", true);
+        storeResult(currentEntry.buildName, "failed", "staging", "admin", true);
 //                        buildNextExperiment(listing);
     });
 }
@@ -154,14 +158,15 @@ function deployProductionGui(listing, currentEntry) {
         if (response.statusCode !== 404) {
             console.log("existing frinex-gui production found, aborting build!");
             console.log(response.statusCode);
-            storeResult(currentEntry.buildName, "existing frinex-gui production found, aborting build!", "production_web", true);
+            storeResult(currentEntry.buildName, "existing frinex-gui production found, aborting build!", "production", "web", true);
+            buildNextExperiment(listing);
         } else {
             console.log(response.statusCode);
             var mvngui = require('maven').create({
                 cwd: __dirname + "/gwt-cordova",
                 settings: m2Settings
             });
-            mvngui.execute(['clean', 'tomcat7:deploy'/*, 'gwt:run'*/], {
+            mvngui.execute(['clean'], {
                 'skipTests': true, '-pl': 'frinex-gui',
 //                    'altDeploymentRepository.snapshot-repo.default.file': '~/Desktop/FrinexAPKs/',
 //                    'altDeploymentRepository': 'default:file:file://~/Desktop/FrinexAPKs/',
@@ -180,14 +185,16 @@ function deployProductionGui(listing, currentEntry) {
 //                            'experiment.staticFilesUrl': productionServerUrl
             }).then(function (value) {
                 console.log("frinex-gui production finished");
-                storeResult(currentEntry.buildName, "frinex-gui production finished", "production_web", false);
-//                deployProductionAdmin(listing, currentEntry);
-                buildNextExperiment(listing);
+                storeResult(currentEntry.buildName, "skipped", "production", "web", false);
+                buildApk(currentEntry.buildName, "production");
+                buildElectron(currentEntry.buildName, "production");
+                deployProductionAdmin(listing, currentEntry);
+//                buildNextExperiment(listing);
             }, function (reason) {
                 console.log(reason);
                 console.log("frinex-gui production failed");
                 console.log(currentEntry.experimentDisplayName);
-                storeResult(currentEntry.buildName, "frinex-gui production failed", "production_web", true);
+                storeResult(currentEntry.buildName, "failed", "production", "web", true);
 //                            buildNextExperiment(listing);
             });
         }
@@ -198,7 +205,7 @@ function deployProductionAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
-    mvnadmin.execute(['clean', 'tomcat7:deploy'], {
+    mvnadmin.execute(['clean'], {
         'skipTests': true, '-pl': 'frinex-admin',
 //                                'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
         'experiment.configuration.name': currentEntry.buildName,
@@ -211,29 +218,29 @@ function deployProductionAdmin(listing, currentEntry) {
 //        console.log(value);
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin production finished");
-        storeResult(currentEntry.buildName, "frinex-admin production finished", "production_admin", false);
+        storeResult(currentEntry.buildName, "skipped", "production", "admin", false);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin production failed");
         console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName, "frinex-admin production failed", "production_admin", true);
+        storeResult(currentEntry.buildName, "failed", "production", "admin", true);
 //                                buildNextExperiment(listing);
     });
 }
 
-function buildApk(buildName) {
+function buildApk(buildName, stage) {
     console.log("starting cordova build");
-    execSync('bash gwt-cordova/target/setup-cordova.sh');
+//    execSync('bash gwt-cordova/target/setup-cordova.sh');
     console.log("build cordova finished");
-    storeResult(buildName, "build cordova finished", "android", false);
+    storeResult(buildName, "skipped", stage, "android", false);
 }
 
-function buildElectron(buildName) {
+function buildElectron(buildName, stage) {
     console.log("starting electron build");
-    execSync('bash gwt-cordova/target/setup-electron.sh');
+//    execSync('bash gwt-cordova/target/setup-electron.sh');
     console.log("build electron finished");
-    storeResult(buildName, "build electron finished", "desktop", false);
+    storeResult(buildName, "skipped", stage, "desktop", false);
 }
 
 function buildNextExperiment(listing) {
@@ -245,7 +252,7 @@ function buildNextExperiment(listing) {
         deployStagingGui(listing, currentEntry);
     } else {
         console.log("build process from listing completed");
-        storeResult("", "build process from listing completed", "buildNextExperiment", false);
+        storeResult("", "build process from listing completed", "", "buildNextExperiment", false);
     }
 }
 
