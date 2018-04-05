@@ -296,6 +296,24 @@ function buildNextExperiment(listing) {
     }
 }
 
+function convertJsonToXml() {
+    var mvnConvert = require('maven').create({
+        cwd: __dirname + "/ExperimentDesigner",
+        settings: m2Settings
+    });
+    mvnConvert.execute(['clean', 'package', 'exec:exec'], {
+        'skipTests': true,
+        'exec.executable': 'java',
+        'exec.classpathScope': 'runtime',
+        'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + configDirectory + ' ' + configDirectory
+    }).then(function (value) {
+        console.log("convert JSON to XML finished");
+    }, function (reason) {
+        console.log(reason);
+        console.log("convert JSON to XML failed");
+    });
+}
+
 function buildFromListing() {
     fs.readdir(configDirectory, function (error, list) {
         if (error) {
@@ -329,4 +347,5 @@ function buildFromListing() {
     });
 }
 
+convertJsonToXml();
 buildFromListing();
