@@ -128,7 +128,7 @@ function deployStagingGui(listing, currentEntry) {
         cwd: __dirname + "/gwt-cordova",
         settings: m2Settings
     });
-    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", { mode: 0o755 });
+    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, "building", "staging", "web", false, true);
     mvngui.execute(['clean', 'install'], {
@@ -175,7 +175,7 @@ function deployStagingAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
-    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", { mode: 0o755 });
+    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, "building", "staging", "admin", false, true);
     mvnadmin.execute(['clean', 'install'], {
@@ -202,7 +202,7 @@ function deployStagingAdmin(listing, currentEntry) {
         console.log(currentEntry.experimentDisplayName);
 //        storeResult(currentEntry.buildName, "failed", "staging", "admin", true, false);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false);
-//                        buildNextExperiment(listing);
+        buildNextExperiment(listing);
     });
 }
 function deployProductionGui(listing, currentEntry) {
@@ -255,7 +255,7 @@ function deployProductionGui(listing, currentEntry) {
                 console.log(currentEntry.experimentDisplayName);
 //                storeResult(currentEntry.buildName, "failed", "production", "web", true, false);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false);
-//                            buildNextExperiment(listing);
+                buildNextExperiment(listing);
             });
         }
     });
@@ -292,7 +292,7 @@ function deployProductionAdmin(listing, currentEntry) {
         console.log(currentEntry.experimentDisplayName);
 //        storeResult(currentEntry.buildName, "failed", "production", "admin", true, false);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false);
-//                                buildNextExperiment(listing);
+        buildNextExperiment(listing);
     });
 }
 
