@@ -147,7 +147,7 @@ function deployStagingGui(listing, currentEntry) {
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui finished");
-        storeResult(currentEntry.buildName, "<a href='" + currentEntry.buildName + "staging.html'>deployed</a><a href='" + currentEntry.buildName + "staging.war'>war</a><a href='ems13/" + currentEntry.buildName + "'>ems13</a>", "staging", "web", false, false);
+        storeResult(currentEntry.buildName, "<a href=\'" + currentEntry.buildName + "staging.html\'>deployed</a><a href=\'" + currentEntry.buildName + "staging.war\'>war</a><a href=\'ems13/" + currentEntry.buildName + "\'>ems13</a>", "staging", "web", false, false);
 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "staging.html", {flags: 'w'});
 //        successFile.write(value);
 //        console.log(value);
