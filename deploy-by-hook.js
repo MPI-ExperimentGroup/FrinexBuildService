@@ -139,7 +139,7 @@ function deployStagingGui(listing, currentEntry) {
         'experiment.webservice': configServer,
         'experiment.configuration.path': configDirectory,
         'versionCheck.allowSnapshots': 'false',
-        'versionCheck.buildType': 'staging',
+        'versionCheck.buildType': 'stable',
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl,
         'experiment.groupsSocketUrl': stagingGroupsSocketUrl,
@@ -185,7 +185,7 @@ function deployStagingAdmin(listing, currentEntry) {
         'experiment.webservice': configServer,
         'experiment.configuration.path': configDirectory,
         'versionCheck.allowSnapshots': 'false',
-        'versionCheck.buildType': 'staging',
+        'versionCheck.buildType': 'stable',
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl
     }).then(function (value) {
@@ -233,7 +233,7 @@ function deployProductionGui(listing, currentEntry) {
                 'experiment.webservice': configServer,
                 'experiment.configuration.path': configDirectory,
                 'versionCheck.allowSnapshots': 'false',
-                'versionCheck.buildType': 'staging',
+                'versionCheck.buildType': 'stable',
                 'experiment.destinationServer': productionServer,
                 'experiment.destinationServerUrl': productionServerUrl,
                 'experiment.groupsSocketUrl': productionGroupsSocketUrl,
@@ -276,7 +276,7 @@ function deployProductionAdmin(listing, currentEntry) {
         'experiment.webservice': configServer,
         'experiment.configuration.path': configDirectory,
         'versionCheck.allowSnapshots': 'false',
-        'versionCheck.buildType': 'staging',
+        'versionCheck.buildType': 'stable',
         'experiment.destinationServer': productionServer,
         'experiment.destinationServerUrl': productionServerUrl
     }).then(function (value) {
