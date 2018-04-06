@@ -129,7 +129,7 @@ function deployStagingGui(listing, currentEntry) {
         settings: m2Settings
     });
     storeResult(currentEntry.buildName, "building", "staging", "web", false, true);
-    mvngui.execute(['clean'], {
+    mvngui.execute(['clean', 'install'], {
 //    mvngui.execute(['clean', 'gwt:run'], {
         'skipTests': true, '-pl': 'frinex-gui',
         'experiment.configuration.name': currentEntry.buildName,
@@ -147,7 +147,7 @@ function deployStagingGui(listing, currentEntry) {
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + 'staging.war">war</a><a href="ems13/' + currentEntry.buildName + '">ems13</a>', "staging", "web", false, false);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + 'staging.war">download</a><a href="http://ems13.mpi.nl/' + currentEntry.buildName + '">browse</a>', "staging", "web", false, false);
 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "staging.html", {flags: 'w'});
 //        successFile.write(value);
 //        console.log(value);
@@ -172,7 +172,7 @@ function deployStagingAdmin(listing, currentEntry) {
         settings: m2Settings
     });
     storeResult(currentEntry.buildName, "building", "staging", "admin", false, true);
-    mvnadmin.execute(['clean'], {
+    mvnadmin.execute(['clean', 'install'], {
         'skipTests': true, '-pl': 'frinex-admin',
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
@@ -212,7 +212,7 @@ function deployProductionGui(listing, currentEntry) {
                 cwd: __dirname + "/gwt-cordova",
                 settings: m2Settings
             });
-            mvngui.execute(['clean'], {
+            mvngui.execute(['clean', 'install'], {
                 'skipTests': true, '-pl': 'frinex-gui',
 //                    'altDeploymentRepository.snapshot-repo.default.file': '~/Desktop/FrinexAPKs/',
 //                    'altDeploymentRepository': 'default:file:file://~/Desktop/FrinexAPKs/',
@@ -254,7 +254,7 @@ function deployProductionAdmin(listing, currentEntry) {
         settings: m2Settings
     });
     storeResult(currentEntry.buildName, "building", "production", "admin", false, true);
-    mvnadmin.execute(['clean'], {
+    mvnadmin.execute(['clean', 'install'], {
         'skipTests': true, '-pl': 'frinex-admin',
 //                                'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
         'experiment.configuration.name': currentEntry.buildName,
@@ -310,6 +310,7 @@ function buildNextExperiment(listing) {
 }
 
 function convertJsonToXml() {
+    resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
     var mvnConvert = require('maven').create({
         cwd: __dirname + "/ExperimentDesigner",
         settings: m2Settings
@@ -321,10 +322,12 @@ function convertJsonToXml() {
         'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + configDirectory + ' ' + configDirectory
     }).then(function (value) {
         console.log("convert JSON to XML finished");
+        resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         buildFromListing();
     }, function (reason) {
         console.log(reason);
         console.log("convert JSON to XML failed");
+        resultsFile.write("<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
     });
 }
 
