@@ -157,7 +157,9 @@ function deployStagingGui(listing, currentEntry) {
         console.log(reason);
         console.log("frinex-gui staging failed");
         console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName, "failed", "staging", "web", true, false);
+        storeResult(currentEntry.buildName, "<a href='" + currentEntry.experimentDisplayName + "staging.html'>failed</a>", "staging", "web", true, false);
+        var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.experimentDisplayName + "staging.html", {flags: 'w'});
+        errorFile.write(reason);
         buildNextExperiment(listing);
     });
 }
