@@ -147,7 +147,9 @@ function deployStagingGui(listing, currentEntry) {
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui finished");
-        storeResult(currentEntry.buildName, "deployed", "staging", "web", false, false);
+        storeResult(currentEntry.buildName, "<a href='" + currentEntry.experimentDisplayName + "staging.html'>deployed</a><a href='" + currentEntry.experimentDisplayName + "staging.war'>war</a><a href='ems13/" + currentEntry.experimentDisplayName + "'>ems13</a>", "staging", "web", false, false);
+        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.experimentDisplayName + "staging.html", {flags: 'w'});
+        successFile.write(value);
         // build cordova 
         buildApk(currentEntry.buildName, "staging");
         buildElectron(currentEntry.buildName, "staging");
@@ -318,6 +320,7 @@ function convertJsonToXml() {
         'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + configDirectory + ' ' + configDirectory
     }).then(function (value) {
         console.log("convert JSON to XML finished");
+        buildFromListing();
     }, function (reason) {
         console.log(reason);
         console.log("convert JSON to XML failed");
@@ -358,4 +361,3 @@ function buildFromListing() {
 }
 
 convertJsonToXml();
-buildFromListing();
