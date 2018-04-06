@@ -50,8 +50,8 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w'})
-var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 'w'})
+var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755})
+var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 'w', mode: 0o755})
 
 function startResult(listing) {
     resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}</style>");
@@ -128,7 +128,7 @@ function deployStagingGui(listing, currentEntry) {
         cwd: __dirname + "/gwt-cordova",
         settings: m2Settings
     });
-    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
+    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", { mode: 0o755 });
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, "building", "staging", "web", false, true);
     mvngui.execute(['clean', 'install'], {
@@ -175,7 +175,7 @@ function deployStagingAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
-    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt");
+    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", { mode: 0o755 });
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, "building", "staging", "admin", false, true);
     mvnadmin.execute(['clean', 'install'], {
@@ -220,7 +220,7 @@ function deployProductionGui(listing, currentEntry) {
                 cwd: __dirname + "/gwt-cordova",
                 settings: m2Settings
             });
-            var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt");
+            var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
             process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
             mvngui.execute(['clean', 'install'], {
                 'skipTests': true, '-pl': 'frinex-gui',
@@ -265,7 +265,7 @@ function deployProductionAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
-    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt");
+    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, "building", "production", "admin", false, true);
     mvnadmin.execute(['clean', 'install'], {
