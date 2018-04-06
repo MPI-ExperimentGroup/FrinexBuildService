@@ -136,6 +136,8 @@ function deployStagingGui(listing, currentEntry) {
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
         'experiment.configuration.path': configDirectory,
+        'versionCheck.allowSnapshots': 'false',
+        'versionCheck.buildType': 'staging',
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl,
         'experiment.groupsSocketUrl': stagingGroupsSocketUrl,
@@ -171,6 +173,8 @@ function deployStagingAdmin(listing, currentEntry) {
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
         'experiment.configuration.path': configDirectory,
+        'versionCheck.allowSnapshots': 'false',
+        'versionCheck.buildType': 'staging',
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl
     }).then(function (value) {
@@ -213,6 +217,8 @@ function deployProductionGui(listing, currentEntry) {
                 'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                 'experiment.webservice': configServer,
                 'experiment.configuration.path': configDirectory,
+                'versionCheck.allowSnapshots': 'false',
+                'versionCheck.buildType': 'staging',
                 'experiment.destinationServer': productionServer,
                 'experiment.destinationServerUrl': productionServerUrl,
                 'experiment.groupsSocketUrl': productionGroupsSocketUrl,
@@ -250,6 +256,8 @@ function deployProductionAdmin(listing, currentEntry) {
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
         'experiment.configuration.path': configDirectory,
+        'versionCheck.allowSnapshots': 'false',
+        'versionCheck.buildType': 'staging',
         'experiment.destinationServer': productionServer,
         'experiment.destinationServerUrl': productionServerUrl
     }).then(function (value) {
