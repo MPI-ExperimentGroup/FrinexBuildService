@@ -40,6 +40,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const m2Settings = properties.get('settings.m2Settings');
+const incomingDirectory = properties.get('settings.incomingDirectory');
 const configDirectory = properties.get('settings.configDirectory');
 const targetDirectory = properties.get('settings.targetDirectory');
 const configServer = properties.get('webservice.configServer');
@@ -53,53 +54,67 @@ const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755})
 var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 'w', mode: 0o755})
 
-function startResult(listing) {
-    resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}</style>");
-    resultsFile.write("<div id='buildLabel'>Building...</div>");
-    resultsFile.write("<div id='buildDate'></div>");
-    resultsFile.write("<table>");
-    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>");
-    for (let currentEntry of listing) {
-        resultsFile.write("<tr>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_experiment'>" + currentEntry.buildName + "</td>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_date'>queued</td>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_web'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_android'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_desktop'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_admin'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_production_web'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_production_android'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_production_desktop'/>");
-        resultsFile.write("<td id='" + currentEntry.buildName + "_production_admin'/>");
-        resultsFile.write("</tr>");
-    }
-    resultsFile.write("</table>");
-
+function startResult() {
+    resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}</style>\n");
+    resultsFile.write("<div id='buildLabel'>Building...</div>\n");
+    resultsFile.write("<div id='buildDate'></div>\n");
+    resultsFile.write("<table id='buildTable'>\n");
+    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
+//    for (let currentEntry of listing) {
+//        resultsFile.write("<tr>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_experiment'>" + currentEntry.buildName + "</td>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_date'>queued</td>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_web'/>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_android'/>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_desktop'/>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_staging_admin'/>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_production_web'/>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_production_android'/>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_production_desktop'/>");
+//        resultsFile.write("<td id='" + currentEntry.buildName + "_production_admin'/>");
+//        resultsFile.write("</tr>");
+//    }
+    resultsFile.write("</table>\n");
     updatesFile.write("function doUpdate() {\n");
 //    resultsFile.write("<script  type='text/javascript' id='updateScript' src='updates.js'/>");
 
-    updatesFile.write("var headTag = document.getElementsByTagName('head')[0];");
-    updatesFile.write("var updateScriptTag = document.getElementById('updateScript');");
-    updatesFile.write("if (updateScriptTag) headTag.removeChild(updateScriptTag);");
-    updatesFile.write("var scriptTag = document.createElement('script');");
-    updatesFile.write("scriptTag.type = 'text/javascript';");
-    updatesFile.write("scriptTag.id = 'updateScript';");
-    updatesFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();");
-    updatesFile.write("headTag.appendChild(scriptTag);");
+    updatesFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
+    updatesFile.write("var updateScriptTag = document.getElementById('updateScript');\n");
+    updatesFile.write("if (updateScriptTag) headTag.removeChild(updateScriptTag);\n");
+    updatesFile.write("var scriptTag = document.createElement('script');\n");
+    updatesFile.write("scriptTag.type = 'text/javascript';\n");
+    updatesFile.write("scriptTag.id = 'updateScript';\n");
+    updatesFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
+    updatesFile.write("headTag.appendChild(scriptTag);\n");
 //    updatesFile.write("document.getElementById('updateScript').src = 'updates.js?date='+ new Date().getTime();\n");
     updatesFile.write("}\n");
     updatesFile.write("var updateTimer = window.setTimeout(doUpdate, 1000);\n");
 
-    resultsFile.write("<script>");
-    resultsFile.write("var headTag = document.getElementsByTagName('head')[0];");
-    resultsFile.write("var scriptTag = document.createElement('script');");
-    resultsFile.write("scriptTag.type = 'text/javascript';");
-    resultsFile.write("scriptTag.id = 'updateScript';");
-    resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();");
-    resultsFile.write("headTag.appendChild(scriptTag);");
-    resultsFile.write("</script>");
+    resultsFile.write("<script>\n");
+    resultsFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
+    resultsFile.write("var scriptTag = document.createElement('script');\n");
+    resultsFile.write("scriptTag.type = 'text/javascript';\n");
+    resultsFile.write("scriptTag.id = 'updateScript';\n");
+    resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
+    resultsFile.write("headTag.appendChild(scriptTag);\n");
+    resultsFile.write("</script>\n");
 }
 
+
+function storeIsQueued(name) {
+    updatesFile.write("var experimentRow = document.getElementById('" + name + "_row');\n");
+    updatesFile.write("if (experimentRow) document.getElementById('buildTable').removeChild(experimentRow);\n");
+    updatesFile.write("var tableRow = document.createElement('tr');\n");
+    updatesFile.write("tableRow.id = '" + name + "_row';\n");
+    updatesFile.write("document.getElementById('buildTable').appendChild(tableRow);\n");
+    for (var column of ["_experiment", "_date", "_staging_web", "_staging_android", "_staging_desktop", "_staging_admin", "_production_web", "_production_android", "_production_desktop", "_production_admin"]) {
+        updatesFile.write("var tableCell = document.createElement('td');\n");
+        updatesFile.write("tableCell.id = '" + name + column + "';\n");
+        updatesFile.write("tableRow.appendChild(tableCell);\n");
+    }
+    updatesFile.write("document.getElementById('" + name + "_experiment').innerHTML = '" + name + "';\n");
+    updatesFile.write("document.getElementById('" + name + "_date').innerHTML = 'queued';\n");
+}
 
 function storeResult(name, message, stage, type, isError, isBuilding) {
     updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Building " + name + "';\n");
@@ -361,6 +376,7 @@ function buildFromListing() {
                 if (path.extname(filename) !== ".xml") {
                     remainingFiles--;
                 } else {
+                    storeIsQueued(path.parse(filename).name);
                     filename = path.resolve(configDirectory, filename);
                     console.log(filename);
                     listing.push({
