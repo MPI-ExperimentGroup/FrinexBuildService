@@ -89,7 +89,6 @@ function startResult() {
 //    resultsFile.write("document.getElementById('updateScript').src = 'updates.js?date='+ new Date().getTime();\n");
     resultsFile.write("}\n");
     resultsFile.write("var updateTimer = window.setTimeout(doUpdate, 1000);\n");
-
     resultsFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
     resultsFile.write("var scriptTag = document.createElement('script');\n");
     resultsFile.write("scriptTag.type = 'text/javascript';\n");
@@ -350,11 +349,35 @@ function convertJsonToXml() {
         'skipTests': true,
         'exec.executable': 'java',
         'exec.classpathScope': 'runtime',
-        'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + configDirectory + ' ' + configDirectory
+        'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + incomingDirectory + ' ' + incomingDirectory
     }).then(function (value) {
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
-        buildFromListing();
+        fs.readdir(incomingDirectory, function (error, list) {
+            if (error) {
+                console.error(error);
+            } else {
+                var remainingFiles = list.length;
+                list.forEach(function (filename) {
+                    incomingFile = path.resolve(incomingDirectory, filename);
+                    if (path.extname(filename) === ".json") {
+                        fs.unlinkSync(incomingFile);
+                    } else if (path.extname(filename) === ".xml") {
+                        filename = path.resolve(configDirectory, filename);
+                        fs.rename(incomingFile, filename, (error) => {
+                            if (error) {
+                                throw error;
+                            }
+                            console.log('moved incoming: ' + filename);
+                        });
+                    }
+                    remainingFiles--;
+                    if (remainingFiles <= 0) {
+                        buildFromListing();
+                    }
+                });
+            }
+        });
     }, function (reason) {
         console.log(reason);
         console.log("convert JSON to XML failed");
@@ -369,7 +392,6 @@ function buildFromListing() {
         } else {
             var listing = [];
             var remainingFiles = list.length;
-
             list.forEach(function (filename) {
                 console.log(filename);
                 console.log(path.extname(filename));
