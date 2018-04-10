@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# Copyright (C) 2016 Max Planck Institute for Psycholinguistics
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+# @since May 11, 2016 5:08:41 PM (creation date)
+# @author Peter Withers <peter.withers@mpi.nl>
+
+
+#echo "<h2>push event</h2>" >> /srv/target/git-push-log.html
+
+export JAVA_HOME=/srv/development/jdk/jdk1.8.0_162/
+export PATH=$JAVA_HOME/bin:$PATH
+
+export M2_HOME=/srv/development/maven/apache-maven-3.5.3/
+export M2=$M2_HOME/bin
+export PATH=$M2:$PATH
+
+whoami
+
+unset GIT_DIR
+
+cd /srv/experiments/
+pwd
+git reset --hard
+git pull --depth 5000
+
+mkdir /srv/target/incoming
+
+while read oldrev newrev ref
+do
+    echo "<h2>$ref $oldrev $newrev </h2>" >> /srv/target/git-push-log.html
+    echo "<br/>" >> /srv/target/git-push-log.html
+    #git diff --name-only $oldrev $newrev
+    echo "git log -1 : " >> /srv/target/git-push-log.html
+    git log -1 --format="%an %ad" >> /srv/target/git-push-log.html
+    echo "<br/>" >> /srv/target/git-push-log.html
+    git diff --name-only $oldrev $newrev >> /srv/target/git-push-log.html
+    echo "<br/>" >> /srv/target/git-push-log.html
+    cp $(git diff --name-only $oldrev $newrev) /srv/target/incoming/
+done
+
+pwd
+
+echo $JAVA_HOME
+echo $M2_HOME
+echo $M2
+echo $PATH
+
+which mvn
+mvn -v
+node -v
+
+if [ "$(pidof node-default)" ]
+then
+  pidof node-default
+  echo "build in process, exiting";
+else
+  echo "starting build process";
+  cd /srv/ExperimentTemplate/
+  pwd
+  git pull --depth 5000
+  nohup nice /usr/bin/node /srv/ExperimentTemplate/deploy-by-hook.js > /srv/target/git-push-out.txt 2> /srv/target/git-push-err.txt < /dev/null &
+  pidof node-default
+fi
+
+#echo "node done"
