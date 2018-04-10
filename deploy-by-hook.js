@@ -130,7 +130,7 @@ function deployStagingGui(listing, currentEntry) {
     });
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
-    storeResult(currentEntry.buildName, "building", "staging", "web", false, true);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true);
     mvngui.execute(['clean', 'install'], {
 //    mvngui.execute(['clean', 'gwt:run'], {
         'skipTests': true, '-pl': 'frinex-gui',
@@ -177,7 +177,7 @@ function deployStagingAdmin(listing, currentEntry) {
     });
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
-    storeResult(currentEntry.buildName, "building", "staging", "admin", false, true);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true);
     mvnadmin.execute(['clean', 'install'], {
         'skipTests': true, '-pl': 'frinex-admin',
         'experiment.configuration.name': currentEntry.buildName,
@@ -207,7 +207,7 @@ function deployStagingAdmin(listing, currentEntry) {
 }
 function deployProductionGui(listing, currentEntry) {
     console.log(productionServerUrl + '/' + currentEntry.buildName);
-    storeResult(currentEntry.buildName, "building", "production", "web", false, true);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true);
     http.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
         if (response.statusCode !== 404) {
             console.log("existing frinex-gui production found, aborting build!");
@@ -267,7 +267,7 @@ function deployProductionAdmin(listing, currentEntry) {
     });
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
-    storeResult(currentEntry.buildName, "building", "production", "admin", false, true);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true);
     mvnadmin.execute(['clean', 'install'], {
         'skipTests': true, '-pl': 'frinex-admin',
 //                                'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
