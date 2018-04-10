@@ -52,7 +52,7 @@ const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
 var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755})
-var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 'w', mode: 0o755})
+var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 'a', mode: 0o755})
 
 function startResult() {
     resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}</style>\n");
@@ -75,22 +75,21 @@ function startResult() {
 //        resultsFile.write("</tr>");
 //    }
     resultsFile.write("</table>\n");
-    updatesFile.write("function doUpdate() {\n");
-//    resultsFile.write("<script  type='text/javascript' id='updateScript' src='updates.js'/>");
-
-    updatesFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
-    updatesFile.write("var updateScriptTag = document.getElementById('updateScript');\n");
-    updatesFile.write("if (updateScriptTag) headTag.removeChild(updateScriptTag);\n");
-    updatesFile.write("var scriptTag = document.createElement('script');\n");
-    updatesFile.write("scriptTag.type = 'text/javascript';\n");
-    updatesFile.write("scriptTag.id = 'updateScript';\n");
-    updatesFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
-    updatesFile.write("headTag.appendChild(scriptTag);\n");
-//    updatesFile.write("document.getElementById('updateScript').src = 'updates.js?date='+ new Date().getTime();\n");
-    updatesFile.write("}\n");
-    updatesFile.write("var updateTimer = window.setTimeout(doUpdate, 1000);\n");
-
     resultsFile.write("<script>\n");
+    resultsFile.write("function doUpdate() {\n");
+//    resultsFile.write("<script  type='text/javascript' id='updateScript' src='updates.js'/>");
+    resultsFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
+    resultsFile.write("var updateScriptTag = document.getElementById('updateScript');\n");
+    resultsFile.write("if (updateScriptTag) headTag.removeChild(updateScriptTag);\n");
+    resultsFile.write("var scriptTag = document.createElement('script');\n");
+    resultsFile.write("scriptTag.type = 'text/javascript';\n");
+    resultsFile.write("scriptTag.id = 'updateScript';\n");
+    resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
+    resultsFile.write("headTag.appendChild(scriptTag);\n");
+//    resultsFile.write("document.getElementById('updateScript').src = 'updates.js?date='+ new Date().getTime();\n");
+    resultsFile.write("}\n");
+    resultsFile.write("var updateTimer = window.setTimeout(doUpdate, 1000);\n");
+
     resultsFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
     resultsFile.write("var scriptTag = document.createElement('script');\n");
     resultsFile.write("scriptTag.type = 'text/javascript';\n");
@@ -98,6 +97,7 @@ function startResult() {
     resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
     resultsFile.write("headTag.appendChild(scriptTag);\n");
     resultsFile.write("</script>\n");
+    updatesFile.write("updateTimer = window.setTimeout(doUpdate, 1000);\n");
 }
 
 
