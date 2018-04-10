@@ -39,6 +39,7 @@ git reset --hard
 git pull --depth 5000
 
 mkdir /srv/target/incoming
+mkdir /srv/target/processing
 
 while read oldrev newrev ref
 do
