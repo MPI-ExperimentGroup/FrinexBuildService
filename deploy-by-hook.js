@@ -41,7 +41,7 @@ const fs = require('fs');
 const path = require('path');
 const m2Settings = properties.get('settings.m2Settings');
 const incomingDirectory = properties.get('settings.incomingDirectory');
-const configDirectory = properties.get('settings.configDirectory');
+const processingDirectory = properties.get('settings.processingDirectory');
 const targetDirectory = properties.get('settings.targetDirectory');
 const configServer = properties.get('webservice.configServer');
 const stagingServer = properties.get('staging.serverName');
@@ -75,6 +75,10 @@ function startResult() {
 //        resultsFile.write("</tr>");
 //    }
     resultsFile.write("</table>\n");
+    resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
+    resultsFile.write("<a href='git-push-out.txt'>out</a>&nbsp;\n");
+    resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
+
     resultsFile.write("<script>\n");
     resultsFile.write("function doUpdate() {\n");
 //    resultsFile.write("<script  type='text/javascript' id='updateScript' src='updates.js'/>");
@@ -151,7 +155,7 @@ function deployStagingGui(listing, currentEntry) {
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
-        'experiment.configuration.path': configDirectory,
+        'experiment.configuration.path': processingDirectory,
         'versionCheck.allowSnapshots': 'false',
         'versionCheck.buildType': 'stable',
         'experiment.destinationServer': stagingServer,
@@ -197,7 +201,7 @@ function deployStagingAdmin(listing, currentEntry) {
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
-        'experiment.configuration.path': configDirectory,
+        'experiment.configuration.path': processingDirectory,
         'versionCheck.allowSnapshots': 'false',
         'versionCheck.buildType': 'stable',
         'experiment.destinationServer': stagingServer,
@@ -245,7 +249,7 @@ function deployProductionGui(listing, currentEntry) {
                 'experiment.configuration.name': currentEntry.buildName,
                 'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                 'experiment.webservice': configServer,
-                'experiment.configuration.path': configDirectory,
+                'experiment.configuration.path': processingDirectory,
                 'versionCheck.allowSnapshots': 'false',
                 'versionCheck.buildType': 'stable',
                 'experiment.destinationServer': productionServer,
@@ -288,7 +292,7 @@ function deployProductionAdmin(listing, currentEntry) {
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
-        'experiment.configuration.path': configDirectory,
+        'experiment.configuration.path': processingDirectory,
         'versionCheck.allowSnapshots': 'false',
         'versionCheck.buildType': 'stable',
         'experiment.destinationServer': productionServer,
@@ -336,9 +340,71 @@ function buildNextExperiment(listing) {
     } else {
         console.log("build process from listing completed");
         stopUpdatingResults();
+        // check for new files in the incoming directory by calling deleteOldProcessing
+        deleteOldProcessing();
     }
 }
 
+function buildFromListing() {
+    fs.readdir(processingDirectory, function (error, list) {
+        if (error) {
+            console.error(error);
+        } else {
+            var listing = [];
+            var remainingFiles = list.length;
+            list.forEach(function (filename) {
+                console.log(filename);
+                console.log(path.extname(filename));
+                if (path.extname(filename) !== ".xml") {
+                    remainingFiles--;
+                } else {
+                    storeIsQueued(path.parse(filename).name);
+                    filename = path.resolve(processingDirectory, filename);
+                    console.log(filename);
+                    listing.push({
+//                    configPath: path,
+                        buildName: path.parse(filename).name,
+                        experimentDisplayName: path.parse(filename).name
+                    });
+                    remainingFiles--;
+                    if (remainingFiles <= 0) {
+                        console.log(JSON.stringify(listing));
+                        buildNextExperiment(listing);
+                    }
+                }
+            });
+        }
+    });
+}
+
+function moveIncomingToProcessing() {
+    fs.readdir(incomingDirectory, function (error, list) {
+        if (error) {
+            console.error(error);
+        } else {
+            var remainingFiles = list.length;
+            list.forEach(function (filename) {
+                incomingFile = path.resolve(incomingDirectory, filename);
+                if (path.extname(filename) === ".json") {
+                    fs.unlinkSync(incomingFile);
+                } else if (path.extname(filename) === ".xml") {
+                    filename = path.resolve(processingDirectory, filename);
+                    fs.rename(incomingFile, filename, (error) => {
+                        if (error) {
+                            throw error;
+                        }
+                        console.log('moved incoming: ' + filename);
+                    });
+                }
+                remainingFiles--;
+                if (remainingFiles <= 0) {
+                    // when not files are found in processing, this will not be called and the script will terminate, until called again by GIT
+                    buildFromListing();
+                }
+            });
+        }
+    });
+}
 function convertJsonToXml() {
     resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
     var mvnConvert = require('maven').create({
@@ -353,31 +419,7 @@ function convertJsonToXml() {
     }).then(function (value) {
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
-        fs.readdir(incomingDirectory, function (error, list) {
-            if (error) {
-                console.error(error);
-            } else {
-                var remainingFiles = list.length;
-                list.forEach(function (filename) {
-                    incomingFile = path.resolve(incomingDirectory, filename);
-                    if (path.extname(filename) === ".json") {
-                        fs.unlinkSync(incomingFile);
-                    } else if (path.extname(filename) === ".xml") {
-                        filename = path.resolve(configDirectory, filename);
-                        fs.rename(incomingFile, filename, (error) => {
-                            if (error) {
-                                throw error;
-                            }
-                            console.log('moved incoming: ' + filename);
-                        });
-                    }
-                    remainingFiles--;
-                    if (remainingFiles <= 0) {
-                        buildFromListing();
-                    }
-                });
-            }
-        });
+        moveIncomingToProcessing();
     }, function (reason) {
         console.log(reason);
         console.log("convert JSON to XML failed");
@@ -385,37 +427,24 @@ function convertJsonToXml() {
     });
 }
 
-function buildFromListing() {
-    fs.readdir(configDirectory, function (error, list) {
+function deleteOldProcessing() {
+    fs.readdir(processingDirectory, function (error, list) {
         if (error) {
             console.error(error);
         } else {
-            var listing = [];
             var remainingFiles = list.length;
             list.forEach(function (filename) {
-                console.log(filename);
-                console.log(path.extname(filename));
-                if (path.extname(filename) !== ".xml") {
-                    remainingFiles--;
-                } else {
-                    storeIsQueued(path.parse(filename).name);
-                    filename = path.resolve(configDirectory, filename);
-                    console.log(filename);
-                    listing.push({
-//                    configPath: path,
-                        buildName: path.parse(filename).name,
-                        experimentDisplayName: path.parse(filename).name
-                    });
-                    remainingFiles--;
-                    if (remainingFiles <= 0) {
-                        console.log(JSON.stringify(listing));
-                        startResult(listing);
-                        buildNextExperiment(listing);
-                    }
+                processedFile = path.resolve(processingDirectory, filename);
+                fs.unlinkSync(processedFile);
+                console.log('deleted processed file: ' + processedFile);
+                remainingFiles--;
+                if (remainingFiles <= 0) {
+                    convertJsonToXml();
                 }
             });
         }
     });
 }
 
-convertJsonToXml();
+startResult();
+deleteOldProcessing();
