@@ -433,15 +433,19 @@ function deleteOldProcessing() {
             console.error(error);
         } else {
             var remainingFiles = list.length;
-            list.forEach(function (filename) {
-                processedFile = path.resolve(processingDirectory, filename);
-                fs.unlinkSync(processedFile);
-                console.log('deleted processed file: ' + processedFile);
-                remainingFiles--;
-                if (remainingFiles <= 0) {
-                    convertJsonToXml();
-                }
-            });
+            if (remainingFiles <= 0) {
+                convertJsonToXml();
+            } else {
+                list.forEach(function (filename) {
+                    processedFile = path.resolve(processingDirectory, filename);
+                    fs.unlinkSync(processedFile);
+                    console.log('deleted processed file: ' + processedFile);
+                    remainingFiles--;
+                    if (remainingFiles <= 0) {
+                        convertJsonToXml();
+                    }
+                });
+            }
         }
     });
 }
