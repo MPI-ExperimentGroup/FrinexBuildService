@@ -110,7 +110,7 @@ function startResult() {
 
 function storeIsQueued(name) {
     buildHistoryJson.table[name] = {
-        "_experiment": {value: 'name', style: ''},
+        "_experiment": {value: name, style: ''},
         "_date": {value: 'queued', style: ''},
         "_staging_web": {value: '', style: ''},
         "_staging_android": {value: '', style: ''},
