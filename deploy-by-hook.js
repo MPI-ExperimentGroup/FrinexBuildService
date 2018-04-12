@@ -144,7 +144,7 @@ function stopUpdatingResults() {
     buildHistoryJson.building = false;
     buildHistoryJson.buildLabel = 'Build process complete';
     buildHistoryJson.buildDate = new Date().toISOString();
-    storeJsonData();
+    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
 
