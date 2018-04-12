@@ -51,11 +51,30 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755})
-var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 'a', mode: 0o755})
+var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755});
+//var updatesFile = fs.createWriteStream(targetDirectory + "/updates.js", {flags: 'a', mode: 0o755});
+
+var buildHistoryFileName = targetDirectory + "/buildhistory.json";
+var buildHistoryJson = {table: {}};
+if (fs.existsSync(buildHistoryFileName)) {
+    buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
+//    for (var keyString in buildHistoryJson.table) {
+//        updatesFile.write("document.getElementById('" + keyString + "').innerHTML = '" + buildHistoryJson[keyString].value + "';\n");
+//        updatesFile.write("document.getElementById('" + keyString + "').style = '" + buildHistoryJson[keyString].style + "';\n");
+//    }
+}
+
+function storeJsonData(keyString, value, style) {
+//    updatesFile.write("document.getElementById('" + keyString + "').innerHTML = '" + buildHistoryJson[keyString].value + "';\n");
+//    updatesFile.write("document.getElementById('" + keyString + "').style = '" + buildHistoryJson[keyString].style + "';\n");
+//    buildHistoryJson.table[keyString].value = value;
+//    buildHistoryJson.table[keyString].style = style;
+    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+}
 
 function startResult() {
     resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}</style>\n");
+    resultsFile.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>\n");
     resultsFile.write("<div id='buildLabel'>Building...</div>\n");
     resultsFile.write("<div id='buildDate'></div>\n");
     resultsFile.write("<table id='buildTable'>\n");
@@ -81,62 +100,88 @@ function startResult() {
 
     resultsFile.write("<script>\n");
     resultsFile.write("function doUpdate() {\n");
+    resultsFile.write("$.getJSON('buildhistory.json', function(data) {\n");
+    resultsFile.write("console.log(data);\n");//data is the JSON string
+    resultsFile.write("for (var keyString in data.table) {\n");
+    resultsFile.write("document.getElementById(' + keyString + ').innerHTML = data.table[keyString].value ;\n");
+    resultsFile.write("document.getElementById(' + keyString + ').style = data.table[keyString].style;\n");
+    resultsFile.write("}\n");
+    resultsFile.write("updateTimer = window.setTimeout(doUpdate, 1000);\n");
+    resultsFile.write("});\n");
 //    resultsFile.write("<script  type='text/javascript' id='updateScript' src='updates.js'/>");
-    resultsFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
-    resultsFile.write("var updateScriptTag = document.getElementById('updateScript');\n");
-    resultsFile.write("if (updateScriptTag) headTag.removeChild(updateScriptTag);\n");
-    resultsFile.write("var scriptTag = document.createElement('script');\n");
-    resultsFile.write("scriptTag.type = 'text/javascript';\n");
-    resultsFile.write("scriptTag.id = 'updateScript';\n");
-    resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
-    resultsFile.write("headTag.appendChild(scriptTag);\n");
+//    resultsFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
+//    resultsFile.write("var updateScriptTag = document.getElementById('updateScript');\n");
+//    resultsFile.write("if (updateScriptTag) headTag.removeChild(updateScriptTag);\n");
+//    resultsFile.write("var scriptTag = document.createElement('script');\n");
+//    resultsFile.write("scriptTag.type = 'text/javascript';\n");
+//    resultsFile.write("scriptTag.id = 'updateScript';\n");
+//    resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
+//    resultsFile.write("headTag.appendChild(scriptTag);\n");
 //    resultsFile.write("document.getElementById('updateScript').src = 'updates.js?date='+ new Date().getTime();\n");
     resultsFile.write("}\n");
     resultsFile.write("var updateTimer = window.setTimeout(doUpdate, 1000);\n");
-    resultsFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
-    resultsFile.write("var scriptTag = document.createElement('script');\n");
-    resultsFile.write("scriptTag.type = 'text/javascript';\n");
-    resultsFile.write("scriptTag.id = 'updateScript';\n");
-    resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
-    resultsFile.write("headTag.appendChild(scriptTag);\n");
+//    resultsFile.write("var headTag = document.getElementsByTagName('head')[0];\n");
+//    resultsFile.write("var scriptTag = document.createElement('script');\n");
+//    resultsFile.write("scriptTag.type = 'text/javascript';\n");
+//    resultsFile.write("scriptTag.id = 'updateScript';\n");
+//    resultsFile.write("scriptTag.src = 'updates.js?date='+ new Date().getTime();\n");
+//    resultsFile.write("headTag.appendChild(scriptTag);\n");
     resultsFile.write("</script>\n");
-    updatesFile.write("updateTimer = window.setTimeout(doUpdate, 1000);\n");
+//    updatesFile.write("updateTimer = window.setTimeout(doUpdate, 1000);\n");
+    buildHistoryJson.building = true;
+    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
 
 function storeIsQueued(name) {
-    updatesFile.write("var experimentRow = document.getElementById('" + name + "_row');\n");
-    updatesFile.write("if (experimentRow) document.getElementById('buildTable').removeChild(experimentRow);\n");
-    updatesFile.write("var tableRow = document.createElement('tr');\n");
-    updatesFile.write("tableRow.id = '" + name + "_row';\n");
-    updatesFile.write("document.getElementById('buildTable').appendChild(tableRow);\n");
-    for (var column of ["_experiment", "_date", "_staging_web", "_staging_android", "_staging_desktop", "_staging_admin", "_production_web", "_production_android", "_production_desktop", "_production_admin"]) {
-        updatesFile.write("var tableCell = document.createElement('td');\n");
-        updatesFile.write("tableCell.id = '" + name + column + "';\n");
-        updatesFile.write("tableRow.appendChild(tableCell);\n");
-    }
-    updatesFile.write("document.getElementById('" + name + "_experiment').innerHTML = '" + name + "';\n");
-    updatesFile.write("document.getElementById('" + name + "_date').innerHTML = 'queued';\n");
+    buildHistoryJson.table[name] = {
+        "_experiment": {value: 'name', style: ''},
+        "_date": {value: 'queued', style: ''},
+        "_staging_web": {value: '', style: ''},
+        "_staging_android": {value: '', style: ''},
+        "_staging_desktop": {value: '', style: ''},
+        "_staging_admin": {value: '', style: ''},
+        "_production_web": {value: '', style: ''},
+        "_production_android": {value: '', style: ''},
+        "_production_desktop": {value: '', style: ''},
+        "_production_admin": {value: '', style: ''}
+    };
+//    for (var column of ["_experiment", "_date", "_staging_web", "_staging_android", "_staging_desktop", "_staging_admin", "_production_web", "_production_android", "_production_desktop", "_production_admin"]) {
+//        buildHistoryJson.table[name][column].value = '';
+//        buildHistoryJson.table[name][column].style = '';
+//    }
+//    buildHistoryJson.table[name]["_experiment"].value = name;
+//    buildHistoryJson.table[name]["_date"].value = 'queued';
+    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding) {
-    updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Building " + name + "';\n");
-    updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
-    updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').innerHTML = '" + message + "';\n");
-    updatesFile.write("document.getElementById('" + name + "_date').innerHTML = '" + new Date().toISOString() + "';\n");
+//    updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Building " + name + "';\n");
+//    updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
+//    updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').innerHTML = '" + message + "';\n");
+//    updatesFile.write("document.getElementById('" + name + "_date').innerHTML = '" + new Date().toISOString() + "';\n");
+    buildHistoryJson.table[name]["_date"].value = message;
+    buildHistoryJson.table[name]["_" + stage + "_" + type].value = 'background: #C3F3C3';
     if (isError) {
-        updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #F3C3C3';\n");
+        buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #F3C3C3';
     } else if (isBuilding) {
-        updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #C3C3F3';\n");
+        buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3C3F3';
     } else {
-        updatesFile.write("document.getElementById('" + name + "_" + stage + "_" + type + "').style='background: #C3F3C3';\n");
+        buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3F3C3';
     }
+//buildHistoryJson[name + "_" + stage + "_" + type+"_background"] = 'queued';
+//    storeJsonData();
+    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
 function stopUpdatingResults() {
-    updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Build process complete';\n");
-    updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
-    updatesFile.write("window.clearTimeout(updateTimer);\n");
+//    updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Build process complete';\n");
+//    updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
+//    updatesFile.write("window.clearTimeout(updateTimer);\n");
+    buildHistoryJson.building = false;
+    buildHistoryJson.buildLabel = 'Build process complete';
+    buildHistoryJson.buildDate = new Date().toISOString();
+    storeJsonData();
 }
 
 
@@ -411,7 +456,7 @@ function convertJsonToXml() {
         cwd: __dirname + "/ExperimentDesigner",
         settings: m2Settings
     });
-    mvnConvert.execute(['clean', 'package', 'exec:exec'], {
+    mvnConvert.execute(['package', 'exec:exec'], {
         'skipTests': true,
         'exec.executable': 'java',
         'exec.classpathScope': 'runtime',
