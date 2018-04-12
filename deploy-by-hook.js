@@ -157,7 +157,7 @@ function deployStagingGui(listing, currentEntry) {
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true);
-    mvngui.execute(['clean', 'install'], {
+    mvngui.execute(['clean', 'tomcat7:redeploy'], {
 //    mvngui.execute(['clean', 'gwt:run'], {
         'skipTests': true, '-pl': 'frinex-gui',
         'experiment.configuration.name': currentEntry.buildName,
@@ -204,7 +204,7 @@ function deployStagingAdmin(listing, currentEntry) {
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true);
-    mvnadmin.execute(['clean', 'install'], {
+    mvnadmin.execute(['clean', 'tomcat7:redeploy'], {
         'skipTests': true, '-pl': 'frinex-admin',
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
