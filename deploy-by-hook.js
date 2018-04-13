@@ -175,7 +175,7 @@ function deployStagingGui(listing, currentEntry) {
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="http://ems13.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="http://ems13.mpi.nl/' + currentEntry.buildName + 'TestingFrame.html">robot</a>', "staging", "web", false, false);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="http://ems13.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="http://ems13.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false);
 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
 //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
 //        console.log(targetDirectory);
