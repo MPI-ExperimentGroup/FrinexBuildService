@@ -43,16 +43,16 @@ mkdir /srv/target/processing
 
 while read oldrev newrev ref
 do
-    echo "<h2>$ref $oldrev $newrev </h2>" >> /srv/target/git-push-log.html
-    echo "<br/>" >> /srv/target/git-push-log.html
+    echo "$ref $oldrev $newrev <br/>" >> /srv/target/git-push-log.html
+#    echo "<br/>" >> /srv/target/git-push-log.html
     #git diff --name-only $oldrev $newrev
     echo "git log -1 : " >> /srv/target/git-push-log.html
     git log -1 --format="%an %ad" >> /srv/target/git-push-log.html
     echo "<br/>" >> /srv/target/git-push-log.html
     git diff --name-only $oldrev $newrev >> /srv/target/git-push-log.html
-    echo "<br/>" >> /srv/target/git-push-log.html
     cp $(git diff --name-only $oldrev $newrev) /srv/target/incoming/
-done
+   echo "<br/>" >> /srv/target/git-push-log.html
+ done
 
 pwd
 
