@@ -365,6 +365,9 @@ function buildFromListing() {
                 console.log(path.extname(filename));
                 if (path.extname(filename) !== ".xml") {
                     remainingFiles--;
+                } else if (path.parse(filename).name === "multiparticipant") {
+                    remainingFiles--;
+                    console.log("this script will not build multiparticipant without manual intervention");
                 } else {
                     storeIsQueued(path.parse(filename).name);
                     filename = path.resolve(processingDirectory, filename);
@@ -375,10 +378,10 @@ function buildFromListing() {
                         experimentDisplayName: path.parse(filename).name
                     });
                     remainingFiles--;
-                    if (remainingFiles <= 0) {
-                        console.log(JSON.stringify(listing));
-                        buildNextExperiment(listing);
-                    }
+                }
+                if (remainingFiles <= 0) {
+                    console.log(JSON.stringify(listing));
+                    buildNextExperiment(listing);
                 }
             });
         }
