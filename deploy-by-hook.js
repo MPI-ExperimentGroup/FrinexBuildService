@@ -50,6 +50,7 @@ const stagingGroupsSocketUrl = properties.get('staging.groupsSocketUrl');
 const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
+const listingJsonFiles = properties.get('settings.listingJsonFiles');
 
 var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755});
 
@@ -108,10 +109,14 @@ function startResult() {
 }
 
 
-function initialiseResult(name, message) {
+function initialiseResult(name, message, isError) {
+    var style = '';
+    if (isError) {
+        style = 'background: #F3C3C3';
+    }
     buildHistoryJson.table[name] = {
         "_experiment": {value: name, style: ''},
-        "_date": {value: message, style: ''},
+        "_date": {value: message, style: style},
         "_staging_web": {value: '', style: ''},
         "_staging_android": {value: '', style: ''},
         "_staging_desktop": {value: '', style: ''},
@@ -354,6 +359,14 @@ function buildNextExperiment(listing) {
 }
 
 function buildFromListing() {
+    var listingJsonArray = [];
+    for (var listingJson in listingJsonFiles.split(",")) {
+        if (fs.existsSync(listingJson)) {
+            var listingJsonData = JSON.parse(fs.readFileSync(listingJson, 'utf8'));
+            listingJsonArray.push(listingJsonData);
+        }
+    }
+
     fs.readdir(processingDirectory, function (error, list) {
         if (error) {
             console.error(error);
@@ -367,17 +380,34 @@ function buildFromListing() {
                     remainingFiles--;
                 } else if (path.parse(filename).name === "multiparticipant") {
                     remainingFiles--;
-                    initialiseResult(path.parse(filename).name, 'conflict');
+                    initialiseResult(path.parse(filename).name, 'disabled', true);
                     console.log("this script will not build multiparticipant without manual intervention");
                 } else {
-                    initialiseResult(path.parse(filename).name, 'queued');
+                    initialiseResult(path.parse(filename).name, 'queued', false);
                     filename = path.resolve(processingDirectory, filename);
                     console.log(filename);
-                    listing.push({
+                    var buildName = path.parse(filename).name;
+                    console.log(buildName);
+                    var foundCount = 0;
+                    var foundJson;
+                    for (var listingJson in listingJsonArray) {
+                        if (listingJson.buildName === buildName) {
+                            foundJson = listingJson;
+                            foundCount++;
+                        }
+                    }
+                    if (foundCount === 0) {
+                        listing.push({
 //                    configPath: path,
-                        buildName: path.parse(filename).name,
-                        experimentDisplayName: path.parse(filename).name
-                    });
+                            buildName: path.parse(filename).name,
+                            experimentDisplayName: path.parse(filename).name
+                        });
+                    } else if (foundCount === 1) {
+                        listing.push(foundJson);
+                    } else {
+                        initialiseResult(path.parse(filename).name, 'conflict', true);
+                        console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
+                    }
                     remainingFiles--;
                 }
                 if (remainingFiles <= 0) {
