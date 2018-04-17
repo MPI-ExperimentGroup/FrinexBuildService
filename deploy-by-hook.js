@@ -108,10 +108,10 @@ function startResult() {
 }
 
 
-function storeIsQueued(name) {
+function initialiseResult(name, message) {
     buildHistoryJson.table[name] = {
         "_experiment": {value: name, style: ''},
-        "_date": {value: 'queued', style: ''},
+        "_date": {value: message, style: ''},
         "_staging_web": {value: '', style: ''},
         "_staging_android": {value: '', style: ''},
         "_staging_desktop": {value: '', style: ''},
@@ -367,9 +367,10 @@ function buildFromListing() {
                     remainingFiles--;
                 } else if (path.parse(filename).name === "multiparticipant") {
                     remainingFiles--;
+                    initialiseResult(path.parse(filename).name, 'conflict');
                     console.log("this script will not build multiparticipant without manual intervention");
                 } else {
-                    storeIsQueued(path.parse(filename).name);
+                    initialiseResult(path.parse(filename).name, 'queued');
                     filename = path.resolve(processingDirectory, filename);
                     console.log(filename);
                     listing.push({
