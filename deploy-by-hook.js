@@ -436,6 +436,8 @@ function moveIncomingToProcessing() {
         } else {
             var remainingFiles = list.length;
             list.forEach(function (filename) {
+                console.log('incoming: ' + filename);
+                resultsFile.write("<div>incoming: " + filename + "</div>");
                 incomingFile = path.resolve(incomingDirectory, filename);
                 if (path.extname(filename) === ".json") {
                     fs.unlinkSync(incomingFile);
@@ -445,7 +447,8 @@ function moveIncomingToProcessing() {
                         if (error) {
                             throw error;
                         }
-                        console.log('moved incoming: ' + filename);
+                        console.log('moved from incoming to processing: ' + filename);
+                        resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
                     });
                 }
                 remainingFiles--;
