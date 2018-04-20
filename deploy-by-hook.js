@@ -190,8 +190,12 @@ function deployStagingGui(listing, currentEntry) {
 //        console.log(targetDirectory);
 //        console.log(value);
         // build cordova 
-        buildApk(currentEntry.buildName, "staging");
-        buildElectron(currentEntry.buildName, "staging");
+        if (currentEntry.isAndroid || currentEntry.isiOS) {
+            buildApk(currentEntry.buildName, "staging");
+        }
+        if (currentEntry.isDesktop) {
+            buildElectron(currentEntry.buildName, "staging");
+        }
         deployStagingAdmin(listing, currentEntry);
 //        buildNextExperiment(listing);
     }, function (reason) {
@@ -229,8 +233,11 @@ function deployStagingAdmin(listing, currentEntry) {
         console.log("frinex-admin finished");
 //        storeResult(currentEntry.buildName, "deployed", "staging", "admin", false, false);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="http://ems13.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "staging", "admin", false, false, true);
-        deployProductionGui(listing, currentEntry);
-//        buildNextExperiment(listing);
+        if (currentEntry.state === "production") {
+            deployProductionGui(listing, currentEntry);
+        } else {
+            buildNextExperiment(listing);
+        }
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin staging failed");
@@ -280,8 +287,12 @@ function deployProductionGui(listing, currentEntry) {
                 console.log("frinex-gui production finished");
                 storeResult(currentEntry.buildName, "skipped", "production", "web", false, false, true);
 //                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="http://ems12.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false);
-                buildApk(currentEntry.buildName, "production");
-                buildElectron(currentEntry.buildName, "production");
+                if (currentEntry.isAndroid || currentEntry.isiOS) {
+                    buildApk(currentEntry.buildName, "production");
+                }
+                if (currentEntry.isDesktop) {
+                    buildElectron(currentEntry.buildName, "production");
+                }
                 deployProductionAdmin(listing, currentEntry);
 //                buildNextExperiment(listing);
             }, function (reason) {
@@ -353,7 +364,11 @@ function buildNextExperiment(listing) {
 //        console.log(currentEntry);
 //                console.log("starting generate stimulus");
 //                execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
-        deployStagingGui(listing, currentEntry);
+        if (currentEntry.state === "staging" || currentEntry.state === "production") {
+            deployStagingGui(listing, currentEntry);
+        } else {
+            buildNextExperiment(listing);
+        }
     } else {
         console.log("build process from listing completed");
         stopUpdatingResults();
@@ -404,15 +419,40 @@ function buildFromListing() {
                         }
                     }
                     if (foundCount === 0) {
-                        listing.push({
-//                    configPath: path,
-                            buildName: path.parse(filename).name,
-                            experimentDisplayName: path.parse(filename).name
-                        });
+                        listing.push(
+                                {
+                                    "publishDate": null,
+                                    "expiryDate": null,
+                                    "isWebApp": true,
+                                    "isDesktop": false,
+                                    "isiOS": false,
+                                    "isAndroid": false,
+                                    "buildName": path.parse(filename).name,
+                                    "state": "staging",
+                                    "defaultScale": 1.0,
+                                    "experimentInternalName": path.parse(filename).name,
+                                    "experimentDisplayName": path.parse(filename).name
+                                });
+                        storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
                     } else if (foundCount === 1) {
                         listing.push(foundJson);
-                        if (foundJson.isAndroid) { // todo: add other cases
-                            storeResult(foundJson.buildName, 'queued', "staging", "android", false, false, false);
+                        if (foundJson.state === "staging" || foundJson.state === "production") {
+                            storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
+                            if (foundJson.isAndroid) {
+                                storeResult(foundJson.buildName, 'queued', "staging", "android", false, false, false);
+                            }
+                            if (foundJson.isDesktop) {
+                                storeResult(foundJson.buildName, 'queued', "staging", "desktop", false, false, false);
+                            }
+                        }
+                        if (foundJson.state === "production") {
+                            storeResult(foundJson.buildName, 'queued', "production", "web", false, false, false);
+                            if (foundJson.isAndroid) {
+                                storeResult(foundJson.buildName, 'queued', "production", "android", false, false, false);
+                            }
+                            if (foundJson.isDesktop) {
+                                storeResult(foundJson.buildName, 'queued', "production", "desktop", false, false, false);
+                            }
                         }
                     } else {
                         initialiseResult(path.parse(filename).name, 'conflict', true);
