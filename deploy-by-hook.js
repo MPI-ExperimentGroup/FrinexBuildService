@@ -163,6 +163,7 @@ function deployStagingGui(listing, currentEntry) {
         cwd: __dirname + "/gwt-cordova",
         settings: m2Settings
     });
+    fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
@@ -214,6 +215,7 @@ function deployStagingAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
+    fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt");
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true, false);
@@ -262,6 +264,7 @@ function deployProductionGui(listing, currentEntry) {
                 cwd: __dirname + "/gwt-cordova",
                 settings: m2Settings
             });
+            fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt");
             var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
             process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
             mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:deploy' : 'package'], {
@@ -311,6 +314,7 @@ function deployProductionAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
+    fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt");
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true, false);
