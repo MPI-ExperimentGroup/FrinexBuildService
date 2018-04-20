@@ -166,7 +166,7 @@ function deployStagingGui(listing, currentEntry) {
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
-    mvngui.execute(['clean', 'tomcat7:redeploy'], {
+    mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:redeploy' : 'package'], {
 //    mvngui.execute(['clean', 'gwt:run'], {
         'skipTests': true, '-pl': 'frinex-gui',
         'experiment.configuration.name': currentEntry.buildName,
@@ -264,7 +264,7 @@ function deployProductionGui(listing, currentEntry) {
             });
             var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
             process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
-            mvngui.execute(['clean', 'install'], {
+            mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:deploy' : 'package'], {
                 'skipTests': true, '-pl': 'frinex-gui',
 //                    'altDeploymentRepository.snapshot-repo.default.file': '~/Desktop/FrinexAPKs/',
 //                    'altDeploymentRepository': 'default:file:file://~/Desktop/FrinexAPKs/',
@@ -433,7 +433,7 @@ function buildFromListing() {
                                     "experimentInternalName": path.parse(filename).name,
                                     "experimentDisplayName": path.parse(filename).name
                                 });
-                        storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
+                        storeResult(path.parse(filename).name, 'queued', "staging", "web", false, false, false);
                     } else if (foundCount === 1) {
                         listing.push(foundJson);
                         if (foundJson.state === "staging" || foundJson.state === "production") {
