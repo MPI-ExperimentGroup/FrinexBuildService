@@ -138,6 +138,11 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
     buildHistoryJson.table[name]["_" + stage + "_" + type].value = message;
     if (isError) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #F3C3C3';
+        for (var index in buildHistoryJson.table[name]) {
+            if (buildHistoryJson.table[name][index].value === "queued") {
+                buildHistoryJson.table[name][index].value = "skipped";
+            }
+        }
     } else if (isBuilding) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3C3F3';
     } else if (isDone) {
@@ -163,7 +168,9 @@ function deployStagingGui(listing, currentEntry) {
         cwd: __dirname + "/gwt-cordova",
         settings: m2Settings
     });
-    fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt")) {
+        fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
+    }
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
@@ -215,7 +222,9 @@ function deployStagingAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
-    fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt");
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt")) {
+        fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt");
+    }
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true, false);
@@ -264,7 +273,9 @@ function deployProductionGui(listing, currentEntry) {
                 cwd: __dirname + "/gwt-cordova",
                 settings: m2Settings
             });
-            fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt");
+            if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt")) {
+                fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt");
+            }
             var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
             process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
             mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:deploy' : 'package'], {
@@ -289,7 +300,7 @@ function deployProductionGui(listing, currentEntry) {
             }).then(function (value) {
                 console.log("frinex-gui production finished");
 //                storeResult(currentEntry.buildName, "skipped", "production", "web", false, false, true);
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="http://ems12.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="http://ems12.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
                 if (currentEntry.isAndroid || currentEntry.isiOS) {
                     buildApk(currentEntry.buildName, "production");
                 }
@@ -314,7 +325,9 @@ function deployProductionAdmin(listing, currentEntry) {
         cwd: __dirname + "/registration",
         settings: m2Settings
     });
-    fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt");
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt")) {
+        fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt");
+    }
     var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt", {mode: 0o755});
     process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true, false);
@@ -334,7 +347,7 @@ function deployProductionAdmin(listing, currentEntry) {
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin production finished");
 //        storeResult(currentEntry.buildName, "skipped", "production", "admin", false, false, true);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="http://ems12.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "production", "admin", false, false);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="http://ems12.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "production", "admin", false, false, true);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
@@ -439,8 +452,22 @@ function buildFromListing() {
                                 });
                         storeResult(path.parse(filename).name, 'queued', "staging", "web", false, false, false);
                         storeResult(path.parse(filename).name, 'queued', "staging", "admin", false, false, false);
+                        storeResult(path.parse(filename).name, '', "staging", "android", false, false, false);
+                        storeResult(path.parse(filename).name, '', "staging", "desktop", false, false, false);
+                        storeResult(path.parse(filename).name, '', "production", "web", false, false, false);
+                        storeResult(path.parse(filename).name, '', "production", "admin", false, false, false);
+                        storeResult(path.parse(filename).name, '', "production", "android", false, false, false);
+                        storeResult(path.parse(filename).name, '', "production", "desktop", false, false, false);
                     } else if (foundCount === 1) {
                         listing.push(foundJson);
+                        storeResult(path.parse(filename).name, '', "staging", "web", false, false, false);
+                        storeResult(path.parse(filename).name, '', "staging", "admin", false, false, false);
+                        storeResult(path.parse(filename).name, '', "staging", "android", false, false, false);
+                        storeResult(path.parse(filename).name, '', "staging", "desktop", false, false, false);
+                        storeResult(path.parse(filename).name, '', "production", "web", false, false, false);
+                        storeResult(path.parse(filename).name, '', "production", "admin", false, false, false);
+                        storeResult(path.parse(filename).name, '', "production", "android", false, false, false);
+                        storeResult(path.parse(filename).name, '', "production", "desktop", false, false, false);
                         if (foundJson.state === "staging" || foundJson.state === "production") {
                             storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
                             storeResult(foundJson.buildName, 'queued', "staging", "admin", false, false, false);
@@ -487,7 +514,9 @@ function moveIncomingToProcessing() {
                 resultsFile.write("<div>incoming: " + filename + "</div>");
                 incomingFile = path.resolve(incomingDirectory, filename);
                 if (path.extname(filename) === ".json") {
-                    fs.unlinkSync(incomingFile);
+                    if (fs.existsSync(incomingFile)) {
+                        fs.unlinkSync(incomingFile);
+                    }
                 } else if (path.extname(filename) === ".xml") {
                     filename = path.resolve(processingDirectory, filename);
                     fs.rename(incomingFile, filename, (error) => {
@@ -540,8 +569,10 @@ function deleteOldProcessing() {
             } else {
                 list.forEach(function (filename) {
                     processedFile = path.resolve(processingDirectory, filename);
-                    fs.unlinkSync(processedFile);
-                    console.log('deleted processed file: ' + processedFile);
+                    if (fs.existsSync(processedFile)) {
+                        fs.unlinkSync(processedFile);
+                        console.log('deleted processed file: ' + processedFile);
+                    }
                     remainingFiles--;
                     if (remainingFiles <= 0) {
                         convertJsonToXml();
