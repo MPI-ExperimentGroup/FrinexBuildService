@@ -102,7 +102,7 @@ function startResult() {
     resultsFile.write("if(data.building){\n");
     resultsFile.write("updateTimer = window.setTimeout(doUpdate, 1000);\n");
     resultsFile.write("} else {\n");
-    resultsFile.write("updateTimer = window.setTimeout(doUpdate, 100000);\n");
+    resultsFile.write("updateTimer = window.setTimeout(doUpdate, 10000);\n");
     resultsFile.write("}\n");
     resultsFile.write("});\n");
     resultsFile.write("}\n");
