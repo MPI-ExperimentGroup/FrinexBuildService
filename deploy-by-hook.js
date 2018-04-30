@@ -181,7 +181,7 @@ function deployStagingGui(listing, currentEntry) {
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
         'experiment.configuration.path': processingDirectory,
-        'versionCheck.allowSnapshots': 'false',
+        'versionCheck.allowSnapshots': 'true',
         'versionCheck.buildType': 'stable',
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl,
@@ -234,7 +234,7 @@ function deployStagingAdmin(listing, currentEntry) {
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
         'experiment.configuration.path': processingDirectory,
-        'versionCheck.allowSnapshots': 'false',
+        'versionCheck.allowSnapshots': 'true',
         'versionCheck.buildType': 'stable',
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl
@@ -288,7 +288,7 @@ function deployProductionGui(listing, currentEntry) {
                 'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                 'experiment.webservice': configServer,
                 'experiment.configuration.path': processingDirectory,
-                'versionCheck.allowSnapshots': 'false',
+                'versionCheck.allowSnapshots': 'true',
                 'versionCheck.buildType': 'stable',
                 'experiment.destinationServer': productionServer,
                 'experiment.destinationServerUrl': productionServerUrl,
@@ -338,7 +338,7 @@ function deployProductionAdmin(listing, currentEntry) {
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
         'experiment.configuration.path': processingDirectory,
-        'versionCheck.allowSnapshots': 'false',
+        'versionCheck.allowSnapshots': 'true',
         'versionCheck.buildType': 'stable',
         'experiment.destinationServer': productionServer,
         'experiment.destinationServerUrl': productionServerUrl
@@ -558,6 +558,8 @@ function convertJsonToXml() {
         'skipTests': true,
         'exec.executable': 'java',
         'exec.classpathScope': 'runtime',
+        'versionCheck.allowSnapshots': 'true',
+        'versionCheck.buildType': 'stable',
         'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + incomingDirectory + ' ' + incomingDirectory
     }).then(function (value) {
         console.log("convert JSON to XML finished");
