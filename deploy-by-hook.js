@@ -77,7 +77,7 @@ function startResult() {
     resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
     resultsFile.write("<script>\n");
     resultsFile.write("function doUpdate() {\n");
-    resultsFile.write("$.getJSON('buildhistory.json', function(data) {\n");
+    resultsFile.write("$.getJSON('buildhistory.json', function(data) {\n"); // todo: perhaps add a timestamp here to prevent cache
 //    resultsFile.write("console.log(data);\n");
     resultsFile.write("for (var keyString in data.table) {\n");
 //    resultsFile.write("console.log(keyString);\n");
@@ -171,8 +171,8 @@ function deployStagingGui(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
     }
-    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
-    process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
+    var mavenLogSG = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
+    process.stdout.write = process.stderr.write = mavenLogSG.write.bind(mavenLogSG);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
     mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:redeploy' : 'package'], {
 //    mvngui.execute(['clean', 'gwt:run'], {
@@ -225,8 +225,8 @@ function deployStagingAdmin(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt");
     }
-    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", {mode: 0o755});
-    process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
+    var mavenLogSA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", {mode: 0o755});
+    process.stdout.write = process.stderr.write = mavenLogSA.write.bind(mavenLogSA);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true, false);
     mvnadmin.execute(['clean', 'tomcat7:redeploy'], {
         'skipTests': true, '-pl': 'frinex-admin',
@@ -276,8 +276,8 @@ function deployProductionGui(listing, currentEntry) {
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt")) {
                 fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt");
             }
-            var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
-            process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
+            var mavenLogPG = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
+            process.stdout.write = process.stderr.write = mavenLogPG.write.bind(mavenLogPG);
             mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:deploy' : 'package'], {
                 'skipTests': true, '-pl': 'frinex-gui',
 //                    'altDeploymentRepository.snapshot-repo.default.file': '~/Desktop/FrinexAPKs/',
@@ -328,8 +328,8 @@ function deployProductionAdmin(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt");
     }
-    var mavenLog = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt", {mode: 0o755});
-    process.stdout.write = process.stderr.write = mavenLog.write.bind(mavenLog);
+    var mavenLogPA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt", {mode: 0o755});
+    process.stdout.write = process.stderr.write = mavenLogPA.write.bind(mavenLogPA);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true, false);
     mvnadmin.execute(['clean', 'tomcat7:deploy'], {
         'skipTests': true, '-pl': 'frinex-admin',
@@ -519,17 +519,13 @@ function moveIncomingToProcessing() {
                     }
                 } else if (path.extname(filename) === ".xml") {
                     filename = path.resolve(processingDirectory, filename);
-                    fs.rename(incomingFile, filename, (error) => {
-                        if (error) {
-                            throw error;
-                        }
-                        console.log('moved from incoming to processing: ' + filename);
-                        resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
-                    });
+                    fs.renameSync(incomingFile, filename);
+                    console.log('moved from incoming to processing: ' + filename);
+                    resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
                 }
                 remainingFiles--;
                 if (remainingFiles <= 0) {
-                    // when not files are found in processing, this will not be called and the script will terminate, until called again by GIT
+                    // when no files are found in processing, this will not be called and the script will terminate, until called again by GIT
                     buildFromListing();
                 }
             });
