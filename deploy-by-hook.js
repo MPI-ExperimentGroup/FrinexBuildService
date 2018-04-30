@@ -513,15 +513,31 @@ function moveIncomingToProcessing() {
                 console.log('incoming: ' + filename);
                 resultsFile.write("<div>incoming: " + filename + "</div>");
                 incomingFile = path.resolve(incomingDirectory, filename);
-                if (path.extname(filename) === ".json") {
-                    if (fs.existsSync(incomingFile)) {
-                        fs.unlinkSync(incomingFile);
+                // if (path.extname(filename) === ".json") 
+                if (path.extname(filename) === ".xml") {
+                    var baseName = filename.substring(0, filename.length - 4);
+                    var mavenLogPathSG = targetDirectory + "/" + baseName + "_staging.txt";
+                    var mavenLogPathSA = targetDirectory + "/" + baseName + "_staging_admin.txt";
+                    var mavenLogPathPG = targetDirectory + "/" + baseName + "_production.txt";
+                    var mavenLogPathPA = targetDirectory + "/" + baseName + "_production_admin.txt";
+                    if (fs.existsSync(mavenLogPathSG)) {
+                        fs.unlinkSync(mavenLogPathSG);
                     }
-                } else if (path.extname(filename) === ".xml") {
+                    if (fs.existsSync(mavenLogPathSA)) {
+                        fs.unlinkSync(mavenLogPathSA);
+                    }
+                    if (fs.existsSync(mavenLogPathPG)) {
+                        fs.unlinkSync(mavenLogPathPG);
+                    }
+                    if (fs.existsSync(mavenLogPathPA)) {
+                        fs.unlinkSync(mavenLogPathPA);
+                    }
                     filename = path.resolve(processingDirectory, filename);
                     fs.renameSync(incomingFile, filename);
                     console.log('moved from incoming to processing: ' + filename);
                     resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                } else if (fs.existsSync(incomingFile)) {
+                    fs.unlinkSync(incomingFile);
                 }
                 remainingFiles--;
                 if (remainingFiles <= 0) {
