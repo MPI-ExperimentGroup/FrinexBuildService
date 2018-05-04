@@ -77,7 +77,7 @@ function startResult() {
     resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
     resultsFile.write("<script>\n");
     resultsFile.write("function doUpdate() {\n");
-    resultsFile.write("$.getJSON('buildhistory.json', function(data) {\n"); // todo: perhaps add a timestamp here to prevent cache
+    resultsFile.write("$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
 //    resultsFile.write("console.log(data);\n");
     resultsFile.write("for (var keyString in data.table) {\n");
 //    resultsFile.write("console.log(keyString);\n");
