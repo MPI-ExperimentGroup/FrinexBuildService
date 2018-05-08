@@ -134,7 +134,7 @@ function initialiseResult(name, message, isError) {
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
-    buildHistoryJson.table[name]["_date"].value = new Date().toISOString();
+    buildHistoryJson.table[name]["_date"].value = '<a href="' + name + '.xml">' + new Date().toISOString() + '</a>';
     buildHistoryJson.table[name]["_" + stage + "_" + type].value = message;
     if (isError) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #F3C3C3';
@@ -533,6 +533,8 @@ function moveIncomingToProcessing() {
                         fs.unlinkSync(mavenLogPathPA);
                     }
                     filename = path.resolve(processingDirectory, filename);
+                    // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
+                    fs.copyFileSync(incomingFile, path.resolve(targetDirectory, filename));
                     fs.renameSync(incomingFile, filename);
                     console.log('moved from incoming to processing: ' + filename);
                     resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
