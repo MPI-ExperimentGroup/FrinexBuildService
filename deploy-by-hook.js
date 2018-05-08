@@ -512,7 +512,7 @@ function moveIncomingToProcessing() {
             list.forEach(function (filename) {
                 console.log('incoming: ' + filename);
                 resultsFile.write("<div>incoming: " + filename + "</div>");
-                incomingFile = path.resolve(incomingDirectory, filename);
+                var incomingFile = path.resolve(incomingDirectory, filename);
                 // if (path.extname(filename) === ".json") 
                 if (path.extname(filename) === ".xml") {
                     var baseName = filename.substring(0, filename.length - 4);
@@ -534,7 +534,9 @@ function moveIncomingToProcessing() {
                     }
                     filename = path.resolve(processingDirectory, filename);
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
-                    fs.copyFileSync(incomingFile, path.resolve(targetDirectory, filename));
+                    var configStoreFile = path.resolve(targetDirectory, filename);
+                    console.log('configStoreFile: ' + configStoreFile);
+                    fs.copyFileSync(incomingFile, configStoreFile);
                     fs.renameSync(incomingFile, filename);
                     console.log('moved from incoming to processing: ' + filename);
                     resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
