@@ -532,13 +532,13 @@ function moveIncomingToProcessing() {
                     if (fs.existsSync(mavenLogPathPA)) {
                         fs.unlinkSync(mavenLogPathPA);
                     }
-                    filename = path.resolve(processingDirectory, filename);
+                    var processingName = path.resolve(processingDirectory, filename);
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
                     var configStoreFile = path.resolve(targetDirectory, filename);
                     console.log('configStoreFile: ' + configStoreFile);
 //                    fs.copyFileSync(incomingFile, configStoreFile);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
-                    fs.renameSync(incomingFile, filename);
+                    fs.renameSync(incomingFile, processingName);
                     console.log('moved from incoming to processing: ' + filename);
                     resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
                 } else if (fs.existsSync(incomingFile)) {
