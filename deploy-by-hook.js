@@ -536,12 +536,8 @@ function moveIncomingToProcessing() {
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
                     var configStoreFile = path.resolve(targetDirectory, filename);
                     console.log('configStoreFile: ' + configStoreFile);
-                    fs.copyFile(incomingFile, configStoreFile, (err) => {
-                        if (err) {
-                            throw err;
-                        }
-                        console.log('copied to: ' + configStoreFile);
-                    });
+//                    fs.copyFileSync(incomingFile, configStoreFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
                     fs.renameSync(incomingFile, filename);
                     console.log('moved from incoming to processing: ' + filename);
                     resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
