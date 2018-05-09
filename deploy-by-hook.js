@@ -541,6 +541,11 @@ function moveIncomingToProcessing() {
                     fs.renameSync(incomingFile, processingName);
                     console.log('moved from incoming to processing: ' + filename);
                     resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                } else if (path.extname(filename) === ".xsd") {
+                    // place the generated XSD file for use in XML editors
+                    var targetName = path.resolve(targetDirectory, filename);
+                    console.log('moved XSD from incoming to target: ' + filename);
+                    fs.renameSync(incomingFile, targetName);
                 } else if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
