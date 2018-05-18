@@ -538,8 +538,8 @@ function moveIncomingToProcessing() {
                     var configStoreFile = path.resolve(targetDirectory, filename);
                     console.log('configStoreFile: ' + configStoreFile);
 //                    fs.copyFileSync(incomingFile, configStoreFile);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
                     fs.renameSync(incomingFile, processingName);
+                    fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
                     console.log('moved from incoming to processing: ' + filename);
                     resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
                 } else if (path.extname(filename) === ".xsd") {
