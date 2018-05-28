@@ -433,9 +433,9 @@ function buildFromListing() {
                     var baseName = filename.substring(0, filename.length - 4);
                     var schemaErrorPath = path.resolve(processingDirectory, baseName + "_schemaerror.txt");
                     if (fs.existsSync(schemaErrorPath)) {
-                        storeResult(currentEntry.buildName, '<a href="' + baseName + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
+                        storeResult(path.parse(filename).name, '<a href="' + baseName + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
                     } else {
-                        storeResult(currentEntry.buildName, 'passed', "validation", "xsd", false, false, false);
+                        storeResult(path.parse(filename).name, 'passed', "validation", "xsd", false, false, false);
                         var foundCount = 0;
                         var foundJson;
                         for (var index in listingJsonArray) {
