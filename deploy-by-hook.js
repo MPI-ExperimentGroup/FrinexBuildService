@@ -70,7 +70,7 @@ function startResult() {
     resultsFile.write("<div id='buildLabel'>Building...</div>\n");
     resultsFile.write("<div id='buildDate'></div>\n");
     resultsFile.write("<table id='buildTable'>\n");
-    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
+    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>XML validation</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
     resultsFile.write("</table>\n");
     resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
     resultsFile.write("<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
@@ -123,6 +123,7 @@ function initialiseResult(name, message, isError) {
         "_experiment": {value: name, style: ''},
         "_date": {value: message, style: style},
         "_staging_web": {value: '', style: ''},
+        "_validation_xsd": {value: '', style: ''},
         "_staging_android": {value: '', style: ''},
         "_staging_desktop": {value: '', style: ''},
         "_staging_admin": {value: '', style: ''},
@@ -428,70 +429,78 @@ function buildFromListing() {
                     console.log(filename);
                     var buildName = path.parse(filename).name;
                     console.log(buildName);
-                    var foundCount = 0;
-                    var foundJson;
-                    for (var index in listingJsonArray) {
-                        if (listingJsonArray[index].buildName === buildName) {
-                            foundJson = listingJsonArray[index];
-                            foundCount++;
-                        }
-                    }
-                    if (foundCount === 0) {
-                        listing.push(
-                                {
-                                    "publishDate": null,
-                                    "expiryDate": null,
-                                    "isWebApp": true,
-                                    "isDesktop": false,
-                                    "isiOS": false,
-                                    "isAndroid": false,
-                                    "buildName": path.parse(filename).name,
-                                    "state": "staging",
-                                    "defaultScale": 1.0,
-                                    "experimentInternalName": path.parse(filename).name,
-                                    "experimentDisplayName": path.parse(filename).name
-                                });
-                        storeResult(path.parse(filename).name, 'queued', "staging", "web", false, false, false);
-                        storeResult(path.parse(filename).name, 'queued', "staging", "admin", false, false, false);
-                        storeResult(path.parse(filename).name, '', "staging", "android", false, false, false);
-                        storeResult(path.parse(filename).name, '', "staging", "desktop", false, false, false);
-                        storeResult(path.parse(filename).name, '', "production", "web", false, false, false);
-                        storeResult(path.parse(filename).name, '', "production", "admin", false, false, false);
-                        storeResult(path.parse(filename).name, '', "production", "android", false, false, false);
-                        storeResult(path.parse(filename).name, '', "production", "desktop", false, false, false);
-                    } else if (foundCount === 1) {
-                        listing.push(foundJson);
-                        storeResult(path.parse(filename).name, '', "staging", "web", false, false, false);
-                        storeResult(path.parse(filename).name, '', "staging", "admin", false, false, false);
-                        storeResult(path.parse(filename).name, '', "staging", "android", false, false, false);
-                        storeResult(path.parse(filename).name, '', "staging", "desktop", false, false, false);
-                        storeResult(path.parse(filename).name, '', "production", "web", false, false, false);
-                        storeResult(path.parse(filename).name, '', "production", "admin", false, false, false);
-                        storeResult(path.parse(filename).name, '', "production", "android", false, false, false);
-                        storeResult(path.parse(filename).name, '', "production", "desktop", false, false, false);
-                        if (foundJson.state === "staging" || foundJson.state === "production") {
-                            storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
-                            storeResult(foundJson.buildName, 'queued', "staging", "admin", false, false, false);
-                            if (foundJson.isAndroid) {
-                                storeResult(foundJson.buildName, 'queued', "staging", "android", false, false, false);
-                            }
-                            if (foundJson.isDesktop) {
-                                storeResult(foundJson.buildName, 'queued', "staging", "desktop", false, false, false);
-                            }
-                        }
-                        if (foundJson.state === "production") {
-                            storeResult(foundJson.buildName, 'queued', "production", "web", false, false, false);
-                            storeResult(foundJson.buildName, 'queued', "production", "admin", false, false, false);
-                            if (foundJson.isAndroid) {
-                                storeResult(foundJson.buildName, 'queued', "production", "android", false, false, false);
-                            }
-                            if (foundJson.isDesktop) {
-                                storeResult(foundJson.buildName, 'queued', "production", "desktop", false, false, false);
-                            }
-                        }
+
+                    var baseName = filename.substring(0, filename.length - 4);
+                    var schemaErrorPath = path.resolve(processingDirectory, baseName + "_schemaerror.txt");
+                    if (fs.existsSync(schemaErrorPath)) {
+                        storeResult(currentEntry.buildName, '<a href="' + baseName + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
                     } else {
-                        initialiseResult(path.parse(filename).name, 'conflict', true);
-                        console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
+                        storeResult(currentEntry.buildName, 'passed', "validation", "xsd", false, false, false);
+                        var foundCount = 0;
+                        var foundJson;
+                        for (var index in listingJsonArray) {
+                            if (listingJsonArray[index].buildName === buildName) {
+                                foundJson = listingJsonArray[index];
+                                foundCount++;
+                            }
+                        }
+                        if (foundCount === 0) {
+                            listing.push(
+                                    {
+                                        "publishDate": null,
+                                        "expiryDate": null,
+                                        "isWebApp": true,
+                                        "isDesktop": false,
+                                        "isiOS": false,
+                                        "isAndroid": false,
+                                        "buildName": path.parse(filename).name,
+                                        "state": "staging",
+                                        "defaultScale": 1.0,
+                                        "experimentInternalName": path.parse(filename).name,
+                                        "experimentDisplayName": path.parse(filename).name
+                                    });
+                            storeResult(path.parse(filename).name, 'queued', "staging", "web", false, false, false);
+                            storeResult(path.parse(filename).name, 'queued', "staging", "admin", false, false, false);
+                            storeResult(path.parse(filename).name, '', "staging", "android", false, false, false);
+                            storeResult(path.parse(filename).name, '', "staging", "desktop", false, false, false);
+                            storeResult(path.parse(filename).name, '', "production", "web", false, false, false);
+                            storeResult(path.parse(filename).name, '', "production", "admin", false, false, false);
+                            storeResult(path.parse(filename).name, '', "production", "android", false, false, false);
+                            storeResult(path.parse(filename).name, '', "production", "desktop", false, false, false);
+                        } else if (foundCount === 1) {
+                            listing.push(foundJson);
+                            storeResult(path.parse(filename).name, '', "staging", "web", false, false, false);
+                            storeResult(path.parse(filename).name, '', "staging", "admin", false, false, false);
+                            storeResult(path.parse(filename).name, '', "staging", "android", false, false, false);
+                            storeResult(path.parse(filename).name, '', "staging", "desktop", false, false, false);
+                            storeResult(path.parse(filename).name, '', "production", "web", false, false, false);
+                            storeResult(path.parse(filename).name, '', "production", "admin", false, false, false);
+                            storeResult(path.parse(filename).name, '', "production", "android", false, false, false);
+                            storeResult(path.parse(filename).name, '', "production", "desktop", false, false, false);
+                            if (foundJson.state === "staging" || foundJson.state === "production") {
+                                storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
+                                storeResult(foundJson.buildName, 'queued', "staging", "admin", false, false, false);
+                                if (foundJson.isAndroid) {
+                                    storeResult(foundJson.buildName, 'queued', "staging", "android", false, false, false);
+                                }
+                                if (foundJson.isDesktop) {
+                                    storeResult(foundJson.buildName, 'queued', "staging", "desktop", false, false, false);
+                                }
+                            }
+                            if (foundJson.state === "production") {
+                                storeResult(foundJson.buildName, 'queued', "production", "web", false, false, false);
+                                storeResult(foundJson.buildName, 'queued', "production", "admin", false, false, false);
+                                if (foundJson.isAndroid) {
+                                    storeResult(foundJson.buildName, 'queued', "production", "android", false, false, false);
+                                }
+                                if (foundJson.isDesktop) {
+                                    storeResult(foundJson.buildName, 'queued', "production", "desktop", false, false, false);
+                                }
+                            }
+                        } else {
+                            initialiseResult(path.parse(filename).name, 'conflict', true);
+                            console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
+                        }
                     }
                     remainingFiles--;
                 }
@@ -547,6 +556,13 @@ function moveIncomingToProcessing() {
                     var targetName = path.resolve(targetDirectory, filename);
                     console.log('moved XSD from incoming to target: ' + filename);
                     fs.renameSync(incomingFile, targetName);
+                } else if (filename === baseName + "_schemaerror.txt") {
+                    var processingName = path.resolve(processingDirectory, filename);
+                    fs.renameSync(incomingFile, processingName);
+                    var configErrorFile = path.resolve(targetDirectory, filename);
+                    fs.createReadStream(processingName).pipe(fs.createWriteStream(configErrorFile));
+                    console.log('moved from incoming to processing: ' + filename);
+                    resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
                 } else if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
