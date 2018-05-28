@@ -556,7 +556,7 @@ function moveIncomingToProcessing() {
                     var targetName = path.resolve(targetDirectory, filename);
                     console.log('moved XSD from incoming to target: ' + filename);
                     fs.renameSync(incomingFile, targetName);
-                } else if (filename === baseName + "_schemaerror.txt") {
+                } else if (filename.endsWith("_schemaerror.txt")) {
                     var processingName = path.resolve(processingDirectory, filename);
                     fs.renameSync(incomingFile, processingName);
                     var configErrorFile = path.resolve(targetDirectory, filename);
