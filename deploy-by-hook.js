@@ -431,7 +431,7 @@ function buildFromListing() {
                     var buildName = fileNamePart;
                     console.log(buildName);
 
-                    var baseName = fileNamePart.substring(0, fileNamePart.length - 4);
+                    var baseName = filename.substring(0, filename.length - 4);
                     var schemaErrorPath = path.resolve(processingDirectory, baseName + "_schemaerror.txt");
                     if (fs.existsSync(schemaErrorPath)) {
                         storeResult(fileNamePart, '<a href="' + baseName + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
