@@ -417,25 +417,26 @@ function buildFromListing() {
             list.forEach(function (filename) {
                 console.log(filename);
                 console.log(path.extname(filename));
+                var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml") {
                     remainingFiles--;
-                } else if (path.parse(filename).name === "multiparticipant") {
+                } else if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
-                    initialiseResult(path.parse(filename).name, 'disabled', true);
+                    initialiseResult(fileNamePart, 'disabled', true);
                     console.log("this script will not build multiparticipant without manual intervention");
                 } else {
-                    initialiseResult(path.parse(filename).name, 'queued', false);
+                    initialiseResult(fileNamePart, 'queued', false);
                     filename = path.resolve(processingDirectory, filename);
                     console.log(filename);
-                    var buildName = path.parse(filename).name;
+                    var buildName = fileNamePart;
                     console.log(buildName);
 
-                    var baseName = filename.substring(0, filename.length - 4);
+                    var baseName = fileNamePart.substring(0, fileNamePart.length - 4);
                     var schemaErrorPath = path.resolve(processingDirectory, baseName + "_schemaerror.txt");
                     if (fs.existsSync(schemaErrorPath)) {
-                        storeResult(path.parse(filename).name, '<a href="' + baseName + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
+                        storeResult(fileNamePart, '<a href="' + baseName + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
                     } else {
-                        storeResult(path.parse(filename).name, 'passed', "validation", "xsd", false, false, false);
+                        storeResult(fileNamePart, 'passed', "validation", "xsd", false, false, false);
                         var foundCount = 0;
                         var foundJson;
                         for (var index in listingJsonArray) {
@@ -453,30 +454,30 @@ function buildFromListing() {
                                         "isDesktop": false,
                                         "isiOS": false,
                                         "isAndroid": false,
-                                        "buildName": path.parse(filename).name,
+                                        "buildName": fileNamePart,
                                         "state": "staging",
                                         "defaultScale": 1.0,
-                                        "experimentInternalName": path.parse(filename).name,
-                                        "experimentDisplayName": path.parse(filename).name
+                                        "experimentInternalName": fileNamePart,
+                                        "experimentDisplayName": fileNamePart
                                     });
-                            storeResult(path.parse(filename).name, 'queued', "staging", "web", false, false, false);
-                            storeResult(path.parse(filename).name, 'queued', "staging", "admin", false, false, false);
-                            storeResult(path.parse(filename).name, '', "staging", "android", false, false, false);
-                            storeResult(path.parse(filename).name, '', "staging", "desktop", false, false, false);
-                            storeResult(path.parse(filename).name, '', "production", "web", false, false, false);
-                            storeResult(path.parse(filename).name, '', "production", "admin", false, false, false);
-                            storeResult(path.parse(filename).name, '', "production", "android", false, false, false);
-                            storeResult(path.parse(filename).name, '', "production", "desktop", false, false, false);
+                            storeResult(fileNamePart, 'queued', "staging", "web", false, false, false);
+                            storeResult(fileNamePart, 'queued', "staging", "admin", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "android", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
+                            storeResult(fileNamePart, '', "production", "web", false, false, false);
+                            storeResult(fileNamePart, '', "production", "admin", false, false, false);
+                            storeResult(fileNamePart, '', "production", "android", false, false, false);
+                            storeResult(fileNamePart, '', "production", "desktop", false, false, false);
                         } else if (foundCount === 1) {
                             listing.push(foundJson);
-                            storeResult(path.parse(filename).name, '', "staging", "web", false, false, false);
-                            storeResult(path.parse(filename).name, '', "staging", "admin", false, false, false);
-                            storeResult(path.parse(filename).name, '', "staging", "android", false, false, false);
-                            storeResult(path.parse(filename).name, '', "staging", "desktop", false, false, false);
-                            storeResult(path.parse(filename).name, '', "production", "web", false, false, false);
-                            storeResult(path.parse(filename).name, '', "production", "admin", false, false, false);
-                            storeResult(path.parse(filename).name, '', "production", "android", false, false, false);
-                            storeResult(path.parse(filename).name, '', "production", "desktop", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "web", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "admin", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "android", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
+                            storeResult(fileNamePart, '', "production", "web", false, false, false);
+                            storeResult(fileNamePart, '', "production", "admin", false, false, false);
+                            storeResult(fileNamePart, '', "production", "android", false, false, false);
+                            storeResult(fileNamePart, '', "production", "desktop", false, false, false);
                             if (foundJson.state === "staging" || foundJson.state === "production") {
                                 storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
                                 storeResult(foundJson.buildName, 'queued', "staging", "admin", false, false, false);
@@ -498,7 +499,7 @@ function buildFromListing() {
                                 }
                             }
                         } else {
-                            initialiseResult(path.parse(filename).name, 'conflict', true);
+                            initialiseResult(fileNamePart, 'conflict', true);
                             console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
                         }
                     }
