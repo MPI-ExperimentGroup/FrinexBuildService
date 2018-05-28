@@ -122,8 +122,8 @@ function initialiseResult(name, message, isError) {
     buildHistoryJson.table[name] = {
         "_experiment": {value: name, style: ''},
         "_date": {value: message, style: style},
-        "_staging_web": {value: '', style: ''},
         "_validation_xsd": {value: '', style: ''},
+        "_staging_web": {value: '', style: ''},
         "_staging_android": {value: '', style: ''},
         "_staging_desktop": {value: '', style: ''},
         "_staging_admin": {value: '', style: ''},
