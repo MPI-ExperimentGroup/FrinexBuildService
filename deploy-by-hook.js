@@ -433,7 +433,7 @@ function buildFromListing() {
 
                     var schemaErrorPath = filename.substring(0, filename.length - 4) + "_schemaerror.txt";
                     if (fs.existsSync(schemaErrorPath)) {
-                        storeResult(fileNamePart, '<a href="' + path.parse(schemaErrorPath).name + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
+                        storeResult(fileNamePart, '<a href="' + fileNamePart + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
                     } else {
                         storeResult(fileNamePart, 'passed', "validation", "xsd", false, false, false);
                         var foundCount = 0;
