@@ -420,6 +420,8 @@ function buildFromListing() {
                 var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml") {
                     remainingFiles--;
+                } else if (fileNamePart.endsWith("_validation_error")) {
+                    storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), '<a href="' + fileNamePart + '.txt"">failed</a>', "validation", "json_xsd", true, false, false);
                 } else if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
                     initialiseResult(fileNamePart, 'disabled', true);
