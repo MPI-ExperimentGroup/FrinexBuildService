@@ -70,7 +70,7 @@ function startResult() {
     resultsFile.write("<div id='buildLabel'>Building...</div>\n");
     resultsFile.write("<div id='buildDate'></div>\n");
     resultsFile.write("<table id='buildTable'>\n");
-    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>XML validation</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
+    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>validation</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
     resultsFile.write("</table>\n");
     resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
     resultsFile.write("<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
@@ -122,7 +122,7 @@ function initialiseResult(name, message, isError) {
     buildHistoryJson.table[name] = {
         "_experiment": {value: name, style: ''},
         "_date": {value: message, style: style},
-        "_validation_xsd": {value: '', style: ''},
+        "_validation_json_xsd": {value: '', style: ''},
         "_staging_web": {value: '', style: ''},
         "_staging_android": {value: '', style: ''},
         "_staging_desktop": {value: '', style: ''},
@@ -431,11 +431,11 @@ function buildFromListing() {
                     var buildName = fileNamePart;
                     console.log(buildName);
 
-                    var schemaErrorPath = filename.substring(0, filename.length - 4) + "_schemaerror.txt";
+                    var schemaErrorPath = filename.substring(0, filename.length - 4) + "_validation_error.txt";
                     if (fs.existsSync(schemaErrorPath)) {
-                        storeResult(fileNamePart, '<a href="' + fileNamePart + '_schemaerror.txt"">failed</a>', "validation", "xsd", true, false, false);
+                        storeResult(fileNamePart, '<a href="' + fileNamePart + '_validation_error.txt"">failed</a>', "validation", "json_xsd", true, false, false);
                     } else {
-                        storeResult(fileNamePart, 'passed', "validation", "xsd", false, false, false);
+                        storeResult(fileNamePart, 'passed', "validation", "json_xsd", false, false, false);
                         var foundCount = 0;
                         var foundJson;
                         for (var index in listingJsonArray) {
@@ -556,7 +556,7 @@ function moveIncomingToProcessing() {
                     var targetName = path.resolve(targetDirectory, filename);
                     console.log('moved XSD from incoming to target: ' + filename);
                     fs.renameSync(incomingFile, targetName);
-                } else if (filename.endsWith("_schemaerror.txt")) {
+                } else if (filename.endsWith("_validation_error.txt")) {
                     var processingName = path.resolve(processingDirectory, filename);
                     fs.renameSync(incomingFile, processingName);
                     var configErrorFile = path.resolve(targetDirectory, filename);
