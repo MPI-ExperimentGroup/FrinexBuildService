@@ -579,6 +579,18 @@ function moveIncomingToProcessing() {
 }
 function convertJsonToXml() {
     resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
+    fs.readdir(incomingDirectory, function (error, list) {
+        if (error) {
+            console.error(error);
+        } else {
+            list.forEach(function (filename) {
+                if (path.extname(filename) === ".json") {
+                    console.log('json: ' + filename);
+                    initialiseResult(path.parse(filename).name, 'processing JSON', true);
+                }
+            });
+        }
+    });
     var mvnConvert = require('maven').create({
         cwd: __dirname + "/ExperimentDesigner",
         settings: m2Settings
