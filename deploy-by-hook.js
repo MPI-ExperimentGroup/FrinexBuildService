@@ -419,9 +419,10 @@ function buildFromListing() {
                 console.log(path.extname(filename));
                 var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml") {
+                    if (fileNamePart.endsWith("_validation_error")) {
+                        storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), '<a href="' + fileNamePart + '.txt"">failed</a>', "validation", "json_xsd", true, false, false);
+                    }
                     remainingFiles--;
-                } else if (fileNamePart.endsWith("_validation_error")) {
-                    storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), '<a href="' + fileNamePart + '.txt"">failed</a>', "validation", "json_xsd", true, false, false);
                 } else if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
                     initialiseResult(fileNamePart, 'disabled', true);
@@ -586,7 +587,7 @@ function convertJsonToXml() {
             list.forEach(function (filename) {
                 if (path.extname(filename) === ".json") {
                     console.log('json: ' + filename);
-                    initialiseResult(path.parse(filename).name, 'processing JSON', true);
+                    initialiseResult(path.parse(filename).name, 'queued JSON', false);
                 }
             });
         }
@@ -595,7 +596,7 @@ function convertJsonToXml() {
         cwd: __dirname + "/ExperimentDesigner",
         settings: m2Settings
     });
-    mvnConvert.execute(['package', 'exec:exec'], {
+    mvnConvert.execute(['exec:exec'], {
         'skipTests': true,
         'exec.executable': 'java',
         'exec.classpathScope': 'runtime',
