@@ -1,0 +1,53 @@
+@startuml
+
+[JSON File]
+[XML File]
+[Stimuli Directory]
+
+package "GIT Inbound Service" {
+  [JSON File] - [JSON Validator]
+  [JSON Validator] - [JSON to XML]
+  [XML File] - [XML Validator]
+  [JSON to XML] - [XML Validator]
+  [XML Validator] - [Experiment Definition]
+  [Stimuli Directory] - [Experiment Definition]
+
+}
+ 
+package "Experiment Build Service" {
+frame "Templates" {
+    node "WebApp"
+    node "MobileApp"
+    node "DesktopApp"
+    node "AdministrationApp"
+  }
+  [Experiment Definition] - [Experiment Compiler]
+  [Experiment Compiler] - [WebApp]
+  [Experiment Compiler] - [MobileApp]
+  [Experiment Compiler] - [DesktopApp]
+  [Experiment Compiler] - [AdministrationApp]
+}
+
+cloud {
+  package "Staging Server"{
+    [WebApp] - [Staging Instance]
+    [AdministrationApp] - [Staging Administration]
+  }
+  package "Production Server"{
+    [WebApp] - [ProductionInstance]
+    [AdministrationApp] - [Production Administration]
+  }
+  package "Mobile Devices" {
+    [MobileApp] - [MoblieInstance]
+  }
+
+  package "Desktop Devices" {
+    [DesktopApp] - [DesktopInstance]
+  }
+}
+
+:Designer: --> [JSON File]
+:Designer: --> [XML File]
+:Designer: --> [Stimuli Directory]
+
+@enduml
