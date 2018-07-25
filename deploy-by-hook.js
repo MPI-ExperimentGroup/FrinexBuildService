@@ -59,8 +59,16 @@ var buildHistoryJson = {table: {}};
 if (fs.existsSync(buildHistoryFileName)) {
     try {
         buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
+        fs.writeFile(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4));
     } catch (error) {
+        console.log("faild to read " + buildHistoryJson);
         console.log(error);
+        try {
+            buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName + ".temp", 'utf8'));
+        } catch (error) {
+            console.log("faild to read " + buildHistoryJson + ".temp");
+            console.log(error);
+        }
     }
 }
 
@@ -364,7 +372,8 @@ function deployProductionAdmin(listing, currentEntry) {
 function buildApk(buildName, stage) {
     console.log("starting cordova build");
     storeResult(buildName, "building", stage, "android", false, true, false);
-//    execSync('bash gwt-cordova/target/setup-cordova.sh');
+    execSync('bash gwt-cordova/target/setup-cordova.sh');
+    // todo: copy the resutting zips and add links to the output JSON
     console.log("build cordova finished");
     storeResult(buildName, "skipped", stage, "android", false, false, true);
 }
@@ -372,7 +381,8 @@ function buildApk(buildName, stage) {
 function buildElectron(buildName, stage) {
     console.log("starting electron build");
     storeResult(buildName, "building", stage, "desktop", false, true, false);
-//    execSync('bash gwt-cordova/target/setup-electron.sh');
+    execSync('bash gwt-cordova/target/setup-electron.sh', {stdio: [0, 1, 2]});
+    // todo: copy the resutting zips and add links to the output JSON
     console.log("build electron finished");
     storeResult(buildName, "skipped", stage, "desktop", false, false, true);
 }
