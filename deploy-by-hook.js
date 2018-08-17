@@ -142,6 +142,7 @@ function initialiseResult(name, message, isError) {
         "_production_desktop": {value: '', style: ''},
         "_production_admin": {value: '', style: ''}
     };
+    // todo: remove any listing.json
     fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
@@ -458,12 +459,12 @@ function buildFromListing() {
                 console.log(path.extname(filename));
                 var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml") {
-                    if (fileNamePart.endsWith("_validation_error")) {
-                        validationMessage += '&nbsp;<a href="' + fileNamePart + '.txt"">failed</a>';
-                        storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
-                    }
+//                    if (fileNamePart.endsWith("_validation_error")) {
+//                        validationMessage += '<a href="' + fileNamePart + '.txt"">failed&nbsp;</a>';
+//                        storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
+//                    }
                     if (path.extname(filename) === ".json") {
-                        validationMessage += '&nbsp;<a href="' + fileNamePart + '">JSON</a>';
+                        validationMessage += '<a href="' + fileNamePart + '.json">json&nbsp;</a>';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
                     remainingFiles--;
@@ -478,15 +479,15 @@ function buildFromListing() {
                     var buildName = fileNamePart;
                     console.log(buildName);
                     if (path.extname(filename) === ".xml") {
-                        validationMessage += '&nbsp;<a href="' + fileNamePart + '">XML</a>';
+                        validationMessage += '<a href="' + fileNamePart + '.xml">xml</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
                     var schemaErrorPath = filename.substring(0, filename.length - 4) + "_validation_error.txt";
                     if (fs.existsSync(schemaErrorPath)) {
-                        validationMessage += '<a href="' + fileNamePart + '_validation_error.txt">failed</a>';
+                        validationMessage += '<a href="' + fileNamePart + '_validation_error.txt">failed</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
                     } else {
-                        validationMessage += 'passed';
+                        validationMessage += 'passed&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                         var foundCount = 0;
                         var foundJson;
