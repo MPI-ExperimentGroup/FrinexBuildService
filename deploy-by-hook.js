@@ -78,7 +78,7 @@ function startResult() {
     resultsFile.write("<div id='buildLabel'>Building...</div>\n");
     resultsFile.write("<div id='buildDate'></div>\n");
     resultsFile.write("<table id='buildTable'>\n");
-    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>JSON</td><td>XML</td><td>validation</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
+    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>validation</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
     resultsFile.write("</table>\n");
     resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
     resultsFile.write("<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
@@ -130,8 +130,8 @@ function initialiseResult(name, message, isError) {
     buildHistoryJson.table[name] = {
         "_experiment": {value: name, style: ''},
         "_date": {value: message, style: style},
-        "_validation_link_json": {value: '', style: ''},
-        "_validation_link_xml": {value: '', style: ''},
+//        "_validation_link_json": {value: '', style: ''},
+//        "_validation_link_xml": {value: '', style: ''},
         "_validation_json_xsd": {value: '', style: ''},
         "_staging_web": {value: '', style: ''},
         "_staging_android": {value: '', style: ''},
@@ -446,7 +446,7 @@ function buildFromListing() {
             }
         }
     }
-
+    var validationMessage = "";
     fs.readdir(processingDirectory, function (error, list) {
         if (error) {
             console.error(error);
@@ -459,10 +459,12 @@ function buildFromListing() {
                 var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml") {
                     if (fileNamePart.endsWith("_validation_error")) {
-                        storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), '<a href="' + fileNamePart + '.txt"">failed</a>', "validation", "json_xsd", true, false, false);
+                        validationMessage += '&nbsp;<a href="' + fileNamePart + '.txt"">failed</a>';
+                        storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
                     }
                     if (path.extname(filename) === ".json") {
-                        storeResult(fileNamePart, '<a href="' + filename + '">' + filename + '</a>', "validation", "link_json", false, false, false);
+                        validationMessage += '&nbsp;<a href="' + fileNamePart + '">JSON</a>';
+                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
                     remainingFiles--;
                 } else if (fileNamePart === "multiparticipant") {
@@ -476,13 +478,16 @@ function buildFromListing() {
                     var buildName = fileNamePart;
                     console.log(buildName);
                     if (path.extname(filename) === ".xml") {
-                        storeResult(fileNamePart, '<a href="' + filename + '">' + filename + '</a>', "validation", "link_xml", false, false, false);
+                        validationMessage += '&nbsp;<a href="' + fileNamePart + '">XML</a>';
+                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
                     var schemaErrorPath = filename.substring(0, filename.length - 4) + "_validation_error.txt";
                     if (fs.existsSync(schemaErrorPath)) {
-                        storeResult(fileNamePart, '<a href="' + fileNamePart + '_validation_error.txt">failed</a>', "validation", "json_xsd", true, false, false);
+                        validationMessage += '<a href="' + fileNamePart + '_validation_error.txt">failed</a>';
+                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
                     } else {
-                        storeResult(fileNamePart, 'passed', "validation", "json_xsd", false, false, false);
+                        validationMessage += 'passed';
+                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                         var foundCount = 0;
                         var foundJson;
                         for (var index in listingJsonArray) {
