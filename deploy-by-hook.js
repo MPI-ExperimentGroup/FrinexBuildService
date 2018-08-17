@@ -447,7 +447,6 @@ function buildFromListing() {
             }
         }
     }
-    var validationMessage = "";
     fs.readdir(processingDirectory, function (error, list) {
         if (error) {
             console.error(error);
@@ -463,10 +462,6 @@ function buildFromListing() {
 //                        validationMessage += '<a href="' + fileNamePart + '.txt"">failed&nbsp;</a>';
 //                        storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
 //                    }
-                    if (path.extname(filename) === ".json") {
-                        validationMessage += '<a href="' + fileNamePart + '.json">json&nbsp;</a>';
-                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
-                    }
                     remainingFiles--;
                 } else if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
@@ -474,10 +469,16 @@ function buildFromListing() {
                     console.log("this script will not build multiparticipant without manual intervention");
                 } else {
                     initialiseResult(fileNamePart, 'queued', false);
+                    var validationMessage = "";
                     filename = path.resolve(processingDirectory, filename);
                     console.log(filename);
                     var buildName = fileNamePart;
                     console.log(buildName);
+                    var jsonPath = filename.substring(0, filename.length - 4) + ".json";
+                    if (path.extname(jsonPath)) {
+                        validationMessage += '<a href="' + fileNamePart + '.json">json&nbsp;</a>';
+                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                    }
                     if (path.extname(filename) === ".xml") {
                         validationMessage += '<a href="' + fileNamePart + '.xml">xml</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
