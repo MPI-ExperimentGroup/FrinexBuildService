@@ -78,7 +78,7 @@ function startResult() {
     resultsFile.write("<div id='buildLabel'>Building...</div>\n");
     resultsFile.write("<div id='buildDate'></div>\n");
     resultsFile.write("<table id='buildTable'>\n");
-    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>validation</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
+    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>JSON</td><td>XML</td><td>validation</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
     resultsFile.write("</table>\n");
     resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
     resultsFile.write("<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
@@ -130,6 +130,8 @@ function initialiseResult(name, message, isError) {
     buildHistoryJson.table[name] = {
         "_experiment": {value: name, style: ''},
         "_date": {value: message, style: style},
+        "_validation_link_json": {value: '', style: ''},
+        "_validation_link_xml": {value: '', style: ''},
         "_validation_json_xsd": {value: '', style: ''},
         "_staging_web": {value: '', style: ''},
         "_staging_android": {value: '', style: ''},
@@ -144,7 +146,8 @@ function initialiseResult(name, message, isError) {
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
-    buildHistoryJson.table[name]["_date"].value = '<a href="' + name + '.xml">' + new Date().toISOString() + '</a>';
+    buildHistoryJson.table[name]["_date"].value = new Date().toISOString();
+//    buildHistoryJson.table[name]["_date"].value = '<a href="' + name + '.xml">' + new Date().toISOString() + '</a>';
     buildHistoryJson.table[name]["_" + stage + "_" + type].value = message;
     if (isError) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #F3C3C3';
@@ -373,18 +376,44 @@ function buildApk(buildName, stage) {
     console.log("starting cordova build");
     storeResult(buildName, "building", stage, "android", false, true, false);
     execSync('bash gwt-cordova/target/setup-cordova.sh');
-    // todo: copy the resutting zips and add links to the output JSON
+    // copy the resulting zips and add links to the output JSON
+    var resultString = "";
+    fs.readdir(__dirname + "/gwt-cordova/target", function (error, list) {
+        if (error) {
+            console.error(error);
+        } else {
+            list.forEach(function (filename) {
+                if (filename.endsWith("cordova.zip")) {
+                    fs.renameSync(filename, targetDirectory + "/" + buildName + "_cordova.zip");
+                    resultString += '<a href="' + buildName + "_cordova.zip" + '">zip</a>';
+                }
+            });
+        }
+    });
     console.log("build cordova finished");
-    storeResult(buildName, "skipped", stage, "android", false, false, true);
+    storeResult(buildName, resultString, stage, "android", false, false, true);
 }
 
 function buildElectron(buildName, stage) {
     console.log("starting electron build");
     storeResult(buildName, "building", stage, "desktop", false, true, false);
     execSync('bash gwt-cordova/target/setup-electron.sh', {stdio: [0, 1, 2]});
-    // todo: copy the resutting zips and add links to the output JSON
+    // copy the resulting zips and add links to the output JSON
+    var resultString = "";
+    fs.readdir(__dirname + "/gwt-cordova/target", function (error, list) {
+        if (error) {
+            console.error(error);
+        } else {
+            list.forEach(function (filename) {
+                if (filename.endsWith("electron.zip")) {
+                    fs.renameSync(filename, targetDirectory + "/" + buildName + "_electron.zip");
+                    resultString += '<a href="' + buildName + "_electron.zip" + '">zip</a>';
+                }
+            });
+        }
+    });    //- todo: copy the resutting zips and add links to the output JSON
     console.log("build electron finished");
-    storeResult(buildName, "skipped", stage, "desktop", false, false, true);
+    storeResult(buildName, resultString, stage, "desktop", false, false, true);
 }
 
 function buildNextExperiment(listing) {
@@ -432,6 +461,9 @@ function buildFromListing() {
                     if (fileNamePart.endsWith("_validation_error")) {
                         storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), '<a href="' + fileNamePart + '.txt"">failed</a>', "validation", "json_xsd", true, false, false);
                     }
+                    if (path.extname(filename) === ".json") {
+                        storeResult(fileNamePart, '<a href="' + filename + '">' + filename + '</a>', "validation", "link_json", false, false, false);
+                    }
                     remainingFiles--;
                 } else if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
@@ -443,10 +475,12 @@ function buildFromListing() {
                     console.log(filename);
                     var buildName = fileNamePart;
                     console.log(buildName);
-
+                    if (path.extname(filename) === ".xml") {
+                        storeResult(fileNamePart, '<a href="' + filename + '">' + filename + '</a>', "validation", "link_xml", false, false, false);
+                    }
                     var schemaErrorPath = filename.substring(0, filename.length - 4) + "_validation_error.txt";
                     if (fs.existsSync(schemaErrorPath)) {
-                        storeResult(fileNamePart, '<a href="' + fileNamePart + '_validation_error.txt"">failed</a>', "validation", "json_xsd", true, false, false);
+                        storeResult(fileNamePart, '<a href="' + fileNamePart + '_validation_error.txt">failed</a>', "validation", "json_xsd", true, false, false);
                     } else {
                         storeResult(fileNamePart, 'passed', "validation", "json_xsd", false, false, false);
                         var foundCount = 0;
