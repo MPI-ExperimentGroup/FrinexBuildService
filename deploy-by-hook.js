@@ -385,7 +385,7 @@ function buildApk(buildName, stage) {
         } else {
             list.forEach(function (filename) {
                 if (filename.endsWith("cordova.zip")) {
-                    fs.renameSync("/gwt-cordova/target" + filename, targetDirectory + "/" + buildName + "_cordova.zip");
+                    fs.renameSync("/gwt-cordova/target/" + filename, targetDirectory + "/" + buildName + "_cordova.zip");
                     resultString += '<a href="' + buildName + "_cordova.zip" + '">zip</a>';
                 }
             });
@@ -412,7 +412,7 @@ function buildElectron(buildName, stage) {
         } else {
             list.forEach(function (filename) {
                 if (filename.endsWith("electron.zip")) {
-                    fs.renameSync("/gwt-cordova/target" + filename, targetDirectory + "/" + buildName + "_electron.zip");
+                    fs.renameSync("/gwt-cordova/target/" + filename, targetDirectory + "/" + buildName + "_electron.zip");
                     resultString += '<a href="' + buildName + "_electron.zip" + '">zip</a>';
                 }
             });
