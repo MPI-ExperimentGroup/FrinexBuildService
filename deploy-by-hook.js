@@ -398,9 +398,14 @@ function buildApk(buildName, stage) {
 function buildElectron(buildName, stage) {
     console.log("starting electron build");
     storeResult(buildName, "building", stage, "desktop", false, true, false);
-    execSync('bash gwt-cordova/target/setup-electron.sh', {stdio: [0, 1, 2]});
-    // copy the resulting zips and add links to the output JSON
     var resultString = "";
+    try {
+        execSync('bash gwt-cordova/target/setup-electron.sh', {stdio: [0, 1, 2]});
+        resultString += "built&nbsp;";
+    } catch (ex) {
+        resultString += "failed&nbsp;";
+    }
+    // copy the resulting zips and add links to the output JSON
     fs.readdir(__dirname + "/gwt-cordova/target", function (error, list) {
         if (error) {
             console.error(error);
