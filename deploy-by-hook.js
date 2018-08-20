@@ -376,7 +376,12 @@ function deployProductionAdmin(listing, currentEntry) {
 function buildApk(buildName, stage) {
     console.log("starting cordova build");
     storeResult(buildName, "building", stage, "android", false, true, false);
-    execSync('bash gwt-cordova/target/setup-cordova.sh');
+    try {
+        execSync('bash gwt-cordova/target/setup-cordova.sh', {stdio: [0, 1, 2]});
+        resultString += "built&nbsp;";
+    } catch (ex) {
+        resultString += "failed&nbsp;";
+    }
     // copy the resulting zips and add links to the output JSON
     var resultString = "";
     fs.readdir(__dirname + "/gwt-cordova/target", function (error, list) {
