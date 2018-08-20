@@ -492,7 +492,7 @@ function buildFromListing() {
                     var buildName = fileNamePart;
                     console.log(buildName);
                     var jsonPath = filename.substring(0, filename.length - 4) + ".json";
-                    if (path.extname(jsonPath) === ".json") {
+                    if (fs.existsSync(jsonPath)) {
                         validationMessage += '<a href="' + fileNamePart + '.json">json&nbsp;</a>';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
