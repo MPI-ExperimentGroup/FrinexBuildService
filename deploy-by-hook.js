@@ -384,17 +384,11 @@ function buildApk(buildName, stage) {
     }
     // copy the resulting zips and add links to the output JSON
     var resultString = "";
-    fs.readdir(__dirname + "/gwt-cordova/target", function (error, list) {
-        if (error) {
-            console.error(error);
-        } else {
-            list.forEach(function (filename) {
-                if (filename.endsWith("cordova.zip")) {
-//                    fs.renameSync("/gwt-cordova/target/" + filename, targetDirectory + "/" + buildName + "_cordova.zip");
-                    fs.createReadStream("/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_cordova.zip"));
-                    resultString += '<a href="' + buildName + "_cordova.zip" + '">zip</a>';
-                }
-            });
+    var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
+    list.forEach(function (filename) {
+        if (filename.endsWith("cordova.zip")) {
+            fs.createReadStream("/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_cordova.zip"));
+            resultString += '<a href="' + buildName + "_cordova.zip" + '">zip</a>';
         }
     });
     console.log("build cordova finished");
@@ -412,23 +406,17 @@ function buildElectron(buildName, stage) {
         resultString += "failed&nbsp;";
     }
     // copy the resulting zips and add links to the output JSON
-    fs.readdir(__dirname + "/gwt-cordova/target", function (error, list) {
-        if (error) {
-            console.error(error);
-        } else {
-            list.forEach(function (filename) {
-                console.log(filename);
-                if (filename.endsWith("electron.zip")) {
-//                    fs.renameSync("/gwt-cordova/target/" + filename, targetDirectory + "/" + buildName + "_electron.zip");
-                    fs.createReadStream("/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_electron.zip"));
-                    resultString += '<a href="' + buildName + "_electron.zip" + '">zip</a>';
-                }
+    var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
+    list.forEach(function (filename) {
+        console.log(filename);
+        if (filename.endsWith("electron.zip")) {
+            fs.createReadStream("/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_electron.zip"));
+            resultString += '<a href="' + buildName + "_electron.zip" + '">zip</a>';
+        }
 //                mkdir /srv/target/electron
 //cp out/make/*linux*.zip ../with_simulus_example-linux.zip
 //cp out/make/*win32*.zip ../with_simulus_example-win32.zip
 //cp out/make/*darwin*.zip ../with_simulus_example-darwin.zip
-            });
-        }
     });    //- todo: copy the resutting zips and add links to the output JSON
     console.log("build electron finished");
     storeResult(buildName, resultString, stage, "desktop", false, false, true);
