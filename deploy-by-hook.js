@@ -59,7 +59,7 @@ var buildHistoryJson = {table: {}};
 if (fs.existsSync(buildHistoryFileName)) {
     try {
         buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
-        fs.writeFile(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4));
+        fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4));
     } catch (error) {
         console.log("faild to read " + buildHistoryJson);
         console.log(error);
@@ -118,7 +118,7 @@ function startResult() {
     resultsFile.write("var updateTimer = window.setTimeout(doUpdate, 100);\n");
     resultsFile.write("</script>\n");
     buildHistoryJson.building = true;
-    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
 
@@ -143,7 +143,7 @@ function initialiseResult(name, message, isError) {
         "_production_admin": {value: '', style: ''}
     };
     // todo: remove any listing.json
-    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
@@ -162,7 +162,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
     } else if (isDone) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3F3C3';
     }
-    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
 function stopUpdatingResults() {
@@ -172,7 +172,7 @@ function stopUpdatingResults() {
     buildHistoryJson.building = false;
     buildHistoryJson.buildLabel = 'Build process complete';
     buildHistoryJson.buildDate = new Date().toISOString();
-    fs.writeFile(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
 
@@ -643,7 +643,7 @@ function convertJsonToXml() {
             list.forEach(function (filename) {
                 if (path.extname(filename) === ".json") {
                     console.log('json: ' + filename);
-                    initialiseResult(path.parse(filename).name, 'queued JSON', false);
+                    initialiseResult(path.parse(filename).name, 'queued', false);
                 }
             });
         }
