@@ -412,11 +412,16 @@ function buildElectron(buildName, stage) {
             console.error(error);
         } else {
             list.forEach(function (filename) {
+                console.log(filename);
                 if (filename.endsWith("electron.zip")) {
 //                    fs.renameSync("/gwt-cordova/target/" + filename, targetDirectory + "/" + buildName + "_electron.zip");
                     fs.createReadStream("/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_electron.zip"));
                     resultString += '<a href="' + buildName + "_electron.zip" + '">zip</a>';
                 }
+//                mkdir /srv/target/electron
+//cp out/make/*linux*.zip ../with_simulus_example-linux.zip
+//cp out/make/*win32*.zip ../with_simulus_example-win32.zip
+//cp out/make/*darwin*.zip ../with_simulus_example-darwin.zip
             });
         }
     });    //- todo: copy the resutting zips and add links to the output JSON
@@ -482,7 +487,7 @@ function buildFromListing() {
                     var buildName = fileNamePart;
                     console.log(buildName);
                     var jsonPath = filename.substring(0, filename.length - 4) + ".json";
-                    if (path.extname(jsonPath)) {
+                    if (path.extname(jsonPath) === ".json") {
                         validationMessage += '<a href="' + fileNamePart + '.json">json&nbsp;</a>';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
