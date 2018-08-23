@@ -206,7 +206,7 @@ function deployStagingGui(listing, currentEntry) {
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="http://ems13.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="http://ems13.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
 //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
 //        console.log(targetDirectory);
@@ -257,7 +257,7 @@ function deployStagingAdmin(listing, currentEntry) {
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin finished");
 //        storeResult(currentEntry.buildName, "deployed", "staging", "admin", false, false);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="http://ems13.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "staging", "admin", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "staging", "admin", false, false, true);
         if (currentEntry.state === "production") {
             deployProductionGui(listing, currentEntry);
         } else {
