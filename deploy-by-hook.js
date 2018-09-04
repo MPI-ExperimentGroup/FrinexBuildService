@@ -466,7 +466,7 @@ function buildFromListing() {
                     if (fileNamePart.endsWith("_validation_error")) {
                         var xmlPath = filename.substring(0, filename.length - 4 - "_validation_error".length) + ".xml";
                         if (!fs.existsSync(xmlPath)) {
-                            validationMessage += '<a href="' + fileNamePart + '.txt"">failed&nbsp;</a>';
+                            var validationMessage = '<a href="' + fileNamePart + '.txt"">failed&nbsp;</a>';
                             storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
                         }
                     }
