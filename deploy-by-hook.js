@@ -463,10 +463,13 @@ function buildFromListing() {
                 console.log(path.extname(filename));
                 var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml") {
-//                    if (fileNamePart.endsWith("_validation_error")) {
-//                        validationMessage += '<a href="' + fileNamePart + '.txt"">failed&nbsp;</a>';
-//                        storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
-//                    }
+                    if (fileNamePart.endsWith("_validation_error")) {
+                        var xmlPath = filename.substring(0, filename.length - 4 - "_validation_error".length) + ".xml";
+                        if (!fs.existsSync(xmlPath)) {
+                            validationMessage += '<a href="' + fileNamePart + '.txt"">failed&nbsp;</a>';
+                            storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
+                        }
+                    }
                     remainingFiles--;
                 } else if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
@@ -558,6 +561,7 @@ function buildFromListing() {
                             }
                         } else {
                             initialiseResult(fileNamePart, 'conflict', true);
+                            // todo: put this text and related information into an error text file with link
                             console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
                         }
                     }
