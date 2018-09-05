@@ -591,9 +591,10 @@ function moveIncomingToProcessing() {
                 resultsFile.write("<div>incoming: " + filename + "</div>");
                 var incomingFile = path.resolve(incomingDirectory, filename);
                 if (path.extname(filename) === ".json") {
-                    var configStoreFile = path.resolve(targetDirectory, filename);
-                    console.log('configStoreFile: ' + configStoreFile);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
+                    var jsonStoreFile = path.resolve(processingDirectory, filename);
+                    console.log('incomingFile: ' + incomingFile);
+                    console.log('jsonStoreFile: ' + jsonStoreFile);
+                    fs.renameSync(incomingFile, jsonStoreFile);
                 } else if (path.extname(filename) === ".xml") {
                     var baseName = filename.substring(0, filename.length - 4);
                     var mavenLogPathSG = targetDirectory + "/" + baseName + "_staging.txt";
