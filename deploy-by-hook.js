@@ -482,9 +482,11 @@ function buildFromListing() {
                     var validationMessage = "";
                     var filenamePath = path.resolve(processingDirectory, filename);
                     console.log(filename);
+                    console.log(filenamePath);
                     var buildName = fileNamePart;
                     console.log(buildName);
                     var jsonPath = filenamePath.substring(0, filenamePath.length - 4) + ".json";
+                    console.log(jsonPath);
                     if (fs.existsSync(jsonPath)) {
                         validationMessage += '<a href="' + fileNamePart + '.json">json&nbsp;</a>';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
@@ -588,8 +590,11 @@ function moveIncomingToProcessing() {
                 console.log('incoming: ' + filename);
                 resultsFile.write("<div>incoming: " + filename + "</div>");
                 var incomingFile = path.resolve(incomingDirectory, filename);
-                // if (path.extname(filename) === ".json") 
-                if (path.extname(filename) === ".xml") {
+                if (path.extname(filename) === ".json") {
+                    var configStoreFile = path.resolve(targetDirectory, filename);
+                    console.log('configStoreFile: ' + configStoreFile);
+                    fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
+                } else if (path.extname(filename) === ".xml") {
                     var baseName = filename.substring(0, filename.length - 4);
                     var mavenLogPathSG = targetDirectory + "/" + baseName + "_staging.txt";
                     var mavenLogPathSA = targetDirectory + "/" + baseName + "_staging_admin.txt";
