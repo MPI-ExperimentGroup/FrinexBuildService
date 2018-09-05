@@ -593,7 +593,7 @@ function moveIncomingToProcessing() {
                 if (path.extname(filename) === ".json") {
                     var configStoreFile = path.resolve(targetDirectory, filename);
                     console.log('configStoreFile: ' + configStoreFile);
-                    fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
                 } else if (path.extname(filename) === ".xml") {
                     var baseName = filename.substring(0, filename.length - 4);
                     var mavenLogPathSG = targetDirectory + "/" + baseName + "_staging.txt";
