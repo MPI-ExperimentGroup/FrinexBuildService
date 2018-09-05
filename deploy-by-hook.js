@@ -464,7 +464,8 @@ function buildFromListing() {
                 var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml") {
                     if (fileNamePart.endsWith("_validation_error")) {
-                        var xmlPath = filename.substring(0, filename.length - 4 - "_validation_error".length) + ".xml";
+                        var xmlName = filename.substring(0, filename.length - 4 - "_validation_error".length) + ".xml";
+                        var xmlPath = path.resolve(processingDirectory, xmlName);
                         console.log("Found _validation_error, checking for: " + xmlPath);
                         if (!fs.existsSync(xmlPath)) {
                             var validationMessage = '<a href="' + fileNamePart + '.txt"">failed&nbsp;</a>';
@@ -479,11 +480,11 @@ function buildFromListing() {
                 } else {
                     initialiseResult(fileNamePart, 'queued', false);
                     var validationMessage = "";
-                    filename = path.resolve(processingDirectory, filename);
+                    var filenamePath = path.resolve(processingDirectory, filename);
                     console.log(filename);
                     var buildName = fileNamePart;
                     console.log(buildName);
-                    var jsonPath = filename.substring(0, filename.length - 4) + ".json";
+                    var jsonPath = filenamePath.substring(0, filenamePath.length - 4) + ".json";
                     if (fs.existsSync(jsonPath)) {
                         validationMessage += '<a href="' + fileNamePart + '.json">json&nbsp;</a>';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
@@ -492,7 +493,7 @@ function buildFromListing() {
                         validationMessage += '<a href="' + fileNamePart + '.xml">xml</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
-                    var schemaErrorPath = filename.substring(0, filename.length - 4) + "_validation_error.txt";
+                    var schemaErrorPath = filenamePath.substring(0, filenamePath.length - 4) + "_validation_error.txt";
                     if (fs.existsSync(schemaErrorPath)) {
                         validationMessage += '<a href="' + fileNamePart + '_validation_error.txt">failed</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
