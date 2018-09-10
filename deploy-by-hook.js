@@ -387,8 +387,8 @@ function buildApk(buildName, stage) {
     var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
     list.forEach(function (filename) {
         if (filename.endsWith("cordova.zip")) {
-            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_cordova.zip"));
-            resultString += '<a href="' + buildName + "_cordova.zip" + '">zip</a>';
+            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_cordova.zip"));
+            resultString += '<a href="' + buildName + "_" + stage + "_cordova.zip" + '">zip</a>';
         }
     });
     console.log("build cordova finished");
@@ -410,8 +410,8 @@ function buildElectron(buildName, stage) {
     list.forEach(function (filename) {
         console.log(filename);
         if (filename.endsWith("electron.zip")) {
-            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_electron.zip"));
-            resultString += '<a href="' + buildName + "_electron.zip" + '">zip</a>';
+            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_electron.zip"));
+            resultString += '<a href="' + buildName + "_" + stage + "_electron.zip" + '">zip</a>';
         }
 //                mkdir /srv/target/electron
 //cp out/make/*linux*.zip ../with_simulus_example-linux.zip
