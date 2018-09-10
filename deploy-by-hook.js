@@ -275,65 +275,72 @@ function deployStagingAdmin(listing, currentEntry) {
 function deployProductionGui(listing, currentEntry) {
     console.log(productionServerUrl + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
-    http.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
-        if (response.statusCode !== 404) {
-            console.log("existing frinex-gui production found, aborting build!");
-            console.log(response.statusCode);
-            storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
-            buildNextExperiment(listing);
-        } else {
-            console.log(response.statusCode);
-            var mvngui = require('maven').create({
-                cwd: __dirname + "/gwt-cordova",
-                settings: m2Settings
-            });
-            if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt")) {
-                fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt");
-            }
-            var mavenLogPG = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
-            process.stdout.write = process.stderr.write = mavenLogPG.write.bind(mavenLogPG);
-            mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:deploy' : 'package'], {
-                'skipTests': true, '-pl': 'frinex-gui',
+    try {
+        http.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
+            if (response.statusCode !== 404) {
+                console.log("existing frinex-gui production found, aborting build!");
+                console.log(response.statusCode);
+                storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
+                buildNextExperiment(listing);
+            } else {
+                console.log(response.statusCode);
+                var mvngui = require('maven').create({
+                    cwd: __dirname + "/gwt-cordova",
+                    settings: m2Settings
+                });
+                if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt")) {
+                    fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt");
+                }
+                var mavenLogPG = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
+                process.stdout.write = process.stderr.write = mavenLogPG.write.bind(mavenLogPG);
+                mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:deploy' : 'package'], {
+                    'skipTests': true, '-pl': 'frinex-gui',
 //                    'altDeploymentRepository.snapshot-repo.default.file': '~/Desktop/FrinexAPKs/',
 //                    'altDeploymentRepository': 'default:file:file://~/Desktop/FrinexAPKs/',
 //                            'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
 //                    'maven.repo.local': '~/Desktop/FrinexAPKs/',
-                'experiment.configuration.name': currentEntry.buildName,
-                'experiment.configuration.displayName': currentEntry.experimentDisplayName,
-                'experiment.webservice': configServer,
-                'experiment.configuration.path': processingDirectory,
-                'versionCheck.allowSnapshots': 'true',
-                'versionCheck.buildType': 'stable',
-                'experiment.destinationServer': productionServer,
-                'experiment.destinationServerUrl': productionServerUrl,
-                'experiment.groupsSocketUrl': productionGroupsSocketUrl,
-                'experiment.isScaleable': currentEntry.isScaleable,
-                'experiment.defaultScale': currentEntry.defaultScale
+                    'experiment.configuration.name': currentEntry.buildName,
+                    'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+                    'experiment.webservice': configServer,
+                    'experiment.configuration.path': processingDirectory,
+                    'versionCheck.allowSnapshots': 'true',
+                    'versionCheck.buildType': 'stable',
+                    'experiment.destinationServer': productionServer,
+                    'experiment.destinationServerUrl': productionServerUrl,
+                    'experiment.groupsSocketUrl': productionGroupsSocketUrl,
+                    'experiment.isScaleable': currentEntry.isScaleable,
+                    'experiment.defaultScale': currentEntry.defaultScale
 //                            'experiment.scriptSrcUrl': productionServerUrl,
 //                            'experiment.staticFilesUrl': productionServerUrl
-            }).then(function (value) {
-                console.log("frinex-gui production finished");
+                }).then(function (value) {
+                    console.log("frinex-gui production finished");
 //                storeResult(currentEntry.buildName, "skipped", "production", "web", false, false, true);
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="http://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
-                if (currentEntry.isAndroid || currentEntry.isiOS) {
-                    buildApk(currentEntry.buildName, "production");
-                }
-                if (currentEntry.isDesktop) {
-                    buildElectron(currentEntry.buildName, "production");
-                }
-                deployProductionAdmin(listing, currentEntry);
+                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="http://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
+                    if (currentEntry.isAndroid || currentEntry.isiOS) {
+                        buildApk(currentEntry.buildName, "production");
+                    }
+                    if (currentEntry.isDesktop) {
+                        buildElectron(currentEntry.buildName, "production");
+                    }
+                    deployProductionAdmin(listing, currentEntry);
 //                buildNextExperiment(listing);
-            }, function (reason) {
-                console.log(reason);
-                console.log("frinex-gui production failed");
-                console.log(currentEntry.experimentDisplayName);
+                }, function (reason) {
+                    console.log(reason);
+                    console.log("frinex-gui production failed");
+                    console.log(currentEntry.experimentDisplayName);
 //                storeResult(currentEntry.buildName, "failed", "production", "web", true, false);
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false);
-                buildNextExperiment(listing);
-            });
-        }
-    });
+                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false);
+                    buildNextExperiment(listing);
+                });
+            }
+        });
+    } catch (exception) {
+        console.log(exception);
+        console.log("frinex-gui production failed");
+        storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
+    }
 }
+
 function deployProductionAdmin(listing, currentEntry) {
     var mvnadmin = require('maven').create({
         cwd: __dirname + "/registration",
