@@ -36,7 +36,7 @@ const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('publish.properties');
 const request = require('request');
 const execSync = require('child_process').execSync;
-const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const m2Settings = properties.get('settings.m2Settings');
@@ -276,7 +276,7 @@ function deployProductionGui(listing, currentEntry) {
     console.log(productionServerUrl + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
     try {
-        http.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
+        https.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
             if (response.statusCode !== 404) {
                 console.log("existing frinex-gui production found, aborting build!");
                 console.log(response.statusCode);
@@ -329,7 +329,7 @@ function deployProductionGui(listing, currentEntry) {
                     console.log("frinex-gui production failed");
                     console.log(currentEntry.experimentDisplayName);
 //                storeResult(currentEntry.buildName, "failed", "production", "web", true, false);
-                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false);
+                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">failed (existing production unknown)</a>', "production", "web", true, false, false);
                     buildNextExperiment(listing);
                 });
             }
