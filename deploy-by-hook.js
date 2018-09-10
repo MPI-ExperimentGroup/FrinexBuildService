@@ -315,7 +315,7 @@ function deployProductionGui(listing, currentEntry) {
                 }).then(function (value) {
                     console.log("frinex-gui production finished");
 //                storeResult(currentEntry.buildName, "skipped", "production", "web", false, false, true);
-                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="http://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
+                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
                     if (currentEntry.isAndroid || currentEntry.isiOS) {
                         buildApk(currentEntry.buildName, "production");
                     }
@@ -368,7 +368,7 @@ function deployProductionAdmin(listing, currentEntry) {
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin production finished");
 //        storeResult(currentEntry.buildName, "skipped", "production", "admin", false, false, true);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="http://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "production", "admin", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "production", "admin", false, false, true);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
