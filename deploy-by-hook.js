@@ -384,7 +384,7 @@ function buildApk(buildName, stage) {
     console.log("starting cordova build");
     storeResult(buildName, "building", stage, "android", false, true, false);
     try {
-        execSync('bash gwt-cordova/target/setup-cordova.sh', {stdio: [0, 1, 2]});
+        execSync('docker run -it -v gwt-cordova/target:/target frinexapps bash /target/setup-cordova.sh', {stdio: [0, 1, 2]});
         resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
@@ -407,7 +407,7 @@ function buildElectron(buildName, stage) {
     storeResult(buildName, "building", stage, "desktop", false, true, false);
     var resultString = "";
     try {
-        execSync('bash gwt-cordova/target/setup-electron.sh', {stdio: [0, 1, 2]});
+        execSync('docker run -it -v gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh', {stdio: [0, 1, 2]});
         resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
