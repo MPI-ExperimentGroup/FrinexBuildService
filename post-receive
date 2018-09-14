@@ -29,14 +29,22 @@ export M2_HOME=/srv/development/maven/apache-maven-3.5.3/
 export M2=$M2_HOME/bin
 export PATH=$M2:$PATH
 
-whoami
+whoami > /srv/target/git-update-log.txt
+
+echo $GIT_DIR >> /srv/target/git-update-log.txt
+pwd >> /srv/target/git-update-log.txt
+ls -l  >> /srv/target/git-update-log.txt
 
 unset GIT_DIR
 
 cd /srv/experiments/
+
 pwd
-git reset --hard
-git pull --depth 5000
+git reset --hard >> /srv/target/git-update-log.txt
+git pull --depth 5000 >> /srv/target/git-update-log.txt
+git status >> /srv/target/git-update-log.txt
+pwd >> /srv/target/git-update-log.txt
+ls -l  >> /srv/target/git-update-log.txt
 
 mkdir /srv/target/incoming
 mkdir /srv/target/processing
@@ -51,8 +59,8 @@ do
     echo "<br/>" >> /srv/target/git-push-log.html
     git diff --name-only $oldrev $newrev >> /srv/target/git-push-log.html
     cp $(git diff --name-only $oldrev $newrev) /srv/target/incoming/
-   echo "<br/>" >> /srv/target/git-push-log.html
- done
+    echo "<br/>" >> /srv/target/git-push-log.html
+done
 
 pwd
 
@@ -72,8 +80,12 @@ then
 else
   echo "starting build process";
   cd /srv/ExperimentTemplate/
+  #rm -rf /srv/development/.m2/nl/mpi/
+#  find /srv/development/.m2/repository/ -type d -name *SNAPSHOT
+#  find /srv/development/.m2/repository/ -type d -name *SNAPSHOT -delete
   pwd
-  git pull --depth 5000
+#  git pull --depth 5000
+#  mvn clean install -DversionCheck.buildType=stable -DskipTests=true -gs /srv/development/.m2/settings.xml > /srv/target/git-mvn-out.html
   nohup nice /usr/bin/node /srv/ExperimentTemplate/deploy-by-hook.js > /srv/target/git-push-out.txt 2> /srv/target/git-push-err.txt &
   pidof node-default
 fi
