@@ -407,7 +407,9 @@ function buildElectron(buildName, stage) {
     storeResult(buildName, "building", stage, "desktop", false, true, false);
     var resultString = "";
     try {
-        execSync('docker run -it -v gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh > /target/build-electron.log', {stdio: [0, 1, 2]});
+        resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>';
+        storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
+        execSync('docker run -it -v gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh > ' + targetDirectory + "/" + buildName + "_" + stage + "_electron.log", {stdio: [0, 1, 2]});
         resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
@@ -416,10 +418,10 @@ function buildElectron(buildName, stage) {
     var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
     list.forEach(function (filename) {
         console.log(filename);
-        if (filename.endsWith("electron.log")) {
-            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_electron.log"));
-            resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>';
-        }
+//        if (filename.endsWith("electron.log")) {
+//            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_electron.log"));
+//            resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>';
+//        }
         if (filename.endsWith("electron.zip")) {
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_electron.zip"));
             resultString += '<a href="' + buildName + "_" + stage + "_electron.zip" + '">zip</a>';
