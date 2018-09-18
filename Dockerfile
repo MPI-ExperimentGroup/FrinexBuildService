@@ -23,7 +23,8 @@
 FROM openjdk:8
 RUN apt-get update
 #RUN apt-get -y upgrade
-RUN apt-get -y install unzip wine mono-devel
+RUN apt-get -y install unzip zip mono-devel
+RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get -y install nodejs
 ENV ANDROID_VERSION=27 \
@@ -43,6 +44,17 @@ RUN /android-sdk/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION
 RUN npm install npm -g # update npm
 RUN npm install -g cordova
 RUN npm install -g electron-forge
+RUN electron-forge init init-setup-project
+RUN sed -i 's/squirrel/zip/g' init-setup-project/package.json \
+    && cat init-setup-project/package.json
+RUN cd init-setup-project \
+    && electron-forge make --platform=win32
+RUN cd init-setup-project \
+    && electron-forge make --platform=darwin
+#RUN cd init-setup-project \
+#    && electron-forge make --platform=linux --arch=ia32 
+#RUN cd init-setup-project \
+#    && electron-forge make --platform=linux --arch=x64
 #RUN npm install -g electron-forge
 #RUN /usr/bin/npm install -g electron-compile
 #CMD ["/bin/bash"] [ls /target]#, "/target/setup-cordova.sh"]
