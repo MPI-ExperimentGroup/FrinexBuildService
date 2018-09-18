@@ -412,7 +412,7 @@ function buildElectron(buildName, stage) {
         }
         resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh > ' + targetDirectory + "/" + buildName + "_" + stage + "_electron.log", {stdio: [0, 1, 2]});
+        execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_electron.log", {stdio: [0, 1, 2]});
         resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
