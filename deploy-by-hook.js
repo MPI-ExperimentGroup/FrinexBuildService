@@ -383,14 +383,19 @@ function deployProductionAdmin(listing, currentEntry) {
 function buildApk(buildName, stage) {
     console.log("starting cordova build");
     storeResult(buildName, "building", stage, "android", false, true, false);
+    var resultString = "";
     try {
-        execSync('docker run -it -v gwt-cordova/target:/target frinexapps bash /target/setup-cordova.sh', {stdio: [0, 1, 2]});
+        if (fs.existsSync(targetDirectory + "/" + buildName + "_" + stage + "_android.log")) {
+            fs.unlinkSync(targetDirectory + "/" + buildName + "_" + stage + "_android.log");
+        }
+        resultString += '<a href="' + buildName + "_" + stage + "_android.log" + '">log</a>';
+        storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
+        execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log", {stdio: [0, 1, 2]});
         resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
     }
     // copy the resulting zips and add links to the output JSON
-    var resultString = "";
     var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
     list.forEach(function (filename) {
         if (filename.endsWith("cordova.zip")) {
