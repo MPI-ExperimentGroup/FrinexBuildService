@@ -398,9 +398,13 @@ function buildApk(buildName, stage) {
     // copy the resulting zips and add links to the output JSON
     var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
     list.forEach(function (filename) {
+        if (filename.endsWith(".apk")) {
+            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_cordova.apk"));
+            resultString += '<a href="' + buildName + "_" + stage + "_cordova.apk" + '">apk</a>&nbsp;';
+        }
         if (filename.endsWith("cordova.zip")) {
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_cordova.zip"));
-            resultString += '<a href="' + buildName + "_" + stage + "_cordova.zip" + '">zip</a>';
+            resultString += '<a href="' + buildName + "_" + stage + "_cordova.zip" + '">zip</a>&nbsp;';
         }
     });
     console.log("build cordova finished");
@@ -415,7 +419,7 @@ function buildElectron(buildName, stage) {
         if (fs.existsSync(targetDirectory + "/" + buildName + "_" + stage + "_electron.log")) {
             fs.unlinkSync(targetDirectory + "/" + buildName + "_" + stage + "_electron.log");
         }
-        resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>';
+        resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
         execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_electron.log", {stdio: [0, 1, 2]});
         resultString += "built&nbsp;";
@@ -432,7 +436,7 @@ function buildElectron(buildName, stage) {
 //        }
         if (filename.endsWith("electron.zip")) {
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_electron.zip"));
-            resultString += '<a href="' + buildName + "_" + stage + "_electron.zip" + '">zip</a>';
+            resultString += '<a href="' + buildName + "_" + stage + "_electron.zip" + '">zip</a>&nbsp;';
         }
 //                mkdir /srv/target/electron
 //cp out/make/*linux*.zip ../with_simulus_example-linux.zip
