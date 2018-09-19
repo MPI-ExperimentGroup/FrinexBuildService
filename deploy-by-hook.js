@@ -436,6 +436,9 @@ function buildElectron(buildName, stage) {
 //        }
         if (filename.endsWith(".zip")) {
             var fileTypeString = "zip";
+            if (filename.indexOf("electron") > -1) {
+                fileTypeString = "src";
+            } else
             if (filename.indexOf("win32") > -1) {
                 fileTypeString = "win";
             } else
@@ -445,8 +448,10 @@ function buildElectron(buildName, stage) {
             if (filename.indexOf("linux") > -1) {
                 fileTypeString = "linux";
             }
-            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + filename));
-            resultString += '<a href="' + filename + '">' + fileTypeString + '</a>&nbsp;';
+            if (fileTypeString !== "zip") {
+                fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + filename));
+                resultString += '<a href="' + filename + '">' + fileTypeString + '</a>&nbsp;';
+            }
         }
 //                mkdir /srv/target/electron
 //cp out/make/*linux*.zip ../with_simulus_example-linux.zip
