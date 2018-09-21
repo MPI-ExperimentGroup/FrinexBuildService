@@ -390,7 +390,7 @@ function buildApk(buildName, stage) {
         }
         resultString += '<a href="' + buildName + "_" + stage + "_android.log" + '">log</a>';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
-        execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log", {stdio: [0, 1, 2]});
+        execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target,' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log", {stdio: [0, 1, 2]});
         resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
