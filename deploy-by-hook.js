@@ -388,10 +388,9 @@ function buildApk(buildName, stage) {
         if (fs.existsSync(targetDirectory + "/" + buildName + "_" + stage + "_android.log")) {
             fs.unlinkSync(targetDirectory + "/" + buildName + "_" + stage + "_android.log");
         }
-        resultString += '<a href="' + buildName + "_" + stage + "_android.log" + '">log</a>';
+        resultString += '<a href="' + buildName + "_" + stage + "_android.log" + '">log&nbsp;</a>';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log", {stdio: [0, 1, 2]});
-        resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
     }
@@ -404,7 +403,7 @@ function buildApk(buildName, stage) {
         }
         if (filename.endsWith("cordova.zip")) {
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_cordova.zip"));
-            resultString += '<a href="' + buildName + "_" + stage + "_cordova.zip" + '">zip</a>&nbsp;';
+            resultString += '<a href="' + buildName + "_" + stage + "_cordova.zip" + '">src</a>&nbsp;';
         }
     });
     console.log("build cordova finished");
