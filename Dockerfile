@@ -61,6 +61,7 @@ RUN cd init-setup-project \
 #RUN /usr/bin/npm install -g electron-compile
 #CMD ["/bin/bash"] [ls /target]#, "/target/setup-cordova.sh"]
 #WORKDIR /home/petwit/docker-testing
+RUN mkdir /FieldKitRecorder
 #COPY ~/android-keys/for-docker/android-keys /android-keys
 WORKDIR /target
 #VOLUME ["/target"]
