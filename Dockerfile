@@ -46,7 +46,7 @@ RUN npm install -g cordova
 RUN npm install -g electron-forge
 RUN electron-forge init init-setup-project
 RUN cd init-setup-project \
-    &&  npm install express
+    && npm install express
 RUN sed -i 's/squirrel/zip/g' init-setup-project/package.json \
     && cat init-setup-project/package.json
 RUN cd init-setup-project \
@@ -61,7 +61,7 @@ RUN cd init-setup-project \
 #RUN /usr/bin/npm install -g electron-compile
 #CMD ["/bin/bash"] [ls /target]#, "/target/setup-cordova.sh"]
 #WORKDIR /home/petwit/docker-testing
+COPY android-keys /android-keys
 RUN mkdir /FieldKitRecorder
-#COPY ~/android-keys/for-docker/android-keys /android-keys
 WORKDIR /target
 #VOLUME ["/target"]
