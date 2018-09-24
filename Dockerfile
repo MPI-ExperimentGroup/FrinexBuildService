@@ -63,5 +63,16 @@ RUN cd init-setup-project \
 #WORKDIR /home/petwit/docker-testing
 COPY android-keys /android-keys
 RUN mkdir /FieldKitRecorder
+
+RUN cordova create testapp nl.mpi.tg.eg.testapp testapp
+RUN cd testapp \
+    && cordova platform add ios
+RUN cd testapp \
+    && cordova platform add android
+RUN cd testapp \
+    && cordova requirements
+RUN cd testapp \
+    && cordova build
+
 WORKDIR /target
 #VOLUME ["/target"]
