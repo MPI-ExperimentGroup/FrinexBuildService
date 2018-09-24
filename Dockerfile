@@ -63,10 +63,11 @@ RUN cd init-setup-project \
 #WORKDIR /home/petwit/docker-testing
 COPY android-keys /android-keys
 RUN mkdir /FieldKitRecorder
-
+RUN apt-get -y install gradle
+RUN apt-get -y install zip
 RUN cordova create testapp nl.mpi.tg.eg.testapp testapp
-RUN cd testapp \
-    && cordova platform add ios
+#RUN cd testapp \
+#    && cordova platform add ios
 RUN cd testapp \
     && cordova platform add android
 RUN cd testapp \
