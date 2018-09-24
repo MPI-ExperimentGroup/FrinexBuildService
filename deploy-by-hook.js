@@ -388,7 +388,7 @@ function buildApk(buildName, stage) {
         if (fs.existsSync(targetDirectory + "/" + buildName + "_" + stage + "_android.log")) {
             fs.unlinkSync(targetDirectory + "/" + buildName + "_" + stage + "_android.log");
         }
-        resultString += '<a href="' + buildName + "_" + stage + "_android.log" + '">log&nbsp;</a>';
+        resultString += '<a href="' + buildName + "_" + stage + "_android.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log", {stdio: [0, 1, 2]});
     } catch (ex) {
@@ -507,7 +507,7 @@ function buildFromListing() {
                         var xmlPath = path.resolve(processingDirectory, xmlName);
                         console.log("Found _validation_error, checking for: " + xmlPath);
                         if (!fs.existsSync(xmlPath)) {
-                            var validationMessage = '<a href="' + fileNamePart + '.txt"">failed&nbsp;</a>';
+                            var validationMessage = '<a href="' + fileNamePart + '.txt"">failed</a>&nbsp;';
                             storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
                         }
                     }
@@ -527,7 +527,7 @@ function buildFromListing() {
                     var jsonPath = filenamePath.substring(0, filenamePath.length - 4) + ".json";
                     console.log(jsonPath);
                     if (fs.existsSync(jsonPath)) {
-                        validationMessage += '<a href="' + fileNamePart + '.json">json&nbsp;</a>';
+                        validationMessage += '<a href="' + fileNamePart + '.json">json</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
                     if (path.extname(filename) === ".xml") {
