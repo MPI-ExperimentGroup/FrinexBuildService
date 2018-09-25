@@ -47,7 +47,7 @@ RUN npm install -g electron-forge
 RUN electron-forge init init-setup-project
 RUN cd init-setup-project \
     && npm install express
-RUN sed -i 's/squirrel/zip/g' init-setup-project/package.json \
+RUN sed -i 's/\"squirrel/\"zip/g' init-setup-project/package.json \
     && cat init-setup-project/package.json
 RUN cd init-setup-project \
     && electron-forge make --platform=win32
@@ -64,7 +64,7 @@ RUN cd init-setup-project \
 COPY android-keys /android-keys
 RUN mkdir /FieldKitRecorder
 RUN apt-get -y install gradle
-RUN apt-get -y install zip
+RUN apt-get -y install zip imagemagick
 RUN cordova create testapp nl.mpi.tg.eg.testapp testapp
 #RUN cd testapp \
 #    && cordova platform add ios
