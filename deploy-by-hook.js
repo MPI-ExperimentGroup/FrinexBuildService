@@ -442,8 +442,11 @@ function buildElectron(buildName, stage) {
             if (filename.indexOf("electron") > -1) {
                 fileTypeString = "src";
             } else
-            if (filename.indexOf("win32") > -1) {
-                fileTypeString = "win";
+            if (filename.indexOf("win32-ia32") > -1) {
+                fileTypeString = "win32";
+            } else
+            if (filename.indexOf("win32-x64") > -1) {
+                fileTypeString = "win64";
             } else
             if (filename.indexOf("darwin") > -1) {
                 fileTypeString = "mac";
