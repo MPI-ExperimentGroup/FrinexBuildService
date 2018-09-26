@@ -459,6 +459,11 @@ function buildElectron(buildName, stage) {
                 resultString += '<a href="' + filename + '">' + fileTypeString + '</a>&nbsp;';
             }
         }
+        if (filename.endsWith(".asar")) {
+            var fileTypeString = "asar";
+            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + filename));
+            resultString += '<a href="' + filename + '">' + fileTypeString + '</a>&nbsp;';
+        }
 //                mkdir /srv/target/electron
 //cp out/make/*linux*.zip ../with_simulus_example-linux.zip
 //cp out/make/*win32*.zip ../with_simulus_example-win32.zip
