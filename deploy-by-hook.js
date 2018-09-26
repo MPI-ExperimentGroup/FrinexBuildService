@@ -384,6 +384,7 @@ function buildApk(buildName, stage) {
     console.log("starting cordova build");
     storeResult(buildName, "building", stage, "android", false, true, false);
     var resultString = "";
+    var hasFailed = false;
     try {
         if (fs.existsSync(targetDirectory + "/" + buildName + "_" + stage + "_android.log")) {
             fs.unlinkSync(targetDirectory + "/" + buildName + "_" + stage + "_android.log");
@@ -393,6 +394,7 @@ function buildApk(buildName, stage) {
         execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log", {stdio: [0, 1, 2]});
     } catch (ex) {
         resultString += "failed&nbsp;";
+        hasFailed = true;
     }
     // copy the resulting zips and add links to the output JSON
     var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
@@ -411,13 +413,14 @@ function buildApk(buildName, stage) {
         }
     });
     console.log("build cordova finished");
-    storeResult(buildName, resultString, stage, "android", false, false, true);
+    storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
 }
 
 function buildElectron(buildName, stage) {
     console.log("starting electron build");
     storeResult(buildName, "building", stage, "desktop", false, true, false);
     var resultString = "";
+    var hasFailed = false;
     try {
         if (fs.existsSync(targetDirectory + "/" + buildName + "_" + stage + "_electron.log")) {
             fs.unlinkSync(targetDirectory + "/" + buildName + "_" + stage + "_electron.log");
@@ -428,6 +431,7 @@ function buildElectron(buildName, stage) {
 //        resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
+        hasFailed = true;
     }
     // copy the resulting zips and add links to the output JSON
     var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
@@ -470,7 +474,7 @@ function buildElectron(buildName, stage) {
 //cp out/make/*darwin*.zip ../with_simulus_example-darwin.zip
     });    //- todo: copy the resutting zips and add links to the output JSON
     console.log("build electron finished");
-    storeResult(buildName, resultString, stage, "desktop", false, false, true);
+    storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
 }
 
 function buildNextExperiment(listing) {
