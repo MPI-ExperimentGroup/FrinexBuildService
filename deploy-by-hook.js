@@ -682,6 +682,11 @@ function moveIncomingToProcessing() {
                     var targetName = path.resolve(targetDirectory, filename);
                     console.log('moved XSD from incoming to target: ' + filename);
                     fs.renameSync(incomingFile, targetName);
+                } else if (filename.endsWith("frinex.html")) {
+                    // place the generated documentation file for use in web browsers
+                    var targetName = path.resolve(targetDirectory, filename);
+                    console.log('moved HTML from incoming to target: ' + filename);
+                    fs.renameSync(incomingFile, targetName);
                 } else if (filename.endsWith("_validation_error.txt")) {
                     var processingName = path.resolve(processingDirectory, filename);
                     fs.renameSync(incomingFile, processingName);
