@@ -55,7 +55,7 @@ const listingJsonFiles = properties.get('settings.listingJsonFiles');
 var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755});
 
 var buildHistoryFileName = targetDirectory + "/buildhistory.json";
-var buildArtifactsFileName = targetDirectory + "/applisting.json";
+var buildArtifactsFileName = __dirname + "/gwt-cordova/target/artifacts.json";
 var buildHistoryJson = {table: {}};
 var buildArtifactsJson = {artifacts: {}};
 if (fs.existsSync(buildHistoryFileName)) {
@@ -417,7 +417,7 @@ function buildApk(buildName, stage) {
     });
     console.log("build cordova finished");
     storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
-//  update applisting.json
+//  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4));
 }
 
@@ -482,7 +482,7 @@ function buildElectron(buildName, stage) {
     });    //- todo: copy the resutting zips and add links to the output JSON
     console.log("build electron finished");
     storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
-//  update applisting.json
+//  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4));
 }
 
