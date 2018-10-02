@@ -55,7 +55,9 @@ const listingJsonFiles = properties.get('settings.listingJsonFiles');
 var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755});
 
 var buildHistoryFileName = targetDirectory + "/buildhistory.json";
+var buildArtifactsFileName = targetDirectory + "/applisting.json";
 var buildHistoryJson = {table: {}};
+var buildArtifactsJson = {artifacts: {}};
 if (fs.existsSync(buildHistoryFileName)) {
     try {
         buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
@@ -402,6 +404,7 @@ function buildApk(buildName, stage) {
         if (filename.endsWith(".apk")) {
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_cordova.apk"));
             resultString += '<a href="' + buildName + "_" + stage + "_cordova.apk" + '">apk</a>&nbsp;';
+            buildArtifactsJson.artifacts.apk = filename;
         }
         if (filename.endsWith("cordova.zip")) {
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_cordova.zip"));
@@ -414,6 +417,8 @@ function buildApk(buildName, stage) {
     });
     console.log("build cordova finished");
     storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
+//  update applisting.json
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4));
 }
 
 function buildElectron(buildName, stage) {
@@ -461,12 +466,14 @@ function buildElectron(buildName, stage) {
             if (fileTypeString !== "zip") {
                 fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + filename));
                 resultString += '<a href="' + filename + '">' + fileTypeString + '</a>&nbsp;';
+                buildArtifactsJson.artifacts[fileTypeString] = filename;
             }
         }
         if (filename.endsWith(".asar")) {
             var fileTypeString = "asar";
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + filename));
             resultString += '<a href="' + filename + '">' + fileTypeString + '</a>&nbsp;';
+            buildArtifactsJson.artifacts[fileTypeString] = filename;
         }
 //                mkdir /srv/target/electron
 //cp out/make/*linux*.zip ../with_simulus_example-linux.zip
@@ -475,6 +482,8 @@ function buildElectron(buildName, stage) {
     });    //- todo: copy the resutting zips and add links to the output JSON
     console.log("build electron finished");
     storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
+//  update applisting.json
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4));
 }
 
 function buildNextExperiment(listing) {
