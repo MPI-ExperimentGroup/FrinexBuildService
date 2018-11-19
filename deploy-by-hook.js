@@ -464,9 +464,10 @@ function buildElectron(buildName, stage) {
                 fileTypeString = "linux";
             }
             if (fileTypeString !== "zip") {
-                fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + filename));
-                resultString += '<a href="' + filename + '">' + fileTypeString + '</a>&nbsp;';
-                buildArtifactsJson.artifacts[fileTypeString] = filename;
+                var finalName = buildName + "_" + stage + "_" + fileTypeString + ".zip";
+                fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + finalName));
+                resultString += '<a href="' + finalName + '">' + fileTypeString + '</a>&nbsp;';
+                buildArtifactsJson.artifacts[fileTypeString] = finalName;
             }
         }
         if (filename.endsWith(".asar")) {
