@@ -177,6 +177,53 @@ function stopUpdatingResults() {
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
 
+function unDeploy(listing, currentEntry) {
+    console.log("request to unDeploy " + currentEntry.buildName);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">undeploying</a>', "staging", "web", false, true, false);
+    mvngui.execute(['tomcat7:undeploy'], {
+        'skipTests': true, '-pl': 'frinex-gui',
+        'experiment.configuration.name': currentEntry.buildName,
+        'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+        'experiment.webservice': configServer,
+        'experiment.configuration.path': processingDirectory,
+        'versionCheck.allowSnapshots': 'true',
+        'versionCheck.buildType': 'stable',
+        'experiment.destinationServer': stagingServer,
+        'experiment.destinationServerUrl': stagingServerUrl
+    }).then(function (value) {
+        console.log("frinex-gui undeploy finished");
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;undeployed', "staging", "web", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false);
+        mvnadmin.execute(['tomcat7:undeploy'], {
+            'skipTests': true, '-pl': 'frinex-admin',
+            'experiment.configuration.name': currentEntry.buildName,
+            'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+            'experiment.webservice': configServer,
+            'experiment.configuration.path': processingDirectory,
+            'versionCheck.allowSnapshots': 'true',
+            'versionCheck.buildType': 'stable',
+            'experiment.destinationServer': stagingServer,
+            'experiment.destinationServerUrl': stagingServerUrl
+        }).then(function (value) {
+            console.log(value);
+            console.log("frinex-admin undeploy finished");
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;undeployed', "staging", "admin", false, false, true);
+            buildNextExperiment(listing);
+        }, function (reason) {
+            console.log(reason);
+            console.log("frinex-admin undeploy failed");
+            console.log(currentEntry.experimentDisplayName);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">undeploy failed</a>', "staging", "admin", true, false, false);
+            buildNextExperiment(listing);
+        });
+    }, function (reason) {
+        console.log(reason);
+        console.log("frinex-gui undeploy failed");
+        console.log(currentEntry.experimentDisplayName);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">undeploy failed</a>', "staging", "web", true, false, false);
+        buildNextExperiment(listing);
+    });
+}
 
 function deployStagingGui(listing, currentEntry) {
     // we create a new mvn instance for each child pom
@@ -203,7 +250,8 @@ function deployStagingGui(listing, currentEntry) {
         'experiment.destinationServerUrl': stagingServerUrl,
         'experiment.groupsSocketUrl': stagingGroupsSocketUrl,
         'experiment.isScaleable': currentEntry.isScaleable,
-        'experiment.defaultScale': currentEntry.defaultScale
+        'experiment.defaultScale': currentEntry.defaultScale,
+        'experiment.registrationUrl': currentEntry.registrationUrlStaging
 //                    'experiment.scriptSrcUrl': stagingServerUrl,
 //                    'experiment.staticFilesUrl': stagingServerUrl
     }).then(function (value) {
@@ -311,7 +359,8 @@ function deployProductionGui(listing, currentEntry) {
                     'experiment.destinationServerUrl': productionServerUrl,
                     'experiment.groupsSocketUrl': productionGroupsSocketUrl,
                     'experiment.isScaleable': currentEntry.isScaleable,
-                    'experiment.defaultScale': currentEntry.defaultScale
+                    'experiment.defaultScale': currentEntry.defaultScale,
+                    'experiment.registrationUrl': currentEntry.registrationUrlProduction
 //                            'experiment.scriptSrcUrl': productionServerUrl,
 //                            'experiment.staticFilesUrl': productionServerUrl
                 }).then(function (value) {
@@ -466,6 +515,9 @@ function buildElectron(buildName, stage) {
             if (fileTypeString !== "zip") {
                 var finalName = buildName + "_" + stage + "_" + fileTypeString + ".zip";
                 fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + finalName));
+                if (filename !== finalName) {
+                    fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(__dirname + "/gwt-cordova/target/" + finalName));
+                }
                 resultString += '<a href="' + finalName + '">' + fileTypeString + '</a>&nbsp;';
                 buildArtifactsJson.artifacts[fileTypeString] = finalName;
             }
@@ -495,6 +547,8 @@ function buildNextExperiment(listing) {
 //                execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
         if (currentEntry.state === "staging" || currentEntry.state === "production") {
             deployStagingGui(listing, currentEntry);
+        } else if (currentEntry.state === "undeploy") {
+            unDeploy(listing, currentEntry);
         } else {
             buildNextExperiment(listing);
         }
