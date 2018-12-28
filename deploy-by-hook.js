@@ -178,8 +178,13 @@ function stopUpdatingResults() {
 }
 
 function unDeploy(listing, currentEntry) {
+    // we create a new mvn instance for each child pom
+    var mvngui = require('maven').create({
+        cwd: __dirname + "/gwt-cordova",
+        settings: m2Settings
+    });
     console.log("request to unDeploy " + currentEntry.buildName);
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">undeploying</a>', "staging", "web", false, true, false);
+    storeResult(currentEntry.buildName, 'undeploying', "staging", "web", false, true, false);
     mvngui.execute(['tomcat7:undeploy'], {
         'skipTests': true, '-pl': 'frinex-gui',
         'experiment.configuration.name': currentEntry.buildName,
@@ -192,8 +197,12 @@ function unDeploy(listing, currentEntry) {
         'experiment.destinationServerUrl': stagingServerUrl
     }).then(function (value) {
         console.log("frinex-gui undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;undeployed', "staging", "web", false, false, true);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false);
+        storeResult(currentEntry.buildName, 'undeployed', "staging", "web", false, false, true);
+        var mvnadmin = require('maven').create({
+            cwd: __dirname + "/registration",
+            settings: m2Settings
+        });
+        storeResult(currentEntry.buildName, 'undeploying', "staging", "admin", false, true, false);
         mvnadmin.execute(['tomcat7:undeploy'], {
             'skipTests': true, '-pl': 'frinex-admin',
             'experiment.configuration.name': currentEntry.buildName,
@@ -207,20 +216,20 @@ function unDeploy(listing, currentEntry) {
         }).then(function (value) {
             console.log(value);
             console.log("frinex-admin undeploy finished");
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;undeployed', "staging", "admin", false, false, true);
+            storeResult(currentEntry.buildName, 'undeployed', "staging", "admin", false, false, true);
             buildNextExperiment(listing);
         }, function (reason) {
             console.log(reason);
             console.log("frinex-admin undeploy failed");
             console.log(currentEntry.experimentDisplayName);
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">undeploy failed</a>', "staging", "admin", true, false, false);
+            storeResult(currentEntry.buildName, 'undeploy failed', "staging", "admin", true, false, false);
             buildNextExperiment(listing);
         });
     }, function (reason) {
         console.log(reason);
         console.log("frinex-gui undeploy failed");
         console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">undeploy failed</a>', "staging", "web", true, false, false);
+        storeResult(currentEntry.buildName, 'undeploy failed', "staging", "web", true, false, false);
         buildNextExperiment(listing);
     });
 }
