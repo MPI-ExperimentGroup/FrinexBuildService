@@ -538,9 +538,9 @@ function buildElectron(buildName, stage) {
             buildArtifactsJson.artifacts[fileTypeString] = filename;
         }
 //                mkdir /srv/target/electron
-//cp out/make/*linux*.zip ../with_simulus_example-linux.zip
-//cp out/make/*win32*.zip ../with_simulus_example-win32.zip
-//cp out/make/*darwin*.zip ../with_simulus_example-darwin.zip
+//cp out/make/*linux*.zip ../with_stimulus_example-linux.zip
+//cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
+//cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     });    //- todo: copy the resutting zips and add links to the output JSON
     console.log("build electron finished");
     storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
