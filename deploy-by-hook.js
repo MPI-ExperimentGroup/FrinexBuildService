@@ -217,7 +217,53 @@ function unDeploy(listing, currentEntry) {
             console.log(value);
             console.log("frinex-admin undeploy finished");
             storeResult(currentEntry.buildName, 'undeployed', "staging", "admin", false, false, true);
+//            mvngui.execute(['tomcat7:undeploy'], {
+//                'skipTests': true, '-pl': 'frinex-gui',
+//                'experiment.configuration.name': currentEntry.buildName,
+//                'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+//                'experiment.webservice': configServer,
+//                'experiment.configuration.path': processingDirectory,
+//                'versionCheck.allowSnapshots': 'true',
+//                'versionCheck.buildType': 'stable',
+//                'experiment.destinationServer': productionServer,
+//                'experiment.destinationServerUrl': productionServerUrl
+//            }).then(function (value) {
+//                console.log("frinex-gui undeploy finished");
+//                storeResult(currentEntry.buildName, 'undeployed', "production", "web", false, false, true);
+//                var mvnadmin = require('maven').create({
+//                    cwd: __dirname + "/registration",
+//                    settings: m2Settings
+//                });
+//                storeResult(currentEntry.buildName, 'undeploying', "production", "admin", false, true, false);
+//                mvnadmin.execute(['tomcat7:undeploy'], {
+//                    'skipTests': true, '-pl': 'frinex-admin',
+//                    'experiment.configuration.name': currentEntry.buildName,
+//                    'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+//                    'experiment.webservice': configServer,
+//                    'experiment.configuration.path': processingDirectory,
+//                    'versionCheck.allowSnapshots': 'true',
+//                    'versionCheck.buildType': 'stable',
+//                    'experiment.destinationServer': productionServer,
+//                    'experiment.destinationServerUrl': productionServerUrl
+//                }).then(function (value) {
+//                    console.log(value);
+//                    console.log("frinex-admin undeploy finished");
+//                    storeResult(currentEntry.buildName, 'undeployed', "production", "admin", false, false, true);
+//                    buildNextExperiment(listing);
+//                }, function (reason) {
+//                    console.log(reason);
+//                    console.log("frinex-admin undeploy failed");
+//                    console.log(currentEntry.experimentDisplayName);
+//                    storeResult(currentEntry.buildName, 'undeploy failed', "production", "admin", true, false, false);
             buildNextExperiment(listing);
+//                });
+//            }, function (reason) {
+//                console.log(reason);
+//                console.log("frinex-gui undeploy failed");
+//                console.log(currentEntry.experimentDisplayName);
+//                storeResult(currentEntry.buildName, 'undeploy failed', "staging", "web", true, false, false);
+//                buildNextExperiment(listing);
+//            });
         }, function (reason) {
             console.log(reason);
             console.log("frinex-admin undeploy failed");
@@ -605,7 +651,23 @@ function buildFromListing() {
                     remainingFiles--;
                     initialiseResult(fileNamePart, 'disabled', true);
                     console.log("this script will not build multiparticipant without manual intervention");
-                } else if (filename !== "listing.json") {
+                } else if (filename === "listing.json") {
+                    // read through this commited listing json file and look for undeploy targets then add them to the list if they are not already there
+                    var commitedlistingJsonData = JSON.parse(fs.readFileSync(path.resolve(processingDirectory, filename), 'utf8'));
+                    for (var listingIndex in commitedlistingJsonData) {
+                        if (commitedlistingJsonData[listingIndex].state === "undeploy") {
+                            var foundCount = 0;
+                            for (var index in listingJsonArray) {
+                                if (listingJsonArray[index].buildName === commitedlistingJsonData[listingIndex].buildName) {
+                                    foundCount++;
+                                }
+                            }
+                            if (foundCount === 0) {
+                                listingJsonArray.push(commitedlistingJsonData[listingIndex]);
+                            }
+                        }
+                    }
+                } else {
                     initialiseResult(fileNamePart, 'queued', false);
                     var validationMessage = "";
                     var filenamePath = path.resolve(processingDirectory, filename);
