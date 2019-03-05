@@ -87,6 +87,7 @@ function startResult() {
     resultsFile.write("<a href='git-push-out.txt'>out</a>&nbsp;\n");
     resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
     resultsFile.write("<script>\n");
+    resultsFile.write("var applicationStatus = []\n");
     resultsFile.write("function doUpdate() {\n");
     resultsFile.write("$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
 //    resultsFile.write("console.log(data);\n");
@@ -97,6 +98,21 @@ function startResult() {
     resultsFile.write("var tableRow = document.createElement('tr');\n");
     resultsFile.write("tableRow.id = keyString+ '_row';\n");
     resultsFile.write("document.getElementById('buildTable').appendChild(tableRow);\n");
+    // check the spring health here and show http and db status via applicationStatus array
+    resultsFile.write("$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/health', function(data) {\n");
+    resultsFile.write("$.each(data, function (key, val) {\n");
+    resultsFile.write("if (key === 'status' && val === 'UP') {\n");
+    resultsFile.write("applicationStatus.push(keyString + '__staging_web');\n");
+    resultsFile.write("}\n");
+    resultsFile.write("});\n");
+    resultsFile.write("});\n");
+    resultsFile.write("$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/health', function(data) {\n");
+    resultsFile.write("$.each(data, function (key, val) {\n");
+    resultsFile.write("if (key === 'status' && val === 'UP') {\n");
+    resultsFile.write("applicationStatus.push(keyString + '__production_web');\n");
+    resultsFile.write("}\n");
+    resultsFile.write("});\n");
+    resultsFile.write("});\n");
     resultsFile.write("}\n");
     resultsFile.write("for (var cellString in data.table[keyString]) {\n");
 //    resultsFile.write("console.log(cellString);\n");
@@ -107,7 +123,7 @@ function startResult() {
     resultsFile.write("document.getElementById(keyString + '_row').appendChild(tableCell);\n");
     resultsFile.write("}\n");
     resultsFile.write("document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value;\n");
-    resultsFile.write("document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style;\n");
+    resultsFile.write("document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + ($.inArray(keyString + '_' + cellString, applicationStatus ))?';border-right: 5px solid green;':'';\n");
     resultsFile.write("}\n");
     resultsFile.write("}\n");
     resultsFile.write("if(data.building){\n");
@@ -217,53 +233,53 @@ function unDeploy(listing, currentEntry) {
             console.log(value);
             console.log("frinex-admin undeploy finished");
             storeResult(currentEntry.buildName, 'undeployed', "staging", "admin", false, false, true);
-//            mvngui.execute(['tomcat7:undeploy'], {
-//                'skipTests': true, '-pl': 'frinex-gui',
-//                'experiment.configuration.name': currentEntry.buildName,
-//                'experiment.configuration.displayName': currentEntry.experimentDisplayName,
-//                'experiment.webservice': configServer,
-//                'experiment.configuration.path': processingDirectory,
-//                'versionCheck.allowSnapshots': 'true',
-//                'versionCheck.buildType': 'stable',
-//                'experiment.destinationServer': productionServer,
-//                'experiment.destinationServerUrl': productionServerUrl
-//            }).then(function (value) {
-//                console.log("frinex-gui undeploy finished");
-//                storeResult(currentEntry.buildName, 'undeployed', "production", "web", false, false, true);
-//                var mvnadmin = require('maven').create({
-//                    cwd: __dirname + "/registration",
-//                    settings: m2Settings
-//                });
-//                storeResult(currentEntry.buildName, 'undeploying', "production", "admin", false, true, false);
-//                mvnadmin.execute(['tomcat7:undeploy'], {
-//                    'skipTests': true, '-pl': 'frinex-admin',
-//                    'experiment.configuration.name': currentEntry.buildName,
-//                    'experiment.configuration.displayName': currentEntry.experimentDisplayName,
-//                    'experiment.webservice': configServer,
-//                    'experiment.configuration.path': processingDirectory,
-//                    'versionCheck.allowSnapshots': 'true',
-//                    'versionCheck.buildType': 'stable',
-//                    'experiment.destinationServer': productionServer,
-//                    'experiment.destinationServerUrl': productionServerUrl
-//                }).then(function (value) {
-//                    console.log(value);
-//                    console.log("frinex-admin undeploy finished");
-//                    storeResult(currentEntry.buildName, 'undeployed', "production", "admin", false, false, true);
-//                    buildNextExperiment(listing);
-//                }, function (reason) {
-//                    console.log(reason);
-//                    console.log("frinex-admin undeploy failed");
-//                    console.log(currentEntry.experimentDisplayName);
-//                    storeResult(currentEntry.buildName, 'undeploy failed', "production", "admin", true, false, false);
-            buildNextExperiment(listing);
-//                });
-//            }, function (reason) {
-//                console.log(reason);
-//                console.log("frinex-gui undeploy failed");
-//                console.log(currentEntry.experimentDisplayName);
-//                storeResult(currentEntry.buildName, 'undeploy failed', "staging", "web", true, false, false);
-//                buildNextExperiment(listing);
-//            });
+            mvngui.execute(['tomcat7:undeploy'], {
+                'skipTests': true, '-pl': 'frinex-gui',
+                'experiment.configuration.name': currentEntry.buildName,
+                'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+                'experiment.webservice': configServer,
+                'experiment.configuration.path': processingDirectory,
+                'versionCheck.allowSnapshots': 'true',
+                'versionCheck.buildType': 'stable',
+                'experiment.destinationServer': productionServer,
+                'experiment.destinationServerUrl': productionServerUrl
+            }).then(function (value) {
+                console.log("frinex-gui undeploy finished");
+                storeResult(currentEntry.buildName, 'undeployed', "production", "web", false, false, true);
+                var mvnadmin = require('maven').create({
+                    cwd: __dirname + "/registration",
+                    settings: m2Settings
+                });
+                storeResult(currentEntry.buildName, 'undeploying', "production", "admin", false, true, false);
+                mvnadmin.execute(['tomcat7:undeploy'], {
+                    'skipTests': true, '-pl': 'frinex-admin',
+                    'experiment.configuration.name': currentEntry.buildName,
+                    'experiment.configuration.displayName': currentEntry.experimentDisplayName,
+                    'experiment.webservice': configServer,
+                    'experiment.configuration.path': processingDirectory,
+                    'versionCheck.allowSnapshots': 'true',
+                    'versionCheck.buildType': 'stable',
+                    'experiment.destinationServer': productionServer,
+                    'experiment.destinationServerUrl': productionServerUrl
+                }).then(function (value) {
+                    console.log(value);
+                    console.log("frinex-admin undeploy finished");
+                    storeResult(currentEntry.buildName, 'undeployed', "production", "admin", false, false, true);
+                    buildNextExperiment(listing);
+                }, function (reason) {
+                    console.log(reason);
+                    console.log("frinex-admin undeploy failed");
+                    console.log(currentEntry.experimentDisplayName);
+                    storeResult(currentEntry.buildName, 'undeploy failed', "production", "admin", true, false, false);
+                    buildNextExperiment(listing);
+                });
+            }, function (reason) {
+                console.log(reason);
+                console.log("frinex-gui undeploy failed");
+                console.log(currentEntry.experimentDisplayName);
+                storeResult(currentEntry.buildName, 'undeploy failed', "staging", "web", true, false, false);
+                buildNextExperiment(listing);
+            });
         }, function (reason) {
             console.log(reason);
             console.log("frinex-admin undeploy failed");
