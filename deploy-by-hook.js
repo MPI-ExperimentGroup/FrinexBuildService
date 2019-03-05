@@ -87,7 +87,7 @@ function startResult() {
     resultsFile.write("<a href='git-push-out.txt'>out</a>&nbsp;\n");
     resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
     resultsFile.write("<script>\n");
-    resultsFile.write("var applicationStatus = []\n");
+    resultsFile.write("var applicationStatus = {}\n");
     resultsFile.write("function doUpdate() {\n");
     resultsFile.write("$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
 //    resultsFile.write("console.log(data);\n");
@@ -101,15 +101,23 @@ function startResult() {
     // check the spring health here and show http and db status via applicationStatus array
     resultsFile.write("$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/health', function(data) {\n");
     resultsFile.write("$.each(data, function (key, val) {\n");
-    resultsFile.write("if (key === 'status' && val === 'UP') {\n");
-    resultsFile.write("applicationStatus.push(keyString + '__staging_web');\n");
+    resultsFile.write("if (key === 'status') {\n");
+    resultsFile.write("if (val === 'UP') {\n");
+    resultsFile.write("applicationStatus[keyString + '__staging_web'] = 'green';\n");
+    resultsFile.write("} else {\n");
+    resultsFile.write("applicationStatus[keyString + '__staging_web'] = 'red';\n");
+    resultsFile.write("}\n");
     resultsFile.write("}\n");
     resultsFile.write("});\n");
     resultsFile.write("});\n");
     resultsFile.write("$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/health', function(data) {\n");
     resultsFile.write("$.each(data, function (key, val) {\n");
-    resultsFile.write("if (key === 'status' && val === 'UP') {\n");
-    resultsFile.write("applicationStatus.push(keyString + '__production_web');\n");
+    resultsFile.write("if (key === 'status') {\n");
+    resultsFile.write("if (val === 'UP') {\n");
+    resultsFile.write("applicationStatus[keyString + '__production_web'] = 'red';\n");
+    resultsFile.write("} else {\n");
+    resultsFile.write("applicationStatus[keyString + '__production_web'] = 'grey';\n");
+    resultsFile.write("}\n");
     resultsFile.write("}\n");
     resultsFile.write("});\n");
     resultsFile.write("});\n");
@@ -123,7 +131,9 @@ function startResult() {
     resultsFile.write("document.getElementById(keyString + '_row').appendChild(tableCell);\n");
     resultsFile.write("}\n");
     resultsFile.write("document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value;\n");
-    resultsFile.write("document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + ($.inArray(keyString + '_' + cellString, applicationStatus ))?';border-right: 5px solid green;':'';\n");
+//    resultsFile.write("var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
+    resultsFile.write("var statusStyle = (keyString + '_' + cellString in applicationStatus)?';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';':'';\n");
+    resultsFile.write("document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
     resultsFile.write("}\n");
     resultsFile.write("}\n");
     resultsFile.write("if(data.building){\n");
