@@ -87,7 +87,7 @@ function startResult() {
     resultsFile.write("<a href='git-push-out.txt'>out</a>&nbsp;\n");
     resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
     resultsFile.write("<script>\n");
-    resultsFile.write("var applicationStatus = {}\n");
+    resultsFile.write("var applicationStatus = {};\n");
     resultsFile.write("function doUpdate() {\n");
     resultsFile.write("$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
 //    resultsFile.write("console.log(data);\n");
