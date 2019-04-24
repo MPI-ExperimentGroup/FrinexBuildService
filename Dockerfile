@@ -27,7 +27,8 @@ RUN apt-get -y install unzip zip mono-devel
 RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get -y install nodejs
-ENV ANDROID_VERSION=27 \
+ENV ANDROID_VERSION=28 \
+    ANDROID_HOME=/android-sdk \
     ANDROID_BUILD_TOOLS_VERSION=27.0.3
 RUN mkdir /android-sdk \
     && cd /android-sdk \
@@ -46,9 +47,9 @@ RUN npm install -g cordova
 RUN npm install -g electron-forge
 RUN electron-forge init init-setup-project
 RUN cd init-setup-project \
-    && npm install express
+&& npm install express
 RUN sed -i 's/\"squirrel/\"zip/g' init-setup-project/package.json \
-    && cat init-setup-project/package.json
+ && cat init-setup-project/package.json 
 RUN cd init-setup-project \
     && electron-forge make --platform=win32
 RUN cd init-setup-project \
@@ -74,6 +75,30 @@ RUN cd testapp \
     && cordova requirements
 RUN cd testapp \
     && cordova build
+
+RUN apt-get -y install maven
+
+RUN git clone --depth 20000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
+
+RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
+
+RUN cd /ExperimentTemplate \
+    && sed -i '/war/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all gwt-cordova)'-testing/}' gwt-cordova/pom.xml
+RUN cd /ExperimentTemplate \
+    && sed -i '/adaptive-vocabulary-assessment-module/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all AdaptiveVocabularyAssessmentModule)'-testing/}' /ExperimentTemplate/AdaptiveVocabularyAssessmentModule/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml
+RUN cd /ExperimentTemplate \
+    && sed -i '/Frinex Experiment Designer/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all ExperimentDesigner)'-testing/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
+RUN cd /ExperimentTemplate \
+    && sed -i '/frinex-admin/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all registration)'-testing/}' /ExperimentTemplate/registration/pom.xml
+RUN cd /ExperimentTemplate \
+    && sed -i '/common/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all common)'-testing/}' /ExperimentTemplate/common/pom.xml /ExperimentTemplate/registration/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml \
+    && sed -i '/common/{n;s/${project.version}/0.1.'$(git rev-list --count --all common)'-testing/}' /ExperimentTemplate/AdaptiveVocabularyAssessmentModule/pom.xml
+RUN cd /ExperimentTemplate \
+    && sed -i '/frinex-parent/{n;s/0.1-testing-SNAPSHOT/0.1.'$(expr $(git rev-list --count --all) - 1)'-testing/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
+    && sed -i '/Frinex Parent/{n;s/0.1-testing-SNAPSHOT/0.1.'$(expr $(git rev-list --count --all) - 1)'-testing/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
+
+RUN cd /ExperimentTemplate \
+    && mvn install
 
 WORKDIR /target
 #VOLUME ["/target"]
