@@ -22,12 +22,11 @@
 
 FROM openjdk:8
 RUN apt-get update
-#RUN apt-get -y upgrade
-RUN apt-get -y install unzip zip mono-devel
+RUN apt-get -y upgrade
+RUN apt-get -y install unzip zip mono-devel gradle imagemagick maven nodejs build-essential
 RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get -y install nodejs
-ENV ANDROID_VERSION=28 \
+ENV ANDROID_VERSION=27 \
     ANDROID_HOME=/android-sdk \
     ANDROID_BUILD_TOOLS_VERSION=27.0.3
 RUN mkdir /android-sdk \
@@ -64,19 +63,16 @@ RUN cd init-setup-project \
 #WORKDIR /home/petwit/docker-testing
 COPY android-keys /android-keys
 RUN mkdir /FieldKitRecorder
-RUN apt-get -y install gradle
-RUN apt-get -y install zip imagemagick
 RUN cordova create testapp nl.mpi.tg.eg.testapp testapp
 #RUN cd testapp \
 #    && cordova platform add ios
 RUN cd testapp \
-    && cordova platform add android
+    && cordova platform add android@~7.1.1
 RUN cd testapp \
     && cordova requirements
 RUN cd testapp \
     && cordova build
 
-RUN apt-get -y install maven
 
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
