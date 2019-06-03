@@ -43,7 +43,7 @@ RUN /android-sdk/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION
 #RUN apt-get -y install git node.js npm mono-devel
 #RUN npm config set strict-ssl false # todo: remove this stale ssl work around 
 RUN npm install npm -g # update npm
-RUN npm install -g cordova
+RUN npm install -g cordova@8.1.2
 RUN npm install -g electron-forge
 RUN electron-forge init init-setup-project
 RUN cd init-setup-project \
@@ -78,7 +78,7 @@ RUN cd testapp \
 
 RUN apt-get -y install maven
 
-RUN git clone --depth 20000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
+RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
 RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
 
