@@ -67,7 +67,7 @@ RUN cordova create testapp nl.mpi.tg.eg.testapp testapp
 #RUN cd testapp \
 #    && cordova platform add ios
 RUN cd testapp \
-    && cordova platform add android@~7.1.1
+    && cordova platform add android@~8.0.0
 RUN cd testapp \
     && cordova requirements
 RUN cd testapp \
