@@ -21,14 +21,14 @@
 #
 
 FROM openjdk:8
-RUN apt-get update
-RUN apt-get -y upgrade
-RUN apt-get -y install unzip zip mono-devel gradle imagemagick maven nodejs build-essential
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get update # --fix-missing
+RUN apt-get -y upgrade # --fix-missing
+RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs npm
 RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-ENV ANDROID_VERSION=27 \
+ENV ANDROID_VERSION=28 \
     ANDROID_HOME=/android-sdk \
-    ANDROID_BUILD_TOOLS_VERSION=27.0.3
+    ANDROID_BUILD_TOOLS_VERSION=29.0.0
 RUN mkdir /android-sdk \
     && cd /android-sdk \
     && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
@@ -42,7 +42,7 @@ RUN /android-sdk/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION
 #RUN apt-get -y install git node.js npm mono-devel
 #RUN npm config set strict-ssl false # todo: remove this stale ssl work around 
 RUN npm install npm -g # update npm
-RUN npm install -g cordova@8.1.2
+RUN npm install -g cordova@9.0.0
 RUN npm install -g electron-forge
 RUN electron-forge init init-setup-project
 RUN cd init-setup-project \
