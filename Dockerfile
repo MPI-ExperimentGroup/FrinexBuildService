@@ -26,9 +26,10 @@ RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
 RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs npm
 RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
-ENV ANDROID_VERSION=27 \
+ENV ANDROID_VERSION=28 \
     ANDROID_HOME=/android-sdk \
     ANDROID_BUILD_TOOLS_VERSION=29.0.0
+ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/tools
 RUN mkdir /android-sdk \
     && cd /android-sdk \
     && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
