@@ -24,7 +24,7 @@ FROM openjdk:8
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
-RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs npm
+RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs npm vim
 RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
 ENV ANDROID_VERSION=28 \
     ANDROID_HOME=/android-sdk \
@@ -63,18 +63,6 @@ RUN cd init-setup-project \
 #CMD ["/bin/bash"] [ls /target]#, "/target/setup-cordova.sh"]
 #WORKDIR /home/petwit/docker-testing
 COPY android-keys /android-keys
-RUN mkdir /FieldKitRecorder
-RUN cordova create testapp nl.mpi.tg.eg.testapp testapp
-#RUN cd testapp \
-#    && cordova platform add ios
-RUN cd testapp \
-    && cordova platform add android@~8.0.0
-RUN cd testapp \
-    && cordova requirements
-RUN cd testapp \
-    && cordova build
-
-
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
 RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
@@ -94,8 +82,22 @@ RUN cd /ExperimentTemplate \
     && sed -i '/frinex-parent/{n;s/0.1-testing-SNAPSHOT/0.1.'$(expr $(git rev-list --count --all) - 1)'-testing/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
     && sed -i '/Frinex Parent/{n;s/0.1-testing-SNAPSHOT/0.1.'$(expr $(git rev-list --count --all) - 1)'-testing/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
 
+RUN mkdir /ExperimentTemplate/target
+
 RUN cd /ExperimentTemplate \
     && mvn install
 
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
+    && mvn clean install -Dexperiment.configuration.name=with_stimulus_example \
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
+    && cp /ExperimentTemplate/gwt-cordova/target/*_cordova.apk /ExperimentTemplate/target/
+
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
+    && mvn clean install -Dexperiment.configuration.name=rosselfieldkit \
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
+    && cp /ExperimentTemplate/gwt-cordova/target/*_cordova.apk /ExperimentTemplate/target/
+
 WORKDIR /target
-#VOLUME ["/target"]
+VOLUME ["/output"]
