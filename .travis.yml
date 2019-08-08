@@ -1,7 +1,8 @@
 language: java
 install:
 script:
-  - bash ExperimentTemplate/create_frinex_build_repository.sh test-repository
+  - bash create_frinex_build_repository.sh test-repository
+  - pwd
   - cd ..
   - ls
   - ls target
