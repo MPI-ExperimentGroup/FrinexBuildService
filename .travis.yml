@@ -1,0 +1,21 @@
+language: java
+jdk:
+  - oraclejdk8
+install:
+script:
+  - bash ExperimentTemplate/create_frinex_build_repository.sh test-repository
+  - cd ..
+  - ls
+  - ls target
+  - ls target/*
+  - ls frinex-repositories
+  - ls frinex-repositories/git
+  - cd frinex-repositories/test-repository
+  - echo "test" > test-experiment.xml
+  - git add test-experiment.xml
+  - git commit -m "test" test-experiment.xml; git push
+  - echo " " >> test-experiment.xml
+  - git commit -m "test" test-experiment.xml; git push
+  - cd ../..
+  - ls target
+  - ls target/*
