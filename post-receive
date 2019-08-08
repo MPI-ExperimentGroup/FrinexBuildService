@@ -20,46 +20,45 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 
 
-#echo "<h2>push event</h2>" >> /srv/target/git-push-log.html
+#echo "<h2>push event</h2>" >> $targetDir/git-push-log.html
 
-export JAVA_HOME=/srv/development/jdk/jdk1.8.0_162/
-export PATH=$JAVA_HOME/bin:$PATH
+cd $(dirname "$0")
+targetDir=$(pwd)/../../../../target
+checkoutDir=$(pwd)/../../../RepositoryName
+ls -l $targetDir
+ls -l $checkoutDir
 
-export M2_HOME=/srv/development/maven/apache-maven-3.5.3/
-export M2=$M2_HOME/bin
-export PATH=$M2:$PATH
+whoami > $targetDir/git-update-log.txt
 
-whoami > /srv/target/git-update-log.txt
-
-echo $GIT_DIR >> /srv/target/git-update-log.txt
-pwd >> /srv/target/git-update-log.txt
-ls -l  >> /srv/target/git-update-log.txt
+echo $GIT_DIR >> $targetDir/git-update-log.txt
+#pwd >> $targetDir/git-update-log.txt
+#ls -l  >> $targetDir/git-update-log.txt
 
 unset GIT_DIR
 
-cd /srv/experiments/
+cd $checkoutDir
 
 pwd
-git reset --hard >> /srv/target/git-update-log.txt
-git pull --depth 5000 >> /srv/target/git-update-log.txt
-git status >> /srv/target/git-update-log.txt
-pwd >> /srv/target/git-update-log.txt
-ls -l  >> /srv/target/git-update-log.txt
+git reset --hard >> $targetDir/git-update-log.txt
+git pull --depth 5000 >> $targetDir/git-update-log.txt
+git status >> $targetDir/git-update-log.txt
+pwd >> $targetDir/git-update-log.txt
+ls -l  >> $targetDir/git-update-log.txt
 
-mkdir /srv/target/incoming
-mkdir /srv/target/processing
+mkdir $targetDir/incoming
+mkdir $targetDir/processing
 
 while read oldrev newrev ref
 do
-    echo "$ref $oldrev $newrev <br/>" >> /srv/target/git-push-log.html
-#    echo "<br/>" >> /srv/target/git-push-log.html
+    echo "$ref $oldrev $newrev <br/>" >> $targetDir/git-push-log.html
+#    echo "<br/>" >> $targetDir/git-push-log.html
     #git diff --name-only $oldrev $newrev
-    echo "git log -1 : " >> /srv/target/git-push-log.html
-    git log -1 --format="%an %ad" >> /srv/target/git-push-log.html
-    echo "<br/>" >> /srv/target/git-push-log.html
-    git diff --name-only $oldrev $newrev >> /srv/target/git-push-log.html
-    cp $(git diff --name-only $oldrev $newrev) /srv/target/incoming/
-    echo "<br/>" >> /srv/target/git-push-log.html
+    echo "git log -1 : " >> $targetDir/git-push-log.html
+    git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
+    echo "<br/>" >> $targetDir/git-push-log.html
+    git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
+    cp $(git diff --name-only $oldrev $newrev) $targetDir/incoming/
+    echo "<br/>" >> $targetDir/git-push-log.html
 done
 
 pwd
@@ -85,8 +84,8 @@ else
 #  find /srv/development/.m2/repository/ -type d -name *SNAPSHOT -delete
   pwd
 #  git pull --depth 5000
-#  mvn clean install -DversionCheck.buildType=stable -DskipTests=true -gs /srv/development/.m2/settings.xml > /srv/target/git-mvn-out.html
-  nohup nice /usr/bin/node /srv/ExperimentTemplate/deploy-by-hook.js > /srv/target/git-push-out.txt 2> /srv/target/git-push-err.txt &
+#  mvn clean install -DversionCheck.buildType=stable -DskipTests=true -gs /srv/development/.m2/settings.xml > $targetDir/git-mvn-out.html
+  nohup nice /usr/bin/node /srv/ExperimentTemplate/deploy-by-hook.js > $targetDir/git-push-out.txt 2> $targetDir/git-push-err.txt &
   pidof node-default
 fi
 
