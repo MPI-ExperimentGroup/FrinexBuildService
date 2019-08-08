@@ -82,11 +82,12 @@ chmod -R u+rwx $targetDir/git/$1.git
 
 
 
-# todo: remove the following once testing is complete
 cd $targetDir
 git clone git/$1.git
+
+# todo: remove the following once initial testing is complete
 cd $1
-cp ~/Documents/GitHub/ladd/rosselfieldkit1.xml .
+echo "test" > rosselfieldkit1.xml
 git add rosselfieldkit1.xml 
 git commit -m "test" rosselfieldkit1.xml; git push
 echo " " >> rosselfieldkit1.xml
