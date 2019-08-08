@@ -86,7 +86,7 @@ cd $targetDir
 git clone git/$1.git
 
 # todo: remove the following once initial testing is complete
-cd $1
+cd $1 
 echo "test" > rosselfieldkit1.xml
 git add rosselfieldkit1.xml 
 git commit -m "test" rosselfieldkit1.xml; git push
