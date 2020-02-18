@@ -44,7 +44,7 @@ RUN /android-sdk/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION
 #RUN npm config set strict-ssl false # todo: remove this stale ssl work around 
 RUN npm install npm -g # update npm
 RUN npm install -g cordova@9.0.0
-RUN npm install -g electron-forge
+RUN npm install -g electron-forge asar
 RUN electron-forge init init-setup-project
 RUN cd init-setup-project \
 && npm install express
@@ -63,24 +63,29 @@ RUN cd init-setup-project \
 #CMD ["/bin/bash"] [ls /target]#, "/target/setup-cordova.sh"]
 #WORKDIR /home/petwit/docker-testing
 COPY android-keys /android-keys
+
+RUN mkdir /electron
+RUN wget https://github.com/electron/electron/releases/download/v2.0.10/electron-v2.0.10-darwin-x64.zip -O /electron/darwin-x64.zip
+RUN wget https://github.com/electron/electron/releases/download/v2.0.10/electron-v2.0.10-win32-x64.zip -O /electron/win32-x64.zip
+
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
 RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
 
 RUN cd /ExperimentTemplate \
-    && sed -i '/war/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all gwt-cordova)'-testing/}' gwt-cordova/pom.xml
+    && sed -i '/war/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all gwt-cordova)'-testing/}' gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/adaptive-vocabulary-assessment-module/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all AdaptiveVocabularyAssessmentModule)'-testing/}' /ExperimentTemplate/AdaptiveVocabularyAssessmentModule/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml
+    && sed -i '/adaptive-vocabulary-assessment-module/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all AdaptiveVocabularyAssessmentModule)'-testing/}' /ExperimentTemplate/AdaptiveVocabularyAssessmentModule/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/Frinex Experiment Designer/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all ExperimentDesigner)'-testing/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
+    && sed -i '/Frinex Experiment Designer/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all ExperimentDesigner)'-testing/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-admin/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all registration)'-testing/}' /ExperimentTemplate/registration/pom.xml
+    && sed -i '/frinex-admin/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all registration)'-testing/}' /ExperimentTemplate/registration/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/common/{n;s/0.1-testing-SNAPSHOT/0.1.'$(git rev-list --count --all common)'-testing/}' /ExperimentTemplate/common/pom.xml /ExperimentTemplate/registration/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml \
-    && sed -i '/common/{n;s/${project.version}/0.1.'$(git rev-list --count --all common)'-testing/}' /ExperimentTemplate/AdaptiveVocabularyAssessmentModule/pom.xml
+    && sed -i '/common/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all common)'-testing/}' /ExperimentTemplate/common/pom.xml /ExperimentTemplate/registration/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml \
+    && sed -i '/common/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all common)'-testing/}' /ExperimentTemplate/AdaptiveVocabularyAssessmentModule/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-parent/{n;s/0.1-testing-SNAPSHOT/0.1.'$(expr $(git rev-list --count --all) - 1)'-testing/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
-    && sed -i '/Frinex Parent/{n;s/0.1-testing-SNAPSHOT/0.1.'$(expr $(git rev-list --count --all) - 1)'-testing/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
+    && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-testing/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
+    && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-testing/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
 
 RUN mkdir /ExperimentTemplate/target
 
