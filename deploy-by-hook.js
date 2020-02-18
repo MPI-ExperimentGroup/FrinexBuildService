@@ -75,12 +75,24 @@ if (fs.existsSync(buildHistoryFileName)) {
 }
 
 function startResult() {
-    resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}.shortmessage {border-bottom: 1px solid;position: relative;display: inline-block;}.shortmessage .longmessage {visibility: hidden; width: 300px; color: white; background-color: black; border-radius: 10px; padding: 5px; text-align: centre; position: absolute;}.shortmessage:hover .longmessage {visibility: visible;}</style>\n");
+    resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}.shortmessage {border-bottom: 1px solid;position: relative;display: inline-block;}.shortmessage .longmessage {visibility: hidden; width: 300px; color: white; background-color: black; border-radius: 10px; padding: 5px; text-align: centre; position: absolute;}.shortmessage:hover .longmessage {visibility: visible;} tr:hover {background-color: #3f51b521;}</style>\n");
     resultsFile.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>\n");
     resultsFile.write("<div id='buildLabel'>Building...</div>\n");
     resultsFile.write("<div id='buildDate'></div>\n");
     resultsFile.write("<table id='buildTable'>\n");
-    resultsFile.write("<tr><td>experiment</td><td>last update</td><td>validation</td><td>staging web</td><td>staging android</td><td>staging desktop</td><td>staging admin</td><td>production web</td><td>production android</td><td>production desktop</td><td>production admin</td><tr>\n");
+    resultsFile.write("<tr>\n");
+    resultsFile.write("<td><a href=\"#1\">experiment</a></td>\n");
+    resultsFile.write("<td><a href=\"#2\">last update</a></td>\n");
+    resultsFile.write("<td><a href=\"#3\">validation</a></td>\n");
+    resultsFile.write("<td><a href=\"#4\">staging web</a></td>\n");
+    resultsFile.write("<td><a href=\"#5\">staging android</a></td>\n");
+    resultsFile.write("<td><a href=\"#6\">staging desktop</a></td>\n");
+    resultsFile.write("<td><a href=\"#7\">staging admin</a></td>\n");
+    resultsFile.write("<td><a href=\"#8\">production web</a></td>\n");
+    resultsFile.write("<td><a href=\"#9\">production android</a></td>\n");
+    resultsFile.write("<td><a href=\"#10\">production desktop</a></td>\n");
+    resultsFile.write("<td><a href=\"#11\">production admin</a></td>\n");
+    resultsFile.write("<tr>\n");
     resultsFile.write("</table>\n");
     resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
     resultsFile.write("<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
@@ -136,6 +148,7 @@ function startResult() {
     resultsFile.write("document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
     resultsFile.write("}\n");
     resultsFile.write("}\n");
+    resultsFile.write("doSort();\n");
     resultsFile.write("if(data.building){\n");
     resultsFile.write("updateTimer = window.setTimeout(doUpdate, 1000);\n");
     resultsFile.write("} else {\n");
@@ -144,6 +157,23 @@ function startResult() {
     resultsFile.write("});\n");
     resultsFile.write("}\n");
     resultsFile.write("var updateTimer = window.setTimeout(doUpdate, 100);\n");
+    resultsFile.write("function doSort() {\n");
+    resultsFile.write("var sortData = location.href.split('#')[1];\n");
+    resultsFile.write("var sortItem = sortData.split('_')[0];\n");
+    resultsFile.write("var sortDirection = sortData.split('_')[1];\n");
+    resultsFile.write("if($.isNumeric(sortItem)){\n");
+    resultsFile.write("if(sortDirection === 'd'){\n");
+    resultsFile.write("$('tr:gt(1)').each(function() {}).sort(function (b, a) {return $('td:nth-of-type('+sortItem+')', a).text().localeCompare($('td:nth-of-type('+sortItem+')', b).text());}).appendTo('tbody');\n");
+    resultsFile.write("$('tr:first').children('td').children('a').each(function(index) {$(this).attr('href', '#' + (index + 1) + '_a')});\n");
+    resultsFile.write("} else {\n");
+    resultsFile.write("$('tr:gt(1)').each(function() {}).sort(function (a, b) {return $('td:nth-of-type('+sortItem+')', a).text().localeCompare($('td:nth-of-type('+sortItem+')', b).text());}).appendTo('tbody');\n");
+    resultsFile.write("$('tr:first').children('td').children('a').each(function(index) {$(this).attr('href', '#' + (index + 1) + '_d')});\n");
+    resultsFile.write("}\n");
+    resultsFile.write("}\n");
+    resultsFile.write("}\n");
+    resultsFile.write("$(window).on('hashchange', function (e) {\n");
+    resultsFile.write("doSort();\n");
+    resultsFile.write("});\n");
     resultsFile.write("</script>\n");
     buildHistoryJson.building = true;
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
@@ -543,6 +573,12 @@ function buildApk(buildName, stage) {
         if (filename.endsWith("android.zip")) {
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_android.zip"));
             resultString += '<a href="' + buildName + "_" + stage + "_android.zip" + '">android-src</a>&nbsp;';
+            buildArtifactsJson.artifacts.apk_src = filename;
+        }
+        if (filename.endsWith("ios.zip")) {
+            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_ios.zip"));
+            resultString += '<a href="' + buildName + "_" + stage + "_ios.zip" + '">ios-src</a>&nbsp;';
+            buildArtifactsJson.artifacts.ios_src = filename;
         }
     });
     console.log("build cordova finished");
@@ -578,19 +614,19 @@ function buildElectron(buildName, stage) {
 //        }
         if (filename.endsWith(".zip")) {
             var fileTypeString = "zip";
-            if (filename.indexOf("electron") > -1) {
+            if (filename.indexOf("electron.zip") > -1) {
                 fileTypeString = "src";
             } else
-            if (filename.indexOf("win32-ia32") > -1) {
+            if (filename.indexOf("win32-ia32.zip") > -1) {
                 fileTypeString = "win32";
             } else
-            if (filename.indexOf("win32-x64") > -1) {
+            if (filename.indexOf("win32-x64.zip") > -1) {
                 fileTypeString = "win64";
             } else
-            if (filename.indexOf("darwin") > -1) {
+            if (filename.indexOf("darwin-x64.zip") > -1) {
                 fileTypeString = "mac";
             } else
-            if (filename.indexOf("linux") > -1) {
+            if (filename.indexOf("linux-x64.zip") > -1) {
                 fileTypeString = "linux";
             }
             if (fileTypeString !== "zip") {
