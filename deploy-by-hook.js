@@ -337,35 +337,31 @@ function unDeploy(listing, currentEntry) {
 }
 
 function deployStagingGui(listing, currentEntry) {
-    // we create a new mvn instance for each child pom
-    var mvngui = require('maven').create({
-        cwd: __dirname + "/gwt-cordova",
-        settings: m2Settings
-    });
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
     }
-    var mavenLogSG = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.txt", {mode: 0o755});
-    process.stdout.write = process.stderr.write = mavenLogSG.write.bind(mavenLogSG);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
-    mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:undeploy' : 'package', (currentEntry.isWebApp) ? 'tomcat7:redeploy' : 'package'], {
-//    mvngui.execute(['clean', 'gwt:run'], {
-        'skipTests': true, '-pl': 'frinex-gui',
-        'experiment.configuration.name': currentEntry.buildName,
-        'experiment.configuration.displayName': currentEntry.experimentDisplayName,
-        'experiment.webservice': configServer,
-        'experiment.configuration.path': processingDirectory,
-        'versionCheck.allowSnapshots': 'true',
-        'versionCheck.buildType': 'stable',
-        'experiment.destinationServer': stagingServer,
-        'experiment.destinationServerUrl': stagingServerUrl,
-        'experiment.groupsSocketUrl': stagingGroupsSocketUrl,
-        'experiment.isScaleable': currentEntry.isScaleable,
-        'experiment.defaultScale': currentEntry.defaultScale,
-        'experiment.registrationUrl': currentEntry.registrationUrlStaging
-//                    'experiment.scriptSrcUrl': stagingServerUrl,
-//                    'experiment.staticFilesUrl': stagingServerUrl
-    }).then(function (value) {
+    var dockerString = 'docker'
+    + ' run -v ' + processingDirectory + ':/Processing -v ' + targetDirectory + '/' + currentEntry.buildName 
+        + ':/target -w /ExperimentTemplate frinexapps mvn clean '
+        + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+        + ' -DskipTests'
+        + ' -pl gwt-cordova'
+        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+        + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
+        + ' -Dexperiment.webservice=' + configServer
+        + ' -Dexperiment.configuration.path=/Processing'
+        + ' -DversionCheck.allowSnapshots=' + 'true'
+        + ' -DversionCheck.buildType=' + 'stable'
+        + ' -Dexperiment.destinationServer=' + stagingServer
+        + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
+        + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
+        + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+        + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
+        + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
+        + '';
+    execSync(dockerString + ' &> /target/' + currentEntry.buildName + "_staging.txt");
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + ".war")) {
         console.log("frinex-gui finished");
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
@@ -381,7 +377,7 @@ function deployStagingGui(listing, currentEntry) {
         }
         deployStagingAdmin(listing, currentEntry);
 //        buildNextExperiment(listing);
-    }, function (reason) {
+    } else {
 //        console.log(targetDirectory);
 //        console.log(JSON.stringify(reason, null, 4));
         console.log("frinex-gui staging failed");
@@ -390,7 +386,7 @@ function deployStagingGui(listing, currentEntry) {
 //        var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
 //        errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
         buildNextExperiment(listing);
-    });
+    };
 }
 function deployStagingAdmin(listing, currentEntry) {
     var mvnadmin = require('maven').create({
