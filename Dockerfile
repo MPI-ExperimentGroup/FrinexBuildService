@@ -20,11 +20,17 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
+#FROM openjdk:13-alpine
+#RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+#RUN apk update # --fix-missing
+#RUN apk upgrade # --fix-missing
+#RUN apk add unzip zip alpine-sdk gradle imagemagick maven nodejs npm vim nodejs git
+#RUN dpkg --add-architecture i386 && apk update && apk -y install wine32
 FROM openjdk:8
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
-RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs npm vim
+RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs vim
 RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
 ENV ANDROID_VERSION=28 \
     ANDROID_HOME=/android-sdk \
@@ -90,19 +96,27 @@ RUN cd /ExperimentTemplate \
 RUN mkdir /ExperimentTemplate/target
 
 RUN cd /ExperimentTemplate \
+    && mvn install -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+RUN cd /ExperimentTemplate \
     && mvn install -Dexperiment.configuration.name=alloptions
 
+RUN cd /ExperimentTemplate \
+    && mvn install -Dexperiment.configuration.name=with_stimulus_example
 RUN mkdir /target
 
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
-    && mvn clean install -Dexperiment.configuration.name=with_stimulus_example \
+    && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png
+    && convert -gravity center -size 512x513 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && mvn clean install -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example -Dexperiment.registrationUrl=localhost\
     && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
     && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mkdir /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit \
-    && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
+    && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png
+    && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
+RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -Dexperiment.configuration.name=rosselfieldkit \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
     && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
