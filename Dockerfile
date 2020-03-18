@@ -96,12 +96,12 @@ RUN cd /ExperimentTemplate \
 RUN mkdir /ExperimentTemplate/target
 
 RUN cd /ExperimentTemplate \
-    && mvn install -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+    && mvn clean install -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 RUN cd /ExperimentTemplate \
-    && mvn install -Dexperiment.configuration.name=alloptions
+    && mvn clean install -Dexperiment.configuration.name=alloptions
 
 RUN cd /ExperimentTemplate \
-    && mvn install -Dexperiment.configuration.name=with_stimulus_example
+    && mvn clean install -Dexperiment.configuration.name=with_stimulus_example
 RUN mkdir /target
 
 RUN cd /ExperimentTemplate/gwt-cordova \
