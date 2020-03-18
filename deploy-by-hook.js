@@ -40,6 +40,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const m2Settings = properties.get('settings.m2Settings');
+const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
 const targetDirectory = properties.get('settings.targetDirectory');
@@ -50,7 +51,6 @@ const stagingGroupsSocketUrl = properties.get('staging.groupsSocketUrl');
 const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
-const listingJsonFiles = properties.get('settings.listingJsonFiles');
 
 var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755});
 
@@ -228,7 +228,7 @@ function stopUpdatingResults() {
 //    updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
 //    updatesFile.write("window.clearTimeout(updateTimer);\n");
     buildHistoryJson.building = false;
-    buildHistoryJson.buildLabel = 'Build process complete';
+    //buildHistoryJson.buildLabel = 'Build process complete';
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
 }
@@ -675,15 +675,11 @@ function buildNextExperiment(listing) {
 
 function buildFromListing() {
     var listingJsonArray = [];
-    var splitJsonFiles = listingJsonFiles.split(",");
-    for (var index in splitJsonFiles) {
-        if (fs.existsSync(splitJsonFiles[index])) {
-            var listingJsonData = JSON.parse(fs.readFileSync(splitJsonFiles[index], 'utf8'));
-            for (var listingIndex in listingJsonData) {
-                listingJsonArray.push(listingJsonData[listingIndex]);
-            }
-        }
-    }
+    list.forEach(function (listingDirectory) {
+        listingFile = path.resolve(listingDirectory, filename);
+        var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
+        listingJsonArray.push(listingJsonData);
+    });
     fs.readdir(processingDirectory, function (error, list) {
         if (error) {
             console.error(error);
