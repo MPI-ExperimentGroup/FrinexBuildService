@@ -34,7 +34,6 @@
 
 const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('publish.properties');
-const request = require('request');
 const execSync = require('child_process').execSync;
 const https = require('https');
 const fs = require('fs');
@@ -909,18 +908,15 @@ function convertJsonToXml() {
             });
         }
     });
-    var mvnConvert = require('maven').create({
-        cwd: __dirname + "/ExperimentDesigner",
-        settings: m2Settings
-    });
-    mvnConvert.execute(['exec:exec'], {
-        'skipTests': true,
-        'exec.executable': 'java',
-        'exec.classpathScope': 'runtime',
-        'versionCheck.allowSnapshots': 'true',
-        'versionCheck.buildType': 'stable',
-        'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + incomingDirectory + ' ' + incomingDirectory + ' ' + listingDirectory
-    }).then(function (value) {
+    var dockerString = 'docker run'
+        + ' -v ' + incomingDirectory + ':/incoming'
+        + ' -v ' + listingDirectory + ':/listing'
+        + ' -v ' + targetDirectory + ':/target'
+        + ' -w /ExperimentDesigner mvn exec:java'
+        + ' -Dexec.mainClass="nl.mpi.tg.eg.experimentdesigner.util.JsonToXml"'
+        + ' -Dexec.args="/incoming /incoming /listing"'
+        + '';
+    execSync(dockerString + ' &> /target/JsonToXml_' + new Date().toISOString() + ".txt").then(function (value) {
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         moveIncomingToProcessing();
