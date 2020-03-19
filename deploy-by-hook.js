@@ -919,7 +919,7 @@ function convertJsonToXml() {
         'exec.classpathScope': 'runtime',
         'versionCheck.allowSnapshots': 'true',
         'versionCheck.buildType': 'stable',
-        'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + incomingDirectory + ' ' + incomingDirectory
+        'exec.args': '-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml ' + incomingDirectory + ' ' + incomingDirectory + ' ' + listingDirectory
     }).then(function (value) {
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
