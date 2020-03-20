@@ -913,9 +913,10 @@ function convertJsonToXml() {
         + ' -v ' + listingDirectory + ':/listing'
         + ' -v ' + targetDirectory + ':/target'
         + ' -w /ExperimentTemplate/ExperimentDesigner' 
-        + ' frinexbuildservice:latest mvn exec:java'
-        + ' -Dexec.mainClass="nl.mpi.tg.eg.experimentdesigner.util.JsonToXml"'
-        + ' -Dexec.args="/incoming /incoming /listing"'
+        + ' frinexbuildservice:latest mvn exec:exec'
+        + ' -Dexec.executable=java'
+        + ' -Dexec.classpathScope=runtime'
+        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /incoming /incoming /listing"'
         + '';
     console.log(dockerString);
     try {
