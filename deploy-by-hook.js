@@ -918,15 +918,16 @@ function convertJsonToXml() {
         + ' -Dexec.args="/incoming /incoming /listing"'
         + '';
     console.log(dockerString);
-    execSync(dockerString + ' &> /target/JsonToXml_' + new Date().toISOString() + ".txt").then(function (value) {
+    try {
+        execSync(dockerString + " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log", {stdio: [0, 1, 2]});
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         moveIncomingToProcessing();
-    }, function (reason) {
+    } catch (reason) {
         console.log(reason);
         console.log("convert JSON to XML failed");
         resultsFile.write("<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
-    });
+    };
 }
 
 function deleteOldProcessing() {
