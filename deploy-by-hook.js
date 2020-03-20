@@ -912,10 +912,12 @@ function convertJsonToXml() {
         + ' -v ' + incomingDirectory + ':/incoming'
         + ' -v ' + listingDirectory + ':/listing'
         + ' -v ' + targetDirectory + ':/target'
-        + ' -w /ExperimentDesigner mvn exec:java'
+        + ' -w /ExperimentDesigner' 
+        | ' frinexbuildservice:latest mvn exec:java'
         + ' -Dexec.mainClass="nl.mpi.tg.eg.experimentdesigner.util.JsonToXml"'
         + ' -Dexec.args="/incoming /incoming /listing"'
         + '';
+        console.log('dockerString');
     execSync(dockerString + ' &> /target/JsonToXml_' + new Date().toISOString() + ".txt").then(function (value) {
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
