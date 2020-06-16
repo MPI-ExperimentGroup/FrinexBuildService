@@ -26,21 +26,27 @@
 #RUN apk upgrade # --fix-missing
 #RUN apk add unzip zip alpine-sdk gradle imagemagick maven nodejs npm vim nodejs git
 #RUN dpkg --add-architecture i386 && apk update && apk -y install wine32
-FROM openjdk:8
+FROM openjdk:11
+#ENV JAVA_OPTS="--add-modules java.se.ee"
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
 RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs vim
-RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install wine32
+#RUN wget http://apache.40b.nl/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip
+#RUN unzip apache-maven-3.6.3-bin.zip 
+#ENV PATH=/apache-maven-3.6.3/bin:$PATH
+
 ENV ANDROID_VERSION=28 \
     ANDROID_HOME=/android-sdk \
     ANDROID_BUILD_TOOLS_VERSION=29.0.0
 ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/tools
 RUN mkdir /android-sdk \
     && cd /android-sdk \
-    && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
-    && unzip sdk-tools.zip \
-    && rm sdk-tools.zip \
+    && curl -o cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-6514223_latest.zip"
+#    && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
+RUN cd /android-sdk \
+    && unzip cmdline-tools.zip \
+    && rm cmdline-tools.zip \
     && yes | /android-sdk/tools/bin/sdkmanager --licenses
 RUN /android-sdk/tools/bin/sdkmanager --update
 RUN /android-sdk/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
