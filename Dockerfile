@@ -44,12 +44,13 @@ RUN mkdir /android-sdk \
     && cd /android-sdk \
     && curl -o cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-6514223_latest.zip"
 #    && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
-RUN cd /android-sdk \
-    && unzip cmdline-tools.zip \
-    && rm cmdline-tools.zip \
-    && yes | /android-sdk/tools/bin/sdkmanager --licenses
-RUN /android-sdk/tools/bin/sdkmanager --update
-RUN /android-sdk/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
+RUN mkdir /android-sdk/cmdline-tools \
+    && cd /android-sdk/cmdline-tools \
+    && unzip ../cmdline-tools.zip \
+    && rm ../cmdline-tools.zip \
+    && yes | /android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
+RUN /android-sdk/cmdline-tools/tools/bin/sdkmanager --update
+RUN /android-sdk/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
     "platforms;android-${ANDROID_VERSION}" \
     "platform-tools"
 #RUN apt-get -y install git node.js npm mono-devel
