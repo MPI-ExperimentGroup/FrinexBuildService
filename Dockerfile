@@ -89,6 +89,8 @@ RUN git clone https://github.com/electron-userland/electron-webpack-quick-start.
 RUN cd electron-webpack-quick-start \
     && yarn \
     && yarn dist
+RUN cd electron-webpack-quick-start \
+    && yarn dist --win portable
 
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
