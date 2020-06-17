@@ -29,9 +29,10 @@
 FROM openjdk:11
 #ENV JAVA_OPTS="--add-modules java.se.ee"
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
-RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs vim
+RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs vim wine32
 #RUN wget http://apache.40b.nl/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip
 #RUN unzip apache-maven-3.6.3-bin.zip 
 #ENV PATH=/apache-maven-3.6.3/bin:$PATH
@@ -91,6 +92,11 @@ RUN cd electron-webpack-quick-start \
     && yarn dist
 RUN cd electron-webpack-quick-start \
     && yarn dist --win portable
+RUN cd electron-webpack-quick-start \
+    && yarn dist --mac zip
+RUN cd electron-webpack-quick-start \
+    && stat dist/electron-webpack-quick-start-0.0.0-mac.zip \
+    && dist/electron-webpack-quick-start\ 0.0.0.exe
 
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
