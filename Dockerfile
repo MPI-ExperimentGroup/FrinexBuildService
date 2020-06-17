@@ -115,7 +115,11 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
     && convert -gravity center -size 512x513 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example -Dexperiment.registrationUrl=localhost \
+    && mvn clean install -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && bash /ExperimentTemplate/gwt-electron/target/setup-electron.sh \
+    && cp /ExperimentTemplate/gwt-cordova/target/app-release.exe /target/with_stimulus_example.exe
+RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
     && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
 
