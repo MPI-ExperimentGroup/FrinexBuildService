@@ -136,8 +136,9 @@ RUN cd /ExperimentTemplate/gwt-cordova \
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-electron/target/setup-electron.sh \
-    && cp /ExperimentTemplate/gwt-cordova/target/app-release.exe /target/with_stimulus_example.exe
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
+    && stat with_stimulus_example-win32-x64.zip \
+    && stat with_stimulus_example-darwin-x64.zip
 RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
     && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
