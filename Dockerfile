@@ -96,7 +96,9 @@ RUN cd electron-webpack-quick-start \
     && yarn dist --mac zip
 RUN cd electron-webpack-quick-start \
     && stat dist/electron-webpack-quick-start-0.0.0-mac.zip \
-    && dist/electron-webpack-quick-start\ 0.0.0.exe
+    && stat dist/electron-webpack-quick-start\ 0.0.0.exe
+#    && start dist/electron-webpack-quick-start-0.0.0.dmg
+
 
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
