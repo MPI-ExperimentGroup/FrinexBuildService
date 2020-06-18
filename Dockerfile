@@ -137,20 +137,23 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
 RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
-    && stat with_stimulus_example-win32-x64.zip \
-    && stat with_stimulus_example-darwin-x64.zip
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
-    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
+    && stat target/with_stimulus_example-win32-x64.zip \
+    && stat target/with_stimulus_example-darwin-x64.zip
+#RUN cd /ExperimentTemplate/gwt-cordova \
+#    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
+#    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mkdir /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
     && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -Dexperiment.configuration.name=rosselfieldkit \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
-    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
+    && stat target/rosselfieldkit-win32-x64.zip \
+    && stat target/rosselfieldkit-darwin-x64.zip
+#RUN cd /ExperimentTemplate/gwt-cordova \
+#    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
+#    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
 
 WORKDIR /target
 VOLUME ["/output"]
