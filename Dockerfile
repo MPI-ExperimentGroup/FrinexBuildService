@@ -148,6 +148,8 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
     && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
+    && mvn clean install -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
+RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
     && stat target/rosselfieldkit-win32-x64.zip \
     && stat target/rosselfieldkit-darwin-x64.zip
