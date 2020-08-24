@@ -37,9 +37,9 @@ RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick m
 #RUN unzip apache-maven-3.6.3-bin.zip 
 #ENV PATH=/apache-maven-3.6.3/bin:$PATH
 
-ENV ANDROID_VERSION=28 \
+ENV ANDROID_VERSION=30 \
     ANDROID_HOME=/android-sdk \
-    ANDROID_BUILD_TOOLS_VERSION=29.0.0
+    ANDROID_BUILD_TOOLS_VERSION=30.0.2
 ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/tools
 RUN mkdir /android-sdk \
     && cd /android-sdk \
@@ -57,7 +57,7 @@ RUN /android-sdk/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD
 #RUN apt-get -y install git node.js npm mono-devel
 #RUN npm config set strict-ssl false # todo: remove this stale ssl work around 
 RUN npm install npm -g # update npm
-RUN npm install -g cordova@9.0.0
+RUN npm install -g cordova@10.0.0
 #RUN npm install -g electron-forge asar
 #RUN electron-forge init init-setup-project
 #RUN cd init-setup-project \
@@ -139,9 +139,9 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
     && stat target/with_stimulus_example-win32-x64.zip \
     && stat target/with_stimulus_example-darwin-x64.zip
-#RUN cd /ExperimentTemplate/gwt-cordova \
-#    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
-#    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
+    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mkdir /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit \
@@ -153,9 +153,9 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
     && stat target/rosselfieldkit-win32-x64.zip \
     && stat target/rosselfieldkit-darwin-x64.zip
-#RUN cd /ExperimentTemplate/gwt-cordova \
-#    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
-#    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
+    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
 
 WORKDIR /target
 VOLUME ["/output"]
