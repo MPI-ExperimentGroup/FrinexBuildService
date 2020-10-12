@@ -76,8 +76,10 @@ if (fs.existsSync(buildHistoryFileName)) {
 function startResult() {
     resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}.shortmessage {border-bottom: 1px solid;position: relative;display: inline-block;}.shortmessage .longmessage {visibility: hidden; width: 300px; color: white; background-color: black; border-radius: 10px; padding: 5px; text-align: centre; position: absolute;}.shortmessage:hover .longmessage {visibility: visible;} tr:hover {background-color: #3f51b521;}</style>\n");
     resultsFile.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>\n");
-    resultsFile.write("<div id='buildLabel'>Building...</div>\n");
-    resultsFile.write("<div id='buildDate'></div>\n");
+    //resultsFile.write("<span id='buildLabel'>Building...</span>\n");
+    resultsFile.write("<span id='buildDate'></span>\n");
+    resultsFile.write("<a href='frinex.html'>XML Documentation</a>\n");
+    resultsFile.write("<a href='frinex.xsd'>XML Schema</a>\n");
     resultsFile.write("<table id='buildTable'>\n");
     resultsFile.write("<tr>\n");
     resultsFile.write("<td><a href=\"#1\">experiment</a></td>\n");
@@ -110,7 +112,31 @@ function startResult() {
     resultsFile.write("tableRow.id = keyString+ '_row';\n");
     resultsFile.write("document.getElementById('buildTable').appendChild(tableRow);\n");
     // check the spring health here and show http and db status via applicationStatus array
+    // the path -admin/health is for spring boot 1.4.1
     resultsFile.write("$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/health', (function(experimentName) { return function(data) {\n");
+    resultsFile.write("$.each(data, function (key, val) {\n");
+    resultsFile.write("if (key === 'status') {\n");
+    resultsFile.write("if (val === 'UP') {\n");
+    resultsFile.write("applicationStatus[experimentName + '__staging_admin'] = 'yellow';\n");
+    resultsFile.write("} else {\n");
+    resultsFile.write("applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
+    resultsFile.write("}\n");
+    resultsFile.write("}\n");
+    resultsFile.write("});\n");
+    resultsFile.write("};}(keyString)));\n");
+    resultsFile.write("$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/health', (function(experimentName) { return function(data) {\n");
+    resultsFile.write("$.each(data, function (key, val) {\n");
+    resultsFile.write("if (key === 'status') {\n");
+    resultsFile.write("if (val === 'UP') {\n");
+    resultsFile.write("applicationStatus[experimentName + '__production_admin'] = 'yellow';\n");
+    resultsFile.write("} else {\n");
+    resultsFile.write("applicationStatus[experimentName + '__production_admin'] = 'red';\n");
+    resultsFile.write("}\n");
+    resultsFile.write("}\n");
+    resultsFile.write("});\n");
+    resultsFile.write("};}(keyString)));\n");
+    // the path -admin/actuator/health is for spring boot 2.3.0
+    resultsFile.write("$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName) { return function(data) {\n");
     resultsFile.write("$.each(data, function (key, val) {\n");
     resultsFile.write("if (key === 'status') {\n");
     resultsFile.write("if (val === 'UP') {\n");
@@ -121,7 +147,7 @@ function startResult() {
     resultsFile.write("}\n");
     resultsFile.write("});\n");
     resultsFile.write("};}(keyString)));\n");
-    resultsFile.write("$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/health', (function(experimentName) { return function(data) {\n");
+    resultsFile.write("$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName) { return function(data) {\n");
     resultsFile.write("$.each(data, function (key, val) {\n");
     resultsFile.write("if (key === 'status') {\n");
     resultsFile.write("if (val === 'UP') {\n");
@@ -413,7 +439,7 @@ function deployStagingAdmin(listing, currentEntry) {
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin finished");
 //        storeResult(currentEntry.buildName, "deployed", "staging", "admin", false, false);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "staging", "admin", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true);
         if (currentEntry.state === "production") {
             deployProductionGui(listing, currentEntry);
         } else {
@@ -525,7 +551,7 @@ function deployProductionAdmin(listing, currentEntry) {
 //                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin production finished");
 //        storeResult(currentEntry.buildName, "skipped", "production", "admin", false, false, true);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>', "production", "admin", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
@@ -616,7 +642,7 @@ function buildElectron(buildName, stage) {
                 fileTypeString = "win32";
             } else
             if (filename.indexOf("win32-x64.zip") > -1) {
-                fileTypeString = "win64";
+                fileTypeString = "win";
             } else
             if (filename.indexOf("darwin-x64.zip") > -1) {
                 fileTypeString = "mac";
@@ -639,6 +665,13 @@ function buildElectron(buildName, stage) {
             fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + filename));
             resultString += '<a href="' + filename + '">' + fileTypeString + '</a>&nbsp;';
             buildArtifactsJson.artifacts[fileTypeString] = filename;
+        }
+        if (filename.endsWith(".dmg")) {
+            var fileTypeString = "dmg";
+            var finalName = buildName + "_" + stage + ".dmg";
+            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + finalName));
+            resultString += '<a href="' + finalName + '">' + fileTypeString + '</a>&nbsp;';
+            buildArtifactsJson.artifacts[fileTypeString] = finalName;
         }
 //                mkdir /srv/target/electron
 //cp out/make/*linux*.zip ../with_stimulus_example-linux.zip
@@ -702,7 +735,7 @@ function buildFromListing() {
                     remainingFiles--;
                 } else if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
-                    initialiseResult(fileNamePart, 'disabled', true);
+                    storeResult(fileNamePart, 'disabled', "validation", "json_xsd", true, false, false);
                     console.log("this script will not build multiparticipant without manual intervention");
                 } else if (filename === "listing.json") {
                     // read through this commited listing json file and look for undeploy targets then add them to the list if they are not already there
