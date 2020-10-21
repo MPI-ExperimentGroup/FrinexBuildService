@@ -23,8 +23,9 @@
 #echo "<h2>push event</h2>" >> $targetDir/git-push-log.html
 
 cd $(dirname "$0")
-targetDir=$(pwd)/../../../../target
-checkoutDir=$(pwd)/../../../RepositoryName
+scriptDir=$(pwd)
+targetDir=TargetDirectory
+checkoutDir=RepositoryDirectory/RepositoryName
 ls -l $targetDir
 ls -l $checkoutDir
 
@@ -63,13 +64,13 @@ done
 
 pwd
 
-echo $JAVA_HOME
-echo $M2_HOME
-echo $M2
-echo $PATH
+#echo $JAVA_HOME
+#echo $M2_HOME
+#echo $M2
+#echo $PATH
 
-which mvn
-mvn -v
+#which mvn
+#mvn -v
 node -v
 
 if [ "$(pidof node-default)" ]
@@ -78,14 +79,14 @@ then
   echo "build in process, exiting";
 else
   echo "starting build process";
-  cd /srv/ExperimentTemplate/
+  #cd /srv/ExperimentTemplate/
   #rm -rf /srv/development/.m2/nl/mpi/
 #  find /srv/development/.m2/repository/ -type d -name *SNAPSHOT
 #  find /srv/development/.m2/repository/ -type d -name *SNAPSHOT -delete
   pwd
 #  git pull --depth 5000
 #  mvn clean install -DversionCheck.buildType=stable -DskipTests=true -gs /srv/development/.m2/settings.xml > $targetDir/git-mvn-out.html
-  nohup nice /usr/bin/node /srv/ExperimentTemplate/deploy-by-hook.js > $targetDir/git-push-out.txt 2> $targetDir/git-push-err.txt &
+  nohup nice node $scriptDir/deploy-by-hook.js > $targetDir/git-push-out.txt 2> $targetDir/git-push-err.txt &
   pidof node-default
 fi
 
