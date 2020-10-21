@@ -26,33 +26,28 @@
 # when commits are pushed to the resulting GIT repository any JSON and XML experiment configuration files will be built according to the rules in listing.json
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
-targetDir=$(dirname "$scriptDir")/frinex-repositories
-echo "scriptDir: $scriptDir"
-echo "targetDir: $targetDir"
-
-mkdir $(dirname "$scriptDir")/target
 
 if [[ $# -eq 0 ]] ; then
     echo 'please provide the target repository name as the first argument'
     exit 0
 fi
 
-echo $targetDir/git/$1.git
-if [ -d $targetDir/git/$1.git ];
+echo RepositoriesDirectory/$1.git
+if [ -d RepositoriesDirectory/$1.git ];
 then
     echo "target git repository already exists";
     exit 0
 fi
 
-echo $targetDir/$1
-if [ -d $targetDir/$1 ];
+echo CheckoutDirectory/$1
+if [ -d CheckoutDirectory/$1 ];
 then
-    echo "target already exists";
+    echo "target repository checkout already exists";
     exit 0
 fi
 
 # initialise the repository
-git init --bare $targetDir/git/$1.git
+git init --bare RepositoriesDirectory/$1.git
 
 # add the repository to the list of conflict check locations
 # todo: un-macify this
@@ -60,13 +55,13 @@ sed -i'.tmp' -e "s/listingJsonFiles\ =\ /listingJsonFiles\ =\ \.\.\/$1\/listing\
 
 # add the post-receive hook
 #cp /srv/ExperimentTemplate/post-receive /srv/git/$1.git/hooks/post-receive
-sed "s/RepositoryName/$1/g" $scriptDir/post-receive > $targetDir/git/$1.git/hooks/post-receive
+sed "s/RepositoryName/$1/g" $scriptDir/post-receive > RepositoriesDirectory/$1.git/hooks/post-receive
 #sed -i "s/maarten/$1/g" /srv/git/$1.git/hooks/post-receive
 #diff /srv/git/maarten.git/hooks/post-receive /srv/git/$1.git/hooks/post-receive
 
 # set the permissions
-chmod -R g+rwx $targetDir/git/$1.git
-chmod -R u+rwx $targetDir/git/$1.git
+chmod -R g+rwx RepositoriesDirectory/$1.git
+chmod -R u+rwx RepositoriesDirectory/$1.git
 #chown -R wwwrun /srv/git/$1.git
 
 # add the git user
@@ -82,8 +77,8 @@ chmod -R u+rwx $targetDir/git/$1.git
 
 
 
-cd $targetDir
-git clone git/$1.git
+cd CheckoutDirectory
+git clone RepositoriesDirectory/$1.git
 
 # todo: remove the following once initial testing is complete
 cd $1 
