@@ -5,6 +5,8 @@ RUN apk add --no-cache \
 RUN git config --global user.name "Frinex Build Service"
 Run git config --global user.email "noone@frinexbuild.mpi.nl"
 RUN mkdir /FrinexBuildService/
+RUN mkdir /FrinexBuildService/git-repositories
+RUN mkdir /FrinexBuildService/git-checkedout
 COPY ./deploy-by-hook.js /FrinexBuildService/
 COPY ./publish.properties /FrinexBuildService/
 COPY ./post-receive /FrinexBuildService/post-receive
