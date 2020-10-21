@@ -1,7 +1,8 @@
 FROM httpd:2.4-alpine
 RUN apk add --no-cache \
   git \
-  npm
+  npm \
+  bash
 RUN git config --global user.name "Frinex Build Service"
 Run git config --global user.email "noone@frinexbuild.mpi.nl"
 RUN mkdir /FrinexBuildService/
