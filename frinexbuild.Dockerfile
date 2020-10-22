@@ -9,6 +9,8 @@ RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/git-repositories
 RUN mkdir /FrinexBuildService/git-checkedout
 RUN mkdir /usr/local/apache2/htdocs/target
+COPY frinex-git-server.conf  /FrinexBuildService/
+RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 COPY ./deploy-by-hook.js /FrinexBuildService/
 COPY ./publish.properties /FrinexBuildService/
 COPY ./post-receive /FrinexBuildService/post-receive
