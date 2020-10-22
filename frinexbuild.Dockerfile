@@ -27,6 +27,7 @@ COPY ./create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build
 RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs/target|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/create_frinex_build_repository.sh
-RUN sh /FrinexBuildService/create_frinex_build_repository.sh NBL
-RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
-RUN sh /FrinexBuildService/create_frinex_build_repository.sh LADD
+#RUN sh /FrinexBuildService/create_frinex_build_repository.sh NBL
+#RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
+#RUN sh /FrinexBuildService/create_frinex_build_repository.sh LADD
+RUN sh /FrinexBuildService/create_frinex_build_repository.sh TEST_REPOSITORY
