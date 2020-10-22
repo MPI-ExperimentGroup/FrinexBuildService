@@ -33,7 +33,7 @@
  */
 
 const PropertiesReader = require('properties-reader');
-const properties = PropertiesReader('publish.properties');
+const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 const execSync = require('child_process').execSync;
 const https = require('https');
 const fs = require('fs');

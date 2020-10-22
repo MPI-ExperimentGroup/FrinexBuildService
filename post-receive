@@ -23,7 +23,7 @@
 #echo "<h2>push event</h2>" >> $targetDir/git-push-log.html
 
 cd $(dirname "$0")
-scriptDir=$(pwd -P)
+scriptDir=ScriptsDirectory
 targetDir=TargetDirectory
 checkoutDir=CheckoutDirectory/RepositoryName
 ls -l $targetDir
