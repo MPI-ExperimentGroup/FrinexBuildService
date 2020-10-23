@@ -12,3 +12,5 @@ echo " " >> test_data.txt
 git commit -m "test" test_data.txt; git push
 # redirect any subsequent output back to the logs
 sed -i "s|#>>|>>|g" /FrinexBuildService/git-repositories/TEST_REPOSITORY.git/hooks/post-receive
+# make sure any new files are accessable by httpd
+chown -R daemon /FrinexBuildService/git-repositories/TEST_REPOSITORY.git

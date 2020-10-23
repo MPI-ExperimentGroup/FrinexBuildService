@@ -79,3 +79,7 @@ chmod -R u+rwx RepositoriesDirectory/$1.git
 
 cd CheckoutDirectory
 git clone RepositoriesDirectory/$1.git
+
+# make sure the new repository is accessable by httpd
+chown -R daemon RepositoriesDirectory/$1.git
+chown -R daemon CheckoutDirectory/$1
