@@ -1,6 +1,8 @@
 FROM httpd:2.4-alpine
 RUN apk add --no-cache \
   git \
+  git-gitweb \
+  git-daemon \
   npm \
   bash
 RUN git config --global user.name "Frinex Build Service"
@@ -13,6 +15,8 @@ RUN mkdir /FrinexBuildService/incoming
 RUN mkdir /usr/local/apache2/htdocs/target
 COPY frinex-git-server.conf  /FrinexBuildService/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
+# make sure the mod_cgi module is loaded by httpd
+RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 COPY ./deploy-by-hook.js /FrinexBuildService/
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/deploy-by-hook.js
 COPY ./publish.properties /FrinexBuildService/
