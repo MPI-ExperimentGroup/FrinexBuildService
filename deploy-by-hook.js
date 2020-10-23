@@ -61,6 +61,7 @@ if (fs.existsSync(buildHistoryFileName)) {
     try {
         buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
         fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4));
+        fs.chmod(buildHistoryFileName + ".temp", '0755');
     } catch (error) {
         console.log("faild to read " + buildHistoryJson);
         console.log(error);
@@ -202,6 +203,7 @@ function startResult() {
     resultsFile.write("</script>\n");
     buildHistoryJson.building = true;
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+    fs.chmod(buildHistoryFileName, '0755');
 }
 
 
@@ -227,6 +229,7 @@ function initialiseResult(name, message, isError) {
     };
     // todo: remove any listing.json
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+    fs.chmod(buildHistoryFileName, '0755');
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
@@ -246,6 +249,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3F3C3';
     }
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+    fs.chmod(buildHistoryFileName, '0755');
 }
 
 function stopUpdatingResults() {
@@ -256,6 +260,7 @@ function stopUpdatingResults() {
     //buildHistoryJson.buildLabel = 'Build process complete';
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
+    fs.chmod(buildHistoryFileName, '0755');
 }
 
 function unDeploy(listing, currentEntry) {
@@ -606,6 +611,7 @@ function buildApk(buildName, stage) {
     storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
 //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4));
+    fs.chmod(buildArtifactsFileName, '0755');
 }
 
 function buildElectron(buildName, stage) {
@@ -682,6 +688,7 @@ function buildElectron(buildName, stage) {
     storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
 //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4));
+    fs.chmod(buildArtifactsFileName, '0755');
 }
 
 function buildNextExperiment(listing) {
