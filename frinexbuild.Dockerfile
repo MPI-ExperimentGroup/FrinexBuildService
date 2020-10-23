@@ -37,3 +37,4 @@ RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBui
 COPY ./test_repository_create.sh /FrinexBuildService/
 # make sure that the required files are accessable by httpd
 RUN chown -R daemon /FrinexBuildService
+RUN chown -R daemon /usr/local/apache2/htdocs/target
