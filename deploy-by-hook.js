@@ -60,8 +60,7 @@ var buildArtifactsJson = {artifacts: {}};
 if (fs.existsSync(buildHistoryFileName)) {
     try {
         buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
-        fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4));
-        fs.chmod(buildHistoryFileName + ".temp", '0755');
+        fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
     } catch (error) {
         console.log("faild to read " + buildHistoryJson);
         console.log(error);
@@ -202,8 +201,7 @@ function startResult() {
     resultsFile.write("});\n");
     resultsFile.write("</script>\n");
     buildHistoryJson.building = true;
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
-    fs.chmod(buildHistoryFileName, '0755');
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
 }
 
 
@@ -228,8 +226,7 @@ function initialiseResult(name, message, isError) {
         "_production_admin": {value: '', style: ''}
     };
     // todo: remove any listing.json
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
-    fs.chmod(buildHistoryFileName, '0755');
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
@@ -248,8 +245,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
     } else if (isDone) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3F3C3';
     }
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
-    fs.chmod(buildHistoryFileName, '0755');
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
 }
 
 function stopUpdatingResults() {
@@ -259,8 +255,7 @@ function stopUpdatingResults() {
     buildHistoryJson.building = false;
     //buildHistoryJson.buildLabel = 'Build process complete';
     buildHistoryJson.buildDate = new Date().toISOString();
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4));
-    fs.chmod(buildHistoryFileName, '0755');
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
 }
 
 function unDeploy(listing, currentEntry) {
@@ -610,8 +605,7 @@ function buildApk(buildName, stage) {
     console.log("build cordova finished");
     storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
 //  update artifacts.json
-    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4));
-    fs.chmod(buildArtifactsFileName, '0755');
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), {mode: 0o755});
 }
 
 function buildElectron(buildName, stage) {
@@ -687,8 +681,7 @@ function buildElectron(buildName, stage) {
     console.log("build electron finished");
     storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
 //  update artifacts.json
-    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4));
-    fs.chmod(buildArtifactsFileName, '0755');
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), {mode: 0o755});
 }
 
 function buildNextExperiment(listing) {
