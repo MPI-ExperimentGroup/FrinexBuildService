@@ -14,3 +14,4 @@ git commit -m "test" test_data.txt; git push
 sed -i "s|#>>|>>|g" /FrinexBuildService/git-repositories/TEST_REPOSITORY.git/hooks/post-receive
 # make sure any new files are accessable by httpd
 chown -R daemon /FrinexBuildService/git-repositories/TEST_REPOSITORY.git
+chown -R daemon /usr/local/apache2/htdocs/target
