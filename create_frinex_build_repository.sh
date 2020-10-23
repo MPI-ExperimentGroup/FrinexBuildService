@@ -79,11 +79,3 @@ chmod -R u+rwx RepositoriesDirectory/$1.git
 
 cd CheckoutDirectory
 git clone RepositoriesDirectory/$1.git
-
-# todo: remove the following once initial testing is complete
-cd $1 
-echo "test" > rosselfieldkit1.xml
-git add rosselfieldkit1.xml 
-git commit -m "test" rosselfieldkit1.xml; git push
-echo " " >> rosselfieldkit1.xml
-git commit -m "test" rosselfieldkit1.xml; git push
