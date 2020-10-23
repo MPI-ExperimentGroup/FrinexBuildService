@@ -52,14 +52,18 @@ mkdir $targetDir/processing
 while read oldrev newrev ref
 do
     echo "$ref $oldrev $newrev <br/>" >> $targetDir/git-push-log.html
-#    echo "<br/>" >> $targetDir/git-push-log.html
-    #git diff --name-only $oldrev $newrev
-    echo "git log -1 : " >> $targetDir/git-push-log.html
-    git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
-    echo "<br/>" >> $targetDir/git-push-log.html
-    git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
-    cp $(git diff --name-only $oldrev $newrev) $targetDir/incoming/
-    echo "<br/>" >> $targetDir/git-push-log.html
+    if [ "$oldrev" = "0000000000000000000000000000000000000000" ]; then
+      echo "new repository found <br/>" >> $targetDir/git-push-log.html
+    else
+  #    echo "<br/>" >> $targetDir/git-push-log.html
+      #git diff --name-only $oldrev $newrev
+      echo "git log -1 : " >> $targetDir/git-push-log.html
+      git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
+      echo "<br/>" >> $targetDir/git-push-log.html
+      git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
+      cp $(git diff --name-only $oldrev $newrev) $targetDir/incoming/
+      echo "<br/>" >> $targetDir/git-push-log.html
+    fi
 done
 
 pwd
