@@ -946,7 +946,7 @@ function convertJsonToXml() {
         + ' -v ' + listingDirectory + ':/listing'
         + ' -v ' + targetDirectory + ':/target'
         + ' -w /ExperimentTemplate/ExperimentDesigner' 
-        + ' frinexbuildservice:latest mvn exec:exec'
+        + ' frinexcompiler:latest mvn exec:exec'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /incoming /incoming /listing"'
