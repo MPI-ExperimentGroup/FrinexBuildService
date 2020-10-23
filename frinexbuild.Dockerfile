@@ -34,4 +34,4 @@ RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBui
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh NBL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh LADD
-RUN sh /FrinexBuildService/create_frinex_build_repository.sh TEST_REPOSITORY
+COPY ./test_repository_create.sh /FrinexBuildService/
