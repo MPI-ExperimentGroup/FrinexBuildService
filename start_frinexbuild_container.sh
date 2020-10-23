@@ -26,7 +26,7 @@
 #docker build --no-cache -f frinexbuild.Dockerfile -t frinexbuild .
 
 # build the frinexcompiler dockerfile:
-#docker build --rm -f frinexcompiler.Dockerfile -t ffrinexcompiler:latest .
+#docker build --rm -f frinexcompiler.Dockerfile -t frinexcompiler:latest .
 
 # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexcompiler
 docker run  -v /var/run/docker.sock:/var/run/docker.sock --rm -it --name frinexbuild-test01 -p 8080:80 frinexbuild sh
