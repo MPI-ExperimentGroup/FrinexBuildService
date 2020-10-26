@@ -1,3 +1,5 @@
+# start the web server to host the build listing pages
+httpd
 # create a test repository
 bash /FrinexBuildService/create_frinex_build_repository.sh TEST_REPOSITORY
 # show any output in the termimal
@@ -14,6 +16,7 @@ git commit -m "test" test_data.txt; git push
 sed -i "s|#>>|>>|g" /FrinexBuildService/git-repositories/TEST_REPOSITORY.git/hooks/post-receive
 # make sure any new files are accessable by httpd
 # wait for the build container to finish
+sleep 30000
 while [ "$(pidof node-default)" ]
 do
   echo "build in process, waiting";

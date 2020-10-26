@@ -707,10 +707,16 @@ function buildNextExperiment(listing) {
 
 function buildFromListing() {
     var listingJsonArray = [];
-    list.forEach(function (listingDirectory) {
-        listingFile = path.resolve(listingDirectory, filename);
-        var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
-        listingJsonArray.push(listingJsonData);
+    fs.readdir(listingDirectory, function (error, list) {
+        if (error) {
+            console.error(error);
+        } else {
+            list.forEach(function (filename) {
+                listingFile = path.resolve(listingDirectory, filename);
+                var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
+                listingJsonArray.push(listingJsonData);
+            });
+        }
     });
     fs.readdir(processingDirectory, function (error, list) {
         if (error) {
