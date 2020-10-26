@@ -34,6 +34,7 @@ RUN mkdir /FrinexBuildService/git-repositories
 RUN mkdir /FrinexBuildService/git-checkedout
 RUN mkdir /FrinexBuildService/processing
 RUN mkdir /FrinexBuildService/incoming
+RUN mkdir /FrinexBuildService/listing
 RUN mkdir /usr/local/apache2/htdocs/target
 COPY frinex-git-server.conf  /FrinexBuildService/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf

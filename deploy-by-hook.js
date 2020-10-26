@@ -365,17 +365,19 @@ function deployStagingGui(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
     }
+    fs.mkdirSync(targetDirectory + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
-    var dockerString = 'docker'
-    + ' run -v ' + processingDirectory + ':/Processing -v ' + targetDirectory + '/' + currentEntry.buildName 
-        + ':/target -w /ExperimentTemplate frinexapps mvn clean '
+    var dockerString = 'docker run'
+        + ' -v ' + processingDirectory + ':/processing' 
+        + ' -v ' + targetDirectory + '/' + currentEntry.buildName + ':/target'
+        + ' -w /ExperimentTemplate frinexapps mvn clean '
         + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
         + ' -DskipTests'
         + ' -pl gwt-cordova'
         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
         + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
         + ' -Dexperiment.webservice=' + configServer
-        + ' -Dexperiment.configuration.path=/Processing'
+        + ' -Dexperiment.configuration.path=/processing'
         + ' -DversionCheck.allowSnapshots=' + 'true'
         + ' -DversionCheck.buildType=' + 'stable'
         + ' -Dexperiment.destinationServer=' + stagingServer
