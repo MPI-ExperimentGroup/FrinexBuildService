@@ -46,9 +46,6 @@ git status >> $targetDir/git-update-log.txt
 pwd >> $targetDir/git-update-log.txt
 ls -l  >> $targetDir/git-update-log.txt
 
-mkdir $targetDir/incoming
-mkdir $targetDir/processing
-
 while read oldrev newrev ref
 do
     echo "$ref $oldrev $newrev <br/>" >> $targetDir/git-push-log.html
@@ -61,7 +58,7 @@ do
       git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
       echo "<br/>" >> $targetDir/git-push-log.html
       git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
-      cp $(git diff --name-only $oldrev $newrev) $targetDir/incoming/
+      cp $(git diff --name-only $oldrev $newrev) $scriptDir/incoming/
       echo "<br/>" >> $targetDir/git-push-log.html
     fi
 done

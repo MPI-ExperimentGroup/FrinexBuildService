@@ -77,7 +77,8 @@ RUN npm install -g cordova@10.0.0
 #RUN /usr/bin/npm install -g electron-compile
 #CMD ["/bin/bash"] [ls /target]#, "/target/setup-cordova.sh"]
 #WORKDIR /home/petwit/docker-testing
-COPY android-keys /android-keys
+COPY android-keys/frinex-build.json /android-keys/
+COPY android-keys/frinex-cordova.jks /android-keys/
 
 #RUN mkdir /electron
 #RUN wget https://github.com/electron/electron/releases/download/v2.0.10/electron-v2.0.10-darwin-x64.zip -O /electron/darwin-x64.zip
