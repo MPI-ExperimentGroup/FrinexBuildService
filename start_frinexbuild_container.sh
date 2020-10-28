@@ -22,6 +22,9 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
+# get the latest version of this repository
+git pull
+
 # build the frinexbuild dockerfile
 #docker build --no-cache -f frinexbuild.Dockerfile -t frinexbuild .
 
