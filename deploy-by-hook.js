@@ -388,7 +388,7 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
         + '';
-    exec(dockerString + ' &> ' + targetDirectory + currentEntry.buildName + "_staging.txt", (error, stdout, stderr) => {
+    exec(dockerString + ' &> ' + targetDirectory + "/" + currentEntry.buildName + "_staging.txt", (error, stdout, stderr) => {
         if (error) {
             console.error(`deployStagingGui error: ${error}`);
         }
