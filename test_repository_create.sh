@@ -16,11 +16,11 @@ git commit -m "test" test_data.txt; git push
 sed -i "s|#>>|>>|g" /FrinexBuildService/git-repositories/TEST_REPOSITORY.git/hooks/post-receive
 # make sure any new files are accessable by httpd
 # wait for the build container to finish
-sleep 30000
+sleep 1
 while [ "$(pidof node-default)" ]
 do
   echo "build in process, waiting";
-  sleep 1000
+  sleep 1
 done
 chown -R daemon /FrinexBuildService/git-repositories/TEST_REPOSITORY.git
 chown -R daemon /FrinexBuildService/git-checkedout/TEST_REPOSITORY
