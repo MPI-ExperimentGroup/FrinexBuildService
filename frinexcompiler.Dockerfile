@@ -101,6 +101,15 @@ RUN cd electron-webpack-quick-start \
     && stat dist/electron-webpack-quick-start\ 0.0.0.exe
 #    && start dist/electron-webpack-quick-start-0.0.0.dmg
 
+RUN mkdir /openjdk8 \
+    # prepare to switch back to java 8 for Cordova
+    && cd /openjdk8 \
+    #&& wget https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u265-b01/OpenJDK8U-jre_x64_linux_hotspot_8u265b01.tar.gz \
+    && wget https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u265-b01/OpenJDK8U-jdk_x64_linux_hotspot_8u265b01.tar.gz \
+    && tar -xf OpenJDK8U-jdk_x64_linux_hotspot_8u265b01.tar.gz \
+    #&& echo "update-alternatives --set java openjdk8" > /openjdk8/switch_jdk8.sh
+    && echo "rm /usr/bin/java;ln -s /openjdk8/jdk8u265-b01/bin/java /usr/bin/java" > /openjdk8/switch_jdk8.sh
+ENV JAVA8_HOME=/openjdk8/jdk8u265-b01
 
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
@@ -131,16 +140,6 @@ RUN cd /ExperimentTemplate \
 RUN cd /ExperimentTemplate \
     && mvn clean install -Dexperiment.configuration.name=with_stimulus_example
 RUN mkdir /target
-
-RUN mkdir /openjdk8 \
-    # prepare to switch back to java 8 for Cordova
-    && cd /openjdk8 \
-    #&& wget https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u265-b01/OpenJDK8U-jre_x64_linux_hotspot_8u265b01.tar.gz \
-    && wget https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u265-b01/OpenJDK8U-jdk_x64_linux_hotspot_8u265b01.tar.gz \
-    && tar -xf OpenJDK8U-jdk_x64_linux_hotspot_8u265b01.tar.gz \
-    #&& echo "update-alternatives --set java openjdk8" > /openjdk8/switch_jdk8.sh
-    && echo "rm /usr/bin/java;ln -s /openjdk8/jdk8u265-b01/bin/java /usr/bin/java" > /openjdk8/switch_jdk8.sh
-ENV JAVA8_HOME=/openjdk8/jdk8u265-b01
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
