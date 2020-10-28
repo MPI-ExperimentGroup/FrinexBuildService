@@ -35,6 +35,7 @@
 const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 const execSync = require('child_process').execSync;
+const { exec } = require('child_process');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
@@ -387,33 +388,39 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
         + '';
-    execSync(dockerString + ' &> /target/' + currentEntry.buildName + "_staging.txt");
-    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + ".war")) {
-        console.log("frinex-gui finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
+    exec(dockerString + ' &> ' + targetDirectory + currentEntry.buildName + "_staging.txt", (error, stdout, stderr) => {
+        if (error) {
+            console.error(`deployStagingGui error: ${error}`);
+        }
+        console.log(`deployStagingGui stdout: ${stdout}`);
+        console.error(`deployStagingGui stderr: ${stderr}`);
+        if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + ".war")) {
+            console.log("frinex-gui finished");
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
 //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
 //        console.log(targetDirectory);
 //        console.log(value);
-        // build cordova 
-        if (currentEntry.isAndroid || currentEntry.isiOS) {
-            buildApk(currentEntry.buildName, "staging");
-        }
-        if (currentEntry.isDesktop) {
-            buildElectron(currentEntry.buildName, "staging");
-        }
-        deployStagingAdmin(listing, currentEntry);
+            // build cordova 
+            if (currentEntry.isAndroid || currentEntry.isiOS) {
+                buildApk(currentEntry.buildName, "staging");
+            }
+            if (currentEntry.isDesktop) {
+                buildElectron(currentEntry.buildName, "staging");
+            }
+            deployStagingAdmin(listing, currentEntry);
 //        buildNextExperiment(listing);
-    } else {
+        } else {
 //        console.log(targetDirectory);
 //        console.log(JSON.stringify(reason, null, 4));
-        console.log("frinex-gui staging failed");
-        console.log(currentEntry.experimentDisplayName);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
+            console.log("frinex-gui staging failed");
+            console.log(currentEntry.experimentDisplayName);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
 //        var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
 //        errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
-        buildNextExperiment(listing);
-    };
+        };
+    });
+    buildNextExperiment(listing);
 }
 function deployStagingAdmin(listing, currentEntry) {
     var mvnadmin = require('maven').create({
