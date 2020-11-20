@@ -369,7 +369,7 @@ function deployStagingGui(listing, currentEntry) {
     fs.mkdirSync(targetDirectory + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
     var dockerString = 'docker run'
-        + ' -v ' + m2Settings + ':~/.m2/settings.xml' 
+        + ' -v ' + m2Settings + ':/root/.m2/'
         + ' -v ' + processingDirectory + ':/processing' 
         + ' -v ' + targetDirectory + '/' + currentEntry.buildName + ':/target'
         + ' -w /ExperimentTemplate frinexapps mvn clean '
