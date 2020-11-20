@@ -369,6 +369,7 @@ function deployStagingGui(listing, currentEntry) {
     fs.mkdirSync(targetDirectory + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
     var dockerString = 'docker run'
+        + ' -v ' + m2Settings + ':~/.m2/settings.xml' 
         + ' -v ' + processingDirectory + ':/processing' 
         + ' -v ' + targetDirectory + '/' + currentEntry.buildName + ':/target'
         + ' -w /ExperimentTemplate frinexapps mvn clean '
@@ -913,6 +914,16 @@ function moveIncomingToProcessing() {
                     fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
                     console.log('moved from incoming to processing: ' + filename);
                     resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                } else if (path.extname(filename) === ".uml") {
+                    // preserve the generated UML to be accessed via a link in the results table
+                    var targetName = path.resolve(targetDirectory, filename);
+                    console.log('moved UML from incoming to target: ' + filename);
+                    fs.renameSync(incomingFile, targetName);
+                } else if (path.extname(filename) === ".svg") {
+                    // preserve the generated UML SVG to be accessed via a link in the results table
+                    var targetName = path.resolve(targetDirectory, filename);
+                    console.log('moved UML SVG from incoming to target: ' + filename);
+                    fs.renameSync(incomingFile, targetName);
                 } else if (path.extname(filename) === ".xsd") {
                     // place the generated XSD file for use in XML editors
                     var targetName = path.resolve(targetDirectory, filename);
