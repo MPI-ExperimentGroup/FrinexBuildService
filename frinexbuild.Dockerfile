@@ -26,9 +26,10 @@ RUN apk add --no-cache \
   git-daemon \
   npm \
   docker \
+  curl \
   bash
 RUN git config --global user.name "Frinex Build Service"
-Run git config --global user.email "noone@frinexbuild.mpi.nl"
+RUN git config --global user.email "noone@frinexbuild.mpi.nl"
 RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/git-repositories
 RUN mkdir /FrinexBuildService/git-checkedout
@@ -63,3 +64,4 @@ COPY ./settings.xml /FrinexBuildService/
 # make sure that the required files are accessable by httpd
 RUN chown -R daemon /FrinexBuildService
 RUN chown -R daemon /usr/local/apache2/htdocs/target
+WORKDIR /FrinexBuildService
