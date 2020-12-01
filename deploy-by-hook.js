@@ -369,6 +369,7 @@ function deployStagingGui(listing, currentEntry) {
     fs.mkdirSync(targetDirectory + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
     var dockerString = 'docker run'
+        + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
         + ' -v ' + m2Settings + ':/root/.m2/'
         + ' -v ' + processingDirectory + ':/processing' 
         + ' -v ' + targetDirectory + '/' + currentEntry.buildName + ':/target'
