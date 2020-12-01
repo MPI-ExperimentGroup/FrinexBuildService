@@ -36,7 +36,7 @@ docker build --rm -f frinexapps.Dockerfile -t frinexapps:latest .
 
 # start a tomcat docker image to test deployments
 # note that this currently will delete anything in webappsStaging
-docker run --name tomcat01 -d --rm -it -p 8081:8080 -v webappsStaging:/usr/local/tomcat/webapps -v $workingDir/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml -v $workingDir/context.xml:/usr/local/tomcat/webapps.dist/manager/META-INF/context.xml tomcat:9.0 /bin/bash -c "rm -r /usr/local/tomcat/webapps/manager; mv /usr/local/tomcat/webapps.dist/manager /usr/local/tomcat/webapps/; catalina.sh run"
+docker run --name tomcat01 -d --rm -it -p 8091:8080 -v webappsStaging:/usr/local/tomcat/webapps -v $workingDir/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml -v $workingDir/context.xml:/usr/local/tomcat/webapps.dist/manager/META-INF/context.xml tomcat:9.0 /bin/bash -c "rm -r /usr/local/tomcat/webapps/manager; mv /usr/local/tomcat/webapps.dist/manager /usr/local/tomcat/webapps/; catalina.sh run"
 
 # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
 docker run  -v /var/run/docker.sock:/var/run/docker.sock -v webappsStaging:/FrinexBuildService/webappsStaging --rm -it --name frinexbuild-test01 -p 8080:80 frinexbuild sh
