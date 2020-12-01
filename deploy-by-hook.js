@@ -388,8 +388,9 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-        + '';
-    exec(dockerString + ' &> ' + targetDirectory + "/" + currentEntry.buildName + "_staging.txt", (error, stdout, stderr) => {
+        + " &> " + targetDirectory + "/" + currentEntry.buildName + "_staging.txt";
+    console.log(dockerString);
+    exec(dockerString, (error, stdout, stderr) => {
         if (error) {
             console.error(`deployStagingGui error: ${error}`);
         }
@@ -584,7 +585,9 @@ function buildApk(buildName, stage) {
         }
         resultString += '<a href="' + buildName + "_" + stage + "_android.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
-        execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log", {stdio: [0, 1, 2]});
+        var dockerString = 'docker run -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log";
+        console.log(dockerString);
+        execSync(dockerString, {stdio: [0, 1, 2]});
     } catch (ex) {
         resultString += "failed&nbsp;";
         hasFailed = true;
@@ -629,7 +632,9 @@ function buildElectron(buildName, stage) {
         }
         resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        execSync('docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_electron.log", {stdio: [0, 1, 2]});
+        var dockerString = 'docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_electron.log";
+        console.log(dockerString);
+        execSync(dockerString, {stdio: [0, 1, 2]});
 //        resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
@@ -976,10 +981,10 @@ function convertJsonToXml() {
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /incoming /incoming /listing"'
-        + '';
+        + " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
     try {
-        execSync(dockerString + " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log", {stdio: [0, 1, 2]});
+        execSync(dockerString, {stdio: [0, 1, 2]});
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         moveIncomingToProcessing();
