@@ -375,7 +375,8 @@ function deployStagingGui(listing, currentEntry) {
         + ' -v ' + processingDirectory + ':/processing' 
         + ' -v ' + targetDirectory + '/' + currentEntry.buildName + ':/target'
         + ' -w /ExperimentTemplate frinexapps mvn clean '
-        + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+        //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+        + 'package'
         + ' -DskipTests'
         + ' -pl gwt-cordova'
         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
@@ -979,7 +980,7 @@ function convertJsonToXml() {
         + ' -v ' + listingDirectory + ':/listing'
         + ' -v ' + targetDirectory + ':/target'
         + ' -w /ExperimentTemplate/ExperimentDesigner' 
-        + ' frinexcompiler:latest mvn exec:exec'
+        + ' frinexapps:latest mvn exec:exec'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /incoming /incoming /listing"'
