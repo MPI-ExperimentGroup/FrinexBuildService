@@ -29,7 +29,7 @@ workingDir=$(pwd -P)
 git pull
 
 # build the frinexbuild dockerfile
-docker build --no-cache -f frinexbuild.Dockerfile -t frinexbuild .
+docker build --no-cache -f frinexbuild.Dockerfile -t frinexbuild:latest .
 
 # build the frinexapps dockerfile:
 docker build --rm -f frinexapps.Dockerfile -t frinexapps:latest .
@@ -38,7 +38,12 @@ docker build --rm -f frinexapps.Dockerfile -t frinexapps:latest .
 # note that this currently will delete anything in webappsStaging
 #docker run --name tomcat01 -d --rm -it -p 8091:8080 -v webappsStaging:/usr/local/tomcat/webapps -v $workingDir/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml -v $workingDir/context.xml:/usr/local/tomcat/webapps.dist/manager/META-INF/context.xml tomcat:9.0 /bin/bash -c "rm -r /usr/local/tomcat/webapps/manager; mv /usr/local/tomcat/webapps.dist/manager /usr/local/tomcat/webapps/; catalina.sh run"
 docker build --rm -f tomcatstaging.Dockerfile -t tomcatstaging:latest .
-docker run --name tomcatstaging -d --rm -it -p 8091:8080 -v webappsStaging:/usr/local/tomcat/webapps
+
+# stop all containers (probably not wanted in future usage)
+docker stop $(docker ps -a -q)
+
+# start the staging tomcat server
+docker run --name tomcatstaging -d --rm -it -p 8091:8080 -v webappsStaging:/usr/local/tomcat/webapps tomcatstaging:latest
 
 # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
-docker run  -v /var/run/docker.sock:/var/run/docker.sock -v webappsStaging:/FrinexBuildService/webappsStaging --rm -it --name frinexbuild-test01 -p 8080:80 frinexbuild sh
+docker run  -v /var/run/docker.sock:/var/run/docker.sock -v webappsStaging:/FrinexBuildService/webappsStaging --rm -it --name frinexbuild-test01 -p 8080:80 frinexbuild:latest bash
