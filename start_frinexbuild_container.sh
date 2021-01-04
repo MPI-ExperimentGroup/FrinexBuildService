@@ -43,7 +43,7 @@ docker build --rm -f tomcatstaging.Dockerfile -t tomcatstaging:latest .
 docker stop $(docker ps -a -q)
 
 # start the staging tomcat server
-docker run --name tomcatstaging -d --rm -it -p 8091:8080 -v webappsStaging:/usr/local/tomcat/webapps tomcatstaging:latest
+docker run --name tomcatstaging -d --rm -it -p 8071:8080 -v webappsStaging:/usr/local/tomcat/webapps tomcatstaging:latest
 
 # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
-docker run  -v /var/run/docker.sock:/var/run/docker.sock -v webappsStaging:/FrinexBuildService/webappsStaging --rm -it --name frinexbuild-test01 -p 8080:80 frinexbuild:latest bash
+docker run  -v /var/run/docker.sock:/var/run/docker.sock -v webappsStaging:/FrinexBuildService/webappsStaging --rm -it --name frinexbuild-test01 -p 8070:80 frinexbuild:latest bash
