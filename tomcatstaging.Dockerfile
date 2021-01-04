@@ -21,7 +21,8 @@
 #
 FROM tomcat:9.0
 COPY tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml 
-VOLUME /usr/local/tomcat/webapps 
+RUN mkdir /usr/local/tomcat/webapps
 COPY /usr/local/tomcat/webapps.dist/manager /usr/local/tomcat/webapps/
 COPY context.xml /usr/local/tomcat/webapps/manager/META-INF/context.xml
 RUN catalina.sh run
+VOLUME /usr/local/tomcat/webapps 
