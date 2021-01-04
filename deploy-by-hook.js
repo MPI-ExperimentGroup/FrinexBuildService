@@ -371,18 +371,18 @@ function deployStagingGui(listing, currentEntry) {
     var dockerString = 'docker run'
         + ' --rm '
         + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
-        + ' -v ' + m2Settings + ':/root/.m2/'
-        + ' -v ' + processingDirectory + ':/processing' 
-        + ' -v ' + targetDirectory + '/' + currentEntry.buildName + ':/target'
+        + ' -v processingDirectory:/FrinexBuildService/processing' 
+        + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps mvn clean '
         //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
         + 'package'
+        + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
         + ' -pl gwt-cordova'
         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
         + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
         + ' -Dexperiment.webservice=' + configServer
-        + ' -Dexperiment.configuration.path=/processing'
+        + ' -Dexperiment.configuration.path=/FrinexBuildService/processing'
         + ' -DversionCheck.allowSnapshots=' + 'true'
         + ' -DversionCheck.buildType=' + 'stable'
         + ' -Dexperiment.destinationServer=' + stagingServer
@@ -391,7 +391,9 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-        + " &> " + targetDirectory + "/" + currentEntry.buildName + "_staging.txt";
+        + " &> /FrinexBuildService/processing/" + currentEntry.buildName + "_staging.txt;"
+        + ' mv target/*.zip /FrinexBuildService/processing/;'
+        + ' mv target/*.war /FrinexBuildService/processing/;';
     console.log(dockerString);
     exec(dockerString, (error, stdout, stderr) => {
         if (error) {
@@ -976,14 +978,15 @@ function convertJsonToXml() {
         }
     });
     var dockerString = 'docker run'
-        + ' -v ' + incomingDirectory + ':/incoming'
-        + ' -v ' + listingDirectory + ':/listing'
-        + ' -v ' + targetDirectory + ':/target'
+        + ' -v incomingDirectory:/FrinexBuildService/incoming'
+        + ' -v listingDirectory:/FrinexBuildService/listing'
+        + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner' 
         + ' frinexapps:latest mvn exec:exec'
+        + ' -gs /maven/.m2/settings.xml'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
-        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /incoming /incoming /listing"'
+        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/incoming /FrinexBuildService/listing"'
         + " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
     try {
