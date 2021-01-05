@@ -174,4 +174,4 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
 
 WORKDIR /target
-VOLUME ["/maven/.m2"]
+VOLUME ["m2Directory:/maven/.m2/"]
