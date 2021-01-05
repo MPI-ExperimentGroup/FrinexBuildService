@@ -920,37 +920,55 @@ function moveIncomingToProcessing() {
                     var configStoreFile = path.resolve(targetDirectory, filename);
                     console.log('configStoreFile: ' + configStoreFile);
 //                    fs.copyFileSync(incomingFile, configStoreFile);
-                    fs.renameSync(incomingFile, processingName);
-                    fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
-                    console.log('moved from incoming to processing: ' + filename);
-                    resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                    //fs.renameSync(incomingFile, processingName);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function() {
+                        fs.unlink(incomingFile);
+                        fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
+                        console.log('moved from incoming to processing: ' + filename);
+                        resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                    }));
                 } else if (path.extname(filename) === ".uml") {
                     // preserve the generated UML to be accessed via a link in the results table
                     var targetName = path.resolve(targetDirectory, filename);
-                    console.log('moved UML from incoming to target: ' + filename);
-                    fs.renameSync(incomingFile, targetName);
+                    //fs.renameSync(incomingFile, targetName);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
+                        fs.unlink(incomingFile);
+                        console.log('moved UML from incoming to target: ' + filename);
+                    }));
                 } else if (path.extname(filename) === ".svg") {
                     // preserve the generated UML SVG to be accessed via a link in the results table
                     var targetName = path.resolve(targetDirectory, filename);
-                    console.log('moved UML SVG from incoming to target: ' + filename);
-                    fs.renameSync(incomingFile, targetName);
+                    //fs.renameSync(incomingFile, targetName);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
+                        fs.unlink(incomingFile);
+                        console.log('moved UML SVG from incoming to target: ' + filename);
+                    }));
                 } else if (path.extname(filename) === ".xsd") {
                     // place the generated XSD file for use in XML editors
                     var targetName = path.resolve(targetDirectory, filename);
-                    console.log('moved XSD from incoming to target: ' + filename);
-                    fs.renameSync(incomingFile, targetName);
+                    //fs.renameSync(incomingFile, targetName);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
+                        fs.unlink(incomingFile);
+                        console.log('moved XSD from incoming to target: ' + filename);
+                    }));
                 } else if (filename.endsWith("frinex.html")) {
                     // place the generated documentation file for use in web browsers
                     var targetName = path.resolve(targetDirectory, filename);
-                    console.log('moved HTML from incoming to target: ' + filename);
-                    fs.renameSync(incomingFile, targetName);
+                    //fs.renameSync(incomingFile, targetName);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
+                        fs.unlink(incomingFile);
+                        console.log('moved HTML from incoming to target: ' + filename);
+                    }));
                 } else if (filename.endsWith("_validation_error.txt")) {
                     var processingName = path.resolve(processingDirectory, filename);
-                    fs.renameSync(incomingFile, processingName);
-                    var configErrorFile = path.resolve(targetDirectory, filename);
-                    fs.createReadStream(processingName).pipe(fs.createWriteStream(configErrorFile));
-                    console.log('moved from incoming to processing: ' + filename);
-                    resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                    //fs.renameSync(incomingFile, processingName);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function() {
+                        fs.unlink(incomingFile);
+                        var configErrorFile = path.resolve(targetDirectory, filename);
+                        fs.createReadStream(processingName).pipe(fs.createWriteStream(configErrorFile));
+                        console.log('moved from incoming to processing: ' + filename);
+                        resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                    }));
                 } else if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
