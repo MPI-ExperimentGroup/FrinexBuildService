@@ -24,5 +24,5 @@ COPY tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
 RUN mkdir -p /usr/local/tomcat/webapps
 RUN cp -R /usr/local/tomcat/webapps.dist/manager /usr/local/tomcat/webapps/
 COPY context.xml /usr/local/tomcat/webapps/manager/META-INF/context.xml
-RUN catalina.sh run
+RUN catalina.sh run&
 VOLUME ["webappsStaging:/usr/local/tomcat/webapps"]
