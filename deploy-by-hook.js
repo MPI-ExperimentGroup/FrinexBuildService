@@ -894,9 +894,14 @@ function moveIncomingToProcessing() {
                 var incomingFile = path.resolve(incomingDirectory, filename);
                 if (path.extname(filename) === ".json") {
                     var jsonStoreFile = path.resolve(processingDirectory, filename);
-                    console.log('incomingFile: ' + incomingFile);
-                    console.log('jsonStoreFile: ' + jsonStoreFile);
-                    fs.renameSync(incomingFile, jsonStoreFile);
+                    //console.log('incomingFile: ' + incomingFile);
+                    //console.log('jsonStoreFile: ' + jsonStoreFile);
+                    //fs.renameSync(incomingFile, jsonStoreFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(jsonStoreFile).on('finish', function() {
+                        fs.unlink(incomingFile);
+                        console.log('moved from incoming to processing: ' + filename);
+                        resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                    }));
                 } else if (path.extname(filename) === ".xml") {
                     var baseName = filename.substring(0, filename.length - 4);
                     var mavenLogPathSG = targetDirectory + "/" + baseName + "_staging.txt";
@@ -997,6 +1002,7 @@ function convertJsonToXml() {
     });
     var dockerString = 'docker run'
         + ' -v incomingDirectory:/FrinexBuildService/incoming'
+        + ' -v processingDirectory:/FrinexBuildService/processing'
         + ' -v listingDirectory:/FrinexBuildService/listing'
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner' 
@@ -1004,7 +1010,7 @@ function convertJsonToXml() {
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
-        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/incoming /FrinexBuildService/listing"'
+        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/processing /FrinexBuildService/listing"'
         + " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
     try {
