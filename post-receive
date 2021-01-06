@@ -78,6 +78,10 @@ if [ "$(pidof node-default)" ]
 then
   pidof node-default
   echo "build in process, exiting";
+elif [ "$(pidof node)" ]
+then
+  pidof node
+  echo "build in process, exiting";
 else
   echo "starting build process";
   #cd /srv/ExperimentTemplate/
@@ -89,6 +93,7 @@ else
 #  mvn clean install -DversionCheck.buildType=stable -DskipTests=true -gs /srv/development/.m2/settings.xml > $targetDir/git-mvn-out.html
   nohup nice node $scriptDir/deploy-by-hook.js > $targetDir/git-push-out.txt 2> $targetDir/git-push-err.txt &
   pidof node-default
+  pidof node
 fi
 
 #echo "node done"
