@@ -366,6 +366,9 @@ function deployStagingGui(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
     }
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName)) {
+        fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName);
+    }
     fs.mkdirSync(targetDirectory + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
     var dockerString = 'docker run'
