@@ -367,7 +367,7 @@ function deployStagingGui(listing, currentEntry) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
     }
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName)) {
-        fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName);
+        fs.rmdirSync(targetDirectory + "/" + currentEntry.buildName, {recursive: true});
     }
     fs.mkdirSync(targetDirectory + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
