@@ -901,7 +901,7 @@ function moveIncomingToProcessing() {
                     //console.log('jsonStoreFile: ' + jsonStoreFile);
                     //fs.renameSync(incomingFile, jsonStoreFile);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(jsonStoreFile).on('finish', function() {
-                        fs.unlink(incomingFile);
+                        fs.existsSync(incomingFile);
                         console.log('moved from incoming to processing: ' + filename);
                         resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
                     }));
@@ -930,7 +930,7 @@ function moveIncomingToProcessing() {
 //                    fs.copyFileSync(incomingFile, configStoreFile);
                     //fs.renameSync(incomingFile, processingName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function() {
-                        fs.unlink(incomingFile);
+                        fs.existsSync(incomingFile);
                         fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
                         console.log('moved from incoming to processing: ' + filename);
                         resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
@@ -940,7 +940,7 @@ function moveIncomingToProcessing() {
                     var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
-                        fs.unlink(incomingFile);
+                        fs.existsSync(incomingFile);
                         console.log('moved UML from incoming to target: ' + filename);
                     }));
                 } else if (path.extname(filename) === ".svg") {
@@ -948,7 +948,7 @@ function moveIncomingToProcessing() {
                     var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
-                        fs.unlink(incomingFile);
+                        fs.existsSync(incomingFile);
                         console.log('moved UML SVG from incoming to target: ' + filename);
                     }));
                 } else if (path.extname(filename) === ".xsd") {
@@ -956,7 +956,7 @@ function moveIncomingToProcessing() {
                     var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
-                        fs.unlink(incomingFile);
+                        fs.existsSync(incomingFile);
                         console.log('moved XSD from incoming to target: ' + filename);
                     }));
                 } else if (filename.endsWith("frinex.html")) {
@@ -964,14 +964,14 @@ function moveIncomingToProcessing() {
                     var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
-                        fs.unlink(incomingFile);
+                        fs.existsSync(incomingFile);
                         console.log('moved HTML from incoming to target: ' + filename);
                     }));
                 } else if (filename.endsWith("_validation_error.txt")) {
                     var processingName = path.resolve(processingDirectory, filename);
                     //fs.renameSync(incomingFile, processingName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function() {
-                        fs.unlink(incomingFile);
+                        fs.existsSync(incomingFile);
                         var configErrorFile = path.resolve(targetDirectory, filename);
                         fs.createReadStream(processingName).pipe(fs.createWriteStream(configErrorFile));
                         console.log('moved from incoming to processing: ' + filename);
