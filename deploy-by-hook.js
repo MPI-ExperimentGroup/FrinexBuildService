@@ -890,10 +890,11 @@ function moveIncomingToProcessing() {
             var remainingFiles = list.length;
             list.forEach(function (filename) {
                 console.log('incoming: ' + filename);
+                var fileNamePart = path.parse(filename).name;
                 resultsFile.write("<div>incoming: " + filename + "</div>");
                 var incomingFile = path.resolve(incomingDirectory, filename);
                 if (path.extname(filename) === ".json") {
-                    var jsonStoreFile = path.resolve(targetDirectory + "/" + currentEntry.buildName, filename);
+                    var jsonStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
                     //console.log('incomingFile: ' + incomingFile);
                     //console.log('jsonStoreFile: ' + jsonStoreFile);
                     //fs.renameSync(incomingFile, jsonStoreFile);
@@ -905,11 +906,10 @@ function moveIncomingToProcessing() {
                         resultsFile.write("<div>moved from incoming to htdocs: " + filename + "</div>");
                     }));
                 } else if (path.extname(filename) === ".xml") {
-                    var baseName = filename.substring(0, filename.length - 4);
-                    var mavenLogPathSG = targetDirectory + "/" + currentEntry.buildName + "/" + baseName + "_staging.txt";
-                    var mavenLogPathSA = targetDirectory + "/" + currentEntry.buildName + "/" + baseName + "_staging_admin.txt";
-                    var mavenLogPathPG = targetDirectory + "/" + currentEntry.buildName + "/" + baseName + "_production.txt";
-                    var mavenLogPathPA = targetDirectory + "/" + currentEntry.buildName + "/" + baseName + "_production_admin.txt";
+                    var mavenLogPathSG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging.txt";
+                    var mavenLogPathSA = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging_admin.txt";
+                    var mavenLogPathPG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_production.txt";
+                    var mavenLogPathPA = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_production_admin.txt";
                     if (fs.existsSync(mavenLogPathSG)) {
                         fs.unlinkSync(mavenLogPathSG);
                     }
@@ -924,7 +924,7 @@ function moveIncomingToProcessing() {
                     }
                     var processingName = path.resolve(processingDirectory, filename);
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
-                    var configStoreFile = path.resolve(targetDirectory + "/" + currentEntry.buildName + "/", filename);
+                    var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
                     console.log('configStoreFile: ' + configStoreFile);
                     //fs.copyFileSync(incomingFile, configStoreFile);
                     //fs.renameSync(incomingFile, processingName);
@@ -938,7 +938,7 @@ function moveIncomingToProcessing() {
                     }));
                 } else if (path.extname(filename) === ".uml") {
                     // preserve the generated UML to be accessed via a link in the results table
-                    var targetName = path.resolve(targetDirectory + "/" + currentEntry.buildName + "/", filename);
+                    var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
                     //fs.renameSync(incomingFile, targetName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
                         if (fs.existsSync(incomingFile)) {
@@ -948,7 +948,7 @@ function moveIncomingToProcessing() {
                     }));
                 } else if (path.extname(filename) === ".svg") {
                     // preserve the generated UML SVG to be accessed via a link in the results table
-                    var targetName = path.resolve(targetDirectory + "/" + currentEntry.buildName + "/", filename);
+                    var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
                     //fs.renameSync(incomingFile, targetName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
                         if (fs.existsSync(incomingFile)) {
@@ -958,7 +958,7 @@ function moveIncomingToProcessing() {
                     }));
                 } else if (path.extname(filename) === ".xsd") {
                     // place the generated XSD file for use in XML editors
-                    var targetName = path.resolve(targetDirectory + "/" + currentEntry.buildName + "/", filename);
+                    var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
                         if (fs.existsSync(incomingFile)) {
@@ -968,7 +968,7 @@ function moveIncomingToProcessing() {
                     }));
                 } else if (filename.endsWith("frinex.html")) {
                     // place the generated documentation file for use in web browsers
-                    var targetName = path.resolve(targetDirectory + "/" + currentEntry.buildName + "/", filename);
+                    var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
                         if (fs.existsSync(incomingFile)) {
@@ -977,7 +977,7 @@ function moveIncomingToProcessing() {
                         console.log('moved HTML from incoming to target: ' + filename);
                     }));
                 } else if (filename.endsWith("_validation_error.txt")) {
-                    var configErrorFile = path.resolve(targetDirectory + "/" + currentEntry.buildName + "/", filename);
+                    var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
                     //fs.renameSync(incomingFile, processingName);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configErrorFile).on('finish', function () {
                         if (fs.existsSync(incomingFile)) {
