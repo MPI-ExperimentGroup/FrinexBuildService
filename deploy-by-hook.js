@@ -52,16 +52,16 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", {flags: 'w', mode: 0o755});
+var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", { flags: 'w', mode: 0o755 });
 
 var buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildArtifactsFileName = __dirname + "/gwt-cordova/target/artifacts.json";
-var buildHistoryJson = {table: {}};
-var buildArtifactsJson = {artifacts: {}};
+var buildHistoryJson = { table: {} };
+var buildArtifactsJson = { artifacts: {} };
 if (fs.existsSync(buildHistoryFileName)) {
     try {
         buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
-        fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
+        fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
     } catch (error) {
         console.log("faild to read " + buildHistoryJson);
         console.log(error);
@@ -104,9 +104,9 @@ function startResult() {
     resultsFile.write("var applicationStatus = {};\n");
     resultsFile.write("function doUpdate() {\n");
     resultsFile.write("$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
-//    resultsFile.write("console.log(data);\n");
+    //resultsFile.write("console.log(data);\n");
     resultsFile.write("for (var keyString in data.table) {\n");
-//    resultsFile.write("console.log(keyString);\n");
+    //resultsFile.write("console.log(keyString);\n");
     resultsFile.write("var experimentRow = document.getElementById(keyString+ '_row');\n");
     resultsFile.write("if (!experimentRow) {\n");
     resultsFile.write("var tableRow = document.createElement('tr');\n");
@@ -161,7 +161,7 @@ function startResult() {
     resultsFile.write("};}(keyString)));\n");
     resultsFile.write("}\n");
     resultsFile.write("for (var cellString in data.table[keyString]) {\n");
-//    resultsFile.write("console.log(cellString);\n");
+    //resultsFile.write("console.log(cellString);\n");
     resultsFile.write("var experimentCell = document.getElementById(keyString + '_' + cellString);\n");
     resultsFile.write("if (!experimentCell) {\n");
     resultsFile.write("var tableCell = document.createElement('td');\n");
@@ -169,7 +169,7 @@ function startResult() {
     resultsFile.write("document.getElementById(keyString + '_row').appendChild(tableCell);\n");
     resultsFile.write("}\n");
     resultsFile.write("document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value;\n");
-//    resultsFile.write("var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
+    //resultsFile.write("var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
     resultsFile.write("var statusStyle = (keyString + '_' + cellString in applicationStatus)?';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';':'';\n");
     resultsFile.write("document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
     resultsFile.write("}\n");
@@ -202,7 +202,7 @@ function startResult() {
     resultsFile.write("});\n");
     resultsFile.write("</script>\n");
     buildHistoryJson.building = true;
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
 
@@ -212,27 +212,27 @@ function initialiseResult(name, message, isError) {
         style = 'background: #F3C3C3';
     }
     buildHistoryJson.table[name] = {
-        "_experiment": {value: name, style: ''},
-        "_date": {value: message, style: style},
-//        "_validation_link_json": {value: '', style: ''},
-//        "_validation_link_xml": {value: '', style: ''},
-        "_validation_json_xsd": {value: '', style: ''},
-        "_staging_web": {value: '', style: ''},
-        "_staging_android": {value: '', style: ''},
-        "_staging_desktop": {value: '', style: ''},
-        "_staging_admin": {value: '', style: ''},
-        "_production_web": {value: '', style: ''},
-        "_production_android": {value: '', style: ''},
-        "_production_desktop": {value: '', style: ''},
-        "_production_admin": {value: '', style: ''}
+        "_experiment": { value: name, style: '' },
+        "_date": { value: message, style: style },
+        //"_validation_link_json": {value: '', style: ''},
+        //"_validation_link_xml": {value: '', style: ''},
+        "_validation_json_xsd": { value: '', style: '' },
+        "_staging_web": { value: '', style: '' },
+        "_staging_android": { value: '', style: '' },
+        "_staging_desktop": { value: '', style: '' },
+        "_staging_admin": { value: '', style: '' },
+        "_production_web": { value: '', style: '' },
+        "_production_android": { value: '', style: '' },
+        "_production_desktop": { value: '', style: '' },
+        "_production_admin": { value: '', style: '' }
     };
     // todo: remove any listing.json
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
     buildHistoryJson.table[name]["_date"].value = new Date().toISOString();
-//    buildHistoryJson.table[name]["_date"].value = '<a href="' + name + '.xml">' + new Date().toISOString() + '</a>';
+    //buildHistoryJson.table[name]["_date"].value = '<a href="' + name + '.xml">' + new Date().toISOString() + '</a>';
     buildHistoryJson.table[name]["_" + stage + "_" + type].value = message;
     if (isError) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #F3C3C3';
@@ -246,17 +246,17 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
     } else if (isDone) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3F3C3';
     }
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
 function stopUpdatingResults() {
-//    updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Build process complete';\n");
-//    updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
-//    updatesFile.write("window.clearTimeout(updateTimer);\n");
+    //updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Build process complete';\n");
+    //updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
+    //updatesFile.write("window.clearTimeout(updateTimer);\n");
     buildHistoryJson.building = false;
     //buildHistoryJson.buildLabel = 'Build process complete';
     buildHistoryJson.buildDate = new Date().toISOString();
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), {mode: 0o755});
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
 function unDeploy(listing, currentEntry) {
@@ -367,14 +367,14 @@ function deployStagingGui(listing, currentEntry) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging.txt");
     }
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName)) {
-        fs.rmdirSync(targetDirectory + "/" + currentEntry.buildName, {recursive: true});
+        fs.rmdirSync(targetDirectory + "/" + currentEntry.buildName, { recursive: true });
     }
     fs.mkdirSync(targetDirectory + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
     var dockerString = 'docker run'
         + ' --rm '
         + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
-        + ' -v processingDirectory:/FrinexBuildService/processing' 
+        + ' -v processingDirectory:/FrinexBuildService/processing'
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps mvn clean '
         //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
@@ -407,10 +407,10 @@ function deployStagingGui(listing, currentEntry) {
         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + ".war")) {
             console.log("frinex-gui finished");
             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
-//        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
-//        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
-//        console.log(targetDirectory);
-//        console.log(value);
+            //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
+            //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
+            //        console.log(targetDirectory);
+            //        console.log(value);
             // build cordova 
             if (currentEntry.isAndroid || currentEntry.isiOS) {
                 buildApk(currentEntry.buildName, "staging");
@@ -419,15 +419,15 @@ function deployStagingGui(listing, currentEntry) {
                 buildElectron(currentEntry.buildName, "staging");
             }
             deployStagingAdmin(listing, currentEntry);
-//        buildNextExperiment(listing);
+            //buildNextExperiment(listing);
         } else {
-//        console.log(targetDirectory);
-//        console.log(JSON.stringify(reason, null, 4));
+            //console.log(targetDirectory);
+            //console.log(JSON.stringify(reason, null, 4));
             console.log("frinex-gui staging failed");
             console.log(currentEntry.experimentDisplayName);
             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
-//        var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
-//        errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
+            //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
+            //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
         };
     });
     buildNextExperiment(listing);
@@ -440,7 +440,7 @@ function deployStagingAdmin(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt");
     }
-    var mavenLogSA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", {mode: 0o755});
+    var mavenLogSA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging_admin.txt", { mode: 0o755 });
     process.stdout.write = process.stderr.write = mavenLogSA.write.bind(mavenLogSA);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true, false);
     mvnadmin.execute(['clean', 'tomcat7:undeploy', 'tomcat7:redeploy'], {
@@ -455,9 +455,9 @@ function deployStagingAdmin(listing, currentEntry) {
         'experiment.destinationServerUrl': stagingServerUrl
     }).then(function (value) {
         console.log(value);
-//                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
+        //fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin finished");
-//        storeResult(currentEntry.buildName, "deployed", "staging", "admin", false, false);
+        //storeResult(currentEntry.buildName, "deployed", "staging", "admin", false, false);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true);
         if (currentEntry.state === "production") {
             deployProductionGui(listing, currentEntry);
@@ -468,7 +468,7 @@ function deployStagingAdmin(listing, currentEntry) {
         console.log(reason);
         console.log("frinex-admin staging failed");
         console.log(currentEntry.experimentDisplayName);
-//        storeResult(currentEntry.buildName, "failed", "staging", "admin", true, false);
+        //storeResult(currentEntry.buildName, "failed", "staging", "admin", true, false);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
         buildNextExperiment(listing);
     });
@@ -492,14 +492,14 @@ function deployProductionGui(listing, currentEntry) {
                 if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt")) {
                     fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production.txt");
                 }
-                var mavenLogPG = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", {mode: 0o755});
+                var mavenLogPG = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.txt", { mode: 0o755 });
                 process.stdout.write = process.stderr.write = mavenLogPG.write.bind(mavenLogPG);
                 mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:deploy' : 'package'], {
                     'skipTests': true, '-pl': 'frinex-gui',
-//                    'altDeploymentRepository.snapshot-repo.default.file': '~/Desktop/FrinexAPKs/',
-//                    'altDeploymentRepository': 'default:file:file://~/Desktop/FrinexAPKs/',
-//                            'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
-//                    'maven.repo.local': '~/Desktop/FrinexAPKs/',
+                    //'altDeploymentRepository.snapshot-repo.default.file': '~/Desktop/FrinexAPKs/',
+                    //'altDeploymentRepository': 'default:file:file://~/Desktop/FrinexAPKs/',
+                    //'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
+                    //'maven.repo.local': '~/Desktop/FrinexAPKs/',
                     'experiment.configuration.name': currentEntry.buildName,
                     'experiment.configuration.displayName': currentEntry.experimentDisplayName,
                     'experiment.webservice': configServer,
@@ -512,11 +512,11 @@ function deployProductionGui(listing, currentEntry) {
                     'experiment.isScaleable': currentEntry.isScaleable,
                     'experiment.defaultScale': currentEntry.defaultScale,
                     'experiment.registrationUrl': currentEntry.registrationUrlProduction
-//                            'experiment.scriptSrcUrl': productionServerUrl,
-//                            'experiment.staticFilesUrl': productionServerUrl
+                    //'experiment.scriptSrcUrl': productionServerUrl,
+                    //'experiment.staticFilesUrl': productionServerUrl
                 }).then(function (value) {
                     console.log("frinex-gui production finished");
-//                storeResult(currentEntry.buildName, "skipped", "production", "web", false, false, true);
+                    //storeResult(currentEntry.buildName, "skipped", "production", "web", false, false, true);
                     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
                     if (currentEntry.isAndroid || currentEntry.isiOS) {
                         buildApk(currentEntry.buildName, "production");
@@ -525,12 +525,12 @@ function deployProductionGui(listing, currentEntry) {
                         buildElectron(currentEntry.buildName, "production");
                     }
                     deployProductionAdmin(listing, currentEntry);
-//                buildNextExperiment(listing);
+                    //buildNextExperiment(listing);
                 }, function (reason) {
                     console.log(reason);
                     console.log("frinex-gui production failed");
                     console.log(currentEntry.experimentDisplayName);
-//                storeResult(currentEntry.buildName, "failed", "production", "web", true, false);
+                    //storeResult(currentEntry.buildName, "failed", "production", "web", true, false);
                     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production.txt">failed (existing production unknown)</a>', "production", "web", true, false, false);
                     buildNextExperiment(listing);
                 });
@@ -551,12 +551,12 @@ function deployProductionAdmin(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt");
     }
-    var mavenLogPA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt", {mode: 0o755});
+    var mavenLogPA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production_admin.txt", { mode: 0o755 });
     process.stdout.write = process.stderr.write = mavenLogPA.write.bind(mavenLogPA);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true, false);
     mvnadmin.execute(['clean', 'tomcat7:deploy'], {
         'skipTests': true, '-pl': 'frinex-admin',
-//                                'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
+        //                                'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
         'experiment.configuration.name': currentEntry.buildName,
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
@@ -566,17 +566,17 @@ function deployProductionAdmin(listing, currentEntry) {
         'experiment.destinationServer': productionServer,
         'experiment.destinationServerUrl': productionServerUrl
     }).then(function (value) {
-//        console.log(value);
-//                        fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
+        //console.log(value);
+        //fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
         console.log("frinex-admin production finished");
-//        storeResult(currentEntry.buildName, "skipped", "production", "admin", false, false, true);
+        //storeResult(currentEntry.buildName, "skipped", "production", "admin", false, false, true);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true);
         buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin production failed");
         console.log(currentEntry.experimentDisplayName);
-//        storeResult(currentEntry.buildName, "failed", "production", "admin", true, false);
+        //storeResult(currentEntry.buildName, "failed", "production", "admin", true, false);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
         buildNextExperiment(listing);
     });
@@ -595,7 +595,7 @@ function buildApk(buildName, stage) {
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         var dockerString = 'docker run -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_android.log";
         console.log(dockerString);
-        execSync(dockerString, {stdio: [0, 1, 2]});
+        execSync(dockerString, { stdio: [0, 1, 2] });
     } catch (ex) {
         resultString += "failed&nbsp;";
         hasFailed = true;
@@ -625,8 +625,8 @@ function buildApk(buildName, stage) {
     });
     console.log("build cordova finished");
     storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
-//  update artifacts.json
-    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), {mode: 0o755});
+    //update artifacts.json
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
 function buildElectron(buildName, stage) {
@@ -642,8 +642,8 @@ function buildElectron(buildName, stage) {
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
         var dockerString = 'docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + buildName + "_" + stage + "_electron.log";
         console.log(dockerString);
-        execSync(dockerString, {stdio: [0, 1, 2]});
-//        resultString += "built&nbsp;";
+        execSync(dockerString, { stdio: [0, 1, 2] });
+        //resultString += "built&nbsp;";
     } catch (ex) {
         resultString += "failed&nbsp;";
         hasFailed = true;
@@ -652,25 +652,21 @@ function buildElectron(buildName, stage) {
     var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
     list.forEach(function (filename) {
         console.log(filename);
-//        if (filename.endsWith("electron.log")) {
-//            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_electron.log"));
-//            resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>';
-//        }
+        //if (filename.endsWith("electron.log")) {
+        //    fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "_" + stage + "_electron.log"));
+        //    resultString += '<a href="' + buildName + "_" + stage + "_electron.log" + '">log</a>';
+        //}
         if (filename.endsWith(".zip")) {
             var fileTypeString = "zip";
             if (filename.indexOf("electron.zip") > -1) {
                 fileTypeString = "src";
-            } else
-            if (filename.indexOf("win32-ia32.zip") > -1) {
+            } else if (filename.indexOf("win32-ia32.zip") > -1) {
                 fileTypeString = "win32";
-            } else
-            if (filename.indexOf("win32-x64.zip") > -1) {
+            } else if (filename.indexOf("win32-x64.zip") > -1) {
                 fileTypeString = "win";
-            } else
-            if (filename.indexOf("darwin-x64.zip") > -1) {
+            } else if (filename.indexOf("darwin-x64.zip") > -1) {
                 fileTypeString = "mac";
-            } else
-            if (filename.indexOf("linux-x64.zip") > -1) {
+            } else if (filename.indexOf("linux-x64.zip") > -1) {
                 fileTypeString = "linux";
             }
             if (fileTypeString !== "zip") {
@@ -696,23 +692,23 @@ function buildElectron(buildName, stage) {
             resultString += '<a href="' + finalName + '">' + fileTypeString + '</a>&nbsp;';
             buildArtifactsJson.artifacts[fileTypeString] = finalName;
         }
-//                mkdir /srv/target/electron
-//cp out/make/*linux*.zip ../with_stimulus_example-linux.zip
-//cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
-//cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
+        //mkdir /srv/target/electron
+        //cp out/make/*linux*.zip ../with_stimulus_example-linux.zip
+        //cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
+        //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     });    //- todo: copy the resutting zips and add links to the output JSON
     console.log("build electron finished");
     storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
-//  update artifacts.json
-    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), {mode: 0o755});
+    //  update artifacts.json
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
 function buildNextExperiment(listing) {
     if (listing.length > 0) {
         var currentEntry = listing.pop();
-//        console.log(currentEntry);
-//                console.log("starting generate stimulus");
-//                execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
+        //console.log(currentEntry);
+        //console.log("starting generate stimulus");
+        //execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
         if (currentEntry.state === "staging" || currentEntry.state === "production") {
             deployStagingGui(listing, currentEntry);
         } else if (currentEntry.state === "undeploy") {
@@ -817,19 +813,19 @@ function buildFromListing() {
                         }
                         if (foundCount === 0) {
                             listing.push(
-                                    {
-                                        "publishDate": null,
-                                        "expiryDate": null,
-                                        "isWebApp": true,
-                                        "isDesktop": false,
-                                        "isiOS": false,
-                                        "isAndroid": false,
-                                        "buildName": fileNamePart,
-                                        "state": "staging",
-                                        "defaultScale": 1.0,
-                                        "experimentInternalName": fileNamePart,
-                                        "experimentDisplayName": fileNamePart
-                                    });
+                                {
+                                    "publishDate": null,
+                                    "expiryDate": null,
+                                    "isWebApp": true,
+                                    "isDesktop": false,
+                                    "isiOS": false,
+                                    "isAndroid": false,
+                                    "buildName": fileNamePart,
+                                    "state": "staging",
+                                    "defaultScale": 1.0,
+                                    "experimentInternalName": fileNamePart,
+                                    "experimentDisplayName": fileNamePart
+                                });
                             storeResult(fileNamePart, 'queued', "staging", "web", false, false, false);
                             storeResult(fileNamePart, 'queued', "staging", "admin", false, false, false);
                             storeResult(fileNamePart, '', "staging", "android", false, false, false);
@@ -900,8 +896,10 @@ function moveIncomingToProcessing() {
                     //console.log('incomingFile: ' + incomingFile);
                     //console.log('jsonStoreFile: ' + jsonStoreFile);
                     //fs.renameSync(incomingFile, jsonStoreFile);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(jsonStoreFile).on('finish', function() {
-                        fs.existsSync(incomingFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(jsonStoreFile).on('finish', function () {
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                        }
                         console.log('moved from incoming to processing: ' + filename);
                         resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
                     }));
@@ -927,10 +925,12 @@ function moveIncomingToProcessing() {
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
                     var configStoreFile = path.resolve(targetDirectory, filename);
                     console.log('configStoreFile: ' + configStoreFile);
-//                    fs.copyFileSync(incomingFile, configStoreFile);
+                    //fs.copyFileSync(incomingFile, configStoreFile);
                     //fs.renameSync(incomingFile, processingName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function() {
-                        fs.existsSync(incomingFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function () {
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                        }
                         fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
                         console.log('moved from incoming to processing: ' + filename);
                         resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
@@ -939,39 +939,49 @@ function moveIncomingToProcessing() {
                     // preserve the generated UML to be accessed via a link in the results table
                     var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
-                        fs.existsSync(incomingFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                        }
                         console.log('moved UML from incoming to target: ' + filename);
                     }));
                 } else if (path.extname(filename) === ".svg") {
                     // preserve the generated UML SVG to be accessed via a link in the results table
                     var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
-                        fs.existsSync(incomingFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                        }
                         console.log('moved UML SVG from incoming to target: ' + filename);
                     }));
                 } else if (path.extname(filename) === ".xsd") {
                     // place the generated XSD file for use in XML editors
                     var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
-                        fs.existsSync(incomingFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                        }
                         console.log('moved XSD from incoming to target: ' + filename);
                     }));
                 } else if (filename.endsWith("frinex.html")) {
                     // place the generated documentation file for use in web browsers
                     var targetName = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, targetName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function() {
-                        fs.existsSync(incomingFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                        }
                         console.log('moved HTML from incoming to target: ' + filename);
                     }));
                 } else if (filename.endsWith("_validation_error.txt")) {
                     var processingName = path.resolve(processingDirectory, filename);
                     //fs.renameSync(incomingFile, processingName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function() {
-                        fs.existsSync(incomingFile);
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function () {
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                        }
                         var configErrorFile = path.resolve(targetDirectory, filename);
                         fs.createReadStream(processingName).pipe(fs.createWriteStream(configErrorFile));
                         console.log('moved from incoming to processing: ' + filename);
@@ -1008,16 +1018,16 @@ function convertJsonToXml() {
         + ' -v processingDirectory:/FrinexBuildService/processing'
         + ' -v listingDirectory:/FrinexBuildService/listing'
         + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate/ExperimentDesigner' 
+        + ' -w /ExperimentTemplate/ExperimentDesigner'
         + ' frinexapps:latest mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
-        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/processing /FrinexBuildService/listing"'
+        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/incoming /FrinexBuildService/listing"'
         + " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
     try {
-        execSync(dockerString, {stdio: [0, 1, 2]});
+        execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         moveIncomingToProcessing();
