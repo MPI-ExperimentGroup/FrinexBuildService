@@ -44,15 +44,15 @@ RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_mod
 COPY ./deploy-by-hook.js /FrinexBuildService/
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/deploy-by-hook.js
 COPY ./publish.properties /FrinexBuildService/
-RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs/target|g" /FrinexBuildService/publish.properties
+RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/publish.properties
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/publish.properties
 COPY ./post-receive /FrinexBuildService/post-receive
-RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs/target|g" /FrinexBuildService/post-receive
+RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/post-receive
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/post-receive
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/post-receive
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/post-receive
 COPY ./create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build_repository.sh
-RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs/target|g" /FrinexBuildService/create_frinex_build_repository.sh
+RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN cd /FrinexBuildService/; npm install properties-reader
@@ -63,5 +63,6 @@ COPY ./test_repository_create.sh /FrinexBuildService/
 COPY ./settings.xml /FrinexBuildService/
 # make sure that the required files are accessable by httpd
 RUN chown -R daemon /FrinexBuildService
-RUN chown -R daemon /usr/local/apache2/htdocs/target
+RUN chown -R daemon /usr/local/apache2/htdocs
 WORKDIR /FrinexBuildService
+VOLUME ["buildServerTarget:/usr/local/apache2/htdocs"]

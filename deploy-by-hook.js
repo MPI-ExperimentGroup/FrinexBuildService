@@ -376,6 +376,7 @@ function deployStagingGui(listing, currentEntry) {
         + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
         + ' -v processingDirectory:/FrinexBuildService/processing'
         + ' -v webappsBuildServer:/usr/local/tomcat/webapps/'
+        + ' -v buildServerTarget:/usr/local/apache2/htdocs' 
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps mvn clean '
         //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
@@ -395,11 +396,11 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-        + " &> /usr/local/tomcat/webapps/" + currentEntry.buildName + "_staging.txt;"
+        + " &> /usr/local/apache2/htdocs/target/" + currentEntry.buildName + "_staging.txt;"
         + ' mv target/*.zip /FrinexBuildService/processing/'
-        + " &>> /usr/local/tomcat/webapps/" + currentEntry.buildName + "_staging.txt;"
+        + " &>> /usr/local/apache2/htdocs/target/" + currentEntry.buildName + "_staging.txt;"
         + ' mv target/*.war /FrinexBuildService/processing/';
-        + " &>> /usr/local/tomcat/webapps/" + currentEntry.buildName + "_staging.txt;";
+        + " &>> /usr/local/apache2/htdocs/target/" + currentEntry.buildName + "_staging.txt;";
     console.log(dockerString);
     exec(dockerString, (error, stdout, stderr) => {
         if (error) {

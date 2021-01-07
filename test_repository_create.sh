@@ -29,5 +29,5 @@ do
 done
 chown -R daemon /FrinexBuildService/git-repositories/TEST_REPOSITORY.git
 chown -R daemon /FrinexBuildService/git-checkedout/TEST_REPOSITORY
-chown -R daemon /usr/local/apache2/htdocs/target
+chown -R daemon /usr/local/apache2/htdocs
 chown daemon /var/run/docker.sock
