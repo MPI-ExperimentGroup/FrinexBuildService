@@ -375,6 +375,7 @@ function deployStagingGui(listing, currentEntry) {
         + ' --rm '
         + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
         + ' -v processingDirectory:/FrinexBuildService/processing'
+        + ' -v webappsBuildServer:/usr/local/tomcat/webapps/'
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps mvn clean '
         //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
@@ -394,9 +395,11 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-        + " &> /FrinexBuildService/processing/" + currentEntry.buildName + "_staging.txt;"
-        + ' mv target/*.zip /FrinexBuildService/processing/;'
-        + ' mv target/*.war /FrinexBuildService/processing/;';
+        + " &> /usr/local/tomcat/webapps/" + currentEntry.buildName + "_staging.txt;"
+        + ' mv target/*.zip /FrinexBuildService/processing/'
+        + " &>> /usr/local/tomcat/webapps/" + currentEntry.buildName + "_staging.txt;"
+        + ' mv target/*.war /FrinexBuildService/processing/';
+        + " &>> /usr/local/tomcat/webapps/" + currentEntry.buildName + "_staging.txt;";
     console.log(dockerString);
     exec(dockerString, (error, stdout, stderr) => {
         if (error) {
@@ -893,7 +896,7 @@ function moveIncomingToProcessing() {
                 resultsFile.write("<div>incoming: " + filename + "</div>");
                 var incomingFile = path.resolve(incomingDirectory, filename);
                 if (path.extname(filename) === ".json") {
-                    var jsonStoreFile = path.resolve(processingDirectory, filename);
+                    var jsonStoreFile = path.resolve(targetDirectory, filename);
                     //console.log('incomingFile: ' + incomingFile);
                     //console.log('jsonStoreFile: ' + jsonStoreFile);
                     //fs.renameSync(incomingFile, jsonStoreFile);
@@ -901,8 +904,8 @@ function moveIncomingToProcessing() {
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
-                        console.log('moved from incoming to processing: ' + filename);
-                        resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                        console.log('moved from incoming to htdocs: ' + filename);
+                        resultsFile.write("<div>moved from incoming to htdocs: " + filename + "</div>");
                     }));
                 } else if (path.extname(filename) === ".xml") {
                     var baseName = filename.substring(0, filename.length - 4);
@@ -977,16 +980,14 @@ function moveIncomingToProcessing() {
                         console.log('moved HTML from incoming to target: ' + filename);
                     }));
                 } else if (filename.endsWith("_validation_error.txt")) {
-                    var processingName = path.resolve(processingDirectory, filename);
+                    var configErrorFile = path.resolve(targetDirectory, filename);
                     //fs.renameSync(incomingFile, processingName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function () {
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configErrorFile).on('finish', function () {
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
-                        var configErrorFile = path.resolve(targetDirectory, filename);
-                        fs.createReadStream(processingName).pipe(fs.createWriteStream(configErrorFile));
-                        console.log('moved from incoming to processing: ' + filename);
-                        resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
+                        console.log('moved from incoming to htdocs: ' + filename);
+                        resultsFile.write("<div>moved from incoming to htdocs: " + filename + "</div>");
                     }));
                 } else if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
