@@ -719,8 +719,8 @@ function buildNextExperiment(listing) {
     } else {
         console.log("build process from listing completed");
         stopUpdatingResults();
-        // check for new files in the incoming directory by calling deleteOldProcessing
-        deleteOldProcessing();
+        // check for new files in the incoming directory, because some build processes might still be running we do not call deleteOldProcessing
+        setTimeout(convertJsonToXml, 3000);
     }
 }
 
