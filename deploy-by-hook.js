@@ -753,6 +753,7 @@ function buildFromListing() {
                         var xmlPath = path.resolve(processingDirectory, xmlName);
                         console.log("Found _validation_error, checking for: " + xmlPath);
                         if (!fs.existsSync(xmlPath)) {
+                            initialiseResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), 'failed', false);
                             var validationMessage = '<a href="' + fileNamePart + '.txt"">failed</a>&nbsp;';
                             storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
                         }
