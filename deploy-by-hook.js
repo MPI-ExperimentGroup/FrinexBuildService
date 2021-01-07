@@ -1010,6 +1010,10 @@ function convertJsonToXml() {
                     console.log('json: ' + filename);
                     initialiseResult(path.parse(filename).name, 'queued', false);
                 }
+                if (path.extname(filename) === ".xml") {
+                    console.log('xml: ' + filename);
+                    initialiseResult(path.parse(filename).name, 'queued', false);
+                }
             });
         }
     });
