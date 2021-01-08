@@ -1009,11 +1009,12 @@ function convertJsonToXml() {
                     console.log('initialise: ' + filename);
                     var currentName = path.parse(filename).name;
                     initialiseResult(currentName, 'queued', false);
-                    if (fs.existsSync(targetDirectory + "/" + currentName)) {
-                        // todo: consider if this agressive removal is always wanted
-                        fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
+                    //if (fs.existsSync(targetDirectory + "/" + currentName)) {
+                    //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
+                    //}
+                    if (!fs.existsSync(targetDirectory + "/" + currentName)) {
+                        fs.mkdirSync(targetDirectory + '/' + currentName);
                     }
-                    fs.mkdirSync(targetDirectory + '/' + currentName);
                 }
             });
         }
