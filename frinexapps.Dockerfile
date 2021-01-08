@@ -32,7 +32,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
-RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick maven nodejs vim wine32
+RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick graphviz maven nodejs vim wine32
 #RUN wget http://apache.40b.nl/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip
 #RUN unzip apache-maven-3.6.3-bin.zip 
 #ENV PATH=/apache-maven-3.6.3/bin:$PATH
