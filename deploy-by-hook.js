@@ -1005,45 +1005,52 @@ function convertJsonToXml() {
             console.error(error);
         } else {
             var remainingFiles = list.length;
-            list.forEach(function (filename) {
-                if (path.extname(filename) === ".json" || path.extname(filename) === ".xml") {
-                    console.log('initialise: ' + filename);
-                    var currentName = path.parse(filename).name;
-                    initialiseResult(currentName, 'queued', false);
-                    //if (fs.existsSync(targetDirectory + "/" + currentName)) {
-                    //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
-                    //}
-                    if (!fs.existsSync(targetDirectory + "/" + currentName)) {
-                        fs.mkdirSync(targetDirectory + '/' + currentName);
+            if (remainingFiles <= 0) {
+                console.log('convertJsonToXml: no files');
+                setTimeout(convertJsonToXml, 3000);
+            } else {
+                list.forEach(function (filename) {
+                    console.log('convertJsonToXml: ' + filename);
+                    if (path.extname(filename) === ".json" || path.extname(filename) === ".xml") {
+                        console.log('initialise: ' + filename);
+                        var currentName = path.parse(filename).name;
+                        initialiseResult(currentName, 'queued', false);
+                        //if (fs.existsSync(targetDirectory + "/" + currentName)) {
+                        // todo: consider if this agressive removal is always wanted
+                        //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
+                        //}
+                        if (!fs.existsSync(targetDirectory + "/" + currentName)) {
+                            fs.mkdirSync(targetDirectory + '/' + currentName);
+                        }
                     }
-                }
-                remainingFiles--;
-                if (remainingFiles <= 0) {
-                    var dockerString = 'docker run'
-                        + ' -v incomingDirectory:/FrinexBuildService/incoming'
-                        + ' -v processingDirectory:/FrinexBuildService/processing'
-                        + ' -v listingDirectory:/FrinexBuildService/listing'
-                        + ' -v m2Directory:/maven/.m2/'
-                        + ' -w /ExperimentTemplate/ExperimentDesigner'
-                        + ' frinexapps:latest mvn exec:exec'
-                        + ' -gs /maven/.m2/settings.xml'
-                        + ' -Dexec.executable=java'
-                        + ' -Dexec.classpathScope=runtime'
-                        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/incoming /FrinexBuildService/listing"';
-                    //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
-                    console.log(dockerString);
-                    try {
-                        execSync(dockerString, { stdio: [0, 1, 2] });
-                        console.log("convert JSON to XML finished");
-                        resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
-                        moveIncomingToProcessing();
-                    } catch (reason) {
-                        console.log(reason);
-                        console.log("convert JSON to XML failed");
-                        resultsFile.write("<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
-                    };
-                }
-            });
+                    remainingFiles--;
+                    if (remainingFiles <= 0) {
+                        var dockerString = 'docker run'
+                            + ' -v incomingDirectory:/FrinexBuildService/incoming'
+                            + ' -v processingDirectory:/FrinexBuildService/processing'
+                            + ' -v listingDirectory:/FrinexBuildService/listing'
+                            + ' -v m2Directory:/maven/.m2/'
+                            + ' -w /ExperimentTemplate/ExperimentDesigner'
+                            + ' frinexapps:latest mvn exec:exec'
+                            + ' -gs /maven/.m2/settings.xml'
+                            + ' -Dexec.executable=java'
+                            + ' -Dexec.classpathScope=runtime'
+                            + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/incoming /FrinexBuildService/listing"';
+                        //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
+                        console.log(dockerString);
+                        try {
+                            execSync(dockerString, { stdio: [0, 1, 2] });
+                            console.log("convert JSON to XML finished");
+                            resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
+                            moveIncomingToProcessing();
+                        } catch (reason) {
+                            console.log(reason);
+                            console.log("convert JSON to XML failed");
+                            resultsFile.write("<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
+                        };
+                    }
+                });
+            }
         }
     });
 }
