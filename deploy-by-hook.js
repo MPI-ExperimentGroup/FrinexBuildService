@@ -1011,6 +1011,7 @@ function convertJsonToXml() {
                 //setTimeout(convertJsonToXml, 3000);
             } else {
                 list.forEach(function (filename) {
+                    resultsFile.write("<div>initialise: '" + filename + "'</div>");
                     console.log('convertJsonToXml: ' + filename);
                     if (path.extname(filename) === ".json" || path.extname(filename) === ".xml") {
                         console.log('initialise: ' + filename);
