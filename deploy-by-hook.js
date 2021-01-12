@@ -1036,7 +1036,7 @@ function convertJsonToXml() {
                             + ' -gs /maven/.m2/settings.xml'
                             + ' -Dexec.executable=java'
                             + ' -Dexec.classpathScope=runtime'
-                            + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/incoming /FrinexBuildService/listing"';
+                            + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/processing /FrinexBuildService/listing"';
                         //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
                         console.log(dockerString);
                         try {
