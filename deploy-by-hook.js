@@ -754,7 +754,7 @@ function buildFromListing() {
                         console.log("Found _validation_error, checking for: " + xmlPath);
                         if (!fs.existsSync(xmlPath)) {
                             initialiseResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), 'failed', false);
-                            var validationMessage = '<a href="' + currentEntry.buildName + '/' + fileNamePart + '.txt"">failed</a>&nbsp;';
+                            var validationMessage = '<a href="' + fileNamePart + '/' + fileNamePart + '.txt"">failed</a>&nbsp;';
                             storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
                         }
                     }
@@ -790,16 +790,16 @@ function buildFromListing() {
                     var jsonPath = filenamePath.substring(0, filenamePath.length - 4) + ".json";
                     console.log(jsonPath);
                     if (fs.existsSync(jsonPath)) {
-                        validationMessage += '<a href="' + currentEntry.buildName + '/' + fileNamePart + '.json">json</a>&nbsp;';
+                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.json">json</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
                     if (path.extname(filename) === ".xml") {
-                        validationMessage += '<a href="' + currentEntry.buildName + '/' + fileNamePart + '.xml">xml</a>&nbsp;';
+                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.xml">xml</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
                     var schemaErrorPath = filenamePath.substring(0, filenamePath.length - 4) + "_validation_error.txt";
                     if (fs.existsSync(schemaErrorPath)) {
-                        validationMessage += '<a href="' + currentEntry.buildName + '/' + fileNamePart + '_validation_error.txt">failed</a>&nbsp;';
+                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '_validation_error.txt">failed</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
                     } else {
                         validationMessage += 'passed&nbsp;';
