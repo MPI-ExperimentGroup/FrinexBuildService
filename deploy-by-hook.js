@@ -1007,7 +1007,8 @@ function convertJsonToXml() {
             var remainingFiles = list.length;
             if (remainingFiles <= 0) {
                 console.log('convertJsonToXml: no files');
-                setTimeout(convertJsonToXml, 3000);
+                // we allow the process to exit here if there are no files
+                //setTimeout(convertJsonToXml, 3000);
             } else {
                 list.forEach(function (filename) {
                     console.log('convertJsonToXml: ' + filename);
