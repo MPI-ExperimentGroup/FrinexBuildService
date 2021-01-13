@@ -889,10 +889,11 @@ function prepareForProcessing() {
         } else {
             var remainingFiles = list.length;
             list.forEach(function (filename) {
-                console.log('incoming: ' + filename);
+                console.log('processing: ' + filename);
                 var fileNamePart = path.parse(filename).name;
-                resultsFile.write("<div>incoming: " + filename + "</div>");
+                resultsFile.write("<div>processing: " + filename + "</div>");
                 var incomingFile = path.resolve(processingDirectory, filename);
+                fs.chmodSync(incomingFile, 0o777);
                 if (filename === "listing.json") {
                     console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
                     resultsFile.write("<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
