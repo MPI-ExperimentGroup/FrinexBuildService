@@ -906,8 +906,8 @@ function prepareForProcessing() {
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
-                        console.log('moved from incoming to htdocs: ' + filename);
-                        resultsFile.write("<div>moved from incoming to htdocs: " + filename + "</div>");
+                        console.log('moved from processing to target: ' + filename);
+                        resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
                     }));
                 } else if (path.extname(filename) === ".xml") {
                     var mavenLogPathSG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging.txt";
@@ -926,20 +926,20 @@ function prepareForProcessing() {
                     if (fs.existsSync(mavenLogPathPA)) {
                         fs.unlinkSync(mavenLogPathPA);
                     }
-                    var processingName = path.resolve(processingDirectory, filename);
+                    //var processingName = path.resolve(processingDirectory, filename);
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
                     var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
                     console.log('configStoreFile: ' + configStoreFile);
                     //fs.copyFileSync(incomingFile, configStoreFile);
                     //fs.renameSync(incomingFile, processingName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function () {
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
-                        }
-                        fs.createReadStream(processingName).pipe(fs.createWriteStream(configStoreFile));
-                        console.log('moved from incoming to processing: ' + filename);
-                        resultsFile.write("<div>moved from incoming to processing: " + filename + "</div>");
-                    }));
+                    //fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function () {
+                    //    if (fs.existsSync(incomingFile)) {
+                    //        fs.unlinkSync(incomingFile);
+                    //    }
+                        fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
+                        console.log('moved from processing to target: ' + filename);
+                        resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
+//                    }));
                 } else if (path.extname(filename) === ".uml") {
                     // preserve the generated UML to be accessed via a link in the results table
                     var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
@@ -948,7 +948,7 @@ function prepareForProcessing() {
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
-                        console.log('moved UML from incoming to target: ' + filename);
+                        console.log('moved UML from processing to target: ' + filename);
                     }));
                 } else if (path.extname(filename) === ".svg") {
                     // preserve the generated UML SVG to be accessed via a link in the results table
@@ -958,7 +958,7 @@ function prepareForProcessing() {
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
-                        console.log('moved UML SVG from incoming to target: ' + filename);
+                        console.log('moved UML SVG from processing to target: ' + filename);
                     }));
                 } else if (path.extname(filename) === ".xsd") {
                     // place the generated XSD file for use in XML editors
@@ -968,7 +968,7 @@ function prepareForProcessing() {
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
-                        console.log('moved XSD from incoming to target: ' + filename);
+                        console.log('moved XSD from processing to target: ' + filename);
                     }));
                 } else if (filename.endsWith("frinex.html")) {
                     // place the generated documentation file for use in web browsers
@@ -978,7 +978,7 @@ function prepareForProcessing() {
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
-                        console.log('moved HTML from incoming to target: ' + filename);
+                        console.log('moved HTML from processing to target: ' + filename);
                     }));
                 } else if (filename.endsWith("_validation_error.txt")) {
                     var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
@@ -987,10 +987,12 @@ function prepareForProcessing() {
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
-                        console.log('moved from incoming to htdocs: ' + filename);
-                        resultsFile.write("<div>moved from incoming to htdocs: " + filename + "</div>");
+                        console.log('moved from processing to target: ' + filename);
+                        resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
                     }));
                 } else if (fs.existsSync(incomingFile)) {
+                    console.log('deleting unkown file: ' + incomingFile);
+                    resultsFile.write("<div>deleting unkown file: " + incomingFile + "</div>");
                     fs.unlinkSync(incomingFile);
                 }
                 remainingFiles--;
