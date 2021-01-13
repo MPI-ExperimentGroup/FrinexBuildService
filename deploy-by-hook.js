@@ -893,7 +893,7 @@ function prepareForProcessing() {
                 var fileNamePart = path.parse(filename).name;
                 resultsFile.write("<div>processing: " + filename + "</div>");
                 var incomingFile = path.resolve(processingDirectory, filename);
-                fs.chmodSync(incomingFile, 0o777);
+                //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
                 if (filename === "listing.json") {
                     console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
                     resultsFile.write("<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
@@ -1066,7 +1066,8 @@ function convertJsonToXml() {
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
-        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing /FrinexBuildService/listing"';
+        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing /FrinexBuildService/listing";'
+        + ' chmod a+rwx /FrinexBuildService/processing/*;';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
     try {
