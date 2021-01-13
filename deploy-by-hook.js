@@ -1020,7 +1020,7 @@ function moveIncomingToQueued() {
             } else {
                 list.forEach(function (filename) {
                     var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
-                    var queuedFile = path.resolve(incomingDirectory = "/queued/", filename);
+                    var queuedFile = path.resolve(incomingDirectory + '/queued/', filename);
                     if ((path.extname(filename) === ".json" || path.extname(filename) === ".xml") && filename !== "listing.json") {
                         resultsFile.write("<div>initialise: '" + filename + "'</div>");
                         console.log('initialise: ' + filename);
