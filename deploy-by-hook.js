@@ -366,6 +366,7 @@ function deployStagingGui(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt");
     }
+    fs.touchSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt");
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
     var dockerString = 'docker run'
         + ' --rm '
@@ -440,6 +441,7 @@ function deployStagingAdmin(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt");
     }
+    fs.touchSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt");
     var mavenLogSA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt", { mode: 0o755 });
     process.stdout.write = process.stderr.write = mavenLogSA.write.bind(mavenLogSA);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true, false);
@@ -492,6 +494,7 @@ function deployProductionGui(listing, currentEntry) {
                 if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt")) {
                     fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt");
                 }
+                fs.touchSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt");
                 var mavenLogPG = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt", { mode: 0o755 });
                 process.stdout.write = process.stderr.write = mavenLogPG.write.bind(mavenLogPG);
                 mvngui.execute(['clean', (currentEntry.isWebApp) ? 'tomcat7:deploy' : 'package'], {
@@ -551,6 +554,7 @@ function deployProductionAdmin(listing, currentEntry) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt");
     }
+    fs.touchSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt");
     var mavenLogPA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt", { mode: 0o755 });
     process.stdout.write = process.stderr.write = mavenLogPA.write.bind(mavenLogPA);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true, false);
@@ -591,6 +595,7 @@ function buildApk(buildName, stage) {
         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_android.log")) {
             fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_android.log");
         }
+        fs.touchSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_android.log");
         resultString += '<a href="' + currentEntry.buildName + '/' + buildName + "_" + stage + "_android.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         var dockerString = 'docker run -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.log";
@@ -638,6 +643,7 @@ function buildElectron(buildName, stage) {
         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_electron.log")) {
             fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_electron.log");
         }
+        fs.touchSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_electron.log");
         resultString += '<a href="' + currentEntry.buildName + '/' + buildName + "_" + stage + "_electron.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
         var dockerString = 'docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_electron.log";
@@ -782,23 +788,29 @@ function buildFromListing() {
                 } else {
                     initialiseResult(fileNamePart, 'queued', false);
                     var validationMessage = "";
-                    var filenamePath = path.resolve(processingDirectory, filename);
+                    var filenamePath = path.resolve(targetDirectory + '/' + filename, filename);
                     console.log(filename);
                     console.log(filenamePath);
                     var buildName = fileNamePart;
                     console.log(buildName);
-                    var jsonPath = filenamePath.substring(0, filenamePath.length - 4) + ".json";
-                    console.log(jsonPath);
-                    if (fs.existsSync(jsonPath)) {
+                    var withoutSuffixPath = filenamePath.substring(0, filenamePath.length - 4);
+                    if (fs.existsSync(withoutSuffixPath + ".json")) {
                         validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.json">json</a>&nbsp;';
+                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                    }
+                    if (fs.existsSync(withoutSuffixPath + ".svg")) {
+                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.svg">svg</a>&nbsp;';
+                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                    }
+                    if (fs.existsSync(withoutSuffixPath + ".uml")) {
+                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.uml">uml</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
                     if (path.extname(filename) === ".xml") {
                         validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.xml">xml</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                     }
-                    var schemaErrorPath = filenamePath.substring(0, filenamePath.length - 4) + "_validation_error.txt";
-                    if (fs.existsSync(schemaErrorPath)) {
+                    if (fs.existsSync(withoutSuffixPath + "_validation_error.txt")) {
                         validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '_validation_error.txt">failed</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
                     } else {
@@ -910,22 +922,6 @@ function prepareForProcessing() {
                         resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
                     }));
                 } else if (path.extname(filename) === ".xml") {
-                    var mavenLogPathSG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging.txt";
-                    var mavenLogPathSA = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging_admin.txt";
-                    var mavenLogPathPG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_production.txt";
-                    var mavenLogPathPA = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_production_admin.txt";
-                    if (fs.existsSync(mavenLogPathSG)) {
-                        fs.unlinkSync(mavenLogPathSG);
-                    }
-                    if (fs.existsSync(mavenLogPathSA)) {
-                        fs.unlinkSync(mavenLogPathSA);
-                    }
-                    if (fs.existsSync(mavenLogPathPG)) {
-                        fs.unlinkSync(mavenLogPathPG);
-                    }
-                    if (fs.existsSync(mavenLogPathPA)) {
-                        fs.unlinkSync(mavenLogPathPA);
-                    }
                     //var processingName = path.resolve(processingDirectory, filename);
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
                     var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
@@ -936,10 +932,10 @@ function prepareForProcessing() {
                     //    if (fs.existsSync(incomingFile)) {
                     //        fs.unlinkSync(incomingFile);
                     //    }
-                        fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
-                        console.log('moved from processing to target: ' + filename);
-                        resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
-//                    }));
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
+                    console.log('moved from processing to target: ' + filename);
+                    resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
+                    //                    }));
                 } else if (path.extname(filename) === ".uml") {
                     // preserve the generated UML to be accessed via a link in the results table
                     var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
@@ -1025,6 +1021,42 @@ function moveIncomingToQueued() {
                     var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
                     var queuedFile = path.resolve(incomingDirectory + '/queued/', filename);
                     if ((path.extname(filename) === ".json" || path.extname(filename) === ".xml") && filename !== "listing.json") {
+                        var mavenLogPathSG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging.txt";
+                        var mavenLogPathSA = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging_admin.txt";
+                        var mavenLogPathPG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_production.txt";
+                        var mavenLogPathPA = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_production_admin.txt";
+                        var artifactPathSvg = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + ".svg";
+                        var artifactPathUml = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + ".uml";
+                        var artifactPathJson = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + ".json";
+                        var artifactPathXml = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + ".xml";
+                        var artifactPathError = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_validation_error.txt";
+                        if (fs.existsSync(mavenLogPathSG)) {
+                            fs.unlinkSync(mavenLogPathSG);
+                        }
+                        if (fs.existsSync(mavenLogPathSA)) {
+                            fs.unlinkSync(mavenLogPathSA);
+                        }
+                        if (fs.existsSync(mavenLogPathPG)) {
+                            fs.unlinkSync(mavenLogPathPG);
+                        }
+                        if (fs.existsSync(mavenLogPathPA)) {
+                            fs.unlinkSync(mavenLogPathPA);
+                        }
+                        if (fs.existsSync(artifactPathSvg)) {
+                            fs.unlinkSync(artifactPathSvg);
+                        }
+                        if (fs.existsSync(artifactPathUml)) {
+                            fs.unlinkSync(artifactPathUml);
+                        }
+                        if (fs.existsSync(artifactPathJson)) {
+                            fs.unlinkSync(artifactPathJson);
+                        }
+                        if (fs.existsSync(artifactPathXml)) {
+                            fs.unlinkSync(artifactPathXml);
+                        }
+                        if (fs.existsSync(artifactPathError)) {
+                            fs.unlinkSync(artifactPathError);
+                        }
                         resultsFile.write("<div>initialise: '" + filename + "'</div>");
                         console.log('initialise: ' + filename);
                         var currentName = path.parse(filename).name;
