@@ -750,7 +750,7 @@ function buildFromListing() {
             var listing = [];
             var remainingFiles = list.length;
             list.forEach(function (filename) {
-                console.log(filename);
+                console.log('buildFromListing: ' + filename);
                 console.log(path.extname(filename));
                 var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml") {
@@ -794,6 +794,7 @@ function buildFromListing() {
                     var buildName = fileNamePart;
                     console.log(buildName);
                     var withoutSuffixPath = filenamePath.substring(0, filenamePath.length - 4);
+                    console.log('withoutSuffixPath: ' + withoutSuffixPath);
                     if (fs.existsSync(withoutSuffixPath + ".json")) {
                         validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.json">json</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
