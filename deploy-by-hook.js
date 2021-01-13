@@ -893,7 +893,10 @@ function moveIncomingToProcessing() {
                 var fileNamePart = path.parse(filename).name;
                 resultsFile.write("<div>incoming: " + filename + "</div>");
                 var incomingFile = path.resolve(incomingDirectory, filename);
-                if (path.extname(filename) === ".json") {
+                if (filename === "listing.json") {
+                    console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
+                    resultsFile.write("<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
+                } else if (path.extname(filename) === ".json") {
                     var jsonStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
                     //console.log('incomingFile: ' + incomingFile);
                     //console.log('jsonStoreFile: ' + jsonStoreFile);
