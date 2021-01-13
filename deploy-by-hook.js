@@ -788,12 +788,12 @@ function buildFromListing() {
                 } else {
                     initialiseResult(fileNamePart, 'queued', false);
                     var validationMessage = "";
-                    var filenamePath = path.resolve(targetDirectory + '/' + filename, filename);
+                    var filenamePath = path.resolve(targetDirectory + '/' + fileNamePart, filename);
                     console.log(filename);
                     console.log(filenamePath);
                     var buildName = fileNamePart;
                     console.log(buildName);
-                    var withoutSuffixPath = filenamePath.substring(0, filenamePath.length - 4);
+                    var withoutSuffixPath = path.resolve(targetDirectory + '/' + fileNamePart, fileNamePart);
                     console.log('withoutSuffixPath: ' + withoutSuffixPath);
                     if (fs.existsSync(withoutSuffixPath + ".json")) {
                         validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.json">json</a>&nbsp;';
