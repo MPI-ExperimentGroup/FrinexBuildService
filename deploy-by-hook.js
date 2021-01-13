@@ -882,8 +882,8 @@ function buildFromListing() {
     });
 }
 
-function moveIncomingToProcessing() {
-    fs.readdir(incomingDirectory, function (error, list) {
+function prepareForProcessing() {
+    fs.readdir(processingDirectory, function (error, list) {
         if (error) {
             console.error(error);
         } else {
@@ -1066,7 +1066,7 @@ function convertJsonToXml() {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("convert JSON to XML finished");
         resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
-        moveIncomingToProcessing();
+        prepareForProcessing();
     } catch (reason) {
         console.log(reason);
         console.log("convert JSON to XML failed");
