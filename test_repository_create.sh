@@ -1,9 +1,10 @@
 # start the web server to host the build listing pages
 httpd
 # clean up previous testing data
-rm /FrinexBuildService/incoming/*
+rm -r /FrinexBuildService/incoming/*
 rm /FrinexBuildService/processing/*
 rm -r /usr/local/apache2/htdocs/*
+mkdir /FrinexBuildService/incoming/commits
 # create a test repository
 bash /FrinexBuildService/create_frinex_build_repository.sh TEST_REPOSITORY
 # show any output in the termimal

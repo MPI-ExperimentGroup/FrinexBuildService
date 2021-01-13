@@ -58,7 +58,7 @@ do
       git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
       echo "<br/>" >> $targetDir/git-push-log.html
       git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
-      cp $(git diff --name-only $oldrev $newrev) $scriptDir/incoming/
+      cp $(git diff --name-only $oldrev $newrev) $scriptDir/incoming/commits/
       echo "<br/>" >> $targetDir/git-push-log.html
     fi
 done

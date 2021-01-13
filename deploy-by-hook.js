@@ -1008,7 +1008,7 @@ function moveIncomingToQueued() {
         console.log('queued directory created');
         resultsFile.write("<div>queued directory created</div>");
     }
-    fs.readdir(incomingDirectory, function (error, list) {
+    fs.readdir(incomingDirectory + '/commits', function (error, list) {
         if (error) {
             console.error(error);
         } else {
@@ -1032,7 +1032,7 @@ function moveIncomingToQueued() {
                         if (!fs.existsSync(targetDirectory + "/" + currentName)) {
                             fs.mkdirSync(targetDirectory + '/' + currentName);
                         }
-                        var incomingFile = path.resolve(incomingDirectory, filename);
+                        var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
                         var queuedFile = path.resolve(incomingDirectory = "/queued/", filename);
                         // this move is within the same volume so we can do it this easy way
                         fs.renameSync(incomingFile, queuedFile);
