@@ -720,7 +720,7 @@ function buildNextExperiment(listing) {
         console.log("build process from listing completed");
         stopUpdatingResults();
         // check for new files in the incoming directory, because some build processes might still be running we do not call deleteOldProcessing
-        setTimeout(convertJsonToXml, 3000);
+        setTimeout(moveIncomingToQueued, 3000);
     }
 }
 
@@ -1001,21 +1001,26 @@ function moveIncomingToProcessing() {
         }
     });
 }
-function convertJsonToXml() {
-    resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
+
+function moveIncomingToQueued() {
+    if (!fs.existsSync(incomingDirectory + "/queued")) {
+        fs.mkdirSync(incomingDirectory + '/queued');
+        console.log('queued directory created');
+        resultsFile.write("<div>queued directory created</div>");
+    }
     fs.readdir(incomingDirectory, function (error, list) {
         if (error) {
             console.error(error);
         } else {
             var remainingFiles = list.length;
             if (remainingFiles <= 0) {
-                console.log('convertJsonToXml: no files');
+                console.log('moveIncomingToQueued: no files');
                 // we allow the process to exit here if there are no files
-                //setTimeout(convertJsonToXml, 3000);
+                //setTimeout(moveIncomingToQueued, 3000);
             } else {
                 list.forEach(function (filename) {
                     resultsFile.write("<div>initialise: '" + filename + "'</div>");
-                    console.log('convertJsonToXml: ' + filename);
+                    console.log('moveIncomingToQueued: ' + filename);
                     if ((path.extname(filename) === ".json" || path.extname(filename) === ".xml") && filename !== "listing.json") {
                         console.log('initialise: ' + filename);
                         var currentName = path.parse(filename).name;
@@ -1027,37 +1032,46 @@ function convertJsonToXml() {
                         if (!fs.existsSync(targetDirectory + "/" + currentName)) {
                             fs.mkdirSync(targetDirectory + '/' + currentName);
                         }
+                        var incomingFile = path.resolve(incomingDirectory, filename);
+                        var queuedFile = path.resolve(incomingDirectory = "/queued/", filename);
+                        // this move is within the same volume so we can do it this easy way
+                        fs.renameSync(incomingFile, queuedFile);
                     }
                     remainingFiles--;
                     if (remainingFiles <= 0) {
-                        var dockerString = 'docker run'
-                            + ' -v incomingDirectory:/FrinexBuildService/incoming'
-                            + ' -v processingDirectory:/FrinexBuildService/processing'
-                            + ' -v listingDirectory:/FrinexBuildService/listing'
-                            + ' -v m2Directory:/maven/.m2/'
-                            + ' -w /ExperimentTemplate/ExperimentDesigner'
-                            + ' frinexapps:latest mvn exec:exec'
-                            + ' -gs /maven/.m2/settings.xml'
-                            + ' -Dexec.executable=java'
-                            + ' -Dexec.classpathScope=runtime'
-                            + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming /FrinexBuildService/processing /FrinexBuildService/listing"';
-                        //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
-                        console.log(dockerString);
-                        try {
-                            execSync(dockerString, { stdio: [0, 1, 2] });
-                            console.log("convert JSON to XML finished");
-                            resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
-                            moveIncomingToProcessing();
-                        } catch (reason) {
-                            console.log(reason);
-                            console.log("convert JSON to XML failed");
-                            resultsFile.write("<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
-                        };
+                        convertJsonToXml();
                     }
                 });
             }
         }
     });
+}
+
+function convertJsonToXml() {
+    resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
+    var dockerString = 'docker run'
+        + ' -v incomingDirectory:/FrinexBuildService/incoming'
+        + ' -v processingDirectory:/FrinexBuildService/processing'
+        + ' -v listingDirectory:/FrinexBuildService/listing'
+        + ' -v m2Directory:/maven/.m2/'
+        + ' -w /ExperimentTemplate/ExperimentDesigner'
+        + ' frinexapps:latest mvn exec:exec'
+        + ' -gs /maven/.m2/settings.xml'
+        + ' -Dexec.executable=java'
+        + ' -Dexec.classpathScope=runtime'
+        + ' -Dexec.args="-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing /FrinexBuildService/listing"';
+    //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
+    console.log(dockerString);
+    try {
+        execSync(dockerString, { stdio: [0, 1, 2] });
+        console.log("convert JSON to XML finished");
+        resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
+        moveIncomingToProcessing();
+    } catch (reason) {
+        console.log(reason);
+        console.log("convert JSON to XML failed");
+        resultsFile.write("<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
+    };
 }
 
 function deleteOldProcessing() {
@@ -1067,7 +1081,7 @@ function deleteOldProcessing() {
         } else {
             var remainingFiles = list.length;
             if (remainingFiles <= 0) {
-                convertJsonToXml();
+                moveIncomingToQueued();
             } else {
                 list.forEach(function (filename) {
                     processedFile = path.resolve(processingDirectory, filename);
@@ -1077,7 +1091,7 @@ function deleteOldProcessing() {
                     }
                     remainingFiles--;
                     if (remainingFiles <= 0) {
-                        convertJsonToXml();
+                        moveIncomingToQueued();
                     }
                 });
             }
