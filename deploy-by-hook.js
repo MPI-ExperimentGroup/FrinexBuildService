@@ -892,7 +892,7 @@ function prepareForProcessing() {
                 console.log('incoming: ' + filename);
                 var fileNamePart = path.parse(filename).name;
                 resultsFile.write("<div>incoming: " + filename + "</div>");
-                var incomingFile = path.resolve(incomingDirectory, filename);
+                var incomingFile = path.resolve(processingDirectory, filename);
                 if (filename === "listing.json") {
                     console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
                     resultsFile.write("<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
