@@ -1021,15 +1021,18 @@ function moveIncomingToQueued() {
                     var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
                     var queuedFile = path.resolve(incomingDirectory + '/queued/', filename);
                     if ((path.extname(filename) === ".json" || path.extname(filename) === ".xml") && filename !== "listing.json") {
-                        var mavenLogPathSG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging.txt";
-                        var mavenLogPathSA = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_staging_admin.txt";
-                        var mavenLogPathPG = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_production.txt";
-                        var mavenLogPathPA = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_production_admin.txt";
-                        var artifactPathSvg = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + ".svg";
-                        var artifactPathUml = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + ".uml";
-                        var artifactPathJson = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + ".json";
-                        var artifactPathXml = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + ".xml";
-                        var artifactPathError = targetDirectory + "/" + fileNamePart + "/" + fileNamePart + "_validation_error.txt";
+                        resultsFile.write("<div>initialise: '" + filename + "'</div>");
+                        console.log('initialise: ' + filename);
+                        var currentName = path.parse(filename).name;
+                        var mavenLogPathSG = targetDirectory + "/" + currentName + "/" + currentName + "_staging.txt";
+                        var mavenLogPathSA = targetDirectory + "/" + currentName + "/" + currentName + "_staging_admin.txt";
+                        var mavenLogPathPG = targetDirectory + "/" + currentName + "/" + currentName + "_production.txt";
+                        var mavenLogPathPA = targetDirectory + "/" + currentName + "/" + currentName + "_production_admin.txt";
+                        var artifactPathSvg = targetDirectory + "/" + currentName + "/" + currentName + ".svg";
+                        var artifactPathUml = targetDirectory + "/" + currentName + "/" + currentName + ".uml";
+                        var artifactPathJson = targetDirectory + "/" + currentName + "/" + currentName + ".json";
+                        var artifactPathXml = targetDirectory + "/" + currentName + "/" + currentName + ".xml";
+                        var artifactPathError = targetDirectory + "/" + currentName + "/" + currentName + "_validation_error.txt";
                         if (fs.existsSync(mavenLogPathSG)) {
                             fs.unlinkSync(mavenLogPathSG);
                         }
@@ -1057,9 +1060,6 @@ function moveIncomingToQueued() {
                         if (fs.existsSync(artifactPathError)) {
                             fs.unlinkSync(artifactPathError);
                         }
-                        resultsFile.write("<div>initialise: '" + filename + "'</div>");
-                        console.log('initialise: ' + filename);
-                        var currentName = path.parse(filename).name;
                         initialiseResult(currentName, 'queued', false);
                         //if (fs.existsSync(targetDirectory + "/" + currentName)) {
                         // todo: consider if this agressive removal is always wanted
