@@ -1019,9 +1019,10 @@ function moveIncomingToQueued() {
                 //setTimeout(moveIncomingToQueued, 3000);
             } else {
                 list.forEach(function (filename) {
-                    resultsFile.write("<div>initialise: '" + filename + "'</div>");
-                    console.log('moveIncomingToQueued: ' + filename);
+                    var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
+                    var queuedFile = path.resolve(incomingDirectory = "/queued/", filename);
                     if ((path.extname(filename) === ".json" || path.extname(filename) === ".xml") && filename !== "listing.json") {
+                        resultsFile.write("<div>initialise: '" + filename + "'</div>");
                         console.log('initialise: ' + filename);
                         var currentName = path.parse(filename).name;
                         initialiseResult(currentName, 'queued', false);
@@ -1032,10 +1033,15 @@ function moveIncomingToQueued() {
                         if (!fs.existsSync(targetDirectory + "/" + currentName)) {
                             fs.mkdirSync(targetDirectory + '/' + currentName);
                         }
-                        var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
-                        var queuedFile = path.resolve(incomingDirectory = "/queued/", filename);
                         // this move is within the same volume so we can do it this easy way
                         fs.renameSync(incomingFile, queuedFile);
+                    } else {
+                        resultsFile.write("<div>removing usable type: '" + filename + "'</div>");
+                        console.log('removing usable type: ' + filename);
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                            console.log('deleted usable file: ' + incomingFile);
+                        }
                     }
                     remainingFiles--;
                     if (remainingFiles <= 0) {
