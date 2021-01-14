@@ -368,6 +368,11 @@ function deployStagingGui(listing, currentEntry) {
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt", 'w'));
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
+    var queuedConfigFile = path.resolve(processingDirectory + '/validated', currentEntry.buildName + '.xml');
+    var stagingConfigFile = path.resolve(processingDirectory + '/staging', currentEntry.buildName + '.xml');
+    // this move is within the same volume so we can do it this easy way
+    fs.renameSync(queuedConfigFile, stagingConfigFile);
+    //  terminate existing docker containers by name 
     var buildContainerName = currentEntry.buildName + '_staging';
     var dockerString = 'docker stop ' + buildContainerName + ';'
         + 'docker run'
@@ -387,7 +392,7 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
         + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
         + ' -Dexperiment.webservice=' + configServer
-        + ' -Dexperiment.configuration.path=/FrinexBuildService/processing'
+        + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging'
         + ' -DversionCheck.allowSnapshots=' + 'true'
         + ' -DversionCheck.buildType=' + 'stable'
         + ' -Dexperiment.destinationServer=' + stagingServer
@@ -397,9 +402,9 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + ' mv target/*.zip /FrinexBuildService/processing/'
+        + ' mv target/*.zip /FrinexBuildService/processing/staging/'
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + ' mv target/*.war /FrinexBuildService/processing/'
+        + ' mv target/*.war /FrinexBuildService/processing/staging/'
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + '"';
     console.log(dockerString);
@@ -747,7 +752,7 @@ function buildFromListing() {
             });
         }
     });
-    fs.readdir(processingDirectory, function (error, list) {
+    fs.readdir(processingDirectory + '/validated', function (error, list) {
         if (error) {
             console.error(error);
         } else {
@@ -760,7 +765,7 @@ function buildFromListing() {
                 if (path.extname(filename) !== ".xml") {
                     if (fileNamePart.endsWith("_validation_error")) {
                         var xmlName = filename.substring(0, filename.length - 4 - "_validation_error".length) + ".xml";
-                        var xmlPath = path.resolve(processingDirectory, xmlName);
+                        var xmlPath = path.resolve(processingDirectory + '/validated', xmlName);
                         console.log("Found _validation_error, checking for: " + xmlPath);
                         if (!fs.existsSync(xmlPath)) {
                             initialiseResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), 'failed', false);
@@ -775,7 +780,7 @@ function buildFromListing() {
                     console.log("this script will not build multiparticipant without manual intervention");
                 } else if (filename === "listing.json") {
                     // read through this commited listing json file and look for undeploy targets then add them to the list if they are not already there
-                    var commitedlistingJsonData = JSON.parse(fs.readFileSync(path.resolve(processingDirectory, filename), 'utf8'));
+                    var commitedlistingJsonData = JSON.parse(fs.readFileSync(path.resolve(processingDirectory + '/validated', filename), 'utf8'));
                     for (var listingIndex in commitedlistingJsonData) {
                         if (commitedlistingJsonData[listingIndex].state === "undeploy") {
                             var foundCount = 0;
@@ -900,7 +905,7 @@ function buildFromListing() {
 }
 
 function prepareForProcessing() {
-    fs.readdir(processingDirectory, function (error, list) {
+    fs.readdir(processingDirectory + '/validated', function (error, list) {
         if (error) {
             console.error(error);
         } else {
@@ -909,7 +914,7 @@ function prepareForProcessing() {
                 console.log('processing: ' + filename);
                 var fileNamePart = path.parse(filename).name;
                 resultsFile.write("<div>processing: " + filename + "</div>");
-                var incomingFile = path.resolve(processingDirectory, filename);
+                var incomingFile = path.resolve(processingDirectory + '/validated', filename);
                 //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
                 if (filename === "listing.json") {
                     console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
@@ -1012,6 +1017,21 @@ function moveIncomingToQueued() {
         console.log('queued directory created');
         resultsFile.write("<div>queued directory created</div>");
     }
+    if (!fs.existsSync(processingDirectory + "/validated")) {
+        fs.mkdirSync(processingDirectory + '/validated');
+        console.log('validated directory created');
+        resultsFile.write("<div>validated directory created</div>");
+    }
+    if (!fs.existsSync(processingDirectory + "/staging")) {
+        fs.mkdirSync(processingDirectory + '/staging');
+        console.log('staging directory created');
+        resultsFile.write("<div>staging directory created</div>");
+    }
+    if (!fs.existsSync(processingDirectory + "/production")) {
+        fs.mkdirSync(processingDirectory + '/production');
+        console.log('production directory created');
+        resultsFile.write("<div>production directory created</div>");
+    }
     fs.readdir(incomingDirectory + '/commits', function (error, list) {
         if (error) {
             console.error(error);
@@ -1106,7 +1126,7 @@ function convertJsonToXml() {
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
-        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing /FrinexBuildService/listing\\";'
+        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing\\";'
         + ' chmod a+rwx /FrinexBuildService/processing/*;"';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
