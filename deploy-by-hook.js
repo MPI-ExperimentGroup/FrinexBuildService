@@ -370,77 +370,85 @@ function deployStagingGui(listing, currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
     var queuedConfigFile = path.resolve(processingDirectory + '/validated', currentEntry.buildName + '.xml');
     var stagingConfigFile = path.resolve(processingDirectory + '/staging', currentEntry.buildName + '.xml');
-    // this move is within the same volume so we can do it this easy way
-    fs.renameSync(queuedConfigFile, stagingConfigFile);
-    //  terminate existing docker containers by name 
-    var buildContainerName = currentEntry.buildName + '_staging';
-    var dockerString = 'docker stop ' + buildContainerName
-        + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + 'docker run'
-        + ' --rm '
-        + ' --name ' + buildContainerName
-        + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
-        + ' -v processingDirectory:/FrinexBuildService/processing'
-        + ' -v webappsBuildServer:/usr/local/tomcat/webapps/'
-        + ' -v buildServerTarget:/usr/local/apache2/htdocs'
-        + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "mvn clean '
-        //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
-        + 'package'
-        + ' -gs /maven/.m2/settings.xml'
-        + ' -DskipTests'
-        + ' -pl gwt-cordova'
-        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
-        + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
-        + ' -Dexperiment.webservice=' + configServer
-        + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging'
-        + ' -DversionCheck.allowSnapshots=' + 'true'
-        + ' -DversionCheck.buildType=' + 'stable'
-        + ' -Dexperiment.destinationServer=' + stagingServer
-        + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
-        + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
-        + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
-        + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
-        + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + ' mv target/*.zip /FrinexBuildService/processing/staging/'
-        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + ' mv target/*.war /FrinexBuildService/processing/staging/'
-        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + '"';
-    console.log(dockerString);
-    exec(dockerString, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`deployStagingGui error: ${error}`);
+    if (!fs.existsSync(queuedConfigFile)) {
+        console.log("deployStagingGui missing: " + queuedConfigFile);
+        if (fs.existsSync(stagingConfigFile)) {
+            console.log("deployStagingGui found: " + stagingConfigFile);
+            console.log("ideployStagingGu is another process already building: " + currentEntry.buildName);
         }
-        console.log(`deployStagingGui stdout: ${stdout}`);
-        console.error(`deployStagingGui stderr: ${stderr}`);
-        if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + ".war")) {
-            console.log("frinex-gui finished");
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
-            //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
-            //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
-            //        console.log(targetDirectory);
-            //        console.log(value);
-            // build cordova 
-            if (currentEntry.isAndroid || currentEntry.isiOS) {
-                buildApk(currentEntry.buildName, "staging");
+    } else {
+        // this move is within the same volume so we can do it this easy way
+        fs.renameSync(queuedConfigFile, stagingConfigFile);
+        //  terminate existing docker containers by name 
+        var buildContainerName = currentEntry.buildName + '_staging';
+        var dockerString = 'docker stop ' + buildContainerName
+            + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + 'docker run'
+            + ' --rm '
+            + ' --name ' + buildContainerName
+            + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            + ' -v webappsBuildServer:/usr/local/tomcat/webapps/'
+            + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+            + ' -v m2Directory:/maven/.m2/'
+            + ' -w /ExperimentTemplate frinexapps /bin/bash -c "mvn clean '
+            //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + 'package'
+            + ' -gs /maven/.m2/settings.xml'
+            + ' -DskipTests'
+            + ' -pl gwt-cordova'
+            + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+            + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
+            + ' -Dexperiment.webservice=' + configServer
+            + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging'
+            + ' -DversionCheck.allowSnapshots=' + 'true'
+            + ' -DversionCheck.buildType=' + 'stable'
+            + ' -Dexperiment.destinationServer=' + stagingServer
+            + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
+            + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
+            + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+            + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
+            + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + ' mv target/*.zip /FrinexBuildService/processing/staging/'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + ' mv target/*.war /FrinexBuildService/processing/staging/'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + '"';
+        console.log(dockerString);
+        exec(dockerString, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`deployStagingGui error: ${error}`);
             }
-            if (currentEntry.isDesktop) {
-                buildElectron(currentEntry.buildName, "staging");
-            }
-            deployStagingAdmin(listing, currentEntry);
-            //buildNextExperiment(listing);
-        } else {
-            //console.log(targetDirectory);
-            //console.log(JSON.stringify(reason, null, 4));
-            console.log("frinex-gui staging failed");
-            console.log(currentEntry.experimentDisplayName);
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
-            //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
-            //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
-        };
-    });
+            console.log(`deployStagingGui stdout: ${stdout}`);
+            console.error(`deployStagingGui stderr: ${stderr}`);
+            if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + ".war")) {
+                console.log("frinex-gui finished");
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
+                //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
+                //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
+                //        console.log(targetDirectory);
+                //        console.log(value);
+                // build cordova 
+                if (currentEntry.isAndroid || currentEntry.isiOS) {
+                    buildApk(currentEntry.buildName, "staging");
+                }
+                if (currentEntry.isDesktop) {
+                    buildElectron(currentEntry.buildName, "staging");
+                }
+                deployStagingAdmin(listing, currentEntry);
+                //buildNextExperiment(listing);
+            } else {
+                //console.log(targetDirectory);
+                //console.log(JSON.stringify(reason, null, 4));
+                console.log("frinex-gui staging failed");
+                console.log(currentEntry.experimentDisplayName);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
+                //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
+                //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
+            };
+        });
+    }
     buildNextExperiment(listing);
 }
 function deployStagingAdmin(listing, currentEntry) {
@@ -761,7 +769,7 @@ function buildFromListing() {
             var remainingFiles = list.length;
             list.forEach(function (filename) {
                 console.log('buildFromListing: ' + filename);
-                console.log(path.extname(filename));
+                //console.log(path.extname(filename));
                 var fileNamePart = path.parse(filename).name;
                 if (path.extname(filename) !== ".xml" && path.extname(filename) !== ".json") {
                     // unknown files are ignored here and _validation_error files are handled later
