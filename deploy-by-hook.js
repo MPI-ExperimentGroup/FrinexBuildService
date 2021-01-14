@@ -1129,7 +1129,7 @@ function convertJsonToXml() {
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing\\";'
-        + ' chmod a+rwx /FrinexBuildService/processing/*;"';
+        + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*;"';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
     try {
