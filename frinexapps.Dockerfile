@@ -114,6 +114,7 @@ ENV JAVA8_HOME=/openjdk8/jdk8u265-b01
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
 RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
+RUN sed -i 's|<versionCheck.buildType>testing</versionCheck.buildType>|<versionCheck.buildType>stable</versionCheck.buildType>|g' /ExperimentTemplate/pom.xml
 
 RUN cd /ExperimentTemplate \
     && sed -i '/war/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all gwt-cordova)'-stable/}' gwt-cordova/pom.xml
