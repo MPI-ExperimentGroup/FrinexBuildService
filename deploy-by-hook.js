@@ -1154,8 +1154,9 @@ function deleteOldProcessing() {
                 list.forEach(function (filename) {
                     processedFile = path.resolve(processingDirectory, filename);
                     if (fs.existsSync(processedFile)) {
-                        fs.unlinkSync(processedFile);
-                        console.log('deleted processed file: ' + processedFile);
+                        fs.rmdirSync(processedFile, { recursive: true });
+                        //fs.unlinkSync(processedFile);   
+                        console.log('deleted processing: ' + processedFile);
                     }
                     remainingFiles--;
                     if (remainingFiles <= 0) {
