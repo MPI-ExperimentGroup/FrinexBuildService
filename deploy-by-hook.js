@@ -374,7 +374,8 @@ function deployStagingGui(listing, currentEntry) {
     fs.renameSync(queuedConfigFile, stagingConfigFile);
     //  terminate existing docker containers by name 
     var buildContainerName = currentEntry.buildName + '_staging';
-    var dockerString = 'docker stop ' + buildContainerName + ';'
+    var dockerString = 'docker stop ' + buildContainerName
+        + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + 'docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
@@ -401,7 +402,7 @@ function deployStagingGui(listing, currentEntry) {
         + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-        + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + ' mv target/*.zip /FrinexBuildService/processing/staging/'
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + ' mv target/*.war /FrinexBuildService/processing/staging/'
@@ -762,8 +763,9 @@ function buildFromListing() {
                 console.log('buildFromListing: ' + filename);
                 console.log(path.extname(filename));
                 var fileNamePart = path.parse(filename).name;
-                if (path.extname(filename) !== ".xml") {
-                    if (fileNamePart.endsWith("_validation_error")) {
+                if (path.extname(filename) !== ".xml" && path.extname(filename) !== ".json") {
+                    // unknown files are ignored here and _validation_error files are handled later
+                    /*if (fileNamePart.endsWith("_validation_error")) {
                         var xmlName = filename.substring(0, filename.length - 4 - "_validation_error".length) + ".xml";
                         var xmlPath = path.resolve(processingDirectory + '/validated', xmlName);
                         console.log("Found _validation_error, checking for: " + xmlPath);
@@ -772,7 +774,7 @@ function buildFromListing() {
                             var validationMessage = '<a href="' + fileNamePart + '/' + fileNamePart + '.txt"">failed</a>&nbsp;';
                             storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
                         }
-                    }
+                    }*/
                     remainingFiles--;
                 } else if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
