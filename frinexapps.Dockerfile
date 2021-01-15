@@ -173,6 +173,8 @@ RUN cd /ExperimentTemplate/gwt-cordova \
 RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
     && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
+RUN cd /ExperimentTemplate/ \
+    && mvn clean
 
 WORKDIR /target
 VOLUME ["m2Directory:/maven/.m2/", "webappsTomcatStaging:/usr/local/tomcat/webapps"]
