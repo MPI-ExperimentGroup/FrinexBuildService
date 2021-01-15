@@ -173,7 +173,9 @@ RUN cd /ExperimentTemplate/gwt-cordova \
 RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
     && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
-RUN cd /ExperimentTemplate/ \
+RUN cd /ExperimentTemplate/gwt-cordova/ \
+    && mvn clean
+RUN cd /ExperimentTemplate/registration/ \
     && mvn clean
 
 WORKDIR /target
