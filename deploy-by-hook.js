@@ -410,9 +410,11 @@ function deployStagingGui(listing, currentEntry) {
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv target/*.zip /FrinexBuildService/processing/staging/'
+            + ' mv /ExperimentTemplate/gwt-cordova/target/*.zip /FrinexBuildService/processing/staging/'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv target/*.war /FrinexBuildService/processing/staging/'
+            + ' mv /ExperimentTemplate/gwt-cordova/target/*.jar /FrinexBuildService/processing/staging/'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/staging/'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
