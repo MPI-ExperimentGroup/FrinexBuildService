@@ -388,7 +388,7 @@ function deployStagingGui(listing, currentEntry) {
             + ' --name ' + buildContainerName
             + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
             + ' -v processingDirectory:/FrinexBuildService/processing'
-            + ' -v webappsBuildServer:/usr/local/tomcat/webapps/'
+            + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "mvn clean '
