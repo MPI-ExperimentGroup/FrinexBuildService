@@ -835,6 +835,9 @@ function buildFromListing() {
                     if (fs.existsSync(withoutSuffixPath + "_validation_error.txt")) {
                         validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '_validation_error.txt">failed</a>&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
+                        console.log('removing: ' + processingDirectory + '/validated/' + filename);
+                        // remove the processing/validated XML since it will not be built after this point
+                        fs.unlinkSync(path.resolve(processingDirectory + '/validated', filename));
                     } else {
                         validationMessage += 'passed&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
