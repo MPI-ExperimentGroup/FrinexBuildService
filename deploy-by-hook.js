@@ -368,15 +368,16 @@ function deployStagingGui(listing, currentEntry) {
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt", 'w'));
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
-    var queuedConfigFile = path.resolve(processingDirectory + '/validated', currentEntry.buildName + '.xml');
-    var stagingConfigFile = path.resolve(processingDirectory + '/staging', currentEntry.buildName + '.xml');
+    var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
+    var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
     if (!fs.existsSync(queuedConfigFile)) {
         console.log("deployStagingGui missing: " + queuedConfigFile);
+    } else {
         if (fs.existsSync(stagingConfigFile)) {
             console.log("deployStagingGui found: " + stagingConfigFile);
-            console.log("ideployStagingGu is another process already building: " + currentEntry.buildName);
+            console.log("deployStagingGui if another process already building it will be terminated: " + currentEntry.buildName);
+            fs.unlinkSync(stagingConfigFile);
         }
-    } else {
         // this move is within the same volume so we can do it this easy way
         fs.renameSync(queuedConfigFile, stagingConfigFile);
         //  terminate existing docker containers by name 
@@ -386,7 +387,8 @@ function deployStagingGui(listing, currentEntry) {
             + 'docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
-            + ' --net="host" ' // allowing the container to connect to the tomcat container via the host
+            /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
+            // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
@@ -1043,15 +1045,25 @@ function moveIncomingToQueued() {
         console.log('validated directory created');
         resultsFile.write("<div>validated directory created</div>");
     }
-    if (!fs.existsSync(processingDirectory + "/staging")) {
-        fs.mkdirSync(processingDirectory + '/staging');
+    if (!fs.existsSync(processingDirectory + "/staging-queued")) {
+        fs.mkdirSync(processingDirectory + '/staging-queued');
         console.log('staging directory created');
-        resultsFile.write("<div>staging directory created</div>");
+        resultsFile.write("<div>staging queued directory created</div>");
     }
-    if (!fs.existsSync(processingDirectory + "/production")) {
-        fs.mkdirSync(processingDirectory + '/production');
+    if (!fs.existsSync(processingDirectory + "/staging-building")) {
+        fs.mkdirSync(processingDirectory + '/staging-building');
+        console.log('staging directory created');
+        resultsFile.write("<div>staging building directory created</div>");
+    }
+    if (!fs.existsSync(processingDirectory + "/production-queued")) {
+        fs.mkdirSync(processingDirectory + '/production-queued');
         console.log('production directory created');
-        resultsFile.write("<div>production directory created</div>");
+        resultsFile.write("<div>production queued directory created</div>");
+    }
+    if (!fs.existsSync(processingDirectory + "/production-building")) {
+        fs.mkdirSync(processingDirectory + '/production-building');
+        console.log('production directory created');
+        resultsFile.write("<div>production building directory created</div>");
     }
     fs.readdir(incomingDirectory + '/commits', function (error, list) {
         if (error) {
