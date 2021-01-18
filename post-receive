@@ -58,7 +58,7 @@ do
       git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
       echo "<br/>" >> $targetDir/git-push-log.html
       git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
-      cp $(git diff --name-only $oldrev $newrev) $scriptDir/incoming/commits/
+      cp $(git diff --name-only $oldrev $newrev sed -e "s/[^ ]*\/[^ ]*//g") $scriptDir/incoming/commits/
       # copy the static files to a working directory for frinex-gui to compile
       git diff --name-only $oldrev $newrev | sed -e "s/.json//g" | sed -e "s/.xml//g" >> $targetDir/git-push-log.html
       cp -r $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | sed -e "s/.json//g" | sed -e "s/.xml//g") $scriptDir/incoming/static/
