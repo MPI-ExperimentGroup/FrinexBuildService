@@ -935,7 +935,7 @@ function prepareForProcessing() {
                     //var processingName = path.resolve(processingDirectory, filename);
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
                     var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
-                    var configQueuedFile = path.resolve(targetDirectory + "/queued", filename);
+                    var configQueuedFile = path.resolve(processingDirectory + "/queued", filename);
                     console.log('configStoreFile: ' + configStoreFile);
                     fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile).on('finish', function () {
                         fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configQueuedFile).on('finish', function () {
