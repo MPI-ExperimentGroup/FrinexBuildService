@@ -746,6 +746,10 @@ function buildNextExperiment(listing) {
         //console.log("starting generate stimulus");
         //execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
         if (currentEntry.state === "staging" || currentEntry.state === "production") {
+            var queuedConfigFile = path.resolve(processingDirectory + '/queued', currentEntry.buildName + '.xml');
+            var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
+            // this move is within the same volume so we can do it this easy way
+            fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
             deployStagingGui(listing, currentEntry);
         } else if (currentEntry.state === "undeploy") {
             unDeploy(listing, currentEntry);
@@ -773,7 +777,7 @@ function buildFromListing() {
             });
         }
     });
-    fs.readdir(processingDirectory + '/validated', function (error, list) {
+    fs.readdir(processingDirectory + '/queued', function (error, list) {
         if (error) {
             console.error(error);
         } else {
@@ -783,43 +787,14 @@ function buildFromListing() {
                 console.log('buildFromListing: ' + filename);
                 //console.log(path.extname(filename));
                 var fileNamePart = path.parse(filename).name;
-                if (path.extname(filename) !== ".xml" && path.extname(filename) !== ".json") {
-                    // unknown files are ignored here and _validation_error files are handled later
-                    /*if (fileNamePart.endsWith("_validation_error")) {
-                        var xmlName = filename.substring(0, filename.length - 4 - "_validation_error".length) + ".xml";
-                        var xmlPath = path.resolve(processingDirectory + '/validated', xmlName);
-                        console.log("Found _validation_error, checking for: " + xmlPath);
-                        if (!fs.existsSync(xmlPath)) {
-                            initialiseResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), 'failed', false);
-                            var validationMessage = '<a href="' + fileNamePart + '/' + fileNamePart + '.txt"">failed</a>&nbsp;';
-                            storeResult(fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), validationMessage, "validation", "json_xsd", true, false, false);
-                        }
-                    }*/
-                    remainingFiles--;
-                } else if (fileNamePart === "multiparticipant") {
+                if (fileNamePart === "multiparticipant") {
                     remainingFiles--;
                     storeResult(fileNamePart, 'disabled', "validation", "json_xsd", true, false, false);
                     console.log("this script will not build multiparticipant without manual intervention");
-                } else if (filename === "listing.json") {
-                    // read through this commited listing json file and look for undeploy targets then add them to the list if they are not already there
-                    var commitedlistingJsonData = JSON.parse(fs.readFileSync(path.resolve(processingDirectory + '/validated', filename), 'utf8'));
-                    for (var listingIndex in commitedlistingJsonData) {
-                        if (commitedlistingJsonData[listingIndex].state === "undeploy") {
-                            var foundCount = 0;
-                            for (var index in listingJsonArray) {
-                                if (listingJsonArray[index].buildName === commitedlistingJsonData[listingIndex].buildName) {
-                                    foundCount++;
-                                }
-                            }
-                            if (foundCount === 0) {
-                                listingJsonArray.push(commitedlistingJsonData[listingIndex]);
-                            }
-                        }
-                    }
                 } else {
                     initialiseResult(fileNamePart, 'queued', false);
                     var validationMessage = "";
-                    var filenamePath = path.resolve(targetDirectory + '/' + fileNamePart, filename);
+                    var filenamePath = path.resolve(processingDirectory + '/queued', filename);
                     console.log(filename);
                     console.log(filenamePath);
                     var buildName = fileNamePart;
@@ -847,7 +822,7 @@ function buildFromListing() {
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
                         console.log('removing: ' + processingDirectory + '/validated/' + filename);
                         // remove the processing/validated XML since it will not be built after this point
-                        fs.unlinkSync(path.resolve(processingDirectory + '/validated', filename));
+                        fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
                     } else {
                         validationMessage += 'passed&nbsp;';
                         storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
@@ -960,14 +935,15 @@ function prepareForProcessing() {
                     //var processingName = path.resolve(processingDirectory, filename);
                     // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
                     var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
+                    var configQueuedFile = path.resolve(targetDirectory + "/queued", filename);
                     console.log('configStoreFile: ' + configStoreFile);
-                    //fs.copyFileSync(incomingFile, configStoreFile);
-                    //fs.renameSync(incomingFile, processingName);
-                    //fs.createReadStream(incomingFile).pipe(fs.createWriteStream(processingName).on('finish', function () {
-                    //    if (fs.existsSync(incomingFile)) {
-                    //        fs.unlinkSync(incomingFile);
-                    //    }
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile));
+                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile).on('finish', function () {
+                        fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configQueuedFile).on('finish', function () {
+                            if (fs.existsSync(incomingFile)) {
+                                fs.unlinkSync(incomingFile);
+                            }
+                        }));
+                    }));
                     console.log('moved from processing to target: ' + filename);
                     resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
                     //                    }));
@@ -1046,6 +1022,11 @@ function moveIncomingToQueued() {
         fs.mkdirSync(processingDirectory + '/validated');
         console.log('validated directory created');
         resultsFile.write("<div>validated directory created</div>");
+    }
+    if (!fs.existsSync(processingDirectory + "/queued")) {
+        fs.mkdirSync(processingDirectory + '/queued');
+        console.log('staging directory created');
+        resultsFile.write("<div>queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/staging-queued")) {
         fs.mkdirSync(processingDirectory + '/staging-queued');
