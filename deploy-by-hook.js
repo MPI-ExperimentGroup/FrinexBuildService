@@ -403,7 +403,7 @@ function deployStagingGui(listing, currentEntry) {
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
             + ' -Dexperiment.webservice=' + configServer
-            + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging'
+            + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'true'
             + ' -DversionCheck.buildType=' + 'stable'
             + ' -Dexperiment.destinationServer=' + stagingServer
@@ -1130,11 +1130,11 @@ function moveIncomingToQueued() {
                         // this move is within the same volume so we can do it this easy way
                         fs.renameSync(incomingFile, queuedFile);
                     } else {
-                        resultsFile.write("<div>removing usable type: '" + filename + "'</div>");
-                        console.log('removing usable type: ' + filename);
+                        resultsFile.write("<div>removing unusable type: '" + filename + "'</div>");
+                        //console.log('removing unusable type: ' + filename);
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
-                            console.log('deleted usable file: ' + incomingFile);
+                            console.log('deleted unusable file: ' + incomingFile);
                         }
                     }
                     remainingFiles--;
