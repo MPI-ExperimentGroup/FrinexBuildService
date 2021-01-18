@@ -390,6 +390,7 @@ function deployStagingGui(listing, currentEntry) {
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
             + ' -v processingDirectory:/FrinexBuildService/processing'
+            + ' -v incomingDirectory:/FrinexBuildService/incoming' // required for static files only
             + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' -v m2Directory:/maven/.m2/'
