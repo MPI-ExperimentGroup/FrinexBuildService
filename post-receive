@@ -29,7 +29,7 @@ checkoutDir=CheckoutDirectory/RepositoryName
 ls -l $targetDir
 ls -l $checkoutDir
 
-whoami > $targetDir/git-update-log.txt
+whoami >> $targetDir/git-update-log.txt
 
 echo $GIT_DIR >> $targetDir/git-update-log.txt
 #pwd >> $targetDir/git-update-log.txt
@@ -60,7 +60,7 @@ do
       git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
       cp $(git diff --name-only $oldrev $newrev) $scriptDir/incoming/commits/
       # copy the static files to a working directory for frinex-gui to compile
-      git diff --name-only $oldrev $newrev | sed -e "s/.json//g" | sed -e "s/.xml//g"
+      git diff --name-only $oldrev $newrev | sed -e "s/.json//g" | sed -e "s/.xml//g" >> $targetDir/git-push-log.html
       cp -r $(git diff --name-only $oldrev $newrev | sed -e "s/.json//g" | sed -e "s/.xml//g") $scriptDir/incoming/static/
       echo "<br/>" >> $targetDir/git-push-log.html
     fi
@@ -93,8 +93,8 @@ else
 #  find /srv/development/.m2/repository/ -type d -name *SNAPSHOT -delete
   pwd
 #  git pull --depth 5000
-#  mvn clean install -DversionCheck.buildType=stable -DskipTests=true -gs /srv/development/.m2/settings.xml > $targetDir/git-mvn-out.html
-  nohup nice node $scriptDir/deploy-by-hook.js > $targetDir/git-push-out.txt 2> $targetDir/git-push-err.txt &
+#  mvn clean install -DversionCheck.buildType=stable -DskipTests=true -gs /srv/development/.m2/settings.xml >> $targetDir/git-mvn-out.html
+  nohup nice node $scriptDir/deploy-by-hook.js >> $targetDir/git-push-out.txt 2>> $targetDir/git-push-err.txt &
   pidof node-default
   pidof node
 fi
