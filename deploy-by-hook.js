@@ -372,6 +372,7 @@ function deployStagingGui(listing, currentEntry) {
     var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
     if (!fs.existsSync(queuedConfigFile)) {
         console.log("deployStagingGui missing: " + queuedConfigFile);
+        storeResult(currentEntry.buildName, 'failed', "staging", "web", true, false, false);
     } else {
         if (fs.existsSync(stagingConfigFile)) {
             console.log("deployStagingGui found: " + stagingConfigFile);
