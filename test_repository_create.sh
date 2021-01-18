@@ -2,7 +2,7 @@
 httpd
 # clean up previous testing data
 rm -r /FrinexBuildService/incoming/*
-rm /FrinexBuildService/processing/*
+rm -r /FrinexBuildService/processing/*
 rm -r /usr/local/apache2/htdocs/*
 mkdir /FrinexBuildService/incoming/commits
 mkdir /FrinexBuildService/incoming/static
