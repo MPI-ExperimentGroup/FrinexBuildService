@@ -9,7 +9,10 @@ if [ -d TEST_REPOSITORY ]; then
     echo "bla" >> test_data.txt; git commit -m "modified text file" test_data.txt; git pull; git push --verbose
     cp ~/Documents/Frinex/experiments/*.json .
     git add *.json; git commit -m "Adding JSON files" *.json; git push
-    cp ~/Documents/Frinex/experiments/with*.xml .
+    #cp ~/Documents/Frinex/*/s*.xml .
+    cp -r ~/Documents/Frinex/experiments/with_stimulus_example .
+    git add with_stimulus_example; git commit -m "Adding with_stimulus_example files" with_stimulus_example; git push
+    cp ~/Documents/Frinex/experiments/*mple.xml .
     git add *.xml; git commit -m "Adding XML files" *.xml; git push
 else
     echo "failed to clone"
