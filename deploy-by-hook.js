@@ -1059,10 +1059,10 @@ function moveIncomingToQueued() {
             if (remainingFiles <= 0) {
                 // check for files in process before exiting from this script 
                 var hasProcessingFiles = false;
-                var processingList = fs.readdirsync(processingDirectory);
+                var processingList = fs.readdirSync(processingDirectory);
                 processingList.forEach(function (processingDirectory) {
                     var processingDirectoryPath = path.resolve(incomingDirectory, processingDirectory);
-                    var processingList = fs.readdirsync(processingDirectoryPath);
+                    var processingList = fs.readdirSync(processingDirectoryPath);
                     if (processingList.length > 0) {
                         hasProcessingFiles = true;
                     }
