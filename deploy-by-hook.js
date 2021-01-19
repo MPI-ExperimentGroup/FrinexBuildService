@@ -792,7 +792,6 @@ function buildFromListing() {
                     storeResult(fileNamePart, 'disabled', "validation", "json_xsd", true, false, false);
                     console.log("this script will not build multiparticipant without manual intervention");
                 } else {
-                    initialiseResult(fileNamePart, 'queued', false);
                     var validationMessage = "";
                     var filenamePath = path.resolve(processingDirectory + '/queued', filename);
                     console.log(filename);
