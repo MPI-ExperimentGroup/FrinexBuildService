@@ -783,6 +783,10 @@ function buildFromListing() {
         } else {
             var listing = [];
             var remainingFiles = list.length;
+            if (remainingFiles <= 0) {
+                console.log('buildFromListing found no files');
+                setTimeout(moveIncomingToQueued, 3000);
+            }
             list.forEach(function (filename) {
                 console.log('buildFromListing: ' + filename);
                 //console.log(path.extname(filename));
