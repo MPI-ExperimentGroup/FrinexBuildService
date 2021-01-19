@@ -1070,7 +1070,8 @@ function moveIncomingToQueued() {
                 if (hasProcessingFiles === true) {
                     console.log('moveIncomingToQueued: hasProcessingFiles');
                     resultsFile.write("<div>has more files in processing</div>");
-                    setTimeout(moveIncomingToQueued, 3000);
+                    setTimeout(prepareForProcessing, 3000);
+                    //setTimeout(moveIncomingToQueued, 3000);
                 } else {
                     // we allow the process to exit here if there are no files
                     console.log('moveIncomingToQueued: no files');
