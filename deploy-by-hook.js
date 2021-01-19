@@ -414,9 +414,9 @@ function deployStagingGui(listing, currentEntry) {
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/*.zip /FrinexBuildService/processing/staging/'
+            + ' mv /ExperimentTemplate/gwt-cordova/target/*.zip /FrinexBuildService/processing/staging-building/'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/*.jar /FrinexBuildService/processing/staging/'
+            + ' mv /ExperimentTemplate/gwt-cordova/target/*.jar /FrinexBuildService/processing/staging-building/'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -424,7 +424,7 @@ function deployStagingGui(listing, currentEntry) {
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '_staging.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/staging/'
+            //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/staging-building/'
             //+ " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
@@ -1057,9 +1057,25 @@ function moveIncomingToQueued() {
         } else {
             var remainingFiles = list.length;
             if (remainingFiles <= 0) {
-                console.log('moveIncomingToQueued: no files');
-                // we allow the process to exit here if there are no files
-                //setTimeout(moveIncomingToQueued, 3000);
+                // check for files in process before exiting from this script 
+                var hasProcessingFiles = false;
+                var processingList = fs.readdirsync(processingDirectory);
+                processingList.forEach(function (processingDirectory) {
+                    var processingDirectoryPath = path.resolve(incomingDirectory, processingDirectory);
+                    var processingList = fs.readdirsync(processingDirectoryPath);
+                    if (processingList.length > 0) {
+                        hasProcessingFiles = true;
+                    }
+                });
+                if (hasProcessingFiles === true) {
+                    console.log('moveIncomingToQueued: hasProcessingFiles');
+                    resultsFile.write("<div>has more files in processing</div>");
+                    setTimeout(moveIncomingToQueued, 3000);
+                } else {
+                    // we allow the process to exit here if there are no files
+                    console.log('moveIncomingToQueued: no files');
+                    resultsFile.write("<div>no more files in processing</div>");
+                }
             } else {
                 list.forEach(function (filename) {
                     var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
