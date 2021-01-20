@@ -898,7 +898,7 @@ function prepareForProcessing() {
     for (var filename of list) {
         console.log('processing: ' + filename);
         var fileNamePart = path.parse(filename).name;
-        resultsFile.write("<div>processing: " + filename + "</div>");
+        resultsFile.write("<div>processing validated: " + filename + "</div>");
         var incomingFile = path.resolve(processingDirectory + '/validated', filename);
         //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
         if (filename === "listing.json") {
@@ -913,8 +913,8 @@ function prepareForProcessing() {
                 if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
-                console.log('moved from processing to target: ' + filename);
-                resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
+                console.log('moved JSON from validated to target: ' + filename);
+                resultsFile.write("<div>moved JSON from validated to target: " + filename + "</div>");
             }));
         } else if (path.extname(filename) === ".xml") {
             //var processingName = path.resolve(processingDirectory, filename);
@@ -922,16 +922,15 @@ function prepareForProcessing() {
             var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             var configQueuedFile = path.resolve(processingDirectory + "/queued", filename);
             console.log('configStoreFile: ' + configStoreFile);
-            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile).on('finish', function () {
-                fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configQueuedFile).on('finish', function () {
-                    if (fs.existsSync(incomingFile)) {
-                        fs.unlinkSync(incomingFile);
-                    }
-                }));
+            // this move is within the same volume so we can do it this easy way
+            fs.renameSync(incomingFile, configQueuedFile);
+            console.log('moved XML from validated to queued: ' + filename);
+            resultsFile.write("<div>moved XML from validated to queued: " + filename + "</div>");
+            // this move is not within the same volume
+            fs.createReadStream(configQueuedFile).pipe(fs.createWriteStream(configStoreFile).on('finish', function () {
+                console.log('copied XML from queued to target: ' + filename);
+                resultsFile.write("<div>copied XML from queued to target: " + filename + "</div>");
             }));
-            console.log('moved from processing to target: ' + filename);
-            resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
-            //                    }));
         } else if (path.extname(filename) === ".uml") {
             // preserve the generated UML to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
@@ -940,7 +939,8 @@ function prepareForProcessing() {
                 if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
-                console.log('moved UML from processing to target: ' + filename);
+                console.log('moved UML from validated to target: ' + filename);
+                resultsFile.write("<div>moved UML from validated to target: " + filename + "</div>");
             }));
         } else if (path.extname(filename) === ".svg") {
             // preserve the generated UML SVG to be accessed via a link in the results table
@@ -950,7 +950,8 @@ function prepareForProcessing() {
                 if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
-                console.log('moved UML SVG from processing to target: ' + filename);
+                console.log('moved SVG from validated to target: ' + filename);
+                resultsFile.write("<div>moved SVG from validated to target: " + filename + "</div>");
             }));
         } else if (path.extname(filename) === ".xsd") {
             // place the generated XSD file for use in XML editors
@@ -960,7 +961,8 @@ function prepareForProcessing() {
                 if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
-                console.log('moved XSD from processing to target: ' + filename);
+                console.log('moved XSD from validated to target: ' + filename);
+                resultsFile.write("<div>moved XSD from validated to target: " + filename + "</div>");
             }));
         } else if (filename.endsWith("frinex.html")) {
             // place the generated documentation file for use in web browsers
@@ -970,7 +972,8 @@ function prepareForProcessing() {
                 if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
-                console.log('moved HTML from processing to target: ' + filename);
+                console.log('moved HTML from validated to target: ' + filename);
+                resultsFile.write("<div>moved HTML from validated to target: " + filename + "</div>");
             }));
         } else if (filename.endsWith("_validation_error.txt")) {
             var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
@@ -979,8 +982,8 @@ function prepareForProcessing() {
                 if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
-                console.log('moved from processing to target: ' + filename);
-                resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
+                console.log('moved from validated to target: ' + filename);
+                resultsFile.write("<div>moved from validated to target: " + filename + "</div>");
             }));
         } else if (fs.existsSync(incomingFile)) {
             console.log('deleting unkown file: ' + incomingFile);
