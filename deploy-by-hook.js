@@ -762,253 +762,233 @@ function buildNextExperiment(listing) {
 
 function buildFromListing() {
     var listingJsonArray = [];
-    fs.readdir(listingDirectory, function (error, list) {
+    fs.readdirSync(listingDirectory, function (error, list) {
         if (error) {
             console.error(error);
         } else {
-            list.forEach(function (filename) {
+            for (var filename in list) {
                 listingFile = path.resolve(listingDirectory, filename);
                 var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
                 listingJsonArray.push(listingJsonData);
-            });
-        }
-    });
-    fs.readdir(processingDirectory + '/queued', function (error, list) {
-        if (error) {
-            console.error(error);
-        } else {
-            var listing = [];
-            var remainingFiles = list.length;
-            if (remainingFiles <= 0) {
-                console.log('buildFromListing found no files');
-                setTimeout(moveIncomingToQueued, 3000);
             }
-            list.forEach(function (filename) {
-                console.log('buildFromListing: ' + filename);
-                //console.log(path.extname(filename));
-                var fileNamePart = path.parse(filename).name;
-                if (fileNamePart === "multiparticipant") {
-                    remainingFiles--;
-                    storeResult(fileNamePart, 'disabled', "validation", "json_xsd", true, false, false);
-                    console.log("this script will not build multiparticipant without manual intervention");
-                } else {
-                    var validationMessage = "";
-                    var filenamePath = path.resolve(processingDirectory + '/queued', filename);
-                    console.log(filename);
-                    console.log(filenamePath);
-                    var buildName = fileNamePart;
-                    console.log(buildName);
-                    var withoutSuffixPath = path.resolve(targetDirectory + '/' + fileNamePart, fileNamePart);
-                    console.log('withoutSuffixPath: ' + withoutSuffixPath);
-                    if (fs.existsSync(withoutSuffixPath + ".json")) {
-                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.json">json</a>&nbsp;';
-                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
-                    }
-                    if (fs.existsSync(withoutSuffixPath + ".svg")) {
-                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.svg">svg</a>&nbsp;';
-                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
-                    }
-                    if (fs.existsSync(withoutSuffixPath + ".uml")) {
-                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.uml">uml</a>&nbsp;';
-                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
-                    }
-                    if (path.extname(filename) === ".xml") {
-                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.xml">xml</a>&nbsp;';
-                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
-                    }
-                    if (fs.existsSync(withoutSuffixPath + "_validation_error.txt")) {
-                        validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '_validation_error.txt">failed</a>&nbsp;';
-                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
-                        console.log('removing: ' + processingDirectory + '/validated/' + filename);
-                        // remove the processing/validated XML since it will not be built after this point
-                        fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
-                    } else {
-                        validationMessage += 'passed&nbsp;';
-                        storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
-                        var foundCount = 0;
-                        var foundJson;
-                        for (var index in listingJsonArray) {
-                            if (listingJsonArray[index].buildName === buildName) {
-                                foundJson = listingJsonArray[index];
-                                foundCount++;
-                            }
-                        }
-                        if (foundCount === 0) {
-                            listing.push(
-                                {
-                                    "publishDate": null,
-                                    "expiryDate": null,
-                                    "isWebApp": true,
-                                    "isDesktop": false,
-                                    "isiOS": false,
-                                    "isAndroid": false,
-                                    "buildName": fileNamePart,
-                                    "state": "staging",
-                                    "defaultScale": 1.0,
-                                    "experimentInternalName": fileNamePart,
-                                    "experimentDisplayName": fileNamePart
-                                });
-                            storeResult(fileNamePart, 'queued', "staging", "web", false, false, false);
-                            storeResult(fileNamePart, 'queued', "staging", "admin", false, false, false);
-                            storeResult(fileNamePart, '', "staging", "android", false, false, false);
-                            storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
-                            storeResult(fileNamePart, '', "production", "web", false, false, false);
-                            storeResult(fileNamePart, '', "production", "admin", false, false, false);
-                            storeResult(fileNamePart, '', "production", "android", false, false, false);
-                            storeResult(fileNamePart, '', "production", "desktop", false, false, false);
-                        } else if (foundCount === 1) {
-                            listing.push(foundJson);
-                            storeResult(fileNamePart, '', "staging", "web", false, false, false);
-                            storeResult(fileNamePart, '', "staging", "admin", false, false, false);
-                            storeResult(fileNamePart, '', "staging", "android", false, false, false);
-                            storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
-                            storeResult(fileNamePart, '', "production", "web", false, false, false);
-                            storeResult(fileNamePart, '', "production", "admin", false, false, false);
-                            storeResult(fileNamePart, '', "production", "android", false, false, false);
-                            storeResult(fileNamePart, '', "production", "desktop", false, false, false);
-                            if (foundJson.state === "staging" || foundJson.state === "production") {
-                                storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
-                                storeResult(foundJson.buildName, 'queued', "staging", "admin", false, false, false);
-                                if (foundJson.isAndroid) {
-                                    storeResult(foundJson.buildName, 'queued', "staging", "android", false, false, false);
-                                }
-                                if (foundJson.isDesktop) {
-                                    storeResult(foundJson.buildName, 'queued', "staging", "desktop", false, false, false);
-                                }
-                            }
-                            if (foundJson.state === "production") {
-                                storeResult(foundJson.buildName, 'queued', "production", "web", false, false, false);
-                                storeResult(foundJson.buildName, 'queued', "production", "admin", false, false, false);
-                                if (foundJson.isAndroid) {
-                                    storeResult(foundJson.buildName, 'queued', "production", "android", false, false, false);
-                                }
-                                if (foundJson.isDesktop) {
-                                    storeResult(foundJson.buildName, 'queued', "production", "desktop", false, false, false);
-                                }
-                            }
-                        } else {
-                            initialiseResult(fileNamePart, '<div class="shortmessage">conflict in listing.json<span class="longmessage">Two or more listings for this experiment exist in ' + listingJsonFiles + ' as a precaution this script will not continue until this error is resovled.</span></div>', true);
-                            // todo: put this text and related information into an error text file with link
-                            console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
-                        }
-                    }
-                    remainingFiles--;
-                }
-                if (remainingFiles <= 0) {
-                    console.log(JSON.stringify(listing));
-                    buildNextExperiment(listing);
-                }
-            });
         }
     });
+    var list = fs.readdirSync(processingDirectory + '/queued');
+    var listing = [];
+    if (list.length <= 0) {
+        console.log('buildFromListing found no files');
+    } else {
+        for (var filename in list) {
+            console.log('buildFromListing: ' + filename);
+            //console.log(path.extname(filename));
+            var fileNamePart = path.parse(filename).name;
+            if (fileNamePart === "multiparticipant") {
+                storeResult(fileNamePart, 'disabled', "validation", "json_xsd", true, false, false);
+                console.log("this script will not build multiparticipant without manual intervention");
+            } else {
+                var validationMessage = "";
+                var filenamePath = path.resolve(processingDirectory + '/queued', filename);
+                console.log(filename);
+                console.log(filenamePath);
+                var buildName = fileNamePart;
+                console.log(buildName);
+                var withoutSuffixPath = path.resolve(targetDirectory + '/' + fileNamePart, fileNamePart);
+                console.log('withoutSuffixPath: ' + withoutSuffixPath);
+                if (fs.existsSync(withoutSuffixPath + ".json")) {
+                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.json">json</a>&nbsp;';
+                    storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                }
+                if (fs.existsSync(withoutSuffixPath + ".svg")) {
+                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.svg">svg</a>&nbsp;';
+                    storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                }
+                if (fs.existsSync(withoutSuffixPath + ".uml")) {
+                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.uml">uml</a>&nbsp;';
+                    storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                }
+                if (path.extname(filename) === ".xml") {
+                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.xml">xml</a>&nbsp;';
+                    storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                }
+                if (fs.existsSync(withoutSuffixPath + "_validation_error.txt")) {
+                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '_validation_error.txt">failed</a>&nbsp;';
+                    storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
+                    console.log('removing: ' + processingDirectory + '/validated/' + filename);
+                    // remove the processing/validated XML since it will not be built after this point
+                    fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
+                } else {
+                    validationMessage += 'passed&nbsp;';
+                    storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                    var foundCount = 0;
+                    var foundJson;
+                    for (var index in listingJsonArray) {
+                        if (listingJsonArray[index].buildName === buildName) {
+                            foundJson = listingJsonArray[index];
+                            foundCount++;
+                        }
+                    }
+                    if (foundCount === 0) {
+                        listing.push(
+                            {
+                                "publishDate": null,
+                                "expiryDate": null,
+                                "isWebApp": true,
+                                "isDesktop": false,
+                                "isiOS": false,
+                                "isAndroid": false,
+                                "buildName": fileNamePart,
+                                "state": "staging",
+                                "defaultScale": 1.0,
+                                "experimentInternalName": fileNamePart,
+                                "experimentDisplayName": fileNamePart
+                            });
+                        storeResult(fileNamePart, 'queued', "staging", "web", false, false, false);
+                        storeResult(fileNamePart, 'queued', "staging", "admin", false, false, false);
+                        storeResult(fileNamePart, '', "staging", "android", false, false, false);
+                        storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
+                        storeResult(fileNamePart, '', "production", "web", false, false, false);
+                        storeResult(fileNamePart, '', "production", "admin", false, false, false);
+                        storeResult(fileNamePart, '', "production", "android", false, false, false);
+                        storeResult(fileNamePart, '', "production", "desktop", false, false, false);
+                    } else if (foundCount === 1) {
+                        listing.push(foundJson);
+                        storeResult(fileNamePart, '', "staging", "web", false, false, false);
+                        storeResult(fileNamePart, '', "staging", "admin", false, false, false);
+                        storeResult(fileNamePart, '', "staging", "android", false, false, false);
+                        storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
+                        storeResult(fileNamePart, '', "production", "web", false, false, false);
+                        storeResult(fileNamePart, '', "production", "admin", false, false, false);
+                        storeResult(fileNamePart, '', "production", "android", false, false, false);
+                        storeResult(fileNamePart, '', "production", "desktop", false, false, false);
+                        if (foundJson.state === "staging" || foundJson.state === "production") {
+                            storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
+                            storeResult(foundJson.buildName, 'queued', "staging", "admin", false, false, false);
+                            if (foundJson.isAndroid) {
+                                storeResult(foundJson.buildName, 'queued', "staging", "android", false, false, false);
+                            }
+                            if (foundJson.isDesktop) {
+                                storeResult(foundJson.buildName, 'queued', "staging", "desktop", false, false, false);
+                            }
+                        }
+                        if (foundJson.state === "production") {
+                            storeResult(foundJson.buildName, 'queued', "production", "web", false, false, false);
+                            storeResult(foundJson.buildName, 'queued', "production", "admin", false, false, false);
+                            if (foundJson.isAndroid) {
+                                storeResult(foundJson.buildName, 'queued', "production", "android", false, false, false);
+                            }
+                            if (foundJson.isDesktop) {
+                                storeResult(foundJson.buildName, 'queued', "production", "desktop", false, false, false);
+                            }
+                        }
+                    } else {
+                        initialiseResult(fileNamePart, '<div class="shortmessage">conflict in listing.json<span class="longmessage">Two or more listings for this experiment exist in ' + listingJsonFiles + ' as a precaution this script will not continue until this error is resovled.</span></div>', true);
+                        // todo: put this text and related information into an error text file with link
+                        console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
+                    }
+                }
+            }
+        }
+        console.log(JSON.stringify(listing));
+        buildNextExperiment(listing);
+    }
 }
 
 function prepareForProcessing() {
-    fs.readdir(processingDirectory + '/validated', function (error, list) {
-        if (error) {
-            console.error(error);
-        } else {
-            var remainingFiles = list.length;
-            list.forEach(function (filename) {
-                console.log('processing: ' + filename);
-                var fileNamePart = path.parse(filename).name;
-                resultsFile.write("<div>processing: " + filename + "</div>");
-                var incomingFile = path.resolve(processingDirectory + '/validated', filename);
-                //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
-                if (filename === "listing.json") {
-                    console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
-                    resultsFile.write("<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
-                } else if (path.extname(filename) === ".json") {
-                    var jsonStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
-                    //console.log('incomingFile: ' + incomingFile);
-                    //console.log('jsonStoreFile: ' + jsonStoreFile);
-                    //fs.renameSync(incomingFile, jsonStoreFile);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(jsonStoreFile).on('finish', function () {
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
-                        }
-                        console.log('moved from processing to target: ' + filename);
-                        resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
-                    }));
-                } else if (path.extname(filename) === ".xml") {
-                    //var processingName = path.resolve(processingDirectory, filename);
-                    // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
-                    var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
-                    var configQueuedFile = path.resolve(processingDirectory + "/queued", filename);
-                    console.log('configStoreFile: ' + configStoreFile);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile).on('finish', function () {
-                        fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configQueuedFile).on('finish', function () {
-                            if (fs.existsSync(incomingFile)) {
-                                fs.unlinkSync(incomingFile);
-                            }
-                        }));
-                    }));
-                    console.log('moved from processing to target: ' + filename);
-                    resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
-                    //                    }));
-                } else if (path.extname(filename) === ".uml") {
-                    // preserve the generated UML to be accessed via a link in the results table
-                    var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
-                    //fs.renameSync(incomingFile, targetName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
-                        }
-                        console.log('moved UML from processing to target: ' + filename);
-                    }));
-                } else if (path.extname(filename) === ".svg") {
-                    // preserve the generated UML SVG to be accessed via a link in the results table
-                    var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
-                    //fs.renameSync(incomingFile, targetName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
-                        }
-                        console.log('moved UML SVG from processing to target: ' + filename);
-                    }));
-                } else if (path.extname(filename) === ".xsd") {
-                    // place the generated XSD file for use in XML editors
-                    var targetName = path.resolve(targetDirectory, filename);
-                    //fs.renameSync(incomingFile, targetName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
-                        }
-                        console.log('moved XSD from processing to target: ' + filename);
-                    }));
-                } else if (filename.endsWith("frinex.html")) {
-                    // place the generated documentation file for use in web browsers
-                    var targetName = path.resolve(targetDirectory, filename);
-                    //fs.renameSync(incomingFile, targetName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
-                        }
-                        console.log('moved HTML from processing to target: ' + filename);
-                    }));
-                } else if (filename.endsWith("_validation_error.txt")) {
-                    var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
-                    //fs.renameSync(incomingFile, processingName);
-                    fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configErrorFile).on('finish', function () {
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
-                        }
-                        console.log('moved from processing to target: ' + filename);
-                        resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
-                    }));
-                } else if (fs.existsSync(incomingFile)) {
-                    console.log('deleting unkown file: ' + incomingFile);
-                    resultsFile.write("<div>deleting unkown file: " + incomingFile + "</div>");
+    var list = fs.readdirSync(processingDirectory + '/validated');
+    for (var filename in list) {
+        console.log('processing: ' + filename);
+        var fileNamePart = path.parse(filename).name;
+        resultsFile.write("<div>processing: " + filename + "</div>");
+        var incomingFile = path.resolve(processingDirectory + '/validated', filename);
+        //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
+        if (filename === "listing.json") {
+            console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
+            resultsFile.write("<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
+        } else if (path.extname(filename) === ".json") {
+            var jsonStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
+            //console.log('incomingFile: ' + incomingFile);
+            //console.log('jsonStoreFile: ' + jsonStoreFile);
+            //fs.renameSync(incomingFile, jsonStoreFile);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(jsonStoreFile).on('finish', function () {
+                if (fs.existsSync(incomingFile)) {
                     fs.unlinkSync(incomingFile);
                 }
-                remainingFiles--;
-                if (remainingFiles <= 0) {
-                    // when no files are found in processing, this will not be called and the script will terminate, until called again by GIT
-                    buildFromListing();
+                console.log('moved from processing to target: ' + filename);
+                resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
+            }));
+        } else if (path.extname(filename) === ".xml") {
+            //var processingName = path.resolve(processingDirectory, filename);
+            // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
+            var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
+            var configQueuedFile = path.resolve(processingDirectory + "/queued", filename);
+            console.log('configStoreFile: ' + configStoreFile);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configStoreFile).on('finish', function () {
+                fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configQueuedFile).on('finish', function () {
+                    if (fs.existsSync(incomingFile)) {
+                        fs.unlinkSync(incomingFile);
+                    }
+                }));
+            }));
+            console.log('moved from processing to target: ' + filename);
+            resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
+            //                    }));
+        } else if (path.extname(filename) === ".uml") {
+            // preserve the generated UML to be accessed via a link in the results table
+            var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
+            //fs.renameSync(incomingFile, targetName);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
+                if (fs.existsSync(incomingFile)) {
+                    fs.unlinkSync(incomingFile);
                 }
-            });
+                console.log('moved UML from processing to target: ' + filename);
+            }));
+        } else if (path.extname(filename) === ".svg") {
+            // preserve the generated UML SVG to be accessed via a link in the results table
+            var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
+            //fs.renameSync(incomingFile, targetName);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
+                if (fs.existsSync(incomingFile)) {
+                    fs.unlinkSync(incomingFile);
+                }
+                console.log('moved UML SVG from processing to target: ' + filename);
+            }));
+        } else if (path.extname(filename) === ".xsd") {
+            // place the generated XSD file for use in XML editors
+            var targetName = path.resolve(targetDirectory, filename);
+            //fs.renameSync(incomingFile, targetName);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
+                if (fs.existsSync(incomingFile)) {
+                    fs.unlinkSync(incomingFile);
+                }
+                console.log('moved XSD from processing to target: ' + filename);
+            }));
+        } else if (filename.endsWith("frinex.html")) {
+            // place the generated documentation file for use in web browsers
+            var targetName = path.resolve(targetDirectory, filename);
+            //fs.renameSync(incomingFile, targetName);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
+                if (fs.existsSync(incomingFile)) {
+                    fs.unlinkSync(incomingFile);
+                }
+                console.log('moved HTML from processing to target: ' + filename);
+            }));
+        } else if (filename.endsWith("_validation_error.txt")) {
+            var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
+            //fs.renameSync(incomingFile, processingName);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configErrorFile).on('finish', function () {
+                if (fs.existsSync(incomingFile)) {
+                    fs.unlinkSync(incomingFile);
+                }
+                console.log('moved from processing to target: ' + filename);
+                resultsFile.write("<div>moved from processing to target: " + filename + "</div>");
+            }));
+        } else if (fs.existsSync(incomingFile)) {
+            console.log('deleting unkown file: ' + incomingFile);
+            resultsFile.write("<div>deleting unkown file: " + incomingFile + "</div>");
+            fs.unlinkSync(incomingFile);
         }
-    });
+    }
+    buildFromListing();
 }
 
 function moveIncomingToQueued() {
@@ -1066,8 +1046,8 @@ function moveIncomingToQueued() {
                 if (hasProcessingFiles === true) {
                     console.log('moveIncomingToQueued: hasProcessingFiles');
                     resultsFile.write("<div>has more files in processing</div>");
-                    setTimeout(prepareForProcessing, 3000);
-                    //setTimeout(moveIncomingToQueued, 3000);
+                    prepareForProcessing();
+                    setTimeout(moveIncomingToQueued, 3000);
                 } else {
                     // we allow the process to exit here if there are no files
                     console.log('moveIncomingToQueued: no files');
@@ -1139,6 +1119,7 @@ function moveIncomingToQueued() {
                     remainingFiles--;
                     if (remainingFiles <= 0) {
                         convertJsonToXml();
+                        setTimeout(moveIncomingToQueued, 3000);
                     }
                 });
             }
@@ -1178,11 +1159,11 @@ function convertJsonToXml() {
 function deleteOldProcessing() {
     // since this is only called on a restart we delete the sub directories of the processing directory
     var processingList = fs.readdirSync(processingDirectory);
-    processingList.forEach(function (currentDirectory) {
+    for (var currentDirectory in processingList) {
         var currentDirectoryPath = path.resolve(processingDirectory, currentDirectory);
         fs.rmdirSync(currentDirectoryPath, { recursive: true });
         console.log('deleted processing: ' + currentDirectory);
-    });
+    }
     moveIncomingToQueued();
 }
 
