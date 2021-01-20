@@ -393,9 +393,10 @@ function deployStagingGui(listing, currentEntry) {
             + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps /bin/bash -c "mvn clean '
+            + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+            + ' mvn clean '
             //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
-            + 'install'
+            + 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
             + ' -pl gwt-cordova'
@@ -403,7 +404,7 @@ function deployStagingGui(listing, currentEntry) {
             + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
             + ' -Dexperiment.webservice=' + configServer
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
-            + ' -DversionCheck.allowSnapshots=' + 'true'
+            + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
             + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
@@ -479,7 +480,7 @@ function deployStagingAdmin(listing, currentEntry) {
         'experiment.configuration.displayName': currentEntry.experimentDisplayName,
         'experiment.webservice': configServer,
         'experiment.configuration.path': processingDirectory,
-        'versionCheck.allowSnapshots': 'true',
+        'versionCheck.allowSnapshots': 'false',
         'versionCheck.buildType': 'stable',
         'experiment.destinationServer': stagingServer,
         'experiment.destinationServerUrl': stagingServerUrl
