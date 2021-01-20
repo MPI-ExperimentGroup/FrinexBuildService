@@ -766,7 +766,7 @@ function buildFromListing() {
         if (error) {
             console.error(error);
         } else {
-            for (var filename in list) {
+            for (var filename of list) {
                 listingFile = path.resolve(listingDirectory, filename);
                 var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
                 listingJsonArray.push(listingJsonData);
@@ -778,7 +778,7 @@ function buildFromListing() {
     if (list.length <= 0) {
         console.log('buildFromListing found no files');
     } else {
-        for (var filename in list) {
+        for (var filename of list) {
             console.log('buildFromListing: ' + filename);
             //console.log(path.extname(filename));
             var fileNamePart = path.parse(filename).name;
@@ -895,7 +895,7 @@ function buildFromListing() {
 
 function prepareForProcessing() {
     var list = fs.readdirSync(processingDirectory + '/validated');
-    for (var filename in list) {
+    for (var filename of list) {
         console.log('processing: ' + filename);
         var fileNamePart = path.parse(filename).name;
         resultsFile.write("<div>processing: " + filename + "</div>");
@@ -1036,7 +1036,7 @@ function moveIncomingToQueued() {
                 // check for files in process before exiting from this script 
                 var hasProcessingFiles = false;
                 var processingList = fs.readdirSync(processingDirectory);
-                for (currentDirectory in processingList) {
+                for (currentDirectory of processingList) {
                     var currentDirectoryPath = path.resolve(processingDirectory, currentDirectory);
                     var processingList = fs.readdirSync(currentDirectoryPath);
                     if (processingList.length > 0) {
@@ -1159,7 +1159,7 @@ function convertJsonToXml() {
 function deleteOldProcessing() {
     // since this is only called on a restart we delete the sub directories of the processing directory
     var processingList = fs.readdirSync(processingDirectory);
-    for (var currentDirectory in processingList) {
+    for (var currentDirectory of processingList) {
         var currentDirectoryPath = path.resolve(processingDirectory, currentDirectory);
         fs.rmdirSync(currentDirectoryPath, { recursive: true });
         console.log('deleted processing: ' + currentDirectory);
