@@ -399,7 +399,7 @@ function deployStagingGui(listing, currentEntry) {
             + 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
-            + ' -pl gwt-cordova'
+            //+ ' -pl gwt-cordova'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
             + ' -Dexperiment.webservice=' + configServer
