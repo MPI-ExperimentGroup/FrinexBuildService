@@ -250,11 +250,9 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
 }
 
 function stopUpdatingResults() {
-    //updatesFile.write("document.getElementById('buildLabel').innerHTML = 'Build process complete';\n");
-    //updatesFile.write("document.getElementById('buildDate').innerHTML = '" + new Date().toISOString() + "';\n");
-    //updatesFile.write("window.clearTimeout(updateTimer);\n");
+    console.log('Build process complete');
+    resultsFile.write("<div>Build process complete</div>");
     buildHistoryJson.building = false;
-    //buildHistoryJson.buildLabel = 'Build process complete';
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
@@ -758,9 +756,6 @@ function buildNextExperiment(listing) {
         }
     } else {
         console.log("build process from listing completed");
-        stopUpdatingResults();
-        // check for new files in the incoming directory, because some build processes might still be running we do not call deleteOldProcessing
-        setTimeout(moveIncomingToQueued, 3000);
     }
 }
 
@@ -1076,6 +1071,7 @@ function moveIncomingToQueued() {
                     // we allow the process to exit here if there are no files
                     console.log('moveIncomingToQueued: no files');
                     resultsFile.write("<div>no more files in processing</div>");
+                    stopUpdatingResults();
                 }
             } else {
                 list.forEach(function (filename) {
@@ -1179,29 +1175,14 @@ function convertJsonToXml() {
 }
 
 function deleteOldProcessing() {
-    fs.readdir(processingDirectory, function (error, list) {
-        if (error) {
-            console.error(error);
-        } else {
-            var remainingFiles = list.length;
-            if (remainingFiles <= 0) {
-                moveIncomingToQueued();
-            } else {
-                list.forEach(function (filename) {
-                    processedFile = path.resolve(processingDirectory, filename);
-                    if (fs.existsSync(processedFile)) {
-                        fs.rmdirSync(processedFile, { recursive: true });
-                        //fs.unlinkSync(processedFile);   
-                        console.log('deleted processing: ' + processedFile);
-                    }
-                    remainingFiles--;
-                    if (remainingFiles <= 0) {
-                        moveIncomingToQueued();
-                    }
-                });
-            }
-        }
+    // since this is only called on a restart we delete the sub directories of the processing directory
+    var processingList = fs.readdirSync(processingDirectory);
+    processingList.forEach(function (currentDirectory) {
+        var currentDirectoryPath = path.resolve(processingDirectory, currentDirectory);
+        fs.rmdirSync(currentDirectoryPath, { recursive: true });
+        console.log('deleted processing: ' + currentDirectory);
     });
+    moveIncomingToQueued();
 }
 
 startResult();
