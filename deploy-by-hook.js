@@ -1036,13 +1036,13 @@ function moveIncomingToQueued() {
                 // check for files in process before exiting from this script 
                 var hasProcessingFiles = false;
                 var processingList = fs.readdirSync(processingDirectory);
-                processingList.forEach(function (currentDirectory) {
+                for (currentDirectory in processingList) {
                     var currentDirectoryPath = path.resolve(processingDirectory, currentDirectory);
                     var processingList = fs.readdirSync(currentDirectoryPath);
                     if (processingList.length > 0) {
                         hasProcessingFiles = true;
                     }
-                });
+                }
                 if (hasProcessingFiles === true) {
                     console.log('moveIncomingToQueued: hasProcessingFiles');
                     resultsFile.write("<div>has more files in processing</div>");
