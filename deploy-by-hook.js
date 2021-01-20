@@ -395,7 +395,7 @@ function deployStagingGui(listing, currentEntry) {
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "mvn clean '
             //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
-            + 'package'
+            + 'install'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
             + ' -pl gwt-cordova'
@@ -432,7 +432,7 @@ function deployStagingGui(listing, currentEntry) {
             }
             console.log(`deployStagingGui stdout: ${stdout}`);
             console.error(`deployStagingGui stderr: ${stderr}`);
-            if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + ".war")) {
+            if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.war")) {
                 console.log("frinex-gui finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
                 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
