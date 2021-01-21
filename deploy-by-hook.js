@@ -772,7 +772,7 @@ function buildNextExperiment(listing) {
             var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
             // this move is within the same volume so we can do it this easy way
             fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
-            deployStagingGui(listing, currentEntry);
+            deployStagingGui(currentEntry);
         } else if (currentEntry.state === "undeploy") {
             unDeploy(listing, currentEntry);
         } else {
@@ -789,7 +789,7 @@ function buildFromListing() {
     for (var filename of jsonListing) {
         console.log('jsonListing: ' + filename);
         resultsFile.write("<div>jsonListing: " + filename + "</div>");
-        listingFile = path.resolve(listingDirectory, filename);
+        var listingFile = path.resolve(listingDirectory, filename);
         var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
         listingJsonArray.push(listingJsonData);
         fs.unlinkSync(listingFile);
