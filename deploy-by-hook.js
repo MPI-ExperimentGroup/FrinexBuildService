@@ -785,17 +785,15 @@ function buildNextExperiment(listing) {
 
 function buildFromListing() {
     var listingJsonArray = [];
-    fs.readdirSync(listingDirectory, function (error, list) {
-        if (error) {
-            console.error(error);
-        } else {
-            for (var filename of list) {
-                listingFile = path.resolve(listingDirectory, filename);
-                var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
-                listingJsonArray.push(listingJsonData);
-            }
-        }
-    });
+    var jsonListing = fs.readdirSync(listingDirectory);
+    for (var filename of jsonListing) {
+        console.log('jsonListing: ' + filename);
+        resultsFile.write("<div>jsonListing: " + filename + "</div>");
+        listingFile = path.resolve(listingDirectory, filename);
+        var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
+        listingJsonArray.push(listingJsonData);
+        fs.unlinkSync(listingFile);
+    }
     var list = fs.readdirSync(processingDirectory + '/queued');
     var listing = [];
     if (list.length <= 0) {
