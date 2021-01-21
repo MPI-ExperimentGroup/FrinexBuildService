@@ -329,34 +329,34 @@ function unDeploy(listing, currentEntry) {
                     console.log(value);
                     console.log("frinex-admin undeploy finished");
                     storeResult(currentEntry.buildName, 'undeployed', "production", "admin", false, false, true);
-                    buildNextExperiment(listing);
+                    //buildNextExperiment(listing);
                 }, function (reason) {
                     console.log(reason);
                     console.log("frinex-admin undeploy failed");
                     console.log(currentEntry.experimentDisplayName);
                     storeResult(currentEntry.buildName, 'undeploy failed', "production", "admin", true, false, false);
-                    buildNextExperiment(listing);
+                    //buildNextExperiment(listing);
                 });
             }, function (reason) {
                 console.log(reason);
                 console.log("frinex-gui undeploy failed");
                 console.log(currentEntry.experimentDisplayName);
                 storeResult(currentEntry.buildName, 'undeploy failed', "staging", "web", true, false, false);
-                buildNextExperiment(listing);
+                //buildNextExperiment(listing);
             });
         }, function (reason) {
             console.log(reason);
             console.log("frinex-admin undeploy failed");
             console.log(currentEntry.experimentDisplayName);
             storeResult(currentEntry.buildName, 'undeploy failed', "staging", "admin", true, false, false);
-            buildNextExperiment(listing);
+            //buildNextExperiment(listing);
         });
     }, function (reason) {
         console.log(reason);
         console.log("frinex-gui undeploy failed");
         console.log(currentEntry.experimentDisplayName);
         storeResult(currentEntry.buildName, 'undeploy failed', "staging", "web", true, false, false);
-        buildNextExperiment(listing);
+        //buildNextExperiment(listing);
     });
 }
 
@@ -434,7 +434,7 @@ function deployStagingGui(listing, currentEntry) {
             console.log(`deployStagingGui stdout: ${stdout}`);
             console.error(`deployStagingGui stderr: ${stderr}`);
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.war")) {
-                console.log("frinex-gui finished");
+                console.log("deployStagingGui finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
                 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                 //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
@@ -452,7 +452,7 @@ function deployStagingGui(listing, currentEntry) {
             } else {
                 //console.log(targetDirectory);
                 //console.log(JSON.stringify(reason, null, 4));
-                console.log("frinex-gui staging failed");
+                console.log("deployStagingGui failed");
                 console.log(currentEntry.experimentDisplayName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
                 //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
@@ -460,49 +460,84 @@ function deployStagingGui(listing, currentEntry) {
             };
         });
     }
-    buildNextExperiment(listing);
+    //buildNextExperiment(listing);
 }
 function deployStagingAdmin(listing, currentEntry) {
-    var mvnadmin = require('maven').create({
-        cwd: __dirname + "/registration",
-        settings: m2Settings
-    });
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt");
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt", 'w'));
-    var mavenLogSA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt", { mode: 0o755 });
-    process.stdout.write = process.stderr.write = mavenLogSA.write.bind(mavenLogSA);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true, false);
-    mvnadmin.execute(['clean', 'tomcat7:undeploy', 'tomcat7:redeploy'], {
-        'skipTests': true, '-pl': 'frinex-admin',
-        'experiment.configuration.name': currentEntry.buildName,
-        'experiment.configuration.displayName': currentEntry.experimentDisplayName,
-        'experiment.webservice': configServer,
-        'experiment.configuration.path': processingDirectory,
-        'versionCheck.allowSnapshots': 'false',
-        'versionCheck.buildType': 'stable',
-        'experiment.destinationServer': stagingServer,
-        'experiment.destinationServerUrl': stagingServerUrl
-    }).then(function (value) {
-        console.log(value);
-        //fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
-        console.log("frinex-admin finished");
-        //storeResult(currentEntry.buildName, "deployed", "staging", "admin", false, false);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true);
-        if (currentEntry.state === "production") {
-            deployProductionGui(listing, currentEntry);
-        } else {
-            buildNextExperiment(listing);
-        }
-    }, function (reason) {
-        console.log(reason);
-        console.log("frinex-admin staging failed");
-        console.log(currentEntry.experimentDisplayName);
-        //storeResult(currentEntry.buildName, "failed", "staging", "admin", true, false);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
-        buildNextExperiment(listing);
-    });
+    var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
+    //    var stagingAdminConfigFile = path.resolve(processingDirectory + '/staging-admin', currentEntry.buildName + '.xml');
+    if (!fs.existsSync(stagingConfigFile)) {
+        console.log("deployStagingAdmin missing: " + stagingConfigFile);
+        storeResult(currentEntry.buildName, 'failed', "staging", "admin", true, false, false);
+    } else {
+        //  terminate existing docker containers by name 
+        var buildContainerName = currentEntry.buildName + '_staging_admin';
+        var dockerString = 'docker stop ' + buildContainerName
+            + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + 'docker run'
+            + ' --rm '
+            + ' --name ' + buildContainerName
+            /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
+            // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+            + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+            + ' -v m2Directory:/maven/.m2/'
+            + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
+            + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
+            //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + 'package'
+            + ' -gs /maven/.m2/settings.xml'
+            + ' -DskipTests'
+            //+ ' -pl frinex-admin'
+            + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+            + ' -Dxperiment.configuration.displayName=' + currentEntry.experimentDisplayName
+            + ' -Dexperiment.webservice=' + configServer
+            + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
+            + ' -DversionCheck.allowSnapshots=' + 'false'
+            + ' -DversionCheck.buildType=' + 'stable'
+            + ' -Dexperiment.destinationServer=' + stagingServer
+            + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
+            + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
+            + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+            + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
+            + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '_staging_admin.war'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + '"';
+        console.log(dockerString);
+        exec(dockerString, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`deployStagingAdmin error: ${error}`);
+            }
+            console.log(`deployStagingAdmin stdout: ${stdout}`);
+            console.error(`deployStagingAdmin stderr: ${stderr}`);
+            if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
+                console.log("frinex-gui finished");
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true);
+                if (currentEntry.state === "production") {
+                    //deployProductionGui(listing, currentEntry);
+                } else {
+                    //buildNextExperiment(listing);
+                }
+            } else {
+                console.log("deployStagingAdmin failed");
+                console.log(currentEntry.experimentDisplayName);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
+                //buildNextExperiment(listing);
+            };
+        });
+    }
+    //buildNextExperiment(listing);
 }
 function deployProductionGui(listing, currentEntry) {
     console.log(productionServerUrl + '/' + currentEntry.buildName);
@@ -513,7 +548,7 @@ function deployProductionGui(listing, currentEntry) {
                 console.log("existing frinex-gui production found, aborting build!");
                 console.log(response.statusCode);
                 storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
-                buildNextExperiment(listing);
+                //buildNextExperiment(listing);
             } else {
                 console.log(response.statusCode);
                 var mvngui = require('maven').create({
@@ -564,7 +599,7 @@ function deployProductionGui(listing, currentEntry) {
                     console.log(currentEntry.experimentDisplayName);
                     //storeResult(currentEntry.buildName, "failed", "production", "web", true, false);
                     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">failed (existing production unknown)</a>', "production", "web", true, false, false);
-                    buildNextExperiment(listing);
+                    //buildNextExperiment(listing);
                 });
             }
         });
@@ -604,14 +639,14 @@ function deployProductionAdmin(listing, currentEntry) {
         console.log("frinex-admin production finished");
         //storeResult(currentEntry.buildName, "skipped", "production", "admin", false, false, true);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true);
-        buildNextExperiment(listing);
+        //buildNextExperiment(listing);
     }, function (reason) {
         console.log(reason);
         console.log("frinex-admin production failed");
         console.log(currentEntry.experimentDisplayName);
         //storeResult(currentEntry.buildName, "failed", "production", "admin", true, false);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
-        buildNextExperiment(listing);
+        //buildNextExperiment(listing);
     });
 }
 
