@@ -916,6 +916,18 @@ function buildFromListing() {
     }
 }
 
+function copyDeleteFile(incomingFile, targetFile) {
+    var incomingReadStream = fs.createReadStream(incomingFile);
+    incomingReadStream.on('close', function () {
+        if (fs.existsSync(incomingFile)) {
+            fs.unlinkSync(incomingFile);
+            console.log('removed: ' + incomingFile);
+            resultsFile.write("<div>removed: " + incomingFile + "</div>");
+        }
+    });
+    incomingReadStream.pipe(fs.createWriteStream(targetFile));
+}
+
 function prepareForProcessing() {
     var list = fs.readdirSync(processingDirectory + '/validated');
     for (var filename of list) {
@@ -923,14 +935,6 @@ function prepareForProcessing() {
         var fileNamePart = path.parse(filename).name;
         resultsFile.write("<div>processing validated: " + filename + "</div>");
         var incomingFile = path.resolve(processingDirectory + '/validated', filename);
-        var incomingReadStream = fs.createReadStream(incomingFile);
-        incomingReadStream.on('close', function (completedFile, completedFilename) {
-            if (fs.existsSync(completedFile)) {
-                fs.unlinkSync(completedFile);
-                console.log('removed: ' + completedFilename);
-                resultsFile.write("<div>removed: " + completedFilename + "</div>");
-            }
-        }(incomingFile, filename));
         //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
         if (filename === "listing.json") {
             console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
@@ -942,7 +946,7 @@ function prepareForProcessing() {
             //fs.renameSync(incomingFile, jsonStoreFile);
             console.log('copying JSON from validated to target: ' + filename);
             resultsFile.write("<div>copying JSON from validated to target: " + filename + "</div>");
-            incomingReadStream.pipe(fs.createWriteStream(jsonStoreFile));
+            copyDeleteFile(incomingFile, jsonStoreFile);
         } else if (path.extname(filename) === ".xml") {
             //var processingName = path.resolve(processingDirectory, filename);
             // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
@@ -956,41 +960,41 @@ function prepareForProcessing() {
             console.log('copying XML from queued to target: ' + filename);
             resultsFile.write("<div>copying XML from queued to target: " + filename + "</div>");
             // this move is not within the same volume
-            incomingReadStream.pipe(fs.createWriteStream(configStoreFile));
+            copyDeleteFile(incomingFile, configStoreFile);
         } else if (path.extname(filename) === ".uml") {
             // preserve the generated UML to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
             console.log('copying UML from validated to target: ' + incomingFile);
             resultsFile.write("<div>copying UML from validated to target: " + incomingFile + "</div>");
-            incomingReadStream.pipe(fs.createWriteStream(targetName));
+            copyDeleteFile(incomingFile, targetName);
         } else if (path.extname(filename) === ".svg") {
             // preserve the generated UML SVG to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
             console.log('copying SVG from validated to target: ' + filename);
             resultsFile.write("<div>copying SVG from validated to target: " + filename + "</div>");
-            incomingReadStream.pipe(fs.createWriteStream(targetName));
+            copyDeleteFile(incomingFile, targetName);
         } else if (path.extname(filename) === ".xsd") {
             // place the generated XSD file for use in XML editors
             var targetName = path.resolve(targetDirectory, filename);
             console.log('copying XSD from validated to target: ' + filename);
             resultsFile.write("<div>copying XSD from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, targetName);
-            incomingReadStream.pipe(fs.createWriteStream(targetName));
+            copyDeleteFile(incomingFile, targetName);
         } else if (filename.endsWith("frinex.html")) {
             // place the generated documentation file for use in web browsers
             var targetName = path.resolve(targetDirectory, filename);
             console.log('copying HTML from validated to target: ' + filename);
             resultsFile.write("<div>copying HTML from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, targetName);
-            incomingReadStream.pipe(fs.createWriteStream(targetName));
+            copyDeleteFile(incomingFile, targetName);
         } else if (filename.endsWith("_validation_error.txt")) {
             var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
             console.log('copying from validated to target: ' + filename);
             resultsFile.write("<div>copying from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, processingName);
-            incomingReadStream.pipe(fs.createWriteStream(configErrorFile));
+            copyDeleteFile(incomingFile, configErrorFile);
         } else if (fs.existsSync(incomingFile)) {
             console.log('deleting unkown file: ' + incomingFile);
             resultsFile.write("<div>deleting unkown file: " + incomingFile + "</div>");
