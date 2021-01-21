@@ -954,7 +954,7 @@ function prepareForProcessing() {
             var configQueuedFile = path.resolve(processingDirectory + "/queued", filename);
             console.log('configStoreFile: ' + configStoreFile);
             // this move is within the same volume so we can do it this easy way
-            fs.copySync(incomingFile, configQueuedFile);
+            fs.copyFileSync(incomingFile, configQueuedFile);
             console.log('copied XML from validated to queued: ' + filename);
             resultsFile.write("<div>copied XML from validated to queued: " + filename + "</div>");
             console.log('copying XML from queued to target: ' + filename);
