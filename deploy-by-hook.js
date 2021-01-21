@@ -930,13 +930,13 @@ function prepareForProcessing() {
             //console.log('incomingFile: ' + incomingFile);
             //console.log('jsonStoreFile: ' + jsonStoreFile);
             //fs.renameSync(incomingFile, jsonStoreFile);
-            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(jsonStoreFile).on('finish', function () {
-                if (fs.existsSync(incomingFile)) {
-                    fs.unlinkSync(incomingFile);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(jsonStoreFile).on('finish', function (completedFile, completedFilename) {
+                if (fs.existsSync(completedFile)) {
+                    fs.unlinkSync(completedFile);
                 }
-                console.log('moved JSON from validated to target: ' + filename);
-                resultsFile.write("<div>moved JSON from validated to target: " + filename + "</div>");
-            }));
+                console.log('moved JSON from validated to target: ' + completedFilename);
+                resultsFile.write("<div>moved JSON from validated to target: " + completedFilename + "</div>");
+            }(incomingFile, filename)));
         } else if (path.extname(filename) === ".xml") {
             //var processingName = path.resolve(processingDirectory, filename);
             // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
@@ -948,64 +948,64 @@ function prepareForProcessing() {
             console.log('moved XML from validated to queued: ' + filename);
             resultsFile.write("<div>moved XML from validated to queued: " + filename + "</div>");
             // this move is not within the same volume
-            fs.createReadStream(configQueuedFile).pipe(fs.createWriteStream(configStoreFile).on('finish', function () {
-                console.log('copied XML from queued to target: ' + filename);
-                resultsFile.write("<div>copied XML from queued to target: " + filename + "</div>");
-            }));
+            fs.createReadStream(configQueuedFile).pipe(fs.createWriteStream(configStoreFile).on('finish', function (completedFile, completedFilename) {
+                console.log('copied XML from queued to target: ' + completedFilename);
+                resultsFile.write("<div>copied XML from queued to target: " + completedFilename + "</div>");
+            }(incomingFile, filename)));
         } else if (path.extname(filename) === ".uml") {
             // preserve the generated UML to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
-            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
-                if (fs.existsSync(incomingFile)) {
-                    fs.unlinkSync(incomingFile);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function (completedFile, completedFilename) {
+                if (fs.existsSync(completedFile)) {
+                    fs.unlinkSync(completedFile);
                 }
-                console.log('moved UML from validated to target: ' + filename);
-                resultsFile.write("<div>moved UML from validated to target: " + filename + "</div>");
-            }));
+                console.log('moved UML from validated to target: ' + completedFilename);
+                resultsFile.write("<div>moved UML from validated to target: " + completedFilename + "</div>");
+            }(incomingFile, filename)));
         } else if (path.extname(filename) === ".svg") {
             // preserve the generated UML SVG to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
-            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
-                if (fs.existsSync(incomingFile)) {
-                    fs.unlinkSync(incomingFile);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function (completedFile, completedFilename) {
+                if (fs.existsSync(completedFile)) {
+                    fs.unlinkSync(completedFile);
                 }
-                console.log('moved SVG from validated to target: ' + filename);
-                resultsFile.write("<div>moved SVG from validated to target: " + filename + "</div>");
-            }));
+                console.log('moved SVG from validated to target: ' + completedFilename);
+                resultsFile.write("<div>moved SVG from validated to target: " + completedFilename + "</div>");
+            }(incomingFile, filename)));
         } else if (path.extname(filename) === ".xsd") {
             // place the generated XSD file for use in XML editors
             var targetName = path.resolve(targetDirectory, filename);
             //fs.renameSync(incomingFile, targetName);
-            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
-                if (fs.existsSync(incomingFile)) {
-                    fs.unlinkSync(incomingFile);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function (completedFile, completedFilename) {
+                if (fs.existsSync(completedFile)) {
+                    fs.unlinkSync(completedFile);
                 }
-                console.log('moved XSD from validated to target: ' + filename);
-                resultsFile.write("<div>moved XSD from validated to target: " + filename + "</div>");
-            }));
+                console.log('moved XSD from validated to target: ' + completedFilename);
+                resultsFile.write("<div>moved XSD from validated to target: " + completedFilename + "</div>");
+            }(incomingFile, filename)));
         } else if (filename.endsWith("frinex.html")) {
             // place the generated documentation file for use in web browsers
             var targetName = path.resolve(targetDirectory, filename);
             //fs.renameSync(incomingFile, targetName);
-            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function () {
-                if (fs.existsSync(incomingFile)) {
-                    fs.unlinkSync(incomingFile);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(targetName).on('finish', function (completedFile, completedFilename) {
+                if (fs.existsSync(completedFile)) {
+                    fs.unlinkSync(completedFile);
                 }
-                console.log('moved HTML from validated to target: ' + filename);
-                resultsFile.write("<div>moved HTML from validated to target: " + filename + "</div>");
-            }));
+                console.log('moved HTML from validated to target: ' + completedFilename);
+                resultsFile.write("<div>moved HTML from validated to target: " + completedFilename + "</div>");
+            }(incomingFile, filename)));
         } else if (filename.endsWith("_validation_error.txt")) {
             var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
             //fs.renameSync(incomingFile, processingName);
-            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configErrorFile).on('finish', function () {
-                if (fs.existsSync(incomingFile)) {
-                    fs.unlinkSync(incomingFile);
+            fs.createReadStream(incomingFile).pipe(fs.createWriteStream(configErrorFile).on('finish', function (completedFile, completedFilename) {
+                if (fs.existsSync(completedFile)) {
+                    fs.unlinkSync(completedFile);
                 }
-                console.log('moved from validated to target: ' + filename);
-                resultsFile.write("<div>moved from validated to target: " + filename + "</div>");
-            }));
+                console.log('moved from validated to target: ' + completedFilename);
+                resultsFile.write("<div>moved from validated to target: " + completedFilename + "</div>");
+            }(incomingFile, filename)));
         } else if (fs.existsSync(incomingFile)) {
             console.log('deleting unkown file: ' + incomingFile);
             resultsFile.write("<div>deleting unkown file: " + incomingFile + "</div>");
