@@ -32,6 +32,8 @@
  *        npm install properties-reader
  */
 
+"use strict";
+
 const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 const execSync = require('child_process').execSync;
@@ -1060,7 +1062,7 @@ function moveIncomingToQueued() {
                 // check for files in process before exiting from this script 
                 var hasProcessingFiles = false;
                 var processingList = fs.readdirSync(processingDirectory);
-                for (currentDirectory of processingList) {
+                for (var currentDirectory of processingList) {
                     var currentDirectoryPath = path.resolve(processingDirectory, currentDirectory);
                     var processingList = fs.readdirSync(currentDirectoryPath);
                     if (processingList.length > 0) {
