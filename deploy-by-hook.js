@@ -1119,14 +1119,22 @@ function moveIncomingToQueued() {
                             console.log("moveIncomingToQueued found: " + stagingBuildingConfigFile);
                             console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
                             fs.unlinkSync(stagingBuildingConfigFile);
-                            execSync('docker stop ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
+                            try {
+                                execSync('docker stop ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
+                            } catch (reason) {
+                                console.log(reason);
+                            }
                         }
                         var productionBuildingConfigFile = path.resolve(processingDirectory + '/production-building', currentName + '.xml');
                         if (fs.existsSync(productionBuildingConfigFile)) {
                             console.log("moveIncomingToQueued found: " + productionBuildingConfigFile);
                             console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
                             fs.unlinkSync(productionBuildingConfigFile);
-                            execSync('docker stop ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
+                            try {
+                                execSync('docker stop ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
+                            } catch (reason) {
+                                console.log(reason);
+                            }
                         }
                         initialiseResult(currentName, 'queued', false);
                         //if (fs.existsSync(targetDirectory + "/" + currentName)) {
