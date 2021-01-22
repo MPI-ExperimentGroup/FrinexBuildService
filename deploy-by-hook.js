@@ -55,6 +55,7 @@ const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
 var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", { flags: 'w', mode: 0o755 });
+var concurrentBuild = 0;
 
 var buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
@@ -367,6 +368,7 @@ function deployStagingGui(currentEntry) {
     if (!fs.existsSync(queuedConfigFile)) {
         console.log("deployStagingGui missing: " + queuedConfigFile);
         storeResult(currentEntry.buildName, 'failed', "staging", "web", true, false, false);
+        concurrentBuild--;
     } else {
         if (fs.existsSync(stagingConfigFile)) {
             console.log("deployStagingGui found: " + stagingConfigFile);
@@ -445,6 +447,7 @@ function deployStagingGui(currentEntry) {
                 }
                 deployStagingAdmin(currentEntry);
             } else {
+                concurrentBuild--;
                 //console.log(targetDirectory);
                 //console.log(JSON.stringify(reason, null, 4));
                 console.log("deployStagingGui failed");
@@ -466,6 +469,7 @@ function deployStagingAdmin(currentEntry) {
     var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
     //    var stagingAdminConfigFile = path.resolve(processingDirectory + '/staging-admin', currentEntry.buildName + '.xml');
     if (!fs.existsSync(stagingConfigFile)) {
+        concurrentBuild--;
         console.log("deployStagingAdmin missing: " + stagingConfigFile);
         storeResult(currentEntry.buildName, 'failed', "staging", "admin", true, false, false);
     } else {
@@ -528,6 +532,7 @@ function deployStagingAdmin(currentEntry) {
                 console.log(currentEntry.experimentDisplayName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
             };
+            concurrentBuild--;
         });
     }
 }
@@ -762,7 +767,8 @@ function buildElectron(buildName, stage) {
 }
 
 function buildNextExperiment(listing) {
-    if (listing.length > 0) {
+    if (listing.length > 0 && concurrentBuild < 3) {
+        concurrentBuild++;
         var currentEntry = listing.pop();
         //console.log(currentEntry);
         //console.log("starting generate stimulus");
