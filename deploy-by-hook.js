@@ -42,6 +42,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const m2Settings = properties.get('settings.m2Settings');
+const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
@@ -509,9 +510,9 @@ function deployStagingAdmin(currentEntry) {
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '_staging_admin.war'
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '_staging_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + '"';
         console.log(dockerString);
@@ -767,7 +768,7 @@ function buildElectron(buildName, stage) {
 }
 
 function buildNextExperiment(listing) {
-    if (listing.length > 0 && concurrentBuild < 3) {
+    if (listing.length > 0 && concurrentBuild < concurrentBuildCount) {
         concurrentBuild++;
         var currentEntry = listing.pop();
         //console.log(currentEntry);
@@ -814,9 +815,7 @@ function buildFromListing() {
                 console.log("this script will not build multiparticipant without manual intervention");
             } else {
                 var validationMessage = "";
-                var filenamePath = path.resolve(processingDirectory + '/queued', filename);
                 console.log(filename);
-                console.log(filenamePath);
                 var buildName = fileNamePart;
                 console.log(buildName);
                 var withoutSuffixPath = path.resolve(targetDirectory + '/' + fileNamePart, fileNamePart);
@@ -1114,6 +1113,20 @@ function moveIncomingToQueued() {
                         }
                         if (fs.existsSync(artifactPathError)) {
                             fs.unlinkSync(artifactPathError);
+                        }
+                        var stagingBuildingConfigFile = path.resolve(processingDirectory + '/staging-building', currentName + '.xml');
+                        if (fs.existsSync(stagingBuildingConfigFile)) {
+                            console.log("moveIncomingToQueued found: " + stagingBuildingConfigFile);
+                            console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
+                            fs.unlinkSync(stagingBuildingConfigFile);
+                            execSync('docker stop ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
+                        }
+                        var productionBuildingConfigFile = path.resolve(processingDirectory + '/production-building', currentName + '.xml');
+                        if (fs.existsSync(productionBuildingConfigFile)) {
+                            console.log("moveIncomingToQueued found: " + productionBuildingConfigFile);
+                            console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
+                            fs.unlinkSync(productionBuildingConfigFile);
+                            execSync('docker stop ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
                         }
                         initialiseResult(currentName, 'queued', false);
                         //if (fs.existsSync(targetDirectory + "/" + currentName)) {
