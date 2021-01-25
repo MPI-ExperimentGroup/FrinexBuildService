@@ -55,10 +55,10 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-var resultsFile = fs.createWriteStream(targetDirectory + "/index.html", { flags: 'w', mode: 0o755 });
+const resultsFile = fs.createWriteStream(targetDirectory + "/index.html", { flags: 'w', mode: 0o755 });
 var concurrentBuild = 0;
-
-var buildHistoryFileName = targetDirectory + "/buildhistory.json";
+const listingMap = new Map();
+const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
 var buildArtifactsJson = { artifacts: {} };
 if (fs.existsSync(buildHistoryFileName)) {
@@ -769,18 +769,17 @@ function buildElectron(buildName, stage) {
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
-function buildNextExperiment(listing) {
-    if (listing.length > 0 && concurrentBuild < concurrentBuildCount) {
+function buildNextExperiment() {
+    if (listingMap.size > 0 && concurrentBuild < concurrentBuildCount) {
         concurrentBuild++;
-        var currentEntry = listing.pop();
-        //console.log(currentEntry);
+        const currentKey = listingMap.keys().next().value;
+        console.log('buildNextExperiment: ' + currentKey);
+        resultsFile.write("buildNextExperiment: " + currentKey + "</div>");
+        const currentEntry = listingMap.get(currentKey);
+        listingMap.delete(currentKey);
         //console.log("starting generate stimulus");
         //execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
         if (currentEntry.state === "staging" || currentEntry.state === "production") {
-            var queuedConfigFile = path.resolve(processingDirectory + '/queued', currentEntry.buildName + '.xml');
-            var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
-            // this move is within the same volume so we can do it this easy way
-            fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
             deployStagingGui(currentEntry);
         } else if (currentEntry.state === "undeploy") {
             unDeploy(listing, currentEntry);
@@ -793,18 +792,7 @@ function buildNextExperiment(listing) {
 }
 
 function buildFromListing() {
-    var listingJsonArray = [];
-    var jsonListing = fs.readdirSync(listingDirectory);
-    for (var filename of jsonListing) {
-        console.log('jsonListing: ' + filename);
-        resultsFile.write("<div>jsonListing: " + filename + "</div>");
-        var listingFile = path.resolve(listingDirectory, filename);
-        var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
-        listingJsonArray.push(listingJsonData);
-        fs.unlinkSync(listingFile);
-    }
     var list = fs.readdirSync(processingDirectory + '/queued');
-    var listing = [];
     if (list.length <= 0) {
         console.log('buildFromListing found no files');
     } else {
@@ -847,77 +835,57 @@ function buildFromListing() {
                 } else {
                     validationMessage += 'passed&nbsp;';
                     storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
-                    var foundCount = 0;
-                    var foundJson;
-                    for (var index in listingJsonArray) {
-                        if (listingJsonArray[index].buildName === buildName) {
-                            foundJson = listingJsonArray[index];
-                            foundCount++;
+                    var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
+                    var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
+                    // this move is within the same volume so we can do it this easy way
+                    fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
+
+                    // keeping the listing entry in a map so only one can exist for any experiment regardless of mid compilation rebuild requests 
+                    console.log('jsonListing: ' + buildName);
+                    resultsFile.write("<div>jsonListing: " + buildName + "</div>");
+                    var listingFile = path.resolve(listingDirectory, buildName + '.json');
+                    var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
+                    console.log('listingJsonData: ' + listingJsonData);
+                    fs.unlinkSync(listingFile);
+                    listingMap.set(buildName, listingJsonData);
+                    storeResult(fileNamePart, '', "staging", "web", false, false, false);
+                    storeResult(fileNamePart, '', "staging", "admin", false, false, false);
+                    storeResult(fileNamePart, '', "staging", "android", false, false, false);
+                    storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
+                    storeResult(fileNamePart, '', "production", "web", false, false, false);
+                    storeResult(fileNamePart, '', "production", "admin", false, false, false);
+                    storeResult(fileNamePart, '', "production", "android", false, false, false);
+                    storeResult(fileNamePart, '', "production", "desktop", false, false, false);
+                    if (listingJsonData.state === "staging" || listingJsonData.state === "production") {
+                        storeResult(listingJsonData.buildName, 'queued', "staging", "web", false, false, false);
+                        storeResult(listingJsonData.buildName, 'queued', "staging", "admin", false, false, false);
+                        if (listingJsonData.isAndroid) {
+                            storeResult(listingJsonData.buildName, 'queued', "staging", "android", false, false, false);
+                        }
+                        if (listingJsonData.isDesktop) {
+                            storeResult(listingJsonData.buildName, 'queued', "staging", "desktop", false, false, false);
                         }
                     }
-                    if (foundCount === 0) {
-                        listing.push(
-                            {
-                                "publishDate": null,
-                                "expiryDate": null,
-                                "isWebApp": true,
-                                "isDesktop": false,
-                                "isiOS": false,
-                                "isAndroid": false,
-                                "buildName": fileNamePart,
-                                "state": "staging",
-                                "defaultScale": 1.0,
-                                "experimentInternalName": fileNamePart,
-                                "experimentDisplayName": fileNamePart
-                            });
-                        storeResult(fileNamePart, 'queued', "staging", "web", false, false, false);
-                        storeResult(fileNamePart, 'queued', "staging", "admin", false, false, false);
-                        storeResult(fileNamePart, '', "staging", "android", false, false, false);
-                        storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
-                        storeResult(fileNamePart, '', "production", "web", false, false, false);
-                        storeResult(fileNamePart, '', "production", "admin", false, false, false);
-                        storeResult(fileNamePart, '', "production", "android", false, false, false);
-                        storeResult(fileNamePart, '', "production", "desktop", false, false, false);
-                    } else if (foundCount === 1) {
-                        listing.push(foundJson);
-                        storeResult(fileNamePart, '', "staging", "web", false, false, false);
-                        storeResult(fileNamePart, '', "staging", "admin", false, false, false);
-                        storeResult(fileNamePart, '', "staging", "android", false, false, false);
-                        storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
-                        storeResult(fileNamePart, '', "production", "web", false, false, false);
-                        storeResult(fileNamePart, '', "production", "admin", false, false, false);
-                        storeResult(fileNamePart, '', "production", "android", false, false, false);
-                        storeResult(fileNamePart, '', "production", "desktop", false, false, false);
-                        if (foundJson.state === "staging" || foundJson.state === "production") {
-                            storeResult(foundJson.buildName, 'queued', "staging", "web", false, false, false);
-                            storeResult(foundJson.buildName, 'queued', "staging", "admin", false, false, false);
-                            if (foundJson.isAndroid) {
-                                storeResult(foundJson.buildName, 'queued', "staging", "android", false, false, false);
-                            }
-                            if (foundJson.isDesktop) {
-                                storeResult(foundJson.buildName, 'queued', "staging", "desktop", false, false, false);
-                            }
+                    if (listingJsonData.state === "production") {
+                        storeResult(listingJsonData.buildName, 'queued', "production", "web", false, false, false);
+                        storeResult(listingJsonData.buildName, 'queued', "production", "admin", false, false, false);
+                        if (listingJsonData.isAndroid) {
+                            storeResult(listingJsonData.buildName, 'queued', "production", "android", false, false, false);
                         }
-                        if (foundJson.state === "production") {
-                            storeResult(foundJson.buildName, 'queued', "production", "web", false, false, false);
-                            storeResult(foundJson.buildName, 'queued', "production", "admin", false, false, false);
-                            if (foundJson.isAndroid) {
-                                storeResult(foundJson.buildName, 'queued', "production", "android", false, false, false);
-                            }
-                            if (foundJson.isDesktop) {
-                                storeResult(foundJson.buildName, 'queued', "production", "desktop", false, false, false);
-                            }
+                        if (listingJsonData.isDesktop) {
+                            storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
                         }
-                    } else {
+                    }
+                    /*} else {
+                        // todo: check all repositories for duplicate experiments by name and abort if any are found for this experiment name.
                         initialiseResult(fileNamePart, '<div class="shortmessage">conflict in listing.json<span class="longmessage">Two or more listings for this experiment exist in ' + listingJsonFiles + ' as a precaution this script will not continue until this error is resovled.</span></div>', true);
                         // todo: put this text and related information into an error text file with link
                         console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
-                    }
+                    }*/
                 }
             }
         }
-        console.log(JSON.stringify(listing));
-        buildNextExperiment(listing);
+        buildNextExperiment();
     }
 }
 
