@@ -845,7 +845,8 @@ function buildFromListing() {
                     resultsFile.write("<div>jsonListing: " + buildName + "</div>");
                     var listingFile = path.resolve(listingDirectory, buildName + '.json');
                     var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
-                    console.log('listingJsonData: ' + listingJsonData);
+                    listingJsonData.buildName = buildName;
+                    console.log('listingJsonData: ' + JSON.stringify(listingJsonData));
                     fs.unlinkSync(listingFile);
                     listingMap.set(buildName, listingJsonData);
                     storeResult(fileNamePart, '', "staging", "web", false, false, false);
