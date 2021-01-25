@@ -414,6 +414,10 @@ function deployStagingGui(currentEntry) {
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' mv /ExperimentTemplate/gwt-cordova/target/*.zip /FrinexBuildService/processing/staging-building/'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-cordova.sh;'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + ' mv /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-electron.sh;'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' mv /ExperimentTemplate/gwt-cordova/target/*.jar /FrinexBuildService/processing/staging-building/'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging'
@@ -658,11 +662,19 @@ function buildApk(buildName, stage) {
         fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_android.log", 'w'));
         resultString += '<a href="' + currentEntry.buildName + '/' + buildName + "_" + stage + "_android.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
-        var dockerString = 'docker run -name ' + currentEntry.buildName + '_staging_cordova  -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.log";
+        var dockerString = 'docker run -name ' + currentEntry.buildName + '_staging_cordova  -v '
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+            + ' frinexapps bash /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;';
+            + ' ls /FrinexBuildService/processing/staging-building/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
+            + ' cp /FrinexBuildService/processing/staging-building/*' + currentEntry.buildName + '_cordova.apk ' + targetDirectory + '/' + currentEntry.buildName + '/' + buildName + '_' + stage + '_cordova.apk &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
+            + ' cp /FrinexBuildService/processing/staging-building/*' + currentEntry.buildName + '_cordova.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + buildName + '_' + stage + '_cordova.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
+            + ' cp /FrinexBuildService/processing/staging-building/*' + currentEntry.buildName + '_android.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
+            + ' cp /FrinexBuildService/processing/staging-building/*' + currentEntry.buildName + '_ios.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;';
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
     } catch (ex) {
-        resultString += "failed&nbsp;";
+        resultString += 'failed&nbsp;';
         hasFailed = true;
     }
     // copy the resulting zips and add links to the output JSON
