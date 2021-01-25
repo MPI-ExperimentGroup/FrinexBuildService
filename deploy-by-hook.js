@@ -1162,7 +1162,7 @@ function moveIncomingToQueued() {
 function convertJsonToXml() {
     resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
     var dockerString = 'docker stop json_to_xml;'
-        + 'docker run'
+        + 'docker run --rm'
         //+ ' --user "$(id -u):$(id -g)"'
         + ' --name json_to_xml'
         + ' -v incomingDirectory:/FrinexBuildService/incoming'
