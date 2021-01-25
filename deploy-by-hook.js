@@ -683,7 +683,6 @@ function buildApk(buildName, stage) {
     }
     // copy the resulting zips and add links to the output JSON
     var list = fs.readdirSync(targetDirectory + "/" + buildName);
-    experiment.artifactsJsonDirectory
     list.forEach(function (filename) {
         if (filename.endsWith(".apk")) {
             fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk"));
@@ -708,6 +707,7 @@ function buildApk(buildName, stage) {
     console.log("build cordova finished");
     storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
     //update artifacts.json
+    const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + buildName + "_" + stage + '_artifacts.json';
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
