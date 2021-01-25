@@ -400,7 +400,7 @@ function deployStagingGui(currentEntry) {
             + ' -DskipTests'
             //+ ' -pl gwt-cordova'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
-            + ' -Dxperiment.configuration.displayName=\"' + currentEntry.experimentDisplayName + '\"'
+            + ' -Dxperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
@@ -495,7 +495,7 @@ function deployStagingAdmin(currentEntry) {
             + ' -DskipTests'
             //+ ' -pl frinex-admin'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
-            + ' -Dxperiment.configuration.displayName=\"' + currentEntry.experimentDisplayName + '\"'
+            + ' -Dxperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -Dexperiment.artifactsJsonDirectory=/usr/local/apache2/htdocs/' + currentEntry.buildName + '/'
