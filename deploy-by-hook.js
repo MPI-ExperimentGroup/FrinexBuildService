@@ -663,7 +663,7 @@ function buildApk(buildName, stage) {
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         // wee do not build in the docker volume because it would create redundant file synchronisation.
-        var dockerString = 'docker run -name ' + buildName + '_staging_cordova  -v '
+        var dockerString = 'docker run --name ' + buildName + '_staging_cordova  -v '
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
@@ -723,7 +723,7 @@ function buildElectron(buildName, stage) {
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.log", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        var dockerString = 'docker run -name ' + buildName + '_staging_electron -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.log";
+        var dockerString = 'docker run --name ' + buildName + '_staging_electron -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.log";
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
         //resultString += "built&nbsp;";
@@ -1163,6 +1163,7 @@ function convertJsonToXml() {
     resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
     var dockerString = 'docker run'
         //+ ' --user "$(id -u):$(id -g)"'
+        + ' --name json_to_xml'
         + ' -v incomingDirectory:/FrinexBuildService/incoming'
         + ' -v processingDirectory:/FrinexBuildService/processing'
         + ' -v listingDirectory:/FrinexBuildService/listing'
