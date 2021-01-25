@@ -56,8 +56,8 @@ const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
 const resultsFile = fs.createWriteStream(targetDirectory + "/index.html", { flags: 'w', mode: 0o755 });
-var concurrentBuild = 0;
 const listingMap = new Map();
+const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
 var buildArtifactsJson = { artifacts: {} };
@@ -369,7 +369,7 @@ function deployStagingGui(currentEntry) {
     if (!fs.existsSync(queuedConfigFile)) {
         console.log("deployStagingGui missing: " + queuedConfigFile);
         storeResult(currentEntry.buildName, 'failed', "staging", "web", true, false, false);
-        concurrentBuild--;
+        currentlyBuilding.delete(currentEntry.buildName);
     } else {
         if (fs.existsSync(stagingConfigFile)) {
             console.log("deployStagingGui found: " + stagingConfigFile);
@@ -448,7 +448,6 @@ function deployStagingGui(currentEntry) {
                 }
                 deployStagingAdmin(currentEntry);
             } else {
-                concurrentBuild--;
                 //console.log(targetDirectory);
                 //console.log(JSON.stringify(reason, null, 4));
                 console.log("deployStagingGui failed");
@@ -456,6 +455,7 @@ function deployStagingGui(currentEntry) {
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
                 //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                 //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
+                currentlyBuilding.delete(currentEntry.buildName);
             };
         });
     }
@@ -470,9 +470,9 @@ function deployStagingAdmin(currentEntry) {
     var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
     //    var stagingAdminConfigFile = path.resolve(processingDirectory + '/staging-admin', currentEntry.buildName + '.xml');
     if (!fs.existsSync(stagingConfigFile)) {
-        concurrentBuild--;
         console.log("deployStagingAdmin missing: " + stagingConfigFile);
         storeResult(currentEntry.buildName, 'failed', "staging", "admin", true, false, false);
+        currentlyBuilding.delete(currentEntry.buildName);
     } else {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
@@ -535,7 +535,7 @@ function deployStagingAdmin(currentEntry) {
                 console.log(currentEntry.experimentDisplayName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
             };
-            concurrentBuild--;
+            currentlyBuilding.delete(currentEntry.buildName);
         });
     }
 }
@@ -770,12 +770,12 @@ function buildElectron(buildName, stage) {
 }
 
 function buildNextExperiment() {
-    if (listingMap.size > 0 && concurrentBuild < concurrentBuildCount) {
-        concurrentBuild++;
+    if (listingMap.size > 0 && currentlyBuilding.size < concurrentBuildCount) {
         const currentKey = listingMap.keys().next().value;
         console.log('buildNextExperiment: ' + currentKey);
         resultsFile.write("buildNextExperiment: " + currentKey + "</div>");
         const currentEntry = listingMap.get(currentKey);
+        currentlyBuilding.set(currentEntry.buildName, currentEntry);
         listingMap.delete(currentKey);
         //console.log("starting generate stimulus");
         //execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
