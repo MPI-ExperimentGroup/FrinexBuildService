@@ -658,7 +658,7 @@ function buildApk(buildName, stage) {
         fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_android.log", 'w'));
         resultString += '<a href="' + currentEntry.buildName + '/' + buildName + "_" + stage + "_android.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
-        var dockerString = 'docker run -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.log";
+        var dockerString = 'docker run -name ' + currentEntry.buildName + '_staging_cordova  -v ' + __dirname + '/gwt-cordova/target:/target -v ' + __dirname + '/FieldKitRecorder:/FieldKitRecorder frinexapps bash /target/setup-cordova.sh &> ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.log";
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
     } catch (ex) {
@@ -706,7 +706,7 @@ function buildElectron(buildName, stage) {
         fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_electron.log", 'w'));
         resultString += '<a href="' + currentEntry.buildName + '/' + buildName + "_" + stage + "_electron.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        var dockerString = 'docker run -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_electron.log";
+        var dockerString = 'docker run -name ' + currentEntry.buildName + '_staging_electron -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + currentEntry.buildName + "/" + buildName + "_" + stage + "_electron.log";
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
         //resultString += "built&nbsp;";
