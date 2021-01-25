@@ -667,7 +667,7 @@ function buildApk(buildName, stage) {
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
-            'mkdir /FrinexBuildService/cordova-' + stage + 'build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
+            + ' mkdir /FrinexBuildService/cordova-' + stage + 'build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' cp /FrinexBuildService/processing/staging-building/' + buildName + '_setup-cordova.sh /FrinexBuildService/processing/staging-building/*' + buildName + '_cordova.zip /FrinexBuildService/cordova-' + stage + 'build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' /FrinexBuildService/cordova-' + stage + 'build/' + buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' ls /FrinexBuildService/cordova-' + stage + 'build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
@@ -1054,8 +1054,8 @@ function moveIncomingToQueued() {
                     }
                 }
                 if (hasProcessingFiles === true) {
-                    console.log('moveIncomingToQueued: hasProcessingFiles');
-                    resultsFile.write("<div>has more files in processing</div>");
+                    //console.log('moveIncomingToQueued: hasProcessingFiles');
+                    //resultsFile.write("<div>has more files in processing</div>");
                     prepareForProcessing();
                     setTimeout(moveIncomingToQueued, 3000);
                 } else {
