@@ -745,55 +745,42 @@ function buildElectron(buildName, stage) {
         resultString += "failed&nbsp;";
         hasFailed = true;
     }
-    // copy the resulting zips and add links to the output JSON
-    var list = fs.readdirSync(__dirname + "/gwt-cordova/target");
-    list.forEach(function (filename) {
-        console.log(filename);
-        //if (filename.endsWith("electron.log")) {
-        //    fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.log"));
-        //    resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.log" + '">log</a>';
-        //}
-        if (filename.endsWith(".zip")) {
-            var fileTypeString = "zip";
-            if (filename.indexOf("electron.zip") > -1) {
-                fileTypeString = "src";
-            } else if (filename.indexOf("win32-ia32.zip") > -1) {
-                fileTypeString = "win32";
-            } else if (filename.indexOf("win32-x64.zip") > -1) {
-                fileTypeString = "win";
-            } else if (filename.indexOf("darwin-x64.zip") > -1) {
-                fileTypeString = "mac";
-            } else if (filename.indexOf("linux-x64.zip") > -1) {
-                fileTypeString = "linux";
-            }
-            if (fileTypeString !== "zip") {
-                var finalName = buildName + "_" + stage + "_" + fileTypeString + ".zip";
-                fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + finalName));
-                if (filename !== finalName) {
-                    fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(__dirname + "/gwt-cordova/target/" + finalName));
-                }
-                resultString += '<a href="' + buildName + '/' + finalName + '">' + fileTypeString + '</a>&nbsp;';
-                buildArtifactsJson.artifacts[fileTypeString] = finalName;
-            }
-        }
-        if (filename.endsWith(".asar")) {
-            var fileTypeString = "asar";
-            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + filename));
-            resultString += '<a href="' + buildName + '/' + filename + '">' + fileTypeString + '</a>&nbsp;';
-            buildArtifactsJson.artifacts[fileTypeString] = filename;
-        }
-        if (filename.endsWith(".dmg")) {
-            var fileTypeString = "dmg";
-            var finalName = buildName + "_" + stage + ".dmg";
-            fs.createReadStream(__dirname + "/gwt-cordova/target/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + finalName));
-            resultString += '<a href="' + buildName + '/' + finalName + '">' + fileTypeString + '</a>&nbsp;';
-            buildArtifactsJson.artifacts[fileTypeString] = finalName;
-        }
-        //mkdir /srv/target/electron
-        //cp out/make/*linux*.zip ../with_stimulus_example-linux.zip
-        //cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
-        //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
-    });    //- todo: copy the resutting zips and add links to the output JSON
+    // update the links and artifacts JSON
+    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log')) {
+        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_electron.log">log</a>&nbsp;';
+    }
+    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip')) {
+        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_electron.zip">src</a>&nbsp;';
+        buildArtifactsJson.artifacts['src'] = buildName + '_' + stage + '_electron.zip';
+    }
+    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip')) {
+        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip">win32</a>&nbsp;';
+        buildArtifactsJson.artifacts['win32'] = buildName + '_' + stage + '_win32-ia32.zip';
+    }
+    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip')) {
+        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip">win64</a>&nbsp;';
+        buildArtifactsJson.artifacts['win64'] = buildName + '_' + stage + '_win32-x64.zip';
+    }
+    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip')) {
+        resultString += '<a href="' + buildName + '_' + stage + '_darwin-x64.zip">mac</a>&nbsp;';
+        buildArtifactsJson.artifacts['mac'] = buildName + '_' + stage + '_darwin-x64.zip';
+    }
+    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip')) {
+        resultString += '<a href="' + buildName + '_' + stage + '_linux-x64.zip">linux</a>&nbsp;';
+        buildArtifactsJson.artifacts['linux'] = buildName + '_' + stage + '_linux-x64.zip';
+    }
+    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.asar')) {
+        resultString += '<a href="' + buildName + '_' + stage + '.asar">asar</a>&nbsp;';
+        buildArtifactsJson.artifacts['asar'] = buildName + '_' + stage + '.asar';
+    }
+    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.dmg')) {
+        resultString += '<a href="' + buildName + '_' + stage + '.dmg">dmg</a>&nbsp;';
+        buildArtifactsJson.artifacts['dmg'] = buildName + '_' + stage + '.dmg';
+    }
+    //mkdir /srv/target/electron
+    //cp out/make/*linux*.zip ../with_stimulus_example-linux.zip
+    //cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
+    //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     console.log("build electron finished");
     storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
     //  update artifacts.json
