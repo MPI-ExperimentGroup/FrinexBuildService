@@ -673,9 +673,9 @@ function buildApk(buildName, stage) {
             + ' bash /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' ls /FrinexBuildService/cordova-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' cp /FrinexBuildService/cordova-staging-build/app-release.apk ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.apk &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
-            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '*_cordova.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
-            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '*_android.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
-            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '*_ios.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;"';
+            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-cordova.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
+            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-android.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
+            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-ios.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;"';
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
     } catch (ex) {
