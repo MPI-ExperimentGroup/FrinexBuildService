@@ -672,7 +672,7 @@ function buildApk(buildName, stage) {
             + ' cp /FrinexBuildService/processing/staging-building/' + buildName + '_setup-cordova.sh /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' bash /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' ls /FrinexBuildService/cordova-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
-            + ' cp /FrinexBuildService/cordova-staging-build/app-release.apk ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.apk &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
+            + ' cp /FrinexBuildService/cordova-' + stage + '-build/app-release.apk ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.apk &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-cordova.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-android.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-ios.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.log;"';
@@ -724,7 +724,20 @@ function buildElectron(buildName, stage) {
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.log", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        var dockerString = 'docker run --name ' + buildName + '_staging_electron -v ' + __dirname + '/gwt-cordova/target:/target frinexapps bash /target/setup-electron.sh &> ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.log";
+        var dockerString = 'docker stop ' + buildName + '_staging_electron;'
+            + 'docker run --name ' + buildName + '_staging_electron --rm'
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+            + ' frinexapps /bin/bash -c "'
+            + ' mkdir /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' cp /FrinexBuildService/processing/staging-building/' + buildName + '_setup-electron.sh /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' bash /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_setup-electron.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' ls /FrinexBuildService/electron-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-electron.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-win32-ia32.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-win32-x64.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-darwin-x64.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-linux-x64.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;"';
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
         //resultString += "built&nbsp;";
