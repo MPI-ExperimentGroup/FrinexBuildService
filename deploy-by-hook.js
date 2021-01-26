@@ -663,7 +663,7 @@ function buildApk(buildName, stage) {
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         // wee do not build in the docker volume because it would create redundant file synchronisation.
-        var dockerString = 'docker run --name ' + buildName + '_staging_cordova  -v '
+        var dockerString = 'docker run --name ' + buildName + '_staging_cordova '
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
@@ -811,7 +811,7 @@ function buildNextExperiment() {
 function buildFromListing() {
     var list = fs.readdirSync(processingDirectory + '/queued');
     if (list.length <= 0) {
-        console.log('buildFromListing found no files');
+        //console.log('buildFromListing found no files');
     } else {
         for (var filename of list) {
             console.log('buildFromListing: ' + filename);
@@ -909,8 +909,8 @@ function buildFromListing() {
                 }
             }
         }
-        buildNextExperiment();
     }
+    buildNextExperiment();
 }
 
 function copyDeleteFile(incomingFile, targetFile) {
