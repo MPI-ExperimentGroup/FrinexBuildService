@@ -761,7 +761,7 @@ function buildElectron(buildName, stage) {
         buildArtifactsJson.artifacts['win64'] = buildName + '_' + stage + '_win32-x64.zip';
     }
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip')) {
-        resultString += '<a href="' + buildName + '/' +  + buildName + '_' + stage + '_darwin-x64.zip">mac</a>&nbsp;';
+        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip">mac</a>&nbsp;';
         buildArtifactsJson.artifacts['mac'] = buildName + '_' + stage + '_darwin-x64.zip';
     }
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip')) {
