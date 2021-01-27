@@ -1177,7 +1177,7 @@ function convertJsonToXml() {
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing\\"'
-        + ' &>> /usr/local/apache2/htdocs/json_to_xml.txt;';
+        + ' &>> /usr/local/apache2/htdocs/json_to_xml.txt;'
         + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*'
         + ' &>> /usr/local/apache2/htdocs/json_to_xml.txt;"';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
