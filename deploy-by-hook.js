@@ -381,7 +381,7 @@ function deployStagingGui(currentEntry) {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_web';
         var dockerString = 'docker stop ' + buildContainerName
-            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + 'docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
