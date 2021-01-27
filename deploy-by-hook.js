@@ -724,13 +724,13 @@ function buildElectron(buildName, stage) {
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.log", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.log" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        var dockerString = 'docker stop ' + buildName + '_staging_electron;'
-            + 'docker run --name ' + buildName + '_staging_electron --rm'
+        var dockerString = 'docker stop ' + buildName + '_' + stage + '_electron;'
+            + 'docker run --name ' + buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
             + ' mkdir /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
-            + ' cp /FrinexBuildService/processing/staging-building/' + buildName + '_setup-electron.sh /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
+            + ' cp /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-electron.sh /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
             + ' bash /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_setup-electron.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
             + ' ls /FrinexBuildService/electron-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-electron.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log;'
@@ -746,9 +746,6 @@ function buildElectron(buildName, stage) {
         hasFailed = true;
     }
     // update the links and artifacts JSON
-    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.log')) {
-        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_electron.log">log</a>&nbsp;';
-    }
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip')) {
         resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_electron.zip">src</a>&nbsp;';
         buildArtifactsJson.artifacts['src'] = buildName + '_' + stage + '_electron.zip';
