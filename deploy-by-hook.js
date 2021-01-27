@@ -440,7 +440,7 @@ function deployStagingGui(currentEntry) {
                 console.log("deployStagingGui finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
                 var buildArtifactsJson = { artifacts: {} };
-                const buildArtifactsFileName = processingDirectory + '/staging-building/' + buildName + '_staging_artifacts.json';
+                const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
                 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                 //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
                 //        console.log(targetDirectory);
