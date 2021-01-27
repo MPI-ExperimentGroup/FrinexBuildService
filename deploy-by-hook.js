@@ -714,7 +714,7 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
-function buildElectron(buildName, stage, buildArtifactsJson) {
+function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileName) {
     console.log("starting electron build");
     storeResult(buildName, "building", stage, "desktop", false, true, false);
     var resultString = "";
