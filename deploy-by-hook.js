@@ -1169,15 +1169,17 @@ function convertJsonToXml() {
         + ' -v incomingDirectory:/FrinexBuildService/incoming'
         + ' -v processingDirectory:/FrinexBuildService/processing'
         + ' -v listingDirectory:/FrinexBuildService/listing'
+        + ' -v buildServerTarget:/usr/local/apache2/htdocs'
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
         + ' frinexapps:latest /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
-        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing\\";'
-        + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*;"'
+        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing\\"'
         + ' &>> /usr/local/apache2/htdocs/json_to_xml.txt;';
+        + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*'
+        + ' &>> /usr/local/apache2/htdocs/json_to_xml.txt;"';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
     try {
