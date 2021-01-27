@@ -518,7 +518,7 @@ function deployStagingAdmin(currentEntry) {
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin'
+            + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
@@ -528,12 +528,8 @@ function deployStagingAdmin(currentEntry) {
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + '"';
         console.log(dockerString);
-        exec(dockerString, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`deployStagingAdmin error: ${error}`);
-            }
-            console.log(`deployStagingAdmin stdout: ${stdout}`);
-            console.error(`deployStagingAdmin stderr: ${stderr}`);
+        try {
+            execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
                 console.log("frinex-gui finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true);
@@ -546,7 +542,9 @@ function deployStagingAdmin(currentEntry) {
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
             };
             currentlyBuilding.delete(currentEntry.buildName);
-        });
+        } catch (error) {
+            console.error('deployStagingAdmin error: ' + error);
+        }
     }
 }
 
