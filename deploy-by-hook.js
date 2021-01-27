@@ -101,7 +101,7 @@ function startResult() {
     resultsFile.write("</table>\n");
     resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
     resultsFile.write("<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
-    resultsFile.write("<a href='json_to_xml.txt.txt'>json_to_xml</a>&nbsp;\n");
+    resultsFile.write("<a href='json_to_xml.txt'>json_to_xml</a>&nbsp;\n");
     resultsFile.write("<a href='git-push-out.txt'>out</a>&nbsp;\n");
     resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
     resultsFile.write("<script>\n");
