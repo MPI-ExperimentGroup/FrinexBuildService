@@ -60,7 +60,6 @@ const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
-var buildArtifactsJson = { artifacts: {} };
 if (fs.existsSync(buildHistoryFileName)) {
     try {
         buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
@@ -440,16 +439,18 @@ function deployStagingGui(currentEntry) {
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.war")) {
                 console.log("deployStagingGui finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
+                var buildArtifactsJson = { artifacts: {} };
+                const buildArtifactsFileName = processingDirectory + '/staging-building/' + buildName + '_staging_artifacts.json';
                 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                 //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
                 //        console.log(targetDirectory);
                 //        console.log(value);
                 // build cordova 
                 if (currentEntry.isAndroid || currentEntry.isiOS) {
-                    buildApk(currentEntry.buildName, "staging");
+                    buildApk(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
                 }
                 if (currentEntry.isDesktop) {
-                    buildElectron(currentEntry.buildName, "staging");
+                    buildElectron(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
                 }
                 deployStagingAdmin(currentEntry);
             } else {
@@ -651,7 +652,7 @@ function deployProductionAdmin(currentEntry) {
     });
 }
 
-function buildApk(buildName, stage) {
+function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) {
     console.log("starting cordova build");
     storeResult(buildName, "building", stage, "android", false, true, false);
     var resultString = "";
@@ -709,11 +710,11 @@ function buildApk(buildName, stage) {
     console.log("build cordova finished");
     storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
     //update artifacts.json
-    const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + buildName + "_" + stage + '_artifacts.json';
+    //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + buildName + "_" + stage + '_artifacts.json';
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
-function buildElectron(buildName, stage) {
+function buildElectron(buildName, stage, buildArtifactsJson) {
     console.log("starting electron build");
     storeResult(buildName, "building", stage, "desktop", false, true, false);
     var resultString = "";
