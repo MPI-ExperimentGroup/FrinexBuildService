@@ -101,6 +101,7 @@ function startResult() {
     resultsFile.write("</table>\n");
     resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
     resultsFile.write("<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
+    resultsFile.write("<a href='json_to_xml.txt.txt'>json_to_xml</a>&nbsp;\n");
     resultsFile.write("<a href='git-push-out.txt'>out</a>&nbsp;\n");
     resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
     resultsFile.write("<script>\n");
@@ -960,28 +961,28 @@ function prepareForProcessing() {
             // preserve the generated UML to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
-            console.log('copying UML from validated to target: ' + incomingFile);
-            resultsFile.write("<div>copying UML from validated to target: " + incomingFile + "</div>");
+            //console.log('copying UML from validated to target: ' + incomingFile);
+            //resultsFile.write("<div>copying UML from validated to target: " + incomingFile + "</div>");
             copyDeleteFile(incomingFile, targetName);
         } else if (path.extname(filename) === ".svg") {
             // preserve the generated UML SVG to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
-            console.log('copying SVG from validated to target: ' + filename);
-            resultsFile.write("<div>copying SVG from validated to target: " + filename + "</div>");
+            //console.log('copying SVG from validated to target: ' + filename);
+            //resultsFile.write("<div>copying SVG from validated to target: " + filename + "</div>");
             copyDeleteFile(incomingFile, targetName);
         } else if (path.extname(filename) === ".xsd") {
             // place the generated XSD file for use in XML editors
             var targetName = path.resolve(targetDirectory, filename);
-            console.log('copying XSD from validated to target: ' + filename);
-            resultsFile.write("<div>copying XSD from validated to target: " + filename + "</div>");
+            //console.log('copying XSD from validated to target: ' + filename);
+            //resultsFile.write("<div>copying XSD from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, targetName);
             copyDeleteFile(incomingFile, targetName);
         } else if (filename.endsWith("frinex.html")) {
             // place the generated documentation file for use in web browsers
             var targetName = path.resolve(targetDirectory, filename);
-            console.log('copying HTML from validated to target: ' + filename);
-            resultsFile.write("<div>copying HTML from validated to target: " + filename + "</div>");
+            //console.log('copying HTML from validated to target: ' + filename);
+            //resultsFile.write("<div>copying HTML from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, targetName);
             copyDeleteFile(incomingFile, targetName);
         } else if (filename.endsWith("_validation_error.txt")) {
@@ -1158,8 +1159,9 @@ function moveIncomingToQueued() {
 }
 
 function convertJsonToXml() {
-    resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
-    var dockerString = 'docker stop json_to_xml;'
+    //resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
+    var dockerString = 'docker stop json_to_xml'
+        + ' &> /usr/local/apache2/htdocs/json_to_xml.txt;'
         + 'docker run --rm'
         //+ ' --user "$(id -u):$(id -g)"'
         + ' --name json_to_xml'
@@ -1173,13 +1175,14 @@ function convertJsonToXml() {
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing\\";'
-        + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*;"';
+        + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*;"'
+        + ' &>> /usr/local/apache2/htdocs/json_to_xml.txt;';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".log";
     console.log(dockerString);
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("convert JSON to XML finished");
-        resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
+        //resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         prepareForProcessing();
     } catch (reason) {
         console.log(reason);
