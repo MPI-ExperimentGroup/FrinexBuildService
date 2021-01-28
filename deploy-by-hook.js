@@ -449,6 +449,9 @@ function deployStagingGui(currentEntry) {
                 //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
                 //        console.log(targetDirectory);
                 //        console.log(value);
+                buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_staging.war";
+                // update artifacts.json
+                fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
                 // build cordova 
                 if (currentEntry.isAndroid || currentEntry.isiOS) {
                     buildApk(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
@@ -456,7 +459,8 @@ function deployStagingGui(currentEntry) {
                 if (currentEntry.isDesktop) {
                     buildElectron(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
                 }
-                deployStagingAdmin(currentEntry);
+                // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
+                deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
             } else {
                 //console.log(targetDirectory);
                 //console.log(JSON.stringify(reason, null, 4));
@@ -471,7 +475,7 @@ function deployStagingGui(currentEntry) {
     }
 }
 
-function deployStagingAdmin(currentEntry) {
+function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt");
     }
@@ -537,6 +541,9 @@ function deployStagingAdmin(currentEntry) {
                 if (currentEntry.state === "production") {
                     deployProductionGui(currentEntry);
                 }
+                buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
+                // update artifacts.json
+                fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
             } else {
                 console.log("deployStagingAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
@@ -554,6 +561,10 @@ function deployStagingAdmin(currentEntry) {
 function deployProductionGui(currentEntry) {
     console.log(productionServerUrl + '/' + currentEntry.buildName);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
+    var queuedConfigFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
+    var productionConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
+    // this move is within the same volume so we can do it this easy way
+    fs.renameSync(queuedConfigFile, productionConfigFile);
     try {
         https.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
             if (response.statusCode !== 404) {
@@ -596,11 +607,13 @@ function deployProductionGui(currentEntry) {
                     console.log("frinex-gui production finished");
                     //storeResult(currentEntry.buildName, "skipped", "production", "web", false, false, true);
                     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
+                    var buildArtifactsJson = { artifacts: {} };
+                    const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + "_production_artifacts.json';
                     if (currentEntry.isAndroid || currentEntry.isiOS) {
-                        buildApk(currentEntry.buildName, "production");
+                        buildApk(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
                     }
                     if (currentEntry.isDesktop) {
-                        buildElectron(currentEntry.buildName, "production");
+                        buildElectron(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
                     }
                     deployProductionAdmin(currentEntry);
                 }, function (reason) {
