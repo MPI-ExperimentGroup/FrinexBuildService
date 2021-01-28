@@ -488,6 +488,7 @@ function deployStagingAdmin(currentEntry) {
         var buildContainerName = currentEntry.buildName + '_staging_admin';
         var dockerString = 'docker stop ' + buildContainerName
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + " ls -l /usr/local/apache2/htdocs/" + currentEntry.buildName + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + 'docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
@@ -544,7 +545,9 @@ function deployStagingAdmin(currentEntry) {
             currentlyBuilding.delete(currentEntry.buildName);
         } catch (error) {
             console.error('deployStagingAdmin error: ' + error);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
         }
+        console.log("deployStagingAdmin ended");
     }
 }
 
