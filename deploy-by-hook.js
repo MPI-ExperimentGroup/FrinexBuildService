@@ -487,7 +487,7 @@ function deployStagingAdmin(currentEntry) {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
         var dockerString = 'docker stop ' + buildContainerName
-            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + " ls -l /usr/local/apache2/htdocs/" + currentEntry.buildName + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + 'docker run'
             + ' --rm '
