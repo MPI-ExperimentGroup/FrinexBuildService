@@ -865,7 +865,7 @@ function buildFromListing() {
                         // if any build configuration exists then wait for its build process to terminate
                         console.log('waitingTermination: ' + buildName);
                         resultsFile.write("<div>waitingTermination: " + buildName + "</div>");
-                        storeResult(fileNamePart, validationMessage, "terminating", "json_xsd", false, false, false);
+                        storeResult(currentEntry.buildName, 'restarting build', "staging", "web", true, false, false);
                     } else {
                         var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
                         var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
