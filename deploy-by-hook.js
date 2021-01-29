@@ -542,6 +542,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
                 // update artifacts.json
                 fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                console.log("deployStagingAdmin ended");
                 if (currentEntry.state === "production") {
                     var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
                     // this move is within the same volume so we can do it this easy way
@@ -564,11 +565,11 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             currentlyBuilding.delete(currentEntry.buildName);
             fs.unlinkSync(stagingConfigFile);
         }
-        console.log("deployStagingAdmin ended");
     }
 }
 
 function deployProductionGui(currentEntry) {
+    console.log("deployProductionGui started");
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt");
     }
@@ -581,7 +582,7 @@ function deployProductionGui(currentEntry) {
         storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
-        console.log("existing deployment check: " + currentEntry.buildName);
+        console.log("existing deployment check: " + productionServerUrl + '/' + currentEntry.buildName);
         try {
             https.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
                 console.log("statusCode: " + response.statusCode);
@@ -599,8 +600,6 @@ function deployProductionGui(currentEntry) {
                     }
                     // this move is within the same volume so we can do it this easy way
                     fs.renameSync(productionQueuedFile, productionConfigFile);
-                    //  terminate existing docker containers by name 
-                //  terminate existing docker containers by name 
                     //  terminate existing docker containers by name 
                     var buildContainerName = currentEntry.buildName + '_production_web';
                     var dockerString = 'docker stop ' + buildContainerName
@@ -671,8 +670,6 @@ function deployProductionGui(currentEntry) {
                             buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production.war";
                             // update artifacts.json
                             fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
-                            // build cordova 
-                        // build cordova 
                             // build cordova 
                             if (currentEntry.isAndroid || currentEntry.isiOS) {
                                 buildApk(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
