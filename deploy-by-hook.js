@@ -564,10 +564,10 @@ function deployProductionGui(currentEntry) {
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt", 'w'));
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
-    var queuedConfigFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
+    var stagingConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
     var productionConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
-    if (!fs.existsSync(queuedConfigFile)) {
-        console.log("deployProductionGui missing: " + queuedConfigFile);
+    if (!fs.existsSync(stagingConfigFile)) {
+        console.log("deployProductionGui missing: " + stagingConfigFile);
         storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
@@ -584,7 +584,7 @@ function deployProductionGui(currentEntry) {
                     fs.unlinkSync(productionConfigFile);
                 }
                 // this move is within the same volume so we can do it this easy way
-                fs.renameSync(queuedConfigFile, productionConfigFile);
+                fs.renameSync(stagingConfigFile, productionConfigFile);
                 //  terminate existing docker containers by name 
                 var buildContainerName = currentEntry.buildName + '_production_web';
                 var dockerString = 'docker stop ' + buildContainerName
@@ -680,42 +680,93 @@ function deployProductionGui(currentEntry) {
     }
 }
 
-function deployProductionAdmin(currentEntry) {
-    var mvnadmin = require('maven').create({
-        cwd: __dirname + "/registration",
-        settings: m2Settings
-    });
+function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName) {
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt");
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt", 'w'));
-    var mavenLogPA = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt", { mode: 0o755 });
-    process.stdout.write = process.stderr.write = mavenLogPA.write.bind(mavenLogPA);
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true, false);
-    mvnadmin.execute(['clean', 'tomcat7:deploy'], {
-        'skipTests': true, '-pl': 'frinex-admin',
-        //                                'altDeploymentRepository': 'snapshot-repo::default::file:./FrinexWARs/',
-        'experiment.configuration.name': currentEntry.buildName,
-        'experiment.configuration.displayName': currentEntry.experimentDisplayName,
-        'experiment.webservice': configServer,
-        'experiment.configuration.path': processingDirectory,
-        'versionCheck.allowSnapshots': 'true',
-        'versionCheck.buildType': 'stable',
-        'experiment.destinationServer': productionServer,
-        'experiment.destinationServerUrl': productionServerUrl
-    }).then(function (value) {
-        //console.log(value);
-        //fs.createReadStream(__dirname + "/registration/target/"+currentEntry.buildName+"-frinex-admin-0.1.50-testing.war").pipe(fs.createWriteStream(currentEntry.buildName+"-frinex-admin-0.1.50-testing.war"));
-        console.log("frinex-admin production finished");
-        //storeResult(currentEntry.buildName, "skipped", "production", "admin", false, false, true);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true);
-    }, function (reason) {
-        console.log(reason);
-        console.log("frinex-admin production failed");
-        console.log(currentEntry.experimentDisplayName);
-        //storeResult(currentEntry.buildName, "failed", "production", "admin", true, false);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
-    });
+    var productionConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
+    //    var productionAdminConfigFile = path.resolve(processingDirectory + '/production-admin', currentEntry.buildName + '.xml');
+    if (!fs.existsSync(productionConfigFile)) {
+        console.log("deployProductionAdmin missing: " + productionConfigFile);
+        storeResult(currentEntry.buildName, 'failed', "production", "admin", true, false, false);
+        currentlyBuilding.delete(currentEntry.buildName);
+    } else {
+        //  terminate existing docker containers by name 
+        var buildContainerName = currentEntry.buildName + '_production_admin';
+        var dockerString = 'docker stop ' + buildContainerName
+            + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + 'docker run'
+            + ' --rm '
+            + ' --name ' + buildContainerName
+            /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
+            // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            + ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
+            + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+            + ' -v m2Directory:/maven/.m2/'
+            + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
+            + ' ls -l /usr/local/apache2/htdocs/' + currentEntry.buildName + ' &>> /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt;'
+            + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
+            //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + 'package'
+            + ' -gs /maven/.m2/settings.xml'
+            + ' -DskipTests'
+            //+ ' -pl frinex-admin'
+            + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+            + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
+            + ' -Dexperiment.webservice=' + configServer
+            + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
+            + ' -Dexperiment.artifactsJsonDirectory=/usr/local/apache2/htdocs/' + currentEntry.buildName + '/'
+            + ' -DversionCheck.allowSnapshots=' + 'false'
+            + ' -DversionCheck.buildType=' + 'stable'
+            + ' -Dexperiment.destinationServer=' + productionServer
+            + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+            + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
+            + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+            + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
+            + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar'
+            + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + '"';
+        console.log(dockerString);
+        try {
+            execSync(dockerString, { stdio: [0, 1, 2] });
+            if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
+                console.log("frinex-gui finished");
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true);
+                if (currentEntry.state === "production") {
+                    deployProductionGui(currentEntry);
+                }
+                buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
+                // update artifacts.json
+                fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                currentlyBuilding.delete(currentEntry.buildName);
+                fs.unlinkSync(productionConfigFile);
+            } else {
+                console.log("deployProductionAdmin failed");
+                console.log(currentEntry.experimentDisplayName);
+                currentlyBuilding.delete(currentEntry.buildName);
+                fs.unlinkSync(productionConfigFile);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
+            };
+            currentlyBuilding.delete(currentEntry.buildName);
+        } catch (error) {
+            console.error('deployProductionAdmin error: ' + error);
+            currentlyBuilding.delete(currentEntry.buildName);
+            fs.unlinkSync(productionConfigFile);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
+        }
+        console.log("deployProductionAdmin ended");
+    }
 }
 
 function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) {
