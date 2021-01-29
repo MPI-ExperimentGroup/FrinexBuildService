@@ -582,115 +582,127 @@ function deployProductionGui(currentEntry) {
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
         console.log("existing deployment check: " + currentEntry.buildName);
-        https.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
-            console.log("statusCode: " + response.statusCode);
-            if (response.statusCode !== 404) {
-                console.log("existing frinex-gui production found, aborting build!");
-                console.log(response.statusCode);
-                storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
-                fs.unlinkSync(productionConfigFile);
-                currentlyBuilding.delete(currentEntry.buildName);
-            } else {
-                if (fs.existsSync(productionConfigFile)) {
-                    console.log("deployProductionGui found: " + productionConfigFile);
-                    console.log("deployProductionGui if another process already building it will be terminated: " + currentEntry.buildName);
+        try {
+            https.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
+                console.log("statusCode: " + response.statusCode);
+                if (response.statusCode !== 404) {
+                    console.log("existing frinex-gui production found, aborting build!");
+                    console.log(response.statusCode);
+                    storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
                     fs.unlinkSync(productionConfigFile);
-                }
-                // this move is within the same volume so we can do it this easy way
-                fs.renameSync(productionQueuedFile, productionConfigFile);
-                //  terminate existing docker containers by name 
-                var buildContainerName = currentEntry.buildName + '_production_web';
-                var dockerString = 'docker stop ' + buildContainerName
-                    + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + 'docker run'
-                    + ' --rm '
-                    + ' --name ' + buildContainerName
-                    /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
-                    // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
-                    + ' -v processingDirectory:/FrinexBuildService/processing'
-                    + ' -v incomingDirectory:/FrinexBuildService/incoming' // required for static files only
-                    + ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
-                    + ' -v buildServerTarget:/usr/local/apache2/htdocs'
-                    + ' -v m2Directory:/maven/.m2/'
-                    + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
-                    + ' mvn clean '
-                    //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
-                    + 'package'
-                    + ' -gs /maven/.m2/settings.xml'
-                    + ' -DskipTests'
-                    //+ ' -pl gwt-cordova'
-                    + ' -Dexperiment.configuration.name=' + currentEntry.buildName
-                    + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
-                    + ' -Dexperiment.webservice=' + configServer
-                    + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
-                    + ' -DversionCheck.allowSnapshots=' + 'false'
-                    + ' -DversionCheck.buildType=' + 'stable'
-                    + ' -Dexperiment.destinationServer=' + productionServer
-                    + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
-                    + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
-                    + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
-                    + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
-                    + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
-                    + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + ' mv /ExperimentTemplate/gwt-cordova/target/*.zip /FrinexBuildService/processing/production-building/'
-                    + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-cordova.sh;'
-                    + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + ' mv /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-electron.sh;'
-                    + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + ' mv /ExperimentTemplate/gwt-cordova/target/*.jar /FrinexBuildService/processing/production-building/'
-                    + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production'
-                    + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production.war'
-                    + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.war'
-                    + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    //+ ' chmod a+rwx /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production*;'
-                    + ' chmod a+rwx /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-*.sh;'
-                    + ' chmod a+rwx /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*;'
-                    + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.war;'
-                    //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/production-building/'
-                    //+ " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                    + '"';
-                console.log(dockerString);
-                exec(dockerString, (error, stdout, stderr) => {
-                    if (error) {
-                        console.error(`deployProductionGui error: ${error}`);
-                    }
-                    console.log(`deployProductionGui stdout: ${stdout}`);
-                    console.error(`deployProductionGui stderr: ${stderr}`);
-                    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.war")) {
-                        console.log("deployProductionGui finished");
-                        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
-                        var buildArtifactsJson = { artifacts: {} };
-                        const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
-                        buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production.war";
-                        // update artifacts.json
-                        fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
-                        // build cordova 
-                        if (currentEntry.isAndroid || currentEntry.isiOS) {
-                            buildApk(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
-                        }
-                        if (currentEntry.isDesktop) {
-                            buildElectron(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
-                        }
-                        // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
-                        deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
-                    } else {
-                        //console.log(targetDirectory);
-                        //console.log(JSON.stringify(reason, null, 4));
-                        console.log("deployProductionGui failed");
-                        console.log(currentEntry.experimentDisplayName);
-                        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false);
-                        //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.html", {flags: 'w'});
-                        //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
-                        currentlyBuilding.delete(currentEntry.buildName);
+                    currentlyBuilding.delete(currentEntry.buildName);
+                } else {
+                    if (fs.existsSync(productionConfigFile)) {
+                        console.log("deployProductionGui found: " + productionConfigFile);
+                        console.log("deployProductionGui if another process already building it will be terminated: " + currentEntry.buildName);
                         fs.unlinkSync(productionConfigFile);
-                    };
-                });
-            }
-        });
+                    }
+                    // this move is within the same volume so we can do it this easy way
+                    fs.renameSync(productionQueuedFile, productionConfigFile);
+                    //  terminate existing docker containers by name 
+                //  terminate existing docker containers by name 
+                    //  terminate existing docker containers by name 
+                    var buildContainerName = currentEntry.buildName + '_production_web';
+                    var dockerString = 'docker stop ' + buildContainerName
+                        + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + 'docker run'
+                        + ' --rm '
+                        + ' --name ' + buildContainerName
+                        /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
+                        // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+                        + ' -v processingDirectory:/FrinexBuildService/processing'
+                        + ' -v incomingDirectory:/FrinexBuildService/incoming' // required for static files only
+                        + ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
+                        + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+                        + ' -v m2Directory:/maven/.m2/'
+                        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+                        + ' mvn clean '
+                        //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+                        + 'package'
+                        + ' -gs /maven/.m2/settings.xml'
+                        + ' -DskipTests'
+                        //+ ' -pl gwt-cordova'
+                        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+                        + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
+                        + ' -Dexperiment.webservice=' + configServer
+                        + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
+                        + ' -DversionCheck.allowSnapshots=' + 'false'
+                        + ' -DversionCheck.buildType=' + 'stable'
+                        + ' -Dexperiment.destinationServer=' + productionServer
+                        + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+                        + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
+                        + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+                        + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
+                        + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
+                        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/*.zip /FrinexBuildService/processing/production-building/'
+                        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-cordova.sh;'
+                        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-electron.sh;'
+                        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/*.jar /FrinexBuildService/processing/production-building/'
+                        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production'
+                        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production.war'
+                        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.war'
+                        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        //+ ' chmod a+rwx /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production*;'
+                        + ' chmod a+rwx /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-*.sh;'
+                        + ' chmod a+rwx /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*;'
+                        + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.war;'
+                        //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/production-building/'
+                        //+ " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + '"';
+                    console.log(dockerString);
+                    exec(dockerString, (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(`deployProductionGui error: ${error}`);
+                        }
+                        console.log(`deployProductionGui stdout: ${stdout}`);
+                        console.error(`deployProductionGui stderr: ${stderr}`);
+                        if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.war")) {
+                            console.log("deployProductionGui finished");
+                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
+                            var buildArtifactsJson = { artifacts: {} };
+                            const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
+                            buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production.war";
+                            // update artifacts.json
+                            fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                            // build cordova 
+                        // build cordova 
+                            // build cordova 
+                            if (currentEntry.isAndroid || currentEntry.isiOS) {
+                                buildApk(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
+                            }
+                            if (currentEntry.isDesktop) {
+                                buildElectron(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
+                            }
+                            // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
+                            deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
+                        } else {
+                            //console.log(targetDirectory);
+                            //console.log(JSON.stringify(reason, null, 4));
+                            console.log("deployProductionGui failed");
+                            console.log(currentEntry.experimentDisplayName);
+                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false);
+                            //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.html", {flags: 'w'});
+                            //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
+                            currentlyBuilding.delete(currentEntry.buildName);
+                            fs.unlinkSync(productionConfigFile);
+                        };
+                    });
+                }
+            });
+        } catch (exception) {
+            console.log(exception);
+            console.log("frinex-gui production failed");
+            storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
+            fs.unlinkSync(productionConfigFile);
+            currentlyBuilding.delete(currentEntry.buildName);
+        }
     }
 }
 
