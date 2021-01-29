@@ -564,7 +564,7 @@ function deployProductionGui(currentEntry) {
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt", 'w'));
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
-    var stagingConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
+    var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
     var productionConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
     if (!fs.existsSync(stagingConfigFile)) {
         console.log("deployProductionGui missing: " + stagingConfigFile);
@@ -973,7 +973,7 @@ function buildFromListing() {
                         // if any build configuration exists then wait for its build process to terminate
                         console.log('waitingTermination: ' + buildName);
                         resultsFile.write("<div>waitingTermination: " + buildName + "</div>");
-                        storeResult(currentEntry.buildName, 'restarting build', "staging", "web", true, false, false);
+                        storeResult(fileNamePart, 'restarting build', "staging", "web", true, false, false);
                     } else {
                         var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
                         var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
