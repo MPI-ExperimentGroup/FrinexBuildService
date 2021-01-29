@@ -487,6 +487,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
         console.log("deployStagingAdmin missing: " + stagingConfigFile);
         storeResult(currentEntry.buildName, 'failed', "staging", "admin", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
+        fs.unlinkSync(stagingConfigFile);
     } else {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
@@ -538,21 +539,30 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
                 console.log("frinex-gui finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true);
-                if (currentEntry.state === "production") {
-                    deployProductionGui(currentEntry);
-                }
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
                 // update artifacts.json
                 fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                if (currentEntry.state === "production") {
+                    var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
+                    // this move is within the same volume so we can do it this easy way
+                    fs.renameSync(stagingConfigFile, productionQueuedFile);
+                    deployProductionGui(currentEntry);
+                } else {
+                    currentlyBuilding.delete(currentEntry.buildName);
+                    fs.unlinkSync(stagingConfigFile);
+                }
             } else {
                 console.log("deployStagingAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
+                currentlyBuilding.delete(currentEntry.buildName);
+                fs.unlinkSync(stagingConfigFile);
             };
-            currentlyBuilding.delete(currentEntry.buildName);
         } catch (error) {
             console.error('deployStagingAdmin error: ' + error);
             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
+            currentlyBuilding.delete(currentEntry.buildName);
+            fs.unlinkSync(stagingConfigFile);
         }
         console.log("deployStagingAdmin ended");
     }
@@ -564,10 +574,10 @@ function deployProductionGui(currentEntry) {
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt", 'w'));
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
-    var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
+    var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
     var productionConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
-    if (!fs.existsSync(stagingConfigFile)) {
-        console.log("deployProductionGui missing: " + stagingConfigFile);
+    if (!fs.existsSync(productionQueuedFile)) {
+        console.log("deployProductionGui missing: " + productionQueuedFile);
         storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
@@ -577,6 +587,7 @@ function deployProductionGui(currentEntry) {
                 console.log(response.statusCode);
                 storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
                 fs.unlinkSync(productionConfigFile);
+                currentlyBuilding.delete(currentEntry.buildName);
             } else {
                 if (fs.existsSync(productionConfigFile)) {
                     console.log("deployProductionGui found: " + productionConfigFile);
@@ -584,7 +595,7 @@ function deployProductionGui(currentEntry) {
                     fs.unlinkSync(productionConfigFile);
                 }
                 // this move is within the same volume so we can do it this easy way
-                fs.renameSync(stagingConfigFile, productionConfigFile);
+                fs.renameSync(productionQueuedFile, productionConfigFile);
                 //  terminate existing docker containers by name 
                 var buildContainerName = currentEntry.buildName + '_production_web';
                 var dockerString = 'docker stop ' + buildContainerName
@@ -673,6 +684,7 @@ function deployProductionGui(currentEntry) {
                         //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.html", {flags: 'w'});
                         //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
                         currentlyBuilding.delete(currentEntry.buildName);
+                        fs.unlinkSync(productionConfigFile);
                     };
                 });
             }
