@@ -692,6 +692,12 @@ function deployProductionGui(currentEntry) {
                         };
                     });
                 }
+            }).on('error', function (error) {
+                console.log("existing frinex-gui production unknown, aborting build!");
+                console.log(error);
+                storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
+                fs.unlinkSync(productionConfigFile);
+                currentlyBuilding.delete(currentEntry.buildName);
             });
         } catch (exception) {
             console.log(exception);
