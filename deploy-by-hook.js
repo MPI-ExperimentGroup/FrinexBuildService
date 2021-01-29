@@ -581,7 +581,9 @@ function deployProductionGui(currentEntry) {
         storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
+        console.log("existing deployment check: " + currentEntry.buildName);
         https.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
+            console.log("statusCode: " + response.statusCode);
             if (response.statusCode !== 404) {
                 console.log("existing frinex-gui production found, aborting build!");
                 console.log(response.statusCode);
@@ -1184,7 +1186,7 @@ function moveIncomingToQueued() {
                     }
                 }
                 if (hasProcessingFiles === true) {
-                    //console.log('moveIncomingToQueued: hasProcessingFiles');
+                    console.log('moveIncomingToQueued: hasProcessingFiles');
                     //resultsFile.write("<div>has more files in processing</div>");
                     prepareForProcessing();
                     setTimeout(moveIncomingToQueued, 3000);
