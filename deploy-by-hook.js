@@ -998,7 +998,7 @@ function buildFromListing() {
                     storeResult(fileNamePart, validationMessage, "validation", "json_xsd", true, false, false);
                     console.log('removing: ' + processingDirectory + '/validated/' + filename);
                     // remove the processing/validated XML since it will not be built after this point
-                    //fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
+                    fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
                 } else {
                     validationMessage += 'passed&nbsp;';
                     storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
