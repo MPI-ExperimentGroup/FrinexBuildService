@@ -1057,6 +1057,8 @@ function buildFromListing() {
                             console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
                         }*/
                     }
+                    // if there is one available then started in the build process before looking for more
+                    buildNextExperiment();
                 }
             }
         }
@@ -1070,7 +1072,7 @@ function copyDeleteFile(incomingFile, targetFile) {
         if (fs.existsSync(incomingFile)) {
             fs.unlinkSync(incomingFile);
             console.log('removed: ' + incomingFile);
-            resultsFile.write("<div>removed: " + incomingFile + "</div>");
+            //resultsFile.write("<div>removed: " + incomingFile + "</div>");
         }
     });
     incomingReadStream.pipe(fs.createWriteStream(targetFile));
