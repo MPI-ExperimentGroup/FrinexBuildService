@@ -1008,54 +1008,59 @@ function buildFromListing() {
                         resultsFile.write("<div>waitingTermination: " + buildName + "</div>");
                         storeResult(fileNamePart, 'restarting build', "staging", "web", true, false, false);
                     } else {
-                        var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
-                        var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
-                        // this move is within the same volume so we can do it this easy way
-                        fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
-
-                        // keeping the listing entry in a map so only one can exist for any experiment regardless of mid compilation rebuild requests
-                        console.log('jsonListing: ' + buildName);
-                        resultsFile.write("<div>jsonListing: " + buildName + "</div>");
                         var listingFile = path.resolve(listingDirectory, buildName + '.json');
-                        var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
-                        listingJsonData.buildName = buildName;
-                        console.log('listingJsonData: ' + JSON.stringify(listingJsonData));
-                        fs.unlinkSync(listingFile);
-                        listingMap.set(buildName, listingJsonData);
-                        storeResult(fileNamePart, '', "staging", "web", false, false, false);
-                        storeResult(fileNamePart, '', "staging", "admin", false, false, false);
-                        storeResult(fileNamePart, '', "staging", "android", false, false, false);
-                        storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
-                        storeResult(fileNamePart, '', "production", "web", false, false, false);
-                        storeResult(fileNamePart, '', "production", "admin", false, false, false);
-                        storeResult(fileNamePart, '', "production", "android", false, false, false);
-                        storeResult(fileNamePart, '', "production", "desktop", false, false, false);
-                        if (listingJsonData.state === "staging" || listingJsonData.state === "production") {
-                            storeResult(listingJsonData.buildName, 'queued', "staging", "web", false, false, false);
-                            storeResult(listingJsonData.buildName, 'queued', "staging", "admin", false, false, false);
-                            if (listingJsonData.isAndroid) {
-                                storeResult(listingJsonData.buildName, 'queued', "staging", "android", false, false, false);
+                        if (!fs.existsSync(listingFile)) {
+                            console.log('listingFile not found: ' + listingFile);
+                            resultsFile.write("<div>listingFile not found: " + listingFile + "</div>");    
+                        } else {
+                            var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
+                            var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
+                            // this move is within the same volume so we can do it this easy way
+                            fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
+
+                            // keeping the listing entry in a map so only one can exist for any experiment regardless of mid compilation rebuild requests
+                            console.log('jsonListing: ' + buildName);
+                            resultsFile.write("<div>jsonListing: " + buildName + "</div>");
+                            var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
+                            listingJsonData.buildName = buildName;
+                            console.log('listingJsonData: ' + JSON.stringify(listingJsonData));
+                            fs.unlinkSync(listingFile);
+                            listingMap.set(buildName, listingJsonData);
+                            storeResult(fileNamePart, '', "staging", "web", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "admin", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "android", false, false, false);
+                            storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
+                            storeResult(fileNamePart, '', "production", "web", false, false, false);
+                            storeResult(fileNamePart, '', "production", "admin", false, false, false);
+                            storeResult(fileNamePart, '', "production", "android", false, false, false);
+                            storeResult(fileNamePart, '', "production", "desktop", false, false, false);
+                            if (listingJsonData.state === "staging" || listingJsonData.state === "production") {
+                                storeResult(listingJsonData.buildName, 'queued', "staging", "web", false, false, false);
+                                storeResult(listingJsonData.buildName, 'queued', "staging", "admin", false, false, false);
+                                if (listingJsonData.isAndroid) {
+                                    storeResult(listingJsonData.buildName, 'queued', "staging", "android", false, false, false);
+                                }
+                                if (listingJsonData.isDesktop) {
+                                    storeResult(listingJsonData.buildName, 'queued', "staging", "desktop", false, false, false);
+                                }
                             }
-                            if (listingJsonData.isDesktop) {
-                                storeResult(listingJsonData.buildName, 'queued', "staging", "desktop", false, false, false);
+                            if (listingJsonData.state === "production") {
+                                storeResult(listingJsonData.buildName, 'queued', "production", "web", false, false, false);
+                                storeResult(listingJsonData.buildName, 'queued', "production", "admin", false, false, false);
+                                if (listingJsonData.isAndroid) {
+                                    storeResult(listingJsonData.buildName, 'queued', "production", "android", false, false, false);
+                                }
+                                if (listingJsonData.isDesktop) {
+                                    storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
+                                }
                             }
+                            /*} else {
+                                // todo: check all repositories for duplicate experiments by name and abort if any are found for this experiment name.
+                                initialiseResult(fileNamePart, '<div class="shortmessage">conflict in listing.json<span class="longmessage">Two or more listings for this experiment exist in ' + listingJsonFiles + ' as a precaution this script will not continue until this error is resovled.</span></div>', true);
+                                // todo: put this text and related information into an error text file with link
+                                console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
+                            }*/
                         }
-                        if (listingJsonData.state === "production") {
-                            storeResult(listingJsonData.buildName, 'queued', "production", "web", false, false, false);
-                            storeResult(listingJsonData.buildName, 'queued', "production", "admin", false, false, false);
-                            if (listingJsonData.isAndroid) {
-                                storeResult(listingJsonData.buildName, 'queued', "production", "android", false, false, false);
-                            }
-                            if (listingJsonData.isDesktop) {
-                                storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
-                            }
-                        }
-                        /*} else {
-                            // todo: check all repositories for duplicate experiments by name and abort if any are found for this experiment name.
-                            initialiseResult(fileNamePart, '<div class="shortmessage">conflict in listing.json<span class="longmessage">Two or more listings for this experiment exist in ' + listingJsonFiles + ' as a precaution this script will not continue until this error is resovled.</span></div>', true);
-                            // todo: put this text and related information into an error text file with link
-                            console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
-                        }*/
                     }
                     // if there is one available then started in the build process before looking for more
                     buildNextExperiment();
