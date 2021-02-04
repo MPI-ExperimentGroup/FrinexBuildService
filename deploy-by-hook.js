@@ -957,6 +957,10 @@ function buildNextExperiment() {
             deployStagingGui(currentEntry);
         } else if (currentEntry.state === "undeploy") {
             unDeploy(listing, currentEntry);
+        } else {
+            console.log("nothing to do for: " + queuedConfigFile);
+            currentlyBuilding.delete(currentEntry.buildName);
+            fs.unlinkSync(path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml'));
         }
     }
 }
