@@ -841,11 +841,13 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
     }
     // copy the resulting zips and add links to the output JSON
     var list = fs.readdirSync(targetDirectory + "/" + buildName);
+    var producedOutput = false;
     list.forEach(function (filename) {
         if (filename.endsWith(".apk")) {
             fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk"));
             resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_cordova.apk" + '">apk</a>&nbsp;';
             buildArtifactsJson.artifacts.apk = filename;
+            producedOutput = true;
         }
         if (filename.endsWith("cordova.zip")) {
             fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip"));
@@ -855,15 +857,17 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
             fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip"));
             resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.zip" + '">android-src</a>&nbsp;';
             buildArtifactsJson.artifacts.apk_src = filename;
+            producedOutput = true;
         }
         if (filename.endsWith("ios.zip")) {
             fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_ios.zip"));
             resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_ios.zip" + '">ios-src</a>&nbsp;';
             buildArtifactsJson.artifacts.ios_src = filename;
+            producedOutput = true;
         }
     });
     console.log("build cordova finished");
-    storeResult(buildName, resultString, stage, "android", hasFailed, false, true);
+    storeResult(buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true);
     //update artifacts.json
     //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + buildName + "_" + stage + '_artifacts.json';
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
@@ -904,6 +908,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
         resultString += "failed&nbsp;";
         hasFailed = true;
     }
+    var producedOutput = false;
     // update the links and artifacts JSON
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip')) {
         resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_electron.zip">src</a>&nbsp;';
@@ -912,33 +917,39 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip')) {
         resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip">win32</a>&nbsp;';
         buildArtifactsJson.artifacts['win32'] = buildName + '_' + stage + '_win32-ia32.zip';
+        producedOutput = true;
     }
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip')) {
         resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip">win64</a>&nbsp;';
         buildArtifactsJson.artifacts['win64'] = buildName + '_' + stage + '_win32-x64.zip';
+        producedOutput = true;
     }
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip')) {
         resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip">mac</a>&nbsp;';
         buildArtifactsJson.artifacts['mac'] = buildName + '_' + stage + '_darwin-x64.zip';
+        producedOutput = true;
     }
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip')) {
         resultString += '<a href="' + buildName + '_' + stage + '_linux-x64.zip">linux</a>&nbsp;';
         buildArtifactsJson.artifacts['linux'] = buildName + '_' + stage + '_linux-x64.zip';
+        producedOutput = true;
     }
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.asar')) {
         resultString += '<a href="' + buildName + '_' + stage + '.asar">asar</a>&nbsp;';
         buildArtifactsJson.artifacts['asar'] = buildName + '_' + stage + '.asar';
+        producedOutput = true;
     }
     if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.dmg')) {
         resultString += '<a href="' + buildName + '_' + stage + '.dmg">dmg</a>&nbsp;';
         buildArtifactsJson.artifacts['dmg'] = buildName + '_' + stage + '.dmg';
+        producedOutput = true;
     }
     //mkdir /srv/target/electron
     //cp out/make/*linux*.zip ../with_stimulus_example-linux.zip
     //cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
     //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     console.log("build electron finished");
-    storeResult(buildName, resultString, stage, "desktop", hasFailed, false, true);
+    storeResult(buildName, resultString, stage, "desktop", hasFailed || !producedOutput, false, true);
     //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
@@ -990,12 +1001,12 @@ function buildFromListing() {
                     storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                 }
                 if (fs.existsSync(withoutSuffixPath + ".svg")) {
-                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.svg">svg</a>&nbsp;';
+                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.svg">uml-svg</a>&nbsp;';
                     storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                 }
                 if (fs.existsSync(withoutSuffixPath + ".uml")) {
-                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.uml">uml</a>&nbsp;';
-                    storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
+                    //validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.uml">uml</a>&nbsp;';
+                    //storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                 }
                 if (path.extname(filename) === ".xml") {
                     validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.xml">xml</a>&nbsp;';
