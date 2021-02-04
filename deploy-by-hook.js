@@ -969,7 +969,7 @@ function buildNextExperiment() {
         } else if (currentEntry.state === "undeploy") {
             unDeploy(listing, currentEntry);
         } else {
-            console.log("nothing to do for: " + queuedConfigFile);
+            console.log("nothing to do for: " + currentEntry.buildName);
             currentlyBuilding.delete(currentEntry.buildName);
             fs.unlinkSync(path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml'));
         }
