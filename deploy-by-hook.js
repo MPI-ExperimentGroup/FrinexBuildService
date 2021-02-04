@@ -970,6 +970,7 @@ function buildFromListing() {
             if (fileNamePart === "multiparticipant") {
                 storeResult(fileNamePart, 'disabled', "validation", "json_xsd", true, false, false);
                 console.log("this script will not build multiparticipant without manual intervention");
+                fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
             } else {
                 var validationMessage = "";
                 console.log(filename);
@@ -1011,7 +1012,9 @@ function buildFromListing() {
                         var listingFile = path.resolve(listingDirectory, buildName + '.json');
                         if (!fs.existsSync(listingFile)) {
                             console.log('listingFile not found: ' + listingFile);
-                            resultsFile.write("<div>listingFile not found: " + listingFile + "</div>");    
+                            resultsFile.write("<div>listingFile not found: " + listingFile + "</div>");
+                            // in this case delete the XML as well
+                            fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
                         } else {
                             var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
                             var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
