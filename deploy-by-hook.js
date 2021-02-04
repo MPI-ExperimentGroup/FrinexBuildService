@@ -944,7 +944,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
 }
 
 function buildNextExperiment() {
-    while (listingMap.size > 0 && currentlyBuilding.size < concurrentBuildCount) {
+    while (listingMap.size > 0 && currentlyBuilding.size <= concurrentBuildCount) {
         const currentKey = listingMap.keys().next().value;
         console.log('buildNextExperiment: ' + currentKey);
         resultsFile.write("buildNextExperiment: " + currentKey + "</div>");
