@@ -261,6 +261,7 @@ function stopUpdatingResults() {
 }
 
 function unDeploy(currentEntry) {
+    console.log("unDeploy");
     // we create a new mvn instance for each child pom
     var mvngui = require('maven').create({
         cwd: __dirname + "/gwt-cordova",
@@ -356,9 +357,11 @@ function unDeploy(currentEntry) {
         console.log(currentEntry.experimentDisplayName);
         storeResult(currentEntry.buildName, 'undeploy failed', "staging", "web", true, false, false);
     });
+    currentlyBuilding.delete(currentEntry.buildName);
 }
 
 function deployStagingGui(currentEntry) {
+    console.log("deployStagingGui");
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt");
     }
