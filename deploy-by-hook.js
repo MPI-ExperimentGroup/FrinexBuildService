@@ -960,18 +960,24 @@ function buildNextExperiment() {
         console.log('buildNextExperiment: ' + currentKey);
         resultsFile.write("buildNextExperiment: " + currentKey + "</div>");
         const currentEntry = listingMap.get(currentKey);
-        currentlyBuilding.set(currentEntry.buildName, currentEntry);
-        listingMap.delete(currentKey);
-        //console.log("starting generate stimulus");
-        //execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
-        if (currentEntry.state === "staging" || currentEntry.state === "production") {
-            deployStagingGui(currentEntry);
-        } else if (currentEntry.state === "undeploy") {
-            unDeploy(listing, currentEntry);
+        if (currentlyBuilding.has(currentEntry.buildName)) {
+            console.log("waiting rebuild: " + currentEntry.buildName);
+            storeResult(currentKey, 'waiting rebuild', "staging", "web", true, false, false);
         } else {
-            console.log("nothing to do for: " + currentEntry.buildName);
-            currentlyBuilding.delete(currentEntry.buildName);
-            fs.unlinkSync(path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml'));
+            currentlyBuilding.set(currentEntry.buildName, currentEntry);
+            listingMap.delete(currentKey);
+            //console.log("starting generate stimulus");
+            //execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
+            if (currentEntry.state === "staging" || currentEntry.state === "production") {
+                deployStagingGui(currentEntry);
+            } else if (currentEntry.state === "undeploy") {
+                // todo: undeploy probably does not need to be limited by concurrentBuildCount
+                unDeploy(listing, currentEntry);
+            } else {
+                console.log("nothing to do for: " + currentEntry.buildName);
+                currentlyBuilding.delete(currentEntry.buildName);
+                fs.unlinkSync(path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml'));
+            }
         }
     }
 }
