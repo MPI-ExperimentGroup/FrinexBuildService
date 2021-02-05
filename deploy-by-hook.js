@@ -216,10 +216,10 @@ function initialiseResult(name, message, isError) {
     }
     buildHistoryJson.table[name] = {
         "_experiment": { value: name, style: '' },
-        "_date": { value: message, style: style },
+        "_date": { value: new Date().toISOString(), style: '' },
         //"_validation_link_json": {value: '', style: ''},
         //"_validation_link_xml": {value: '', style: ''},
-        "_validation_json_xsd": { value: '', style: '' },
+        "_validation_json_xsd": { value: message, style: style },
         "_staging_web": { value: '', style: '' },
         "_staging_android": { value: '', style: '' },
         "_staging_desktop": { value: '', style: '' },
@@ -491,7 +491,6 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
         console.log("deployStagingAdmin missing: " + stagingConfigFile);
         storeResult(currentEntry.buildName, 'failed', "staging", "admin", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
-        fs.unlinkSync(stagingConfigFile);
     } else {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
