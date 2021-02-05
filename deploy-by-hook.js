@@ -1314,7 +1314,7 @@ function moveIncomingToQueued() {
                                 console.log(reason);
                             }
                         }
-                        initialiseResult(currentName, 'queued', false);
+                        initialiseResult(currentName, 'initialising', false);
                         //if (fs.existsSync(targetDirectory + "/" + currentName)) {
                         // todo: consider if this agressive removal is always wanted
                         //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
