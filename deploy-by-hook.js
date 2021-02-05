@@ -39,6 +39,7 @@ const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 const execSync = require('child_process').execSync;
 const { exec } = require('child_process');
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const m2Settings = properties.get('settings.m2Settings');
@@ -590,7 +591,8 @@ function deployProductionGui(currentEntry) {
     } else {
         console.log("existing deployment check: " + productionServerUrl + '/' + currentEntry.buildName);
         try {
-            https.get(productionServerUrl + '/' + currentEntry.buildName, function (response) {
+            var deploymentCheckUrl = new URL(productionServerUrl + '/' + currentEntry.buildName);
+            ((deploymentCheckUrl.protocol == "https:") ? https : http).get(deploymentCheckUrl, function (response) {
                 console.log("statusCode: " + response.statusCode);
                 if (response.statusCode !== 404) {
                     console.log("existing frinex-gui production found, aborting build!");
