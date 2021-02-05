@@ -1112,6 +1112,7 @@ function copyDeleteFile(incomingFile, targetFile) {
 }
 
 function prepareForProcessing() {
+    console.log("prepareForProcessing");
     var list = fs.readdirSync(processingDirectory + '/validated');
     for (var filename of list) {
         console.log('processing: ' + filename);
@@ -1188,6 +1189,7 @@ function prepareForProcessing() {
 }
 
 function moveIncomingToQueued() {
+    console.log("moveIncomingToQueued");
     if (!fs.existsSync(incomingDirectory + "/queued")) {
         fs.mkdirSync(incomingDirectory + '/queued');
         console.log('queued directory created');
@@ -1225,7 +1227,8 @@ function moveIncomingToQueued() {
     }
     fs.readdir(incomingDirectory + '/commits', function (error, list) {
         if (error) {
-            console.error(error);
+            console.error("moveIncomingToQueued error: " + error);
+            setTimeout(moveIncomingToQueued, 3000);
         } else {
             var remainingFiles = list.length;
             if (remainingFiles <= 0) {
