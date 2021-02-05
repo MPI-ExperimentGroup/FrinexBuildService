@@ -107,6 +107,7 @@ function startResult() {
     resultsFile.write("<script>\n");
     resultsFile.write("var applicationStatus = {};\n");
     resultsFile.write("function doUpdate() {\n");
+    resultsFile.write("updateTimer = window.setTimeout(doUpdate, 60000);\n");
     resultsFile.write("$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
     //resultsFile.write("console.log(data);\n");
     resultsFile.write("for (var keyString in data.table) {\n");
@@ -179,6 +180,7 @@ function startResult() {
     resultsFile.write("}\n");
     resultsFile.write("}\n");
     resultsFile.write("doSort();\n");
+    resultsFile.write("clearTimeout(updateTimer);\n");
     resultsFile.write("if(data.building){\n");
     resultsFile.write("updateTimer = window.setTimeout(doUpdate, 1000);\n");
     resultsFile.write("} else {\n");
@@ -249,6 +251,8 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3C3F3';
     } else if (isDone) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3F3C3';
+    } else {
+        buildHistoryJson.table[name]["_" + stage + "_" + type].style = '';
     }
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
@@ -1032,7 +1036,7 @@ function buildFromListing() {
                         // if any build configuration exists then wait for its build process to terminate
                         console.log('waitingTermination: ' + buildName);
                         resultsFile.write("<div>waitingTermination: " + buildName + "</div>");
-                        storeResult(fileNamePart, 'restarting build', "staging", "web", true, false, false);
+                        storeResult(fileNamePart, 'restarting build', "staging", "web", false, false, false);
                     } else {
                         var listingFile = path.resolve(listingDirectory, buildName + '.json');
                         if (!fs.existsSync(listingFile)) {
@@ -1319,7 +1323,7 @@ function moveIncomingToQueued() {
                                 console.log(reason);
                             }
                         }
-                        initialiseResult(currentName, 'initialising', false);
+                        initialiseResult(currentName, 'validating', false);
                         //if (fs.existsSync(targetDirectory + "/" + currentName)) {
                         // todo: consider if this agressive removal is always wanted
                         //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
