@@ -955,7 +955,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
 }
 
 function buildNextExperiment() {
-    while (listingMap.size > 0 && currentlyBuilding.size <= concurrentBuildCount) {
+    while (listingMap.size > 0 && currentlyBuilding.size < concurrentBuildCount) {
         const currentKey = listingMap.keys().next().value;
         console.log('buildNextExperiment: ' + currentKey);
         resultsFile.write("buildNextExperiment: " + currentKey + "</div>");
@@ -1329,6 +1329,7 @@ function moveIncomingToQueued() {
                     }
                     remainingFiles--;
                     if (remainingFiles <= 0) {
+                        buildNextExperiment(); // if there are existing experiments in the build queue they can be started before converting more with JsonToXml
                         convertJsonToXml();
                         setTimeout(moveIncomingToQueued, 3000);
                     }
