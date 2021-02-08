@@ -267,45 +267,94 @@ function stopUpdatingResults() {
 
 function unDeploy(currentEntry) {
     console.log("unDeploy");
-    // we create a new mvn instance for each child pom
-    var mvngui = require('maven').create({
-        cwd: __dirname + "/gwt-cordova",
-        settings: m2Settings
-    });
     console.log("request to unDeploy " + currentEntry.buildName);
-    storeResult(currentEntry.buildName, 'undeploying', "staging", "web", false, true, false);
-    mvngui.execute(['tomcat7:undeploy'], {
-        'skipTests': true, '-pl': 'frinex-gui',
-        'experiment.configuration.name': currentEntry.buildName,
-        'experiment.configuration.displayName': currentEntry.experimentDisplayName,
-        'experiment.webservice': configServer,
-        'experiment.configuration.path': processingDirectory,
-        'versionCheck.allowSnapshots': 'true',
-        'versionCheck.buildType': 'stable',
-        'experiment.destinationServer': stagingServer,
-        'experiment.destinationServerUrl': stagingServerUrl
-    }).then(function (value) {
-        console.log("frinex-gui undeploy finished");
-        storeResult(currentEntry.buildName, 'undeployed', "staging", "web", false, false, true);
-        var mvnadmin = require('maven').create({
-            cwd: __dirname + "/registration",
-            settings: m2Settings
-        });
-        storeResult(currentEntry.buildName, 'undeploying', "staging", "admin", false, true, false);
-        mvnadmin.execute(['tomcat7:undeploy'], {
-            'skipTests': true, '-pl': 'frinex-admin',
-            'experiment.configuration.name': currentEntry.buildName,
-            'experiment.configuration.displayName': currentEntry.experimentDisplayName,
-            'experiment.webservice': configServer,
-            'experiment.configuration.path': processingDirectory,
-            'versionCheck.allowSnapshots': 'true',
-            'versionCheck.buildType': 'stable',
-            'experiment.destinationServer': stagingServer,
-            'experiment.destinationServerUrl': stagingServerUrl
-        }).then(function (value) {
-            console.log(value);
+    // undeploy staging gui
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploying</a>', "staging", "web", false, true, false);
+    var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
+    var buildContainerName = currentEntry.buildName + '_undeploy';
+    var dockerString = 'docker stop ' + buildContainerName
+        + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+        + 'docker run'
+        + ' --rm '
+        + ' --name ' + buildContainerName
+        // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+        + ' -v processingDirectory:/FrinexBuildService/processing'
+        + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+        + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+        + ' -v m2Directory:/maven/.m2/'
+        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+        + ' mvn tomcat7:undeploy '
+        + ' -gs /maven/.m2/settings.xml'
+        + ' -DskipTests'
+        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+        + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
+        + ' -Dexperiment.webservice=' + configServer
+        + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
+        + ' -DversionCheck.allowSnapshots=' + 'false'
+        + ' -DversionCheck.buildType=' + 'stable'
+        + ' -Dexperiment.destinationServer=' + stagingServer
+        + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
+        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+        + ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging.war'
+        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+        + '"';
+    console.log(dockerString);
+    exec(dockerString, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`frinex-gui undeploy error: ${error}`);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploy error</a>', "staging", "web", true, false, true);    
+        } else {
+            console.log("frinex-gui undeploy finished");
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeployed</a>', "staging", "web", false, false, true);
+        }
+        console.log(`frinex-gui  undeploy stdout: ${stdout}`);
+        console.error(`frinex-gui  undeploy stderr: ${stderr}`);
+    });
+    // undeploy staging admin
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false);
+    var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
+    var buildContainerName = currentEntry.buildName + '_undeploy';
+    var dockerString = 'docker stop ' + buildContainerName
+        + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+        + 'docker run'
+        + ' --rm '
+        + ' --name ' + buildContainerName
+        // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+        + ' -v processingDirectory:/FrinexBuildService/processing'
+        + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+        + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+        + ' -v m2Directory:/maven/.m2/'
+        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
+        + ' mvn tomcat7:undeploy '
+        + ' -gs /maven/.m2/settings.xml'
+        + ' -DskipTests'
+        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+        + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
+        + ' -Dexperiment.webservice=' + configServer
+        + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
+        + ' -DversionCheck.allowSnapshots=' + 'false'
+        + ' -DversionCheck.buildType=' + 'stable'
+        + ' -Dexperiment.destinationServer=' + stagingServer
+        + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
+        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+        + ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
+        + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+        + '"';
+    console.log(dockerString);
+    exec(dockerString, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`frinex-admin undeploy error: ${error}`);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploy error</a>', "staging", "admin", true, false, true);    
+        } else {
             console.log("frinex-admin undeploy finished");
-            storeResult(currentEntry.buildName, 'undeployed', "staging", "admin", false, false, true);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeployed</a>', "staging", "admin", false, false, true);
+        }
+        console.log(`frinex-admin  undeploy stdout: ${stdout}`);
+        console.error(`frinex-admin  undeploy stderr: ${stderr}`);
+    });
+
+
+
             mvngui.execute(['tomcat7:undeploy'], {
                 'skipTests': true, '-pl': 'frinex-gui',
                 'experiment.configuration.name': currentEntry.buildName,
@@ -363,6 +412,7 @@ function unDeploy(currentEntry) {
         storeResult(currentEntry.buildName, 'undeploy failed', "staging", "web", true, false, false);
     });
     currentlyBuilding.delete(currentEntry.buildName);
+    fs.unlinkSync(queuedConfigFile);
 }
 
 function deployStagingGui(currentEntry) {
