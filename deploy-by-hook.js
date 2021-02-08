@@ -1047,7 +1047,7 @@ function buildNextExperiment() {
                 deployStagingGui(currentEntry);
             } else if (currentEntry.state === "undeploy") {
                 // todo: undeploy probably does not need to be limited by concurrentBuildCount
-                unDeploy(listing, currentEntry);
+                unDeploy(currentEntry);
             } else {
                 console.log("nothing to do for: " + currentEntry.buildName);
                 currentlyBuilding.delete(currentEntry.buildName);
