@@ -419,7 +419,9 @@ function unDeploy(currentEntry) {
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploy error</a>', "production", "admin", true, false, true);
     }
     currentlyBuilding.delete(currentEntry.buildName);
-    fs.unlinkSync(queuedConfigFile);
+    if (fs.existsSync(queuedConfigFile)) {
+        fs.unlinkSync(queuedConfigFile);
+    }
 }
 
 function deployStagingGui(currentEntry) {
@@ -535,7 +537,9 @@ function deployStagingGui(currentEntry) {
                 //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                 //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
                 currentlyBuilding.delete(currentEntry.buildName);
-                fs.unlinkSync(stagingConfigFile);
+                if (fs.existsSync(stagingConfigFile)) {
+                    fs.unlinkSync(stagingConfigFile);
+                }
             };
         });
     }
@@ -618,20 +622,26 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                     deployProductionGui(currentEntry);
                 } else {
                     currentlyBuilding.delete(currentEntry.buildName);
-                    fs.unlinkSync(stagingConfigFile);
+                    if (fs.existsSync(stagingConfigFile)) {
+                        fs.unlinkSync(stagingConfigFile);
+                    }
                 }
             } else {
                 console.log("deployStagingAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
                 currentlyBuilding.delete(currentEntry.buildName);
-                fs.unlinkSync(stagingConfigFile);
+                if (fs.existsSync(stagingConfigFile)) {
+                    fs.unlinkSync(stagingConfigFile);
+                }
             };
         } catch (error) {
             console.error('deployStagingAdmin error: ' + error);
             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
             currentlyBuilding.delete(currentEntry.buildName);
-            fs.unlinkSync(stagingConfigFile);
+            if (fs.existsSync(stagingConfigFile)) {
+                fs.unlinkSync(stagingConfigFile);
+            }
         }
     }
 }
@@ -659,7 +669,9 @@ function deployProductionGui(currentEntry) {
                     console.log("existing frinex-gui production found, aborting build!");
                     console.log(response.statusCode);
                     storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
-                    fs.unlinkSync(productionConfigFile);
+                    if (fs.existsSync(productionConfigFile)) {
+                        fs.unlinkSync(productionConfigFile);
+                    }
                     currentlyBuilding.delete(currentEntry.buildName);
                 } else {
                     if (fs.existsSync(productionConfigFile)) {
@@ -757,7 +769,9 @@ function deployProductionGui(currentEntry) {
                             //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.html", {flags: 'w'});
                             //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
                             currentlyBuilding.delete(currentEntry.buildName);
-                            fs.unlinkSync(productionConfigFile);
+                            if (fs.existsSync(productionConfigFile)) {
+                                fs.unlinkSync(productionConfigFile);
+                            }
                         };
                     });
                 }
@@ -765,14 +779,18 @@ function deployProductionGui(currentEntry) {
                 console.log("existing frinex-gui production unknown, aborting build!");
                 console.log(error);
                 storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
-                fs.unlinkSync(productionConfigFile);
+                if (fs.existsSync(productionConfigFile)) {
+                    fs.unlinkSync(productionConfigFile);
+                }
                 currentlyBuilding.delete(currentEntry.buildName);
             });
         } catch (exception) {
             console.log(exception);
             console.log("frinex-gui production failed");
             storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
-            fs.unlinkSync(productionConfigFile);
+            if (fs.existsSync(productionConfigFile)) {
+                fs.unlinkSync(productionConfigFile);
+            }
             currentlyBuilding.delete(currentEntry.buildName);
         }
     }
@@ -848,19 +866,25 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 // update artifacts.json
                 fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
                 currentlyBuilding.delete(currentEntry.buildName);
-                fs.unlinkSync(productionConfigFile);
+                if (fs.existsSync(productionConfigFile)) {
+                    fs.unlinkSync(productionConfigFile);
+                }
             } else {
                 console.log("deployProductionAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
                 currentlyBuilding.delete(currentEntry.buildName);
-                fs.unlinkSync(productionConfigFile);
+                if (fs.existsSync(productionConfigFile)) {
+                    fs.unlinkSync(productionConfigFile);
+                }
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
             };
             currentlyBuilding.delete(currentEntry.buildName);
         } catch (error) {
             console.error('deployProductionAdmin error: ' + error);
             currentlyBuilding.delete(currentEntry.buildName);
-            fs.unlinkSync(productionConfigFile);
+            if (fs.existsSync(productionConfigFile)) {
+                fs.unlinkSync(productionConfigFile);
+            }
             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
         }
         console.log("deployProductionAdmin ended");
