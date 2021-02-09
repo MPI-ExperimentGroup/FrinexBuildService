@@ -542,8 +542,7 @@ function deployStagingGui(currentEntry) {
             } else {
                 //console.log(targetDirectory);
                 //console.log(JSON.stringify(reason, null, 4));
-                console.log("deployStagingGui failed");
-                console.log(currentEntry.experimentDisplayName);
+                console.log("deployStagingGui failed: " + currentEntry.experimentDisplayName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
                 //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                 //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
@@ -1314,6 +1313,7 @@ function moveIncomingToQueued() {
                     var processingList = fs.readdirSync(currentDirectoryPath);
                     if (processingList.length > 0) {
                         hasProcessingFiles = true;
+                        console.log('hasProcessingFiles: ' + currentDirectory + ' : ' + processingList.length);
                     }
                 }
                 if (hasProcessingFiles === true) {
