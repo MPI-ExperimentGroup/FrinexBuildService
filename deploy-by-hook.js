@@ -299,17 +299,14 @@ function unDeploy(currentEntry) {
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + '"';
     console.log(dockerString);
-    exec(dockerString, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`staging frinex-gui undeploy error: ${error}`);
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploy error</a>', "staging", "web", true, false, true);
-        } else {
-            console.log("staging frinex-gui undeploy finished");
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeployed</a>', "staging", "web", false, false, true);
-        }
-        console.log(`staging frinex-gui  undeploy stdout: ${stdout}`);
-        console.error(`staging frinex-gui  undeploy stderr: ${stderr}`);
-    });
+    try {
+        execSync(dockerString, { stdio: [0, 1, 2] });
+        console.log("staging frinex-gui undeploy finished");
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeployed</a>', "staging", "web", false, false, true);
+    } catch (error) {
+        console.error(`staging frinex-gui undeploy error: ${error}`);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploy error</a>', "staging", "web", true, false, true);
+    }
     // undeploy staging admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false);
     var dockerString = 'docker stop ' + buildContainerName
@@ -339,17 +336,14 @@ function unDeploy(currentEntry) {
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         + '"';
     console.log(dockerString);
-    exec(dockerString, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`staging frinex-admin undeploy error: ${error}`);
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploy error</a>', "staging", "admin", true, false, true);
-        } else {
-            console.log("staging frinex-admin undeploy finished");
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeployed</a>', "staging", "admin", false, false, true);
-        }
-        console.log(`staging frinex-admin  undeploy stdout: ${stdout}`);
-        console.error(`staging frinex-admin  undeploy stderr: ${stderr}`);
-    });
+    try {
+        execSync(dockerString, { stdio: [0, 1, 2] });
+        console.log("staging frinex-admin undeploy finished");
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeployed</a>', "staging", "admin", false, false, true);
+    } catch (error) {
+        console.error(`staging frinex-admin undeploy error: ${error}`);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploy error</a>', "staging", "admin", true, false, true);
+    }
     // undeploy production gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploying</a>', "production", "web", false, true, false);
     var dockerString = 'docker stop ' + buildContainerName
@@ -379,17 +373,14 @@ function unDeploy(currentEntry) {
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         + '"';
     console.log(dockerString);
-    exec(dockerString, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`production frinex-gui undeploy error: ${error}`);
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploy error</a>', "production", "web", true, false, true);
-        } else {
-            console.log("production frinex-gui undeploy finished");
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeployed</a>', "production", "web", false, false, true);
-        }
-        console.log(`production frinex-gui  undeploy stdout: ${stdout}`);
-        console.error(`production frinex-gui  undeploy stderr: ${stderr}`);
-    });
+    try {
+        execSync(dockerString, { stdio: [0, 1, 2] });
+        console.log("production frinex-gui undeploy finished");
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeployed</a>', "production", "web", false, false, true);
+    } catch (error) {
+        console.error(`production frinex-gui undeploy error: ${error}`);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploy error</a>', "production", "web", true, false, true);
+    }
     // undeploy production admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploying</a>', "production", "admin", false, true, false);
     var dockerString = 'docker stop ' + buildContainerName
@@ -419,17 +410,14 @@ function unDeploy(currentEntry) {
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + '"';
     console.log(dockerString);
-    exec(dockerString, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`production frinex-admin undeploy error: ${error}`);
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploy error</a>', "production", "admin", true, false, true);
-        } else {
-            console.log("production frinex-admin undeploy finished");
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeployed</a>', "production", "admin", false, false, true);
-        }
-        console.log(`production frinex-admin  undeploy stdout: ${stdout}`);
-        console.error(`production frinex-admin  undeploy stderr: ${stderr}`);
-    });
+    try {
+        execSync(dockerString, { stdio: [0, 1, 2] });
+        console.log("production frinex-admin undeploy finished");
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeployed</a>', "production", "admin", false, false, true);
+    } catch (error) {
+        console.error(`production frinex-admin undeploy error: ${error}`);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploy error</a>', "production", "admin", true, false, true);
+    }
     currentlyBuilding.delete(currentEntry.buildName);
     fs.unlinkSync(queuedConfigFile);
 }
