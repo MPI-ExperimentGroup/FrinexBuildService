@@ -1469,5 +1469,14 @@ function deleteOldProcessing() {
     moveIncomingToQueued();
 }
 
+function checkPrerequisits() {
+    if (!fs.existsSync("/maven/.m2/settings.xml")) {
+        // the m2Settings from publish.properties is not currently used, should it be reinstated?
+        console.log("Maven settings missing, exiting");
+    } else {
+        deleteOldProcessing();
+    }
+}
+
 startResult();
-deleteOldProcessing();
+checkPrerequisits();
