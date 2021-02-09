@@ -1469,6 +1469,7 @@ function deleteOldProcessing() {
     moveIncomingToQueued();
 }
 
+/* /maven/.m2 is not mounted on the build container
 function checkPrerequisits() {
     if (!fs.existsSync("/maven/.m2/settings.xml")) {
         // the m2Settings from publish.properties is not currently used, should it be reinstated?
@@ -1476,7 +1477,6 @@ function checkPrerequisits() {
     } else {
         deleteOldProcessing();
     }
-}
-
+} */
 startResult();
-checkPrerequisits();
+deleteOldProcessing();
