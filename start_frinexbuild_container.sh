@@ -25,25 +25,32 @@
 cd $(dirname "$0")
 workingDir=$(pwd -P)
 
-# stop all containers (probably not wanted in future usage)
-docker stop $(docker ps -a -q)
+# check that the properties to be used match the current machine
+if ! grep -q $(hostname) publish.properties; then 
+    echo "Aborting because the publish.properties does not match the current machine.";
+else
+    # stop all containers (probably not wanted in future usage)
+    docker stop $(docker ps -a -q)
 
-# get the latest version of this repository
-git pull
+    # trash all the previous build data and output for the purpose of testing only
+    #docker volume rm buildServerTarget incomingDirectory listingDirectory processingDirectory webappsTomcatStaging
 
-# build the frinexbuild dockerfile
-docker build --no-cache -f frinexbuild.Dockerfile -t frinexbuild:latest .
+    # get the latest version of this repository
+    git pull
 
-# build the frinexapps dockerfile:
-docker build --rm -f frinexapps.Dockerfile -t frinexapps:latest .
+    # build the frinexbuild dockerfile
+    docker build --no-cache -f frinexbuild.Dockerfile -t frinexbuild:latest .
 
-# start a tomcat docker image to test deployments
-# note that this currently will delete anything in webappsTomcatStaging
-#docker run --name tomcat01 -d --rm -it -p 8091:8080 -v webappsTomcatStaging:/usr/local/tomcat/webapps -v $workingDir/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml -v $workingDir/context.xml:/usr/local/tomcat/webapps.dist/manager/META-INF/context.xml tomcat:9.0 /bin/bash -c "rm -r /usr/local/tomcat/webapps/manager; mv /usr/local/tomcat/webapps.dist/manager /usr/local/tomcat/webapps/; catalina.sh run"
-docker build --rm -f tomcatstaging.Dockerfile -t tomcatstaging:latest .
+    # build the frinexapps dockerfile:
+    docker build --rm -f frinexapps.Dockerfile -t frinexapps:latest .
+
+    # start a tomcat docker image to test deployments
+    docker build --rm -f tomcatstaging.Dockerfile -t tomcatstaging:latest .
 
 # start the staging tomcat server
-docker run --name tomcatstaging -d --rm -i -p 8071:8080 -v webappsTomcatStaging:/usr/local/tomcat/webapps tomcatstaging:latest
+    docker run --name tomcatstaging -d --rm -i -p 8071:8080 -v webappsTomcatStaging:/usr/local/tomcat/webapps tomcatstaging:latest
 
-# start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
-docker run  -v /var/run/docker.sock:/var/run/docker.sock -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/usr/local/apache2/htdocs --rm -it --name frinexbuild-test01 -p 8070:80 frinexbuild:latest bash
+    # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
+    docker run  -v /var/run/docker.sock:/var/run/docker.sock -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/usr/local/apache2/htdocs --rm -it --name frinexbuild-test01 -p 8070:80 frinexbuild:latest bash
+
+fi;
