@@ -418,10 +418,10 @@ function unDeploy(currentEntry) {
         console.error(`production frinex-admin undeploy error: ${error}`);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploy error</a>', "production", "admin", true, false, true);
     }
-    currentlyBuilding.delete(currentEntry.buildName);
     if (fs.existsSync(queuedConfigFile)) {
         fs.unlinkSync(queuedConfigFile);
     }
+    currentlyBuilding.delete(currentEntry.buildName);
 }
 
 function deployStagingGui(currentEntry) {
@@ -536,10 +536,13 @@ function deployStagingGui(currentEntry) {
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
                 //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                 //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
-                currentlyBuilding.delete(currentEntry.buildName);
                 if (fs.existsSync(stagingConfigFile)) {
                     fs.unlinkSync(stagingConfigFile);
                 }
+                if (fs.existsSync(buildArtifactsFileName)) {
+                    fs.unlinkSync(buildArtifactsFileName);
+                }
+                currentlyBuilding.delete(currentEntry.buildName);
             };
         });
     }
@@ -599,7 +602,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar'
+            + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
@@ -621,27 +624,36 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                     fs.renameSync(stagingConfigFile, productionQueuedFile);
                     deployProductionGui(currentEntry);
                 } else {
-                    currentlyBuilding.delete(currentEntry.buildName);
                     if (fs.existsSync(stagingConfigFile)) {
                         fs.unlinkSync(stagingConfigFile);
                     }
+                    if (fs.existsSync(buildArtifactsFileName)) {
+                        fs.unlinkSync(buildArtifactsFileName);
+                    }
+                    currentlyBuilding.delete(currentEntry.buildName);
                 }
             } else {
                 console.log("deployStagingAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
-                currentlyBuilding.delete(currentEntry.buildName);
                 if (fs.existsSync(stagingConfigFile)) {
                     fs.unlinkSync(stagingConfigFile);
                 }
+                if (fs.existsSync(buildArtifactsFileName)) {
+                    fs.unlinkSync(buildArtifactsFileName);
+                }
+                currentlyBuilding.delete(currentEntry.buildName);
             };
         } catch (error) {
             console.error('deployStagingAdmin error: ' + error);
             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
-            currentlyBuilding.delete(currentEntry.buildName);
             if (fs.existsSync(stagingConfigFile)) {
                 fs.unlinkSync(stagingConfigFile);
             }
+            if (fs.existsSync(buildArtifactsFileName)) {
+                fs.unlinkSync(buildArtifactsFileName);
+            }
+            currentlyBuilding.delete(currentEntry.buildName);
         }
     }
 }
@@ -769,10 +781,13 @@ function deployProductionGui(currentEntry) {
                             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false);
                             //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.html", {flags: 'w'});
                             //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
-                            currentlyBuilding.delete(currentEntry.buildName);
                             if (fs.existsSync(productionConfigFile)) {
                                 fs.unlinkSync(productionConfigFile);
                             }
+                            if (fs.existsSync(buildArtifactsFileName)) {
+                                fs.unlinkSync(buildArtifactsFileName);
+                            }
+                            currentlyBuilding.delete(currentEntry.buildName);
                         };
                     });
                 }
@@ -783,6 +798,9 @@ function deployProductionGui(currentEntry) {
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
                 }
+                if (fs.existsSync(buildArtifactsFileName)) {
+                    fs.unlinkSync(buildArtifactsFileName);
+                }
                 currentlyBuilding.delete(currentEntry.buildName);
             });
         } catch (exception) {
@@ -791,6 +809,9 @@ function deployProductionGui(currentEntry) {
             storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
             if (fs.existsSync(productionConfigFile)) {
                 fs.unlinkSync(productionConfigFile);
+            }
+            if (fs.existsSync(buildArtifactsFileName)) {
+                fs.unlinkSync(buildArtifactsFileName);
             }
             currentlyBuilding.delete(currentEntry.buildName);
         }
@@ -851,8 +872,11 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar'
+            + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
+            + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
+            + " chmod a+rwx /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + '"';
         console.log(dockerString);
         try {
@@ -866,26 +890,35 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
                 // update artifacts.json
                 fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
-                currentlyBuilding.delete(currentEntry.buildName);
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
                 }
+                if (fs.existsSync(buildArtifactsFileName)) {
+                    fs.unlinkSync(buildArtifactsFileName);
+                }
+                currentlyBuilding.delete(currentEntry.buildName);
             } else {
                 console.log("deployProductionAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
-                currentlyBuilding.delete(currentEntry.buildName);
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
                 }
+                if (fs.existsSync(buildArtifactsFileName)) {
+                    fs.unlinkSync(buildArtifactsFileName);
+                }
+                currentlyBuilding.delete(currentEntry.buildName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
             };
             currentlyBuilding.delete(currentEntry.buildName);
         } catch (error) {
             console.error('deployProductionAdmin error: ' + error);
-            currentlyBuilding.delete(currentEntry.buildName);
             if (fs.existsSync(productionConfigFile)) {
                 fs.unlinkSync(productionConfigFile);
             }
+            if (fs.existsSync(buildArtifactsFileName)) {
+                fs.unlinkSync(buildArtifactsFileName);
+            }
+            currentlyBuilding.delete(currentEntry.buildName);
             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
         }
         console.log("deployProductionAdmin ended");
@@ -911,7 +944,7 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
             + ' mkdir /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' cp /FrinexBuildService/processing/staging-building/' + buildName + '_setup-cordova.sh /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' mv /FrinexBuildService/processing/staging-building/' + buildName + '_setup-cordova.sh /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' bash /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' ls /FrinexBuildService/cordova-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/app-release.apk ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.apk &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
@@ -978,7 +1011,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
             + ' mkdir /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' cp /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-electron.sh /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-electron.sh /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' bash /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_setup-electron.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' ls /FrinexBuildService/electron-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-electron.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
