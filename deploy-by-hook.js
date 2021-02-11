@@ -652,7 +652,7 @@ function deployProductionGui(currentEntry) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt");
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt", 'w'));
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
+    storeResult(currentEntry.buildName, 'checking', "production", "web", false, true, false);
     var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
     var productionConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
     if (!fs.existsSync(productionQueuedFile)) {
@@ -674,6 +674,7 @@ function deployProductionGui(currentEntry) {
                     }
                     currentlyBuilding.delete(currentEntry.buildName);
                 } else {
+                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
                     if (fs.existsSync(productionConfigFile)) {
                         console.log("deployProductionGui found: " + productionConfigFile);
                         console.log("deployProductionGui if another process already building it will be terminated: " + currentEntry.buildName);
