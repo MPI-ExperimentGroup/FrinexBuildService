@@ -1493,19 +1493,23 @@ function convertJsonToXml() {
 function prepareBuildHistory() {
     if (fs.existsSync(buildHistoryFileName)) {
         try {
-            buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
-            fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
-            /*for (var keyString in buildHistoryJson.table) {
-                for (var cellString in buildHistoryJson.table[keyString]) {
+            buildHistoryJsonTemp = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
+            fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o755 });
+            for (var keyString in buildHistoryJsonTemp.table) {
+                for (var cellString in buildHistoryJsonTemp.table[keyString]) {
                     // filtering out expired building CSS colours and "building" and "pending" strings
-                    if (buildHistoryJson.table[keyString][cellString].style === 'background: #C3C3F3') {
+                    if (buildHistoryJsonTemp.table[keyString][cellString].style === 'background: #C3C3F3') {
                         buildHistoryJson.table[keyString][cellString].style = '';
-                        buildHistoryJson.table[keyString][cellString].value = buildHistoryJson.table[keyString][cellString].value.replace(/building/g, 'unknown');
+                        buildHistoryJson.table[keyString][cellString].value = buildHistoryJsonTemp.table[keyString][cellString].value.replace(/building/g, 'unknown');
                     } else if (buildHistoryJson.table[keyString][cellString].value === 'queued') {
                         buildHistoryJson.table[keyString][cellString].value = '';
+                        buildHistoryJson.table[keyString][cellString].style = '';
+                    } else {
+                        buildHistoryJson.table[keyString][cellString].value = buildHistoryJsonTemp.table[keyString][cellString].value;
+                        buildHistoryJson.table[keyString][cellString].style = buildHistoryJsonTemp.table[keyString][cellString].style;
                     }
                 }
-            }*/
+            }
         } catch (error) {
             console.log("faild to read " + buildHistoryJson);
             console.log(error);
