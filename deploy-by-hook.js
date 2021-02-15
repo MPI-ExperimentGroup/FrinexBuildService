@@ -1498,11 +1498,11 @@ function prepareBuildHistory() {
             for (var keyString in buildHistoryJson.table) {
                 for (var cellString in buildHistoryJson.table[keyString]) {
                     // filtering out expired building CSS colours and "building" and "pending" strings
-                    if (data.table[keyString][cellString].style === 'background: #C3C3F3') {
-                        data.table[keyString][cellString].style = '';
-                        data.table[keyString][cellString].value = data.table[keyString][cellString].value.replace(/building/g, 'unknown');
-                    } else if (data.table[keyString][cellString].value === 'queued') {
-                        data.table[keyString][cellString].value = '';
+                    if (buildHistoryJson.table[keyString][cellString].style === 'background: #C3C3F3') {
+                        buildHistoryJson.table[keyString][cellString].style = '';
+                        buildHistoryJson.table[keyString][cellString].value = buildHistoryJson.table[keyString][cellString].value.replace(/building/g, 'unknown');
+                    } else if (buildHistoryJson.table[keyString][cellString].value === 'queued') {
+                        buildHistoryJson.table[keyString][cellString].value = '';
                     }
                 }
             }
