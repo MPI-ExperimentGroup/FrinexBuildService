@@ -1495,7 +1495,7 @@ function prepareBuildHistory() {
         try {
             buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
             fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
-            for (var keyString in buildHistoryJson.table) {
+            /*for (var keyString in buildHistoryJson.table) {
                 for (var cellString in buildHistoryJson.table[keyString]) {
                     // filtering out expired building CSS colours and "building" and "pending" strings
                     if (buildHistoryJson.table[keyString][cellString].style === 'background: #C3C3F3') {
@@ -1505,7 +1505,7 @@ function prepareBuildHistory() {
                         buildHistoryJson.table[keyString][cellString].value = '';
                     }
                 }
-            }
+            }*/
         } catch (error) {
             console.log("faild to read " + buildHistoryJson);
             console.log(error);
