@@ -1495,15 +1495,17 @@ function prepareBuildHistory() {
         try {
             buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
             fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
-            for (var tableRecord of buildHistoryJson.table) {
-                // filtering out expired building CSS colours and "building" and "pending" strings
-                if (tableRecord.style === 'background: #C3C3F3') {
-                    tableRecord.style = '';
-                    tableRecord.value = tableRecord.value.replace(/building/g, 'unknown');
-                } else if (tableRecord.value === 'queued') {
-                    tableRecord.value = '';
+            for (var keyString in buildHistoryJson.table) {
+                for (var cellString in buildHistoryJson.table[keyString]) {
+                    // filtering out expired building CSS colours and "building" and "pending" strings
+                    if (data.table[keyString][cellString].style === 'background: #C3C3F3') {
+                        data.table[keyString][cellString].style = '';
+                        data.table[keyString][cellString].value = data.table[keyString][cellString].value.replace(/building/g, 'unknown');
+                    } else if (data.table[keyString][cellString].value === 'queued') {
+                        data.table[keyString][cellString].value = '';
+                    }
                 }
-            };
+            }
         } catch (error) {
             console.log("faild to read " + buildHistoryJson);
             console.log(error);
