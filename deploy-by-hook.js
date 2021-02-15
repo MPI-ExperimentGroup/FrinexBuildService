@@ -525,9 +525,7 @@ function deployStagingGui(currentEntry) {
                 if (fs.existsSync(stagingConfigFile)) {
                     fs.unlinkSync(stagingConfigFile);
                 }
-                if (fs.existsSync(buildArtifactsFileName)) {
-                    fs.unlinkSync(buildArtifactsFileName);
-                }
+                // buildArtifactsFileName should not exist at this point
                 currentlyBuilding.delete(currentEntry.buildName);
             };
         });
@@ -770,9 +768,7 @@ function deployProductionGui(currentEntry) {
                             if (fs.existsSync(productionConfigFile)) {
                                 fs.unlinkSync(productionConfigFile);
                             }
-                            if (fs.existsSync(buildArtifactsFileName)) {
-                                fs.unlinkSync(buildArtifactsFileName);
-                            }
+                            // buildArtifactsFileName should not exist at this point
                             currentlyBuilding.delete(currentEntry.buildName);
                         };
                     });
@@ -1493,7 +1489,7 @@ function convertJsonToXml() {
 function prepareBuildHistory() {
     if (fs.existsSync(buildHistoryFileName)) {
         try {
-            buildHistoryJsonTemp = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
+            var buildHistoryJsonTemp = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
             fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o755 });
             for (var keyString in buildHistoryJsonTemp.table) {
                 for (var cellString in buildHistoryJsonTemp.table[keyString]) {
