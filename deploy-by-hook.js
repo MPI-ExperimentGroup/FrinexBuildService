@@ -1492,12 +1492,14 @@ function prepareBuildHistory() {
             var buildHistoryJsonTemp = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
             fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o755 });
             for (var keyString in buildHistoryJsonTemp.table) {
+                buildHistoryJson.table[keyString] = {};
                 for (var cellString in buildHistoryJsonTemp.table[keyString]) {
+                    buildHistoryJson.table[keyString][cellString] = {};
                     // filtering out expired building CSS colours and "building" and "pending" strings
                     if (buildHistoryJsonTemp.table[keyString][cellString].style === 'background: #C3C3F3') {
                         buildHistoryJson.table[keyString][cellString].style = '';
                         buildHistoryJson.table[keyString][cellString].value = buildHistoryJsonTemp.table[keyString][cellString].value.replace(/building/g, 'unknown');
-                    } else if (buildHistoryJson.table[keyString][cellString].value === 'queued') {
+                    } else if (buildHistoryJsonTemp.table[keyString][cellString].value === 'queued') {
                         buildHistoryJson.table[keyString][cellString].value = '';
                         buildHistoryJson.table[keyString][cellString].style = '';
                     } else {
