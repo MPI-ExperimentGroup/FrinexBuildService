@@ -1492,10 +1492,18 @@ function convertJsonToXml() {
 
 function prepareBuildHistory() {
     if (fs.existsSync(buildHistoryFileName)) {
-        // todo: filter out error CSS colours and "building" and "pending" strings
         try {
             buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
             fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
+            for (var tableRecord of buildHistoryJson.table) {
+                // filtering out expired building CSS colours and "building" and "pending" strings
+                if (tableRecord.style === 'background: #C3C3F3') {
+                    tableRecord.style = '';
+                    tableRecord.value = tableRecord.value.replace(/building/g, 'unknown');
+                } else if (tableRecord.value === 'queued') {
+                    tableRecord.value = '';
+                }
+            };
         } catch (error) {
             console.log("faild to read " + buildHistoryJson);
             console.log(error);
@@ -1507,7 +1515,7 @@ function prepareBuildHistory() {
             }
         }
     }
-  moveIncomingToQueued();
+    moveIncomingToQueued();
 }
 
 function deleteOldProcessing() {
