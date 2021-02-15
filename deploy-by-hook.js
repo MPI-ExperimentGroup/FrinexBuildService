@@ -47,6 +47,7 @@ const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
+const staticFilesDirectory = properties.get('settings.staticFilesDirectory');
 const targetDirectory = properties.get('settings.targetDirectory');
 const configServer = properties.get('webservice.configServer');
 const stagingServer = properties.get('staging.serverName');
@@ -61,21 +62,6 @@ const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
-if (fs.existsSync(buildHistoryFileName)) {
-    try {
-        buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
-        fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
-    } catch (error) {
-        console.log("faild to read " + buildHistoryJson);
-        console.log(error);
-        try {
-            buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName + ".temp", 'utf8'));
-        } catch (error) {
-            console.log("faild to read " + buildHistoryJson + ".temp");
-            console.log(error);
-        }
-    }
-}
 
 function startResult() {
     resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}.shortmessage {border-bottom: 1px solid;position: relative;display: inline-block;}.shortmessage .longmessage {visibility: hidden; width: 300px; color: white; background-color: black; border-radius: 10px; padding: 5px; text-align: centre; position: absolute;}.shortmessage:hover .longmessage {visibility: visible;} tr:hover {background-color: #3f51b521;}</style>\n");
@@ -909,7 +895,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 currentlyBuilding.delete(currentEntry.buildName);
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
             };
-            currentlyBuilding.delete(currentEntry.buildName);
+            //currentlyBuilding.delete(currentEntry.buildName);
         } catch (error) {
             console.error('deployProductionAdmin error: ' + error);
             if (fs.existsSync(productionConfigFile)) {
@@ -1504,6 +1490,26 @@ function convertJsonToXml() {
     };
 }
 
+function prepareBuildHistory() {
+    if (fs.existsSync(buildHistoryFileName)) {
+        // todo: filter out error CSS colours and "building" and "pending" strings
+        try {
+            buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
+            fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
+        } catch (error) {
+            console.log("faild to read " + buildHistoryJson);
+            console.log(error);
+            try {
+                buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName + ".temp", 'utf8'));
+            } catch (error) {
+                console.log("faild to read " + buildHistoryJson + ".temp");
+                console.log(error);
+            }
+        }
+    }
+  moveIncomingToQueued();
+}
+
 function deleteOldProcessing() {
     // since this is only called on a restart we delete the sub directories of the processing directory
     var processingList = fs.readdirSync(processingDirectory);
@@ -1512,7 +1518,14 @@ function deleteOldProcessing() {
         fs.rmdirSync(currentDirectoryPath, { recursive: true });
         console.log('deleted processing: ' + currentDirectory);
     }
-    moveIncomingToQueued();
+    // clean up any static files from before the restart
+    var staticList = fs.readdirSync(staticFilesDirectory);
+    for (var currentDirectory of staticList) {
+        var currentDirectoryPath = path.resolve(staticFilesDirectory, currentDirectory);
+        console.log('deleting static files: ' + currentDirectory);
+        fs.rmdirSync(currentDirectoryPath, { recursive: true });
+    }
+    prepareBuildHistory();
 }
 
 /* /maven/.m2 is not mounted on the build container
