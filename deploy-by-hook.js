@@ -1516,6 +1516,7 @@ function prepareBuildHistory() {
                 console.log(error);
             }
         }
+        startResult();
     }
     moveIncomingToQueued();
 }
@@ -1547,5 +1548,4 @@ function checkPrerequisits() {
         deleteOldProcessing();
     }
 } */
-startResult();
 deleteOldProcessing();
