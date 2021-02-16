@@ -965,6 +965,7 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
     var list = fs.readdirSync(targetDirectory + "/" + buildName);
     var producedOutput = false;
     list.forEach(function (filename) {
+        console.log(filename);
         if (filename.endsWith(".apk")) {
             fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk"));
             resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_cordova.apk" + '">apk</a>&nbsp;';
