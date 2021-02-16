@@ -483,6 +483,7 @@ function deployStagingGui(currentEntry) {
             + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-*.sh;'
             + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*;'
             + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
+            + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + 'staging_web_sources.jar;'
             //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/staging-building/'
             //+ " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + " chmod a+rwx /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -694,8 +695,8 @@ function deployProductionGui(currentEntry) {
                         + ' -v m2Directory:/maven/.m2/'
                         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
                         + ' mvn clean '
-                        //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
-                        + 'package'
+                        + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+                        //+ 'package'
                         + ' -gs /maven/.m2/settings.xml'
                         + ' -DskipTests'
                         //+ ' -pl gwt-cordova'
@@ -830,8 +831,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' ls -l /usr/local/apache2/htdocs/' + currentEntry.buildName + ' &>> /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt;'
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
-            //+ ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
-            + 'package'
+            + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
             //+ ' -pl frinex-admin'
@@ -1061,7 +1062,7 @@ function buildNextExperiment() {
     while (listingMap.size > 0 && currentlyBuilding.size < concurrentBuildCount) {
         const currentKey = listingMap.keys().next().value;
         console.log('buildNextExperiment: ' + currentKey);
-        resultsFile.write("buildNextExperiment: " + currentKey + "</div>");
+        //resultsFile.write("buildNextExperiment: " + currentKey + "</div>");
         const currentEntry = listingMap.get(currentKey);
         if (currentlyBuilding.has(currentEntry.buildName)) {
             console.log("waiting rebuild: " + currentEntry.buildName);
@@ -1150,7 +1151,7 @@ function buildFromListing() {
 
                             // keeping the listing entry in a map so only one can exist for any experiment regardless of mid compilation rebuild requests
                             console.log('jsonListing: ' + buildName);
-                            resultsFile.write("<div>jsonListing: " + buildName + "</div>");
+                            //resultsFile.write("<div>jsonListing: " + buildName + "</div>");
                             var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
                             listingJsonData.buildName = buildName;
                             console.log('listingJsonData: ' + JSON.stringify(listingJsonData));
@@ -1219,7 +1220,7 @@ function prepareForProcessing() {
     for (var filename of list) {
         console.log('processing: ' + filename);
         var fileNamePart = path.parse(filename).name;
-        resultsFile.write("<div>processing validated: " + filename + "</div>");
+        //resultsFile.write("<div>processing validated: " + filename + "</div>");
         var incomingFile = path.resolve(processingDirectory + '/validated', filename);
         //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
         if (filename === "listing.json") {
@@ -1242,9 +1243,9 @@ function prepareForProcessing() {
             // this move is within the same volume so we can do it this easy way
             fs.copyFileSync(incomingFile, configQueuedFile);
             console.log('copied XML from validated to queued: ' + filename);
-            resultsFile.write("<div>copied XML from validated to queued: " + filename + "</div>");
+            //resultsFile.write("<div>copied XML from validated to queued: " + filename + "</div>");
             console.log('copying XML from queued to target: ' + filename);
-            resultsFile.write("<div>copying XML from queued to target: " + filename + "</div>");
+            //resultsFile.write("<div>copying XML from queued to target: " + filename + "</div>");
             // this move is not within the same volume
             copyDeleteFile(incomingFile, configStoreFile);
         } else if (path.extname(filename) === ".uml") {
@@ -1295,37 +1296,37 @@ function moveIncomingToQueued() {
     if (!fs.existsSync(incomingDirectory + "/queued")) {
         fs.mkdirSync(incomingDirectory + '/queued');
         console.log('queued directory created');
-        resultsFile.write("<div>queued directory created</div>");
+        //resultsFile.write("<div>queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/validated")) {
         fs.mkdirSync(processingDirectory + '/validated');
         console.log('validated directory created');
-        resultsFile.write("<div>validated directory created</div>");
+        //resultsFile.write("<div>validated directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/queued")) {
         fs.mkdirSync(processingDirectory + '/queued');
         console.log('staging directory created');
-        resultsFile.write("<div>queued directory created</div>");
+        //resultsFile.write("<div>queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/staging-queued")) {
         fs.mkdirSync(processingDirectory + '/staging-queued');
         console.log('staging directory created');
-        resultsFile.write("<div>staging queued directory created</div>");
+        //resultsFile.write("<div>staging queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/staging-building")) {
         fs.mkdirSync(processingDirectory + '/staging-building');
         console.log('staging directory created');
-        resultsFile.write("<div>staging building directory created</div>");
+        //resultsFile.write("<div>staging building directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/production-queued")) {
         fs.mkdirSync(processingDirectory + '/production-queued');
         console.log('production directory created');
-        resultsFile.write("<div>production queued directory created</div>");
+        //resultsFile.write("<div>production queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/production-building")) {
         fs.mkdirSync(processingDirectory + '/production-building');
         console.log('production directory created');
-        resultsFile.write("<div>production building directory created</div>");
+        //resultsFile.write("<div>production building directory created</div>");
     }
     fs.readdir(incomingDirectory + '/commits', function (error, list) {
         if (error) {
