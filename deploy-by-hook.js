@@ -265,7 +265,7 @@ function unDeploy(currentEntry) {
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
-        + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+        //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
         + ' -v buildServerTarget:/usr/local/apache2/htdocs'
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
@@ -281,7 +281,7 @@ function unDeploy(currentEntry) {
         + ' -Dexperiment.destinationServer=' + stagingServer
         + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
+        //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + '"';
     console.log(dockerString);
@@ -302,7 +302,7 @@ function unDeploy(currentEntry) {
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
-        + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+        //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
         + ' -v buildServerTarget:/usr/local/apache2/htdocs'
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
@@ -318,7 +318,7 @@ function unDeploy(currentEntry) {
         + ' -Dexperiment.destinationServer=' + stagingServer
         + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-        + ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
+        //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         + '"';
     console.log(dockerString);
@@ -339,7 +339,7 @@ function unDeploy(currentEntry) {
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
-        + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+        //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
         + ' -v buildServerTarget:/usr/local/apache2/htdocs'
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
@@ -355,7 +355,7 @@ function unDeploy(currentEntry) {
         + ' -Dexperiment.destinationServer=' + productionServer
         + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-        + ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
+        //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         + '"';
     console.log(dockerString);
@@ -376,7 +376,7 @@ function unDeploy(currentEntry) {
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
-        + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+        //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
         + ' -v buildServerTarget:/usr/local/apache2/htdocs'
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
@@ -392,7 +392,7 @@ function unDeploy(currentEntry) {
         + ' -Dexperiment.destinationServer=' + productionServer
         + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-        + ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
+        //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + '"';
     console.log(dockerString);
@@ -442,7 +442,7 @@ function deployStagingGui(currentEntry) {
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v incomingDirectory:/FrinexBuildService/incoming' // required for static files only
-            + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+            //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
@@ -473,9 +473,9 @@ function deployStagingGui(currentEntry) {
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-sources.jar /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging'
+            //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
+            //+ ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -556,7 +556,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
             + ' -v processingDirectory:/FrinexBuildService/processing'
-            + ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+            //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
@@ -581,9 +581,9 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
+            //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
+            //+ ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
@@ -690,7 +690,7 @@ function deployProductionGui(currentEntry) {
                         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
                         + ' -v processingDirectory:/FrinexBuildService/processing'
                         + ' -v incomingDirectory:/FrinexBuildService/incoming' // required for static files only
-                        + ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
+                        //+ ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
                         + ' -v buildServerTarget:/usr/local/apache2/htdocs'
                         + ' -v m2Directory:/maven/.m2/'
                         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
@@ -721,9 +721,9 @@ function deployProductionGui(currentEntry) {
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-sources.jar /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar'
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production'
+                        //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production'
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
+                        //+ ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war'
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
@@ -825,7 +825,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
             + ' -v processingDirectory:/FrinexBuildService/processing'
-            + ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
+            //+ ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
@@ -850,9 +850,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
+            //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
+            //+ ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
