@@ -465,8 +465,8 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-stable-cordova.zip'
-            + ' mv /ExperimentTemplate/gwt-cordova/target/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-stable-electron.zip'
+            + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-stable-cordova.zip'
+            + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-stable-electron.zip'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-cordova.sh;'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -530,11 +530,11 @@ function deployStagingGui(currentEntry) {
                 // buildArtifactsFileName should not exist at this point
                 currentlyBuilding.delete(currentEntry.buildName);
             }
-            var cordovaZipFile = path.resolve(processingDirectory + '/staging-building', buildName + '-frinex-gui-stable-cordova.zip');
+            var cordovaZipFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '-frinex-gui-stable-cordova.zip');
             if (fs.existsSync(cordovaZipFile)) {
                 fs.unlinkSync(cordovaZipFile);
             }
-            var electronZipFile = path.resolve(processingDirectory + '/staging-building', buildName + '-frinex-gui-stable-electron.zip');
+            var electronZipFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '-frinex-gui-stable-electron.zip');
             if (fs.existsSync(electronZipFile)) {
                 fs.unlinkSync(electronZipFile);
             }
@@ -722,8 +722,8 @@ function deployProductionGui(currentEntry) {
                         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
                         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        + ' mv /ExperimentTemplate/gwt-cordova/target/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/production-building/' + buildName + '-frinex-gui-stable-cordova.zip'
-                        + ' mv /ExperimentTemplate/gwt-cordova/target/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/production-building/' + buildName + '-frinex-gui-stable-electron.zip'
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-stable-cordova.zip'
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-stable-electron.zip'
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-cordova.sh;'
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
@@ -783,11 +783,11 @@ function deployProductionGui(currentEntry) {
                             // buildArtifactsFileName should not exist at this point
                             currentlyBuilding.delete(currentEntry.buildName);
                         }
-                        var cordovaZipFile = path.resolve(processingDirectory + '/production-building', buildName + '-frinex-gui-stable-cordova.zip');
+                        var cordovaZipFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '-frinex-gui-stable-cordova.zip');
                         if (fs.existsSync(cordovaZipFile)) {
                             fs.unlinkSync(cordovaZipFile);
                         }
-                        var electronZipFile = path.resolve(processingDirectory + '/production-building', buildName + '-frinex-gui-stable-electron.zip');
+                        var electronZipFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '-frinex-gui-stable-electron.zip');
                         if (fs.existsSync(electronZipFile)) {
                             fs.unlinkSync(electronZipFile);
                         }
