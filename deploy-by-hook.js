@@ -465,7 +465,8 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/*.zip /FrinexBuildService/processing/staging-building/'
+            + ' mv /ExperimentTemplate/gwt-cordova/target/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-stable-cordova.zip'
+            + ' mv /ExperimentTemplate/gwt-cordova/target/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-stable-electron.zip'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-cordova.sh;'
             + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -528,7 +529,15 @@ function deployStagingGui(currentEntry) {
                 }
                 // buildArtifactsFileName should not exist at this point
                 currentlyBuilding.delete(currentEntry.buildName);
-            };
+            }
+            var cordovaZipFile = path.resolve(processingDirectory + '/staging-building', buildName + '-frinex-gui-stable-cordova.zip');
+            if (fs.existsSync(cordovaZipFile)) {
+                fs.unlinkSync(cordovaZipFile);
+            }
+            var electronZipFile = path.resolve(processingDirectory + '/staging-building', buildName + '-frinex-gui-stable-electron.zip');
+            if (fs.existsSync(electronZipFile)) {
+                fs.unlinkSync(electronZipFile);
+            }
         });
     }
 }
@@ -713,7 +722,8 @@ function deployProductionGui(currentEntry) {
                         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
                         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        + ' mv /ExperimentTemplate/gwt-cordova/target/*.zip /FrinexBuildService/processing/production-building/'
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/production-building/' + buildName + '-frinex-gui-stable-cordova.zip'
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/production-building/' + buildName + '-frinex-gui-stable-electron.zip'
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-cordova.sh;'
                         + " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
@@ -772,7 +782,15 @@ function deployProductionGui(currentEntry) {
                             }
                             // buildArtifactsFileName should not exist at this point
                             currentlyBuilding.delete(currentEntry.buildName);
-                        };
+                        }
+                        var cordovaZipFile = path.resolve(processingDirectory + '/production-building', buildName + '-frinex-gui-stable-cordova.zip');
+                        if (fs.existsSync(cordovaZipFile)) {
+                            fs.unlinkSync(cordovaZipFile);
+                        }
+                        var electronZipFile = path.resolve(processingDirectory + '/production-building', buildName + '-frinex-gui-stable-electron.zip');
+                        if (fs.existsSync(electronZipFile)) {
+                            fs.unlinkSync(electronZipFile);
+                        }
                     });
                 }
             }).on('error', function (error) {
@@ -922,13 +940,13 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         // we do not build in the docker volume because it would create redundant file synchronisation.
-        var dockerString = 'docker stop ' + buildName + '_staging_cordova;'
-            + 'docker run --name ' + buildName + '_staging_cordova --rm'
+        var dockerString = 'docker stop ' + buildName + '_' + stage + '_cordova;'
+            + 'docker run --name ' + buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
             + ' mkdir /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' mv /FrinexBuildService/processing/staging-building/' + buildName + '_setup-cordova.sh /FrinexBuildService/processing/staging-building/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-cordova.sh /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-stable-cordova.zip /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' bash /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' ls /FrinexBuildService/cordova-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/app-release.apk ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.apk &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
@@ -995,10 +1013,11 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
             + ' mkdir /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-electron.sh /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-electron.sh /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-' + stage + '-electron.zip /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' bash /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_setup-electron.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' ls /FrinexBuildService/electron-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-electron.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_' + stage + '_electron.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-win32-ia32.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-win32-x64.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-darwin-x64.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
