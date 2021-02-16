@@ -1520,8 +1520,8 @@ function prepareBuildHistory() {
                 console.log(error);
             }
         }
-        startResult();
     }
+    startResult();
     moveIncomingToQueued();
 }
 
@@ -1536,9 +1536,13 @@ function deleteOldProcessing() {
     // clean up any static files from before the restart
     var staticList = fs.readdirSync(staticFilesDirectory);
     for (var currentDirectory of staticList) {
-        var currentDirectoryPath = path.resolve(staticFilesDirectory, currentDirectory);
-        console.log('deleting static files: ' + currentDirectory);
-        fs.rmdirSync(currentDirectoryPath, { recursive: true });
+        if (fs.existsSync(incomingDirectory + '/commits/' + currentDirectory + '.json') || fs.existsSync(incomingDirectory + '/commits/' + currentDirectory + '.xml')) {
+            console.log('keeping static files: ' + currentDirectory);
+        } else {
+            var currentDirectoryPath = path.resolve(staticFilesDirectory, currentDirectory);
+            console.log('deleting static files: ' + currentDirectory);
+            fs.rmdirSync(currentDirectoryPath, { recursive: true });
+        }
     }
     prepareBuildHistory();
 }
