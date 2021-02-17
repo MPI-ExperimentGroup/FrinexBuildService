@@ -610,7 +610,12 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
                 // update artifacts.json
-                fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                // save the build artifacts JSON to the httpd directory
+                const buildArtifactsTargetFileName = targetDirectory + '/' + currentEntry.buildName + '_staging_artifacts.json';
+                fs.writeFileSync(buildArtifactsTargetFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                if (fs.existsSync(buildArtifactsFileName)) {
+                    fs.unlinkSync(buildArtifactsFileName);
+                }
                 console.log("deployStagingAdmin ended");
                 if (currentEntry.state === "production") {
                     var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
@@ -620,9 +625,6 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                 } else {
                     if (fs.existsSync(stagingConfigFile)) {
                         fs.unlinkSync(stagingConfigFile);
-                    }
-                    if (fs.existsSync(buildArtifactsFileName)) {
-                        fs.unlinkSync(buildArtifactsFileName);
                     }
                     currentlyBuilding.delete(currentEntry.buildName);
                 }
@@ -888,7 +890,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
                 // update artifacts.json
-                fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                // save the build artifacts JSON to the httpd directory
+                const buildArtifactsTargetFileName = targetDirectory + '/' + currentEntry.buildName + '_production_artifacts.json';
+                fs.writeFileSync(buildArtifactsTargetFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
                 }
