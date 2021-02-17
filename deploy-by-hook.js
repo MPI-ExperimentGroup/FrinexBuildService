@@ -886,9 +886,6 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 console.log("frinex-gui finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true);
-                if (currentEntry.state === "production") {
-                    deployProductionGui(currentEntry);
-                }
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
                 // update artifacts.json
                 fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
