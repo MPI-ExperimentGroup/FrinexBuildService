@@ -57,7 +57,7 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-const resultsFile = fs.openSync(targetDirectory + "/index.html", { flags: 'w', mode: 0o755 });
+const resultsFile = fs.openSync(targetDirectory + "/index.html", "w"); //{ flags: 'w', mode: 0o755 });
 const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
