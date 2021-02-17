@@ -484,7 +484,7 @@ function deployStagingGui(currentEntry) {
             + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-*.sh;'
             + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*;'
             + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
-            + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + 'staging_web_sources.jar;'
+            + ' chmod a+rwx /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
             //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/staging-building/'
             //+ " &>> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + " chmod a+rwx /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -941,7 +941,11 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         // we do not build in the docker volume because it would create redundant file synchronisation.
-        var dockerString = 'docker stop ' + buildName + '_' + stage + '_cordova;'
+        var dockerString = 'docker stop ' + buildName + '_' + stage + '_cordova &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_ios.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + 'docker run --name ' + buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
@@ -962,34 +966,27 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
         resultString += 'failed&nbsp;';
         hasFailed = true;
     }
-    // copy the resulting zips and add links to the output JSON
-    var list = fs.readdirSync(targetDirectory + "/" + buildName);
+    // check for build products and add links to the output JSON
     var producedOutput = false;
-    list.forEach(function (filename) {
-        console.log(filename);
-        if (filename.endsWith(".apk")) {
-            fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk"));
-            resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_cordova.apk" + '">apk</a>&nbsp;';
-            buildArtifactsJson.artifacts.apk = filename;
-            producedOutput = true;
-        }
-        if (filename.endsWith("cordova.zip")) {
-            fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip"));
-            resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_cordova.zip" + '">src</a>&nbsp;';
-        }
-        if (filename.endsWith("android.zip")) {
-            fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip"));
-            resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.zip" + '">android-src</a>&nbsp;';
-            buildArtifactsJson.artifacts.apk_src = filename;
-            producedOutput = true;
-        }
-        if (filename.endsWith("ios.zip")) {
-            fs.createReadStream(targetDirectory + "/" + buildName + "/" + filename).pipe(fs.createWriteStream(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_ios.zip"));
-            resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_ios.zip" + '">ios-src</a>&nbsp;';
-            buildArtifactsJson.artifacts.ios_src = filename;
-            producedOutput = true;
-        }
-    });
+    if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk")) {
+        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_cordova.apk" + '">apk</a>&nbsp;';
+        buildArtifactsJson.artifacts.apk = buildName + "_" + stage + "_cordova.apk";
+        producedOutput = true;
+    }
+    if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip")) {
+        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_cordova.zip" + '">src</a>&nbsp;';
+    }
+    if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip")) {
+        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.zip" + '">android-src</a>&nbsp;';
+        buildArtifactsJson.artifacts.apk_src = buildName + "_" + stage + "_android.zip";
+        producedOutput = true;
+    }
+    if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_ios.zip")) {
+        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_ios.zip" + '">ios-src</a>&nbsp;';
+        buildArtifactsJson.artifacts.ios_src = buildName + "_" + stage + "_ios.zip";
+        producedOutput = true;
+    }
+    //add the XML and any json + template and any UML of the experiment to the buildArtifactsJson of the admin system
     console.log("build cordova finished");
     storeResult(buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true);
     //update artifacts.json
@@ -1009,7 +1006,14 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.txt", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        var dockerString = 'docker stop ' + buildName + '_' + stage + '_electron;'
+        var dockerString = 'docker stop ' + buildName + '_' + stage + '_electron &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.asar &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.dmg &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + 'docker run --name ' + buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
