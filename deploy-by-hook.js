@@ -244,8 +244,8 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
 }
 
 function stopUpdatingResults() {
-    console.log('Build process complete');
-    fs.writeSync(resultsFile, "<div>Build process complete</div>");
+    console.log('build process complete');
+    fs.writeSync(resultsFile, "<div>build process complete</div>");
     buildHistoryJson.building = false;
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
@@ -941,15 +941,15 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         // we do not build in the docker volume because it would create redundant file synchronisation.
-        var dockerString = 'docker stop ' + buildName + '_' + stage + '_cordova &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_ios.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+        var dockerString = 'docker stop ' + buildName + '_' + stage + '_cordova;'
             + 'docker run --name ' + buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
+            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_ios.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' mkdir /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-cordova.sh /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-stable-cordova.zip /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' bash /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
@@ -1006,7 +1006,11 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.txt", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        var dockerString = 'docker stop ' + buildName + '_' + stage + '_electron &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
+        var dockerString = 'docker stop ' + buildName + '_' + stage + '_electron;'
+            + 'docker run --name ' + buildName + '_' + stage + '_electron --rm'
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            + ' -v buildServerTarget:/usr/local/apache2/htdocs'
+            + ' frinexapps /bin/bash -c "'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
@@ -1014,10 +1018,6 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.asar &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.dmg &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + 'docker run --name ' + buildName + '_' + stage + '_electron --rm'
-            + ' -v processingDirectory:/FrinexBuildService/processing'
-            + ' -v buildServerTarget:/usr/local/apache2/htdocs'
-            + ' frinexapps /bin/bash -c "'
             + ' mkdir /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-electron.sh /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-' + stage + '-electron.zip /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
@@ -1250,7 +1250,7 @@ function prepareForProcessing() {
         //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
         if (filename === "listing.json") {
             console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
-            fs.writeSync(resultsFile, "<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
+            fs.writeSync(resultsFile, "<div>deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
         } else if (path.extname(filename) === ".json") {
             var jsonStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //console.log('incomingFile: ' + incomingFile);
@@ -1509,7 +1509,7 @@ function convertJsonToXml() {
     } catch (reason) {
         console.log(reason);
         console.log("convert JSON to XML failed");
-        fs.writeSync(resultsFile, "<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
+        fs.writeSync(resultsFile, "<div>conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
     };
 }
 
