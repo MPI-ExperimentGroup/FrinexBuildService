@@ -57,142 +57,142 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-const resultsFile = fs.createWriteStream(targetDirectory + "/index.html", { flags: 'w', mode: 0o755 });
+const resultsFile = fs.openSync(targetDirectory + "/index.html", { flags: 'w', mode: 0o755 });
 const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
 
 function startResult() {
-    resultsFile.write("<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}.shortmessage {border-bottom: 1px solid;position: relative;display: inline-block;}.shortmessage .longmessage {visibility: hidden; width: 300px; color: white; background-color: black; border-radius: 10px; padding: 5px; text-align: centre; position: absolute;}.shortmessage:hover .longmessage {visibility: visible;} tr:hover {background-color: #3f51b521;}</style>\n");
-    resultsFile.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>\n");
-    //resultsFile.write("<span id='buildLabel'>Building...</span>\n");
-    resultsFile.write("<span id='buildDate'></span>\n");
-    resultsFile.write("<a href='frinex.html'>XML Documentation</a>\n");
-    resultsFile.write("<a href='frinex.xsd'>XML Schema</a>\n");
-    resultsFile.write("<table id='buildTable'>\n");
-    resultsFile.write("<tr>\n");
-    resultsFile.write("<td><a href=\"#1\">experiment</a></td>\n");
-    resultsFile.write("<td><a href=\"#2\">last update</a></td>\n");
-    resultsFile.write("<td><a href=\"#3\">validation</a></td>\n");
-    resultsFile.write("<td><a href=\"#4\">staging web</a></td>\n");
-    resultsFile.write("<td><a href=\"#5\">staging android</a></td>\n");
-    resultsFile.write("<td><a href=\"#6\">staging desktop</a></td>\n");
-    resultsFile.write("<td><a href=\"#7\">staging admin</a></td>\n");
-    resultsFile.write("<td><a href=\"#8\">production web</a></td>\n");
-    resultsFile.write("<td><a href=\"#9\">production android</a></td>\n");
-    resultsFile.write("<td><a href=\"#10\">production desktop</a></td>\n");
-    resultsFile.write("<td><a href=\"#11\">production admin</a></td>\n");
-    resultsFile.write("<tr>\n");
-    resultsFile.write("</table>\n");
-    resultsFile.write("<a href='git-push-log.html'>log</a>&nbsp;\n");
-    resultsFile.write("<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
-    resultsFile.write("<a href='json_to_xml.txt'>json_to_xml</a>&nbsp;\n");
-    resultsFile.write("<a href='git-push-out.txt'>out</a>&nbsp;\n");
-    resultsFile.write("<a href='git-push-err.txt'>err</a>&nbsp;\n");
-    resultsFile.write("<script>\n");
-    resultsFile.write("var applicationStatus = {};\n");
-    resultsFile.write("function doUpdate() {\n");
-    resultsFile.write("updateTimer = window.setTimeout(doUpdate, 60000);\n");
-    resultsFile.write("$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
-    //resultsFile.write("console.log(data);\n");
-    resultsFile.write("for (var keyString in data.table) {\n");
-    //resultsFile.write("console.log(keyString);\n");
-    resultsFile.write("var experimentRow = document.getElementById(keyString+ '_row');\n");
-    resultsFile.write("if (!experimentRow) {\n");
-    resultsFile.write("var tableRow = document.createElement('tr');\n");
-    resultsFile.write("tableRow.id = keyString+ '_row';\n");
-    resultsFile.write("document.getElementById('buildTable').appendChild(tableRow);\n");
+    fs.writeSync(resultsFile, "<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}.shortmessage {border-bottom: 1px solid;position: relative;display: inline-block;}.shortmessage .longmessage {visibility: hidden; width: 300px; color: white; background-color: black; border-radius: 10px; padding: 5px; text-align: centre; position: absolute;}.shortmessage:hover .longmessage {visibility: visible;} tr:hover {background-color: #3f51b521;}</style>\n");
+    fs.writeSync(resultsFile, "<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>\n");
+    //fs.writeSync(resultsFile, "<span id='buildLabel'>Building...</span>\n");
+    fs.writeSync(resultsFile, "<span id='buildDate'></span>\n");
+    fs.writeSync(resultsFile, "<a href='frinex.html'>XML Documentation</a>\n");
+    fs.writeSync(resultsFile, "<a href='frinex.xsd'>XML Schema</a>\n");
+    fs.writeSync(resultsFile, "<table id='buildTable'>\n");
+    fs.writeSync(resultsFile, "<tr>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#1\">experiment</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#2\">last update</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#3\">validation</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#4\">staging web</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#5\">staging android</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#6\">staging desktop</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#7\">staging admin</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#8\">production web</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#9\">production android</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#10\">production desktop</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#11\">production admin</a></td>\n");
+    fs.writeSync(resultsFile, "<tr>\n");
+    fs.writeSync(resultsFile, "</table>\n");
+    fs.writeSync(resultsFile, "<a href='git-push-log.html'>log</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='json_to_xml.txt'>json_to_xml</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='git-push-out.txt'>out</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='git-push-err.txt'>err</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<script>\n");
+    fs.writeSync(resultsFile, "var applicationStatus = {};\n");
+    fs.writeSync(resultsFile, "function doUpdate() {\n");
+    fs.writeSync(resultsFile, "updateTimer = window.setTimeout(doUpdate, 60000);\n");
+    fs.writeSync(resultsFile, "$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
+    //fs.writeSync(resultsFile, "console.log(data);\n");
+    fs.writeSync(resultsFile, "for (var keyString in data.table) {\n");
+    //fs.writeSync(resultsFile, "console.log(keyString);\n");
+    fs.writeSync(resultsFile, "var experimentRow = document.getElementById(keyString+ '_row');\n");
+    fs.writeSync(resultsFile, "if (!experimentRow) {\n");
+    fs.writeSync(resultsFile, "var tableRow = document.createElement('tr');\n");
+    fs.writeSync(resultsFile, "tableRow.id = keyString+ '_row';\n");
+    fs.writeSync(resultsFile, "document.getElementById('buildTable').appendChild(tableRow);\n");
     // check the spring health here and show http and db status via applicationStatus array
     // the path -admin/health is for spring boot 1.4.1
-    resultsFile.write("$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/health', (function(experimentName) { return function(data) {\n");
-    resultsFile.write("$.each(data, function (key, val) {\n");
-    resultsFile.write("if (key === 'status') {\n");
-    resultsFile.write("if (val === 'UP') {\n");
-    resultsFile.write("applicationStatus[experimentName + '__staging_admin'] = 'yellow';\n");
-    resultsFile.write("} else {\n");
-    resultsFile.write("applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
-    resultsFile.write("}\n");
-    resultsFile.write("}\n");
-    resultsFile.write("});\n");
-    resultsFile.write("};}(keyString)));\n");
-    resultsFile.write("$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/health', (function(experimentName) { return function(data) {\n");
-    resultsFile.write("$.each(data, function (key, val) {\n");
-    resultsFile.write("if (key === 'status') {\n");
-    resultsFile.write("if (val === 'UP') {\n");
-    resultsFile.write("applicationStatus[experimentName + '__production_admin'] = 'yellow';\n");
-    resultsFile.write("} else {\n");
-    resultsFile.write("applicationStatus[experimentName + '__production_admin'] = 'red';\n");
-    resultsFile.write("}\n");
-    resultsFile.write("}\n");
-    resultsFile.write("});\n");
-    resultsFile.write("};}(keyString)));\n");
+    fs.writeSync(resultsFile, "$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/health', (function(experimentName) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
+    fs.writeSync(resultsFile, "if (key === 'status') {\n");
+    fs.writeSync(resultsFile, "if (val === 'UP') {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging_admin'] = 'yellow';\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "});\n");
+    fs.writeSync(resultsFile, "};}(keyString)));\n");
+    fs.writeSync(resultsFile, "$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/health', (function(experimentName) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
+    fs.writeSync(resultsFile, "if (key === 'status') {\n");
+    fs.writeSync(resultsFile, "if (val === 'UP') {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production_admin'] = 'yellow';\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production_admin'] = 'red';\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "});\n");
+    fs.writeSync(resultsFile, "};}(keyString)));\n");
     // the path -admin/actuator/health is for spring boot 2.3.0
-    resultsFile.write("$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName) { return function(data) {\n");
-    resultsFile.write("$.each(data, function (key, val) {\n");
-    resultsFile.write("if (key === 'status') {\n");
-    resultsFile.write("if (val === 'UP') {\n");
-    resultsFile.write("applicationStatus[experimentName + '__staging_admin'] = 'green';\n");
-    resultsFile.write("} else {\n");
-    resultsFile.write("applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
-    resultsFile.write("}\n");
-    resultsFile.write("}\n");
-    resultsFile.write("});\n");
-    resultsFile.write("};}(keyString)));\n");
-    resultsFile.write("$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName) { return function(data) {\n");
-    resultsFile.write("$.each(data, function (key, val) {\n");
-    resultsFile.write("if (key === 'status') {\n");
-    resultsFile.write("if (val === 'UP') {\n");
-    resultsFile.write("applicationStatus[experimentName + '__production_admin'] = 'green';\n");
-    resultsFile.write("} else {\n");
-    resultsFile.write("applicationStatus[experimentName + '__production_admin'] = 'red';\n");
-    resultsFile.write("}\n");
-    resultsFile.write("}\n");
-    resultsFile.write("});\n");
-    resultsFile.write("};}(keyString)));\n");
-    resultsFile.write("}\n");
-    resultsFile.write("for (var cellString in data.table[keyString]) {\n");
-    //resultsFile.write("console.log(cellString);\n");
-    resultsFile.write("var experimentCell = document.getElementById(keyString + '_' + cellString);\n");
-    resultsFile.write("if (!experimentCell) {\n");
-    resultsFile.write("var tableCell = document.createElement('td');\n");
-    resultsFile.write("tableCell.id = keyString + '_' + cellString;\n");
-    resultsFile.write("document.getElementById(keyString + '_row').appendChild(tableCell);\n");
-    resultsFile.write("}\n");
-    resultsFile.write("document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value;\n");
-    //resultsFile.write("var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
-    resultsFile.write("var statusStyle = (keyString + '_' + cellString in applicationStatus)?';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';':'';\n");
-    resultsFile.write("document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
-    resultsFile.write("}\n");
-    resultsFile.write("}\n");
-    resultsFile.write("doSort();\n");
-    resultsFile.write("clearTimeout(updateTimer);\n");
-    resultsFile.write("if(data.building){\n");
-    resultsFile.write("updateTimer = window.setTimeout(doUpdate, 1000);\n");
-    resultsFile.write("} else {\n");
-    resultsFile.write("updateTimer = window.setTimeout(doUpdate, 10000);\n");
-    resultsFile.write("}\n");
-    resultsFile.write("});\n");
-    resultsFile.write("}\n");
-    resultsFile.write("var updateTimer = window.setTimeout(doUpdate, 100);\n");
-    resultsFile.write("function doSort() {\n");
-    resultsFile.write("var sortData = location.href.split('#')[1];\n");
-    resultsFile.write("var sortItem = sortData.split('_')[0];\n");
-    resultsFile.write("var sortDirection = sortData.split('_')[1];\n");
-    resultsFile.write("if($.isNumeric(sortItem)){\n");
-    resultsFile.write("if(sortDirection === 'd'){\n");
-    resultsFile.write("$('tr:gt(1)').each(function() {}).sort(function (b, a) {return $('td:nth-of-type('+sortItem+')', a).text().localeCompare($('td:nth-of-type('+sortItem+')', b).text());}).appendTo('tbody');\n");
-    resultsFile.write("$('tr:first').children('td').children('a').each(function(index) {$(this).attr('href', '#' + (index + 1) + '_a')});\n");
-    resultsFile.write("} else {\n");
-    resultsFile.write("$('tr:gt(1)').each(function() {}).sort(function (a, b) {return $('td:nth-of-type('+sortItem+')', a).text().localeCompare($('td:nth-of-type('+sortItem+')', b).text());}).appendTo('tbody');\n");
-    resultsFile.write("$('tr:first').children('td').children('a').each(function(index) {$(this).attr('href', '#' + (index + 1) + '_d')});\n");
-    resultsFile.write("}\n");
-    resultsFile.write("}\n");
-    resultsFile.write("}\n");
-    resultsFile.write("$(window).on('hashchange', function (e) {\n");
-    resultsFile.write("doSort();\n");
-    resultsFile.write("});\n");
-    resultsFile.write("</script>\n");
+    fs.writeSync(resultsFile, "$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
+    fs.writeSync(resultsFile, "if (key === 'status') {\n");
+    fs.writeSync(resultsFile, "if (val === 'UP') {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging_admin'] = 'green';\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "});\n");
+    fs.writeSync(resultsFile, "};}(keyString)));\n");
+    fs.writeSync(resultsFile, "$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
+    fs.writeSync(resultsFile, "if (key === 'status') {\n");
+    fs.writeSync(resultsFile, "if (val === 'UP') {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production_admin'] = 'green';\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production_admin'] = 'red';\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "});\n");
+    fs.writeSync(resultsFile, "};}(keyString)));\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "for (var cellString in data.table[keyString]) {\n");
+    //fs.writeSync(resultsFile, "console.log(cellString);\n");
+    fs.writeSync(resultsFile, "var experimentCell = document.getElementById(keyString + '_' + cellString);\n");
+    fs.writeSync(resultsFile, "if (!experimentCell) {\n");
+    fs.writeSync(resultsFile, "var tableCell = document.createElement('td');\n");
+    fs.writeSync(resultsFile, "tableCell.id = keyString + '_' + cellString;\n");
+    fs.writeSync(resultsFile, "document.getElementById(keyString + '_row').appendChild(tableCell);\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value;\n");
+    //fs.writeSync(resultsFile, "var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
+    fs.writeSync(resultsFile, "var statusStyle = (keyString + '_' + cellString in applicationStatus)?';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';':'';\n");
+    fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "doSort();\n");
+    fs.writeSync(resultsFile, "clearTimeout(updateTimer);\n");
+    fs.writeSync(resultsFile, "if(data.building){\n");
+    fs.writeSync(resultsFile, "updateTimer = window.setTimeout(doUpdate, 1000);\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "updateTimer = window.setTimeout(doUpdate, 10000);\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "});\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "var updateTimer = window.setTimeout(doUpdate, 100);\n");
+    fs.writeSync(resultsFile, "function doSort() {\n");
+    fs.writeSync(resultsFile, "var sortData = location.href.split('#')[1];\n");
+    fs.writeSync(resultsFile, "var sortItem = sortData.split('_')[0];\n");
+    fs.writeSync(resultsFile, "var sortDirection = sortData.split('_')[1];\n");
+    fs.writeSync(resultsFile, "if($.isNumeric(sortItem)){\n");
+    fs.writeSync(resultsFile, "if(sortDirection === 'd'){\n");
+    fs.writeSync(resultsFile, "$('tr:gt(1)').each(function() {}).sort(function (b, a) {return $('td:nth-of-type('+sortItem+')', a).text().localeCompare($('td:nth-of-type('+sortItem+')', b).text());}).appendTo('tbody');\n");
+    fs.writeSync(resultsFile, "$('tr:first').children('td').children('a').each(function(index) {$(this).attr('href', '#' + (index + 1) + '_a')});\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "$('tr:gt(1)').each(function() {}).sort(function (a, b) {return $('td:nth-of-type('+sortItem+')', a).text().localeCompare($('td:nth-of-type('+sortItem+')', b).text());}).appendTo('tbody');\n");
+    fs.writeSync(resultsFile, "$('tr:first').children('td').children('a').each(function(index) {$(this).attr('href', '#' + (index + 1) + '_d')});\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "$(window).on('hashchange', function (e) {\n");
+    fs.writeSync(resultsFile, "doSort();\n");
+    fs.writeSync(resultsFile, "});\n");
+    fs.writeSync(resultsFile, "</script>\n");
     buildHistoryJson.building = true;
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
@@ -245,7 +245,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
 
 function stopUpdatingResults() {
     console.log('Build process complete');
-    resultsFile.write("<div>Build process complete</div>");
+    fs.writeSync(resultsFile, "<div>Build process complete</div>");
     buildHistoryJson.building = false;
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
@@ -1083,7 +1083,7 @@ function buildNextExperiment() {
     while (listingMap.size > 0 && currentlyBuilding.size < concurrentBuildCount) {
         const currentKey = listingMap.keys().next().value;
         console.log('buildNextExperiment: ' + currentKey);
-        //resultsFile.write("buildNextExperiment: " + currentKey + "</div>");
+        //fs.writeSync(resultsFile, "buildNextExperiment: " + currentKey + "</div>");
         const currentEntry = listingMap.get(currentKey);
         if (currentlyBuilding.has(currentEntry.buildName)) {
             console.log("waiting rebuild: " + currentEntry.buildName);
@@ -1155,13 +1155,13 @@ function buildFromListing() {
                     if (currentlyBuilding.has(buildName)) {
                         // if any build configuration exists then wait for its build process to terminate
                         console.log('waitingTermination: ' + buildName);
-                        resultsFile.write("<div>waitingTermination: " + buildName + "</div>");
+                        fs.writeSync(resultsFile, "<div>waitingTermination: " + buildName + "</div>");
                         storeResult(fileNamePart, 'restarting build', "staging", "web", false, false, false);
                     } else {
                         var listingFile = path.resolve(listingDirectory, buildName + '.json');
                         if (!fs.existsSync(listingFile)) {
                             console.log('listingFile not found: ' + listingFile);
-                            resultsFile.write("<div>listingFile not found: " + listingFile + "</div>");
+                            fs.writeSync(resultsFile, "<div>listingFile not found: " + listingFile + "</div>");
                             // in this case delete the XML as well
                             fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
                         } else {
@@ -1172,7 +1172,7 @@ function buildFromListing() {
 
                             // keeping the listing entry in a map so only one can exist for any experiment regardless of mid compilation rebuild requests
                             console.log('jsonListing: ' + buildName);
-                            //resultsFile.write("<div>jsonListing: " + buildName + "</div>");
+                            //fs.writeSync(resultsFile, "<div>jsonListing: " + buildName + "</div>");
                             var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
                             listingJsonData.buildName = buildName;
                             console.log('listingJsonData: ' + JSON.stringify(listingJsonData));
@@ -1229,7 +1229,7 @@ function copyDeleteFile(incomingFile, targetFile) {
         if (fs.existsSync(incomingFile)) {
             fs.unlinkSync(incomingFile);
             console.log('removed: ' + incomingFile);
-            //resultsFile.write("<div>removed: " + incomingFile + "</div>");
+            //fs.writeSync(resultsFile, "<div>removed: " + incomingFile + "</div>");
         }
     });
     incomingReadStream.pipe(fs.createWriteStream(targetFile));
@@ -1241,19 +1241,19 @@ function prepareForProcessing() {
     for (var filename of list) {
         console.log('processing: ' + filename);
         var fileNamePart = path.parse(filename).name;
-        //resultsFile.write("<div>processing validated: " + filename + "</div>");
+        //fs.writeSync(resultsFile, "<div>processing validated: " + filename + "</div>");
         var incomingFile = path.resolve(processingDirectory + '/validated', filename);
         //fs.chmodSync(incomingFile, 0o777); // chmod needs to be done by Docker when the files are created.
         if (filename === "listing.json") {
             console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
-            resultsFile.write("<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
+            fs.writeSync(resultsFile, "<div>Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
         } else if (path.extname(filename) === ".json") {
             var jsonStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //console.log('incomingFile: ' + incomingFile);
             //console.log('jsonStoreFile: ' + jsonStoreFile);
             //fs.renameSync(incomingFile, jsonStoreFile);
             console.log('copying JSON from validated to target: ' + filename);
-            resultsFile.write("<div>copying JSON from validated to target: " + filename + "</div>");
+            fs.writeSync(resultsFile, "<div>copying JSON from validated to target: " + filename + "</div>");
             copyDeleteFile(incomingFile, jsonStoreFile);
         } else if (path.extname(filename) === ".xml") {
             //var processingName = path.resolve(processingDirectory, filename);
@@ -1264,9 +1264,9 @@ function prepareForProcessing() {
             // this move is within the same volume so we can do it this easy way
             fs.copyFileSync(incomingFile, configQueuedFile);
             console.log('copied XML from validated to queued: ' + filename);
-            //resultsFile.write("<div>copied XML from validated to queued: " + filename + "</div>");
+            //fs.writeSync(resultsFile, "<div>copied XML from validated to queued: " + filename + "</div>");
             console.log('copying XML from queued to target: ' + filename);
-            //resultsFile.write("<div>copying XML from queued to target: " + filename + "</div>");
+            //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
             // this move is not within the same volume
             copyDeleteFile(incomingFile, configStoreFile);
         } else if (path.extname(filename) === ".uml") {
@@ -1274,38 +1274,38 @@ function prepareForProcessing() {
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
             //console.log('copying UML from validated to target: ' + incomingFile);
-            //resultsFile.write("<div>copying UML from validated to target: " + incomingFile + "</div>");
+            //fs.writeSync(resultsFile, "<div>copying UML from validated to target: " + incomingFile + "</div>");
             copyDeleteFile(incomingFile, targetName);
         } else if (path.extname(filename) === ".svg") {
             // preserve the generated UML SVG to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
             //console.log('copying SVG from validated to target: ' + filename);
-            //resultsFile.write("<div>copying SVG from validated to target: " + filename + "</div>");
+            //fs.writeSync(resultsFile, "<div>copying SVG from validated to target: " + filename + "</div>");
             copyDeleteFile(incomingFile, targetName);
         } else if (path.extname(filename) === ".xsd") {
             // place the generated XSD file for use in XML editors
             var targetName = path.resolve(targetDirectory, filename);
             //console.log('copying XSD from validated to target: ' + filename);
-            //resultsFile.write("<div>copying XSD from validated to target: " + filename + "</div>");
+            //fs.writeSync(resultsFile, "<div>copying XSD from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, targetName);
             copyDeleteFile(incomingFile, targetName);
         } else if (filename.endsWith("frinex.html")) {
             // place the generated documentation file for use in web browsers
             var targetName = path.resolve(targetDirectory, filename);
             //console.log('copying HTML from validated to target: ' + filename);
-            //resultsFile.write("<div>copying HTML from validated to target: " + filename + "</div>");
+            //fs.writeSync(resultsFile, "<div>copying HTML from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, targetName);
             copyDeleteFile(incomingFile, targetName);
         } else if (filename.endsWith("_validation_error.txt")) {
             var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
             console.log('copying from validated to target: ' + filename);
-            resultsFile.write("<div>copying from validated to target: " + filename + "</div>");
+            fs.writeSync(resultsFile, "<div>copying from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, processingName);
             copyDeleteFile(incomingFile, configErrorFile);
         } else if (fs.existsSync(incomingFile)) {
             console.log('deleting unkown file: ' + incomingFile);
-            resultsFile.write("<div>deleting unkown file: " + incomingFile + "</div>");
+            fs.writeSync(resultsFile, "<div>deleting unkown file: " + incomingFile + "</div>");
             fs.unlinkSync(incomingFile);
         }
     }
@@ -1317,37 +1317,37 @@ function moveIncomingToQueued() {
     if (!fs.existsSync(incomingDirectory + "/queued")) {
         fs.mkdirSync(incomingDirectory + '/queued');
         console.log('queued directory created');
-        //resultsFile.write("<div>queued directory created</div>");
+        //fs.writeSync(resultsFile, "<div>queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/validated")) {
         fs.mkdirSync(processingDirectory + '/validated');
         console.log('validated directory created');
-        //resultsFile.write("<div>validated directory created</div>");
+        //fs.writeSync(resultsFile, "<div>validated directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/queued")) {
         fs.mkdirSync(processingDirectory + '/queued');
         console.log('staging directory created');
-        //resultsFile.write("<div>queued directory created</div>");
+        //fs.writeSync(resultsFile, "<div>queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/staging-queued")) {
         fs.mkdirSync(processingDirectory + '/staging-queued');
         console.log('staging directory created');
-        //resultsFile.write("<div>staging queued directory created</div>");
+        //fs.writeSync(resultsFile, "<div>staging queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/staging-building")) {
         fs.mkdirSync(processingDirectory + '/staging-building');
         console.log('staging directory created');
-        //resultsFile.write("<div>staging building directory created</div>");
+        //fs.writeSync(resultsFile, "<div>staging building directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/production-queued")) {
         fs.mkdirSync(processingDirectory + '/production-queued');
         console.log('production directory created');
-        //resultsFile.write("<div>production queued directory created</div>");
+        //fs.writeSync(resultsFile, "<div>production queued directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/production-building")) {
         fs.mkdirSync(processingDirectory + '/production-building');
         console.log('production directory created');
-        //resultsFile.write("<div>production building directory created</div>");
+        //fs.writeSync(resultsFile, "<div>production building directory created</div>");
     }
     fs.readdir(incomingDirectory + '/commits', function (error, list) {
         if (error) {
@@ -1369,13 +1369,13 @@ function moveIncomingToQueued() {
                 }
                 if (hasProcessingFiles === true) {
                     console.log('moveIncomingToQueued: hasProcessingFiles');
-                    //resultsFile.write("<div>has more files in processing</div>");
+                    //fs.writeSync(resultsFile, "<div>has more files in processing</div>");
                     prepareForProcessing();
                     setTimeout(moveIncomingToQueued, 3000);
                 } else {
                     // we allow the process to exit here if there are no files
                     console.log('moveIncomingToQueued: no files');
-                    resultsFile.write("<div>no more files in processing</div>");
+                    fs.writeSync(resultsFile, "<div>no more files in processing</div>");
                     stopUpdatingResults();
                 }
             } else {
@@ -1383,7 +1383,7 @@ function moveIncomingToQueued() {
                     var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
                     var queuedFile = path.resolve(incomingDirectory + '/queued/', filename);
                     if ((path.extname(filename) === ".json" || path.extname(filename) === ".xml") && filename !== "listing.json") {
-                        resultsFile.write("<div>initialise: '" + filename + "'</div>");
+                        fs.writeSync(resultsFile, "<div>initialise: '" + filename + "'</div>");
                         console.log('initialise: ' + filename);
                         var currentName = path.parse(filename).name;
                         var mavenLogPathSG = targetDirectory + "/" + currentName + "/" + currentName + "_staging.txt";
@@ -1455,7 +1455,7 @@ function moveIncomingToQueued() {
                         // this move is within the same volume so we can do it this easy way
                         fs.renameSync(incomingFile, queuedFile);
                     } else {
-                        resultsFile.write("<div>removing unusable type: '" + filename + "'</div>");
+                        fs.writeSync(resultsFile, "<div>removing unusable type: '" + filename + "'</div>");
                         //console.log('removing unusable type: ' + filename);
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
@@ -1475,7 +1475,7 @@ function moveIncomingToQueued() {
 }
 
 function convertJsonToXml() {
-    //resultsFile.write("<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
+    //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
     var dockerString = 'docker stop json_to_xml'
         + ' &> /usr/local/apache2/htdocs/json_to_xml.txt;'
         + 'docker run --rm'
@@ -1500,12 +1500,12 @@ function convertJsonToXml() {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("convert JSON to XML finished");
-        //resultsFile.write("<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
+        //fs.writeSync(resultsFile, "<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         prepareForProcessing();
     } catch (reason) {
         console.log(reason);
         console.log("convert JSON to XML failed");
-        resultsFile.write("<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
+        fs.writeSync(resultsFile, "<div>Conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
     };
 }
 
