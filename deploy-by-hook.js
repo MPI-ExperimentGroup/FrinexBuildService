@@ -288,7 +288,7 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("staging frinex-gui undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeployed</a>', "staging", "web", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeployed</a>', "staging", "web", false, false, false);
     } catch (error) {
         console.error(`staging frinex-gui undeploy error: ${error}`);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploy error</a>', "staging", "web", true, false, true);
@@ -325,7 +325,7 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("staging frinex-admin undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeployed</a>', "staging", "admin", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeployed</a>', "staging", "admin", false, false, false);
     } catch (error) {
         console.error(`staging frinex-admin undeploy error: ${error}`);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploy error</a>', "staging", "admin", true, false, true);
@@ -362,7 +362,7 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-gui undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeployed</a>', "production", "web", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeployed</a>', "production", "web", false, false, false);
     } catch (error) {
         console.error(`production frinex-gui undeploy error: ${error}`);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploy error</a>', "production", "web", true, false, true);
@@ -399,7 +399,7 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-admin undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeployed</a>', "production", "admin", false, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeployed</a>', "production", "admin", false, false, false);
     } catch (error) {
         console.error(`production frinex-admin undeploy error: ${error}`);
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploy error</a>', "production", "admin", true, false, true);
@@ -1128,7 +1128,7 @@ function buildFromListing() {
                     storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                 }
                 if (fs.existsSync(withoutSuffixPath + ".svg")) {
-                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.svg">uml-svg</a>&nbsp;';
+                    validationMessage += '<a href="' + fileNamePart + '/' + fileNamePart + '.svg">uml</a>&nbsp;';
                     storeResult(fileNamePart, validationMessage, "validation", "json_xsd", false, false, false);
                 }
                 if (fs.existsSync(withoutSuffixPath + ".uml")) {
