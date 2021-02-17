@@ -177,6 +177,8 @@ RUN cd /ExperimentTemplate/gwt-cordova/ \
     && mvn clean
 RUN cd /ExperimentTemplate/registration/ \
     && mvn clean
+    # clean out the static directory to prevent these files being used in the automated builds
+RUN rm -r /ExperimentTemplate/gwt-cordova/src/main/static/*
 
 WORKDIR /target
 VOLUME ["m2Directory:/maven/.m2/", "webappsTomcatStaging:/usr/local/tomcat/webapps"]
