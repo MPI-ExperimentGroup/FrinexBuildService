@@ -532,6 +532,14 @@ function deployStagingGui(currentEntry) {
                 // buildArtifactsFileName should not exist at this point
                 currentlyBuilding.delete(currentEntry.buildName);
             }
+            var cordovaSetupFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '_setup-cordova.sh');
+            if (fs.existsSync(cordovaSetupFile)) {
+                fs.unlinkSync(cordovaSetupFile);
+            }
+            var electronSetupFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '_setup-electron.sh');
+            if (fs.existsSync(electronSetupFile)) {
+                fs.unlinkSync(electronSetupFile);
+            }
             /* this file is deleted at the start of the admin build process
             var cordovaZipFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '-frinex-gui-stable-cordova.zip');
             if (fs.existsSync(cordovaZipFile)) {
@@ -619,7 +627,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
-                const buildArtifactsTargetFileName = targetDirectory + '/' + currentEntry.buildName + '_staging_artifacts.json';
+                const buildArtifactsTargetFileName = targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_artifacts.json';
                 fs.writeFileSync(buildArtifactsTargetFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
                 if (fs.existsSync(buildArtifactsFileName)) {
                     fs.unlinkSync(buildArtifactsFileName);
@@ -795,6 +803,14 @@ function deployProductionGui(currentEntry) {
                             // buildArtifactsFileName should not exist at this point
                             currentlyBuilding.delete(currentEntry.buildName);
                         }
+                        var cordovaSetupFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '_setup-cordova.sh');
+                        if (fs.existsSync(cordovaSetupFile)) {
+                            fs.unlinkSync(cordovaSetupFile);
+                        }
+                        var electronSetupFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '_setup-electron.sh');
+                        if (fs.existsSync(electronSetupFile)) {
+                            fs.unlinkSync(electronSetupFile);
+                        }
                         /* this file is deleted at the start of the admin build process
                         var cordovaZipFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '-frinex-gui-stable-cordova.zip');
                         if (fs.existsSync(cordovaZipFile)) {
@@ -907,7 +923,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
-                const buildArtifactsTargetFileName = targetDirectory + '/' + currentEntry.buildName + '_production_artifacts.json';
+                const buildArtifactsTargetFileName = targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_artifacts.json';
                 fs.writeFileSync(buildArtifactsTargetFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
