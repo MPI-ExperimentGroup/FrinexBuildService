@@ -694,8 +694,8 @@ function deployProductionGui(currentEntry) {
                     console.log("existing frinex-gui production found, aborting build!");
                     console.log(response.statusCode);
                     storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
-                    if (fs.existsSync(productionConfigFile)) {
-                        fs.unlinkSync(productionConfigFile);
+                    if (fs.existsSync(productionQueuedFile)) {
+                        fs.unlinkSync(productionQueuedFile);
                     }
                     currentlyBuilding.delete(currentEntry.buildName);
                 } else {
