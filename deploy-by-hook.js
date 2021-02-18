@@ -62,6 +62,7 @@ const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
+var hasDoneBackup = false;
 
 function startResult() {
     fs.writeSync(resultsFile, "<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}.shortmessage {border-bottom: 1px solid;position: relative;display: inline-block;}.shortmessage .longmessage {visibility: hidden; width: 300px; color: white; background-color: black; border-radius: 10px; padding: 5px; text-align: centre; position: absolute;}.shortmessage:hover .longmessage {visibility: visible;} tr:hover {background-color: #3f51b521;}</style>\n");
@@ -1409,6 +1410,15 @@ function moveIncomingToQueued() {
                     console.log('moveIncomingToQueued: hasProcessingFiles');
                     //fs.writeSync(resultsFile, "<div>has more files in processing</div>");
                     prepareForProcessing();
+                    setTimeout(moveIncomingToQueued, 3000);
+                } else if (!hasDoneBackup) {
+                    console.log("pre exit backup");
+                    try {
+                        execSync('rsync -avz /usr/local/apache2/htdocs/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-* /BackupFiles/;', { stdio: [0, 1, 2] });
+                    } catch (reason) {
+                        console.log(reason);
+                    }
+                    hasDoneBackup = true;
                     setTimeout(moveIncomingToQueued, 3000);
                 } else {
                     // we allow the process to exit here if there are no files
