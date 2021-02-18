@@ -64,5 +64,7 @@ COPY ./settings.xml /FrinexBuildService/
 # make sure that the required files are accessable by httpd
 RUN chown -R daemon /FrinexBuildService
 RUN chown -R daemon /usr/local/apache2/htdocs
+# todo: this is required because the experiment commits check and starts the node build script, it would be nice to have more user isolation here
+RUN sudo usermod -aG docker daemon
 WORKDIR /FrinexBuildService
 VOLUME ["buildServerTarget:/usr/local/apache2/htdocs"]
