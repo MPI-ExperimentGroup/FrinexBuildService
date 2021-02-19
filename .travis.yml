@@ -5,6 +5,10 @@ script:
   - sed -i "s|CheckoutDirectory|$(pwd)/../frinex-repositories|g" post-receive
   - sed -i "s|RepositoriesDirectory|$(pwd)/../frinex-repositories/git|g" post-receive
   - sed -i "s|ScriptsDirectory|$(pwd)|g" post-receive
+  - sed -i "s|TargetDirectory|$(pwd)/../target|g" create_frinex_build_repository.sh
+  - sed -i "s|CheckoutDirectory|$(pwd)/../frinex-repositories|g" create_frinex_build_repository.sh
+  - sed -i "s|RepositoriesDirectory|$(pwd)/../frinex-repositories/git|g" create_frinex_build_repository.sh
+  - sed -i "s|ScriptsDirectory|$(pwd)|g" create_frinex_build_repository.sh
   - sed -i "s|chown|#chown|g" create_frinex_build_repository.sh
 
   - bash create_frinex_build_repository.sh test-repository
