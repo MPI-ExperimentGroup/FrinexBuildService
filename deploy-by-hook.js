@@ -223,6 +223,11 @@ function initialiseResult(name, message, isError) {
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
+function storeResult(name, message, stage, type, isError, isBuilding, isDone, stageStartTime) {
+    storeResult(name, message, stage, type, isError, isBuilding, isDone);
+    buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (new Date().getTime() - stageStartTime);
+}
+
 function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
     buildHistoryJson.table[name]["_date"].value = new Date().toISOString();
     //buildHistoryJson.table[name]["_date"].value = '<a href="' + currentEntry.buildName + '/' + name + '.xml">' + new Date().toISOString() + '</a>';
@@ -254,9 +259,10 @@ function stopUpdatingResults() {
 
 function unDeploy(currentEntry) {
     console.log("unDeploy");
+    var stageStartTime = new Date().getTime();
     console.log("request to unDeploy " + currentEntry.buildName);
     // undeploy staging gui
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploying</a>', "staging", "web", false, true, false);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploying</a>', "staging", "web", false, true, false, stageStartTime);
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
     var buildContainerName = currentEntry.buildName + '_undeploy';
     var dockerString = 'docker stop ' + buildContainerName
@@ -289,13 +295,13 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("staging frinex-gui undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeployed</a>', "staging", "web", false, false, false);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeployed</a>', "staging", "web", false, false, false, stageStartTime);
     } catch (error) {
         console.error(`staging frinex-gui undeploy error: ${error}`);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploy error</a>', "staging", "web", true, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploy error</a>', "staging", "web", true, false, true, stageStartTime);
     }
     // undeploy staging admin
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false, stageStartTime);
     var dockerString = 'docker stop ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         + 'docker run'
@@ -326,13 +332,13 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("staging frinex-admin undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeployed</a>', "staging", "admin", false, false, false);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeployed</a>', "staging", "admin", false, false, false, stageStartTime);
     } catch (error) {
         console.error(`staging frinex-admin undeploy error: ${error}`);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploy error</a>', "staging", "admin", true, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploy error</a>', "staging", "admin", true, false, true, stageStartTime);
     }
     // undeploy production gui
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploying</a>', "production", "web", false, true, false);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploying</a>', "production", "web", false, true, false, stageStartTime);
     var dockerString = 'docker stop ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         + 'docker run'
@@ -363,13 +369,13 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-gui undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeployed</a>', "production", "web", false, false, false);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeployed</a>', "production", "web", false, false, false, stageStartTime);
     } catch (error) {
         console.error(`production frinex-gui undeploy error: ${error}`);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploy error</a>', "production", "web", true, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploy error</a>', "production", "web", true, false, true, stageStartTime);
     }
     // undeploy production admin
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploying</a>', "production", "admin", false, true, false);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploying</a>', "production", "admin", false, true, false, stageStartTime);
     var dockerString = 'docker stop ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + 'docker run'
@@ -400,10 +406,10 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-admin undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeployed</a>', "production", "admin", false, false, false);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeployed</a>', "production", "admin", false, false, false, stageStartTime);
     } catch (error) {
         console.error(`production frinex-admin undeploy error: ${error}`);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploy error</a>', "production", "admin", true, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploy error</a>', "production", "admin", true, false, true, stageStartTime);
     }
     if (fs.existsSync(queuedConfigFile)) {
         fs.unlinkSync(queuedConfigFile);
@@ -413,16 +419,17 @@ function unDeploy(currentEntry) {
 
 function deployStagingGui(currentEntry) {
     console.log("deployStagingGui");
+    var stageStartTime = new Date().getTime();
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt");
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt", 'w'));
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">building</a>', "staging", "web", false, true, false, stageStartTime);
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
     var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
     if (!fs.existsSync(queuedConfigFile)) {
         console.log("deployStagingGui missing: " + queuedConfigFile);
-        storeResult(currentEntry.buildName, 'failed', "staging", "web", true, false, false);
+        storeResult(currentEntry.buildName, 'failed', "staging", "web", true, false, false, stageStartTime);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
         if (fs.existsSync(stagingConfigFile)) {
@@ -502,7 +509,7 @@ function deployStagingGui(currentEntry) {
             console.error(`deployStagingGui stderr: ${stderr}`);
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
                 console.log("deployStagingGui finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true, stageStartTime);
                 var buildArtifactsJson = { artifacts: {} };
                 const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
                 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
@@ -525,7 +532,7 @@ function deployStagingGui(currentEntry) {
                 //console.log(targetDirectory);
                 //console.log(JSON.stringify(reason, null, 4));
                 console.log("deployStagingGui failed: " + currentEntry.experimentDisplayName);
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">failed</a>', "staging", "web", true, false, false, stageStartTime);
                 //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                 //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
                 if (fs.existsSync(stagingConfigFile)) {
@@ -557,16 +564,17 @@ function deployStagingGui(currentEntry) {
 }
 
 function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName) {
+    var stageStartTime = new Date().getTime();
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt");
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt", 'w'));
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true, false);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">building</a>', "staging", "admin", false, true, false, stageStartTime);
     var stagingConfigFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '.xml');
     //    var stagingAdminConfigFile = path.resolve(processingDirectory + '/staging-admin', currentEntry.buildName + '.xml');
     if (!fs.existsSync(stagingConfigFile)) {
         console.log("deployStagingAdmin missing: " + stagingConfigFile);
-        storeResult(currentEntry.buildName, 'failed', "staging", "admin", true, false, false);
+        storeResult(currentEntry.buildName, 'failed', "staging", "admin", true, false, false, stageStartTime);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
         //  terminate existing docker containers by name 
@@ -625,7 +633,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
                 console.log("frinex-gui finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true, stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
@@ -649,7 +657,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             } else {
                 console.log("deployStagingAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false, stageStartTime);
                 if (fs.existsSync(stagingConfigFile)) {
                     fs.unlinkSync(stagingConfigFile);
                 }
@@ -660,7 +668,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             };
         } catch (error) {
             console.error('deployStagingAdmin error: ' + error);
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">failed</a>', "staging", "admin", true, false, false, stageStartTime);
             if (fs.existsSync(stagingConfigFile)) {
                 fs.unlinkSync(stagingConfigFile);
             }
@@ -673,17 +681,18 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
 }
 
 function deployProductionGui(currentEntry) {
+    var stageStartTime = new Date().getTime();
     console.log("deployProductionGui started");
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt");
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt", 'w'));
-    storeResult(currentEntry.buildName, 'checking', "production", "web", false, true, false);
+    storeResult(currentEntry.buildName, 'checking', "production", "web", false, true, false, stageStartTime);
     var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
     var productionConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
     if (!fs.existsSync(productionQueuedFile)) {
         console.log("deployProductionGui missing: " + productionQueuedFile);
-        storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
+        storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false, stageStartTime);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
         console.log("existing deployment check: " + productionServerUrl + '/' + currentEntry.buildName);
@@ -694,13 +703,13 @@ function deployProductionGui(currentEntry) {
                 if (response.statusCode !== 404) {
                     console.log("existing frinex-gui production found, aborting build!");
                     console.log(response.statusCode);
-                    storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
+                    storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false, stageStartTime);
                     if (fs.existsSync(productionQueuedFile)) {
                         fs.unlinkSync(productionQueuedFile);
                     }
                     currentlyBuilding.delete(currentEntry.buildName);
                 } else {
-                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
+                    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false, stageStartTime);
                     if (fs.existsSync(productionConfigFile)) {
                         console.log("deployProductionGui found: " + productionConfigFile);
                         console.log("deployProductionGui if another process already building it will be terminated: " + currentEntry.buildName);
@@ -777,7 +786,7 @@ function deployProductionGui(currentEntry) {
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
                             console.log("deployProductionGui finished");
-                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true);
+                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, stageStartTime);
                             var buildArtifactsJson = { artifacts: {} };
                             const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
                             buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production_web.war";
@@ -797,7 +806,7 @@ function deployProductionGui(currentEntry) {
                             //console.log(JSON.stringify(reason, null, 4));
                             console.log("deployProductionGui failed");
                             console.log(currentEntry.experimentDisplayName);
-                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false);
+                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false, stageStartTime);
                             //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.html", {flags: 'w'});
                             //errorFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(reason, null, 4));
                             if (fs.existsSync(productionConfigFile)) {
@@ -829,7 +838,7 @@ function deployProductionGui(currentEntry) {
             }).on('error', function (error) {
                 console.log("existing frinex-gui production unknown, aborting build!");
                 console.log(error);
-                storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
+                storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false, stageStartTime);
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
                 }
@@ -841,7 +850,7 @@ function deployProductionGui(currentEntry) {
         } catch (exception) {
             console.log(exception);
             console.log("frinex-gui production failed");
-            storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
+            storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false, stageStartTime);
             if (fs.existsSync(productionConfigFile)) {
                 fs.unlinkSync(productionConfigFile);
             }
@@ -854,16 +863,17 @@ function deployProductionGui(currentEntry) {
 }
 
 function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName) {
+    var stageStartTime = new Date().getTime();
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt");
     }
     fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt", 'w'));
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true, false);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">building</a>', "production", "admin", false, true, false, stageStartTime);
     var productionConfigFile = path.resolve(processingDirectory + '/production-building', currentEntry.buildName + '.xml');
     //    var productionAdminConfigFile = path.resolve(processingDirectory + '/production-admin', currentEntry.buildName + '.xml');
     if (!fs.existsSync(productionConfigFile)) {
         console.log("deployProductionAdmin missing: " + productionConfigFile);
-        storeResult(currentEntry.buildName, 'failed', "production", "admin", true, false, false);
+        storeResult(currentEntry.buildName, 'failed', "production", "admin", true, false, false, stageStartTime);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
         //  terminate existing docker containers by name 
@@ -922,7 +932,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 console.log("frinex-gui finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true, stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
@@ -945,7 +955,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                     fs.unlinkSync(buildArtifactsFileName);
                 }
                 currentlyBuilding.delete(currentEntry.buildName);
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false, stageStartTime);
             };
             //currentlyBuilding.delete(currentEntry.buildName);
         } catch (error) {
@@ -957,15 +967,16 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 fs.unlinkSync(buildArtifactsFileName);
             }
             currentlyBuilding.delete(currentEntry.buildName);
-            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false);
+            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">failed</a>', "production", "admin", true, false, false, stageStartTime);
         }
         console.log("deployProductionAdmin ended");
     }
 }
 
 function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) {
+    var stageStartTime = new Date().getTime();
     console.log("starting cordova build");
-    storeResult(buildName, "building", stage, "android", false, true, false);
+    storeResult(buildName, "building", stage, "android", false, true, false, stageStartTime);
     var resultString = "";
     var hasFailed = false;
     try {
@@ -974,7 +985,7 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
         }
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.txt", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.txt" + '">log</a>&nbsp;';
-        storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
+        storeResult(buildName, "building " + resultString, stage, "android", false, true, false, stageStartTime);
         // we do not build in the docker volume because it would create redundant file synchronisation.
         var dockerString = 'docker stop ' + buildName + '_' + stage + '_cordova;'
             + 'docker run --name ' + buildName + '_' + stage + '_cordova --rm'
@@ -1023,15 +1034,16 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
     }
     //add the XML and any json + template and any UML of the experiment to the buildArtifactsJson of the admin system
     console.log("build cordova finished");
-    storeResult(buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true);
+    storeResult(buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true, stageStartTime);
     //update artifacts.json
     //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + buildName + "_" + stage + '_artifacts.json';
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
 function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileName) {
+    var stageStartTime = new Date().getTime();
     console.log("starting electron build");
-    storeResult(buildName, "building", stage, "desktop", false, true, false);
+    storeResult(buildName, "building", stage, "desktop", false, true, false, stageStartTime);
     var resultString = "";
     var hasFailed = false;
     try {
@@ -1040,7 +1052,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
         }
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.txt", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.txt" + '">log</a>&nbsp;';
-        storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
+        storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false, stageStartTime);
         var dockerString = 'docker stop ' + buildName + '_' + stage + '_electron;'
             + 'docker run --name ' + buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
@@ -1113,7 +1125,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
     //cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
     //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     console.log("build electron finished");
-    storeResult(buildName, resultString, stage, "desktop", hasFailed || !producedOutput, false, true);
+    storeResult(buildName, resultString, stage, "desktop", hasFailed || !producedOutput, false, true, stageStartTime);
     //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
@@ -1414,7 +1426,7 @@ function moveIncomingToQueued() {
                 } else if (!hasDoneBackup) {
                     console.log("pre exit backup");
                     try {
-                        execSync('rsync -avz /usr/local/apache2/htdocs/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-* /BackupFiles/;', { stdio: [0, 1, 2] });
+                        execSync('rsync -a /usr/local/apache2/htdocs/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-* /BackupFiles/;', { stdio: [0, 1, 2] });
                     } catch (reason) {
                         console.log(reason);
                     }
