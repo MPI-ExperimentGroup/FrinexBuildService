@@ -25,6 +25,6 @@ script:
   - git commit -m "test" test-experiment.xml; git push
   - echo " " >> test-experiment.xml
   - git commit -m "test" test-experiment.xml; git push
-  - cd ../..
+  #- cd ../..
   - ls target
   - ls target/*
