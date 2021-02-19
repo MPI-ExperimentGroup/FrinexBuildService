@@ -1,9 +1,9 @@
 language: java
 install:
 script:
-  - sed -i "s|TargetDirectory|$(pwd)/target|g" post-receive
-  - sed -i "s|CheckoutDirectory|$(pwd)/frinex-repositories|g" post-receive
-  - sed -i "s|RepositoriesDirectory|$(pwd)/frinex-repositories/git|g" post-receive
+  - sed -i "s|TargetDirectory|$(pwd)/../target|g" post-receive
+  - sed -i "s|CheckoutDirectory|$(pwd)/../frinex-repositories|g" post-receive
+  - sed -i "s|RepositoriesDirectory|$(pwd)/../frinex-repositories/git|g" post-receive
   - sed -i "s|ScriptsDirectory|$(pwd)|g" post-receive
 
   - bash create_frinex_build_repository.sh test-repository
