@@ -11,6 +11,7 @@ script:
   - sed -i "s|ScriptsDirectory|$(pwd)|g" create_frinex_build_repository.sh
   - sed -i "s|chown|#chown|g" create_frinex_build_repository.sh
 
+  - mkdir ../target
   - bash create_frinex_build_repository.sh test-repository
   - pwd
   - cd ..
@@ -25,6 +26,6 @@ script:
   - git commit -m "test" test-experiment.xml; git push
   - echo " " >> test-experiment.xml
   - git commit -m "test" test-experiment.xml; git push
-  #- cd ../..
+  - cd ../..
   - ls target
   - ls target/*
