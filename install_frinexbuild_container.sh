@@ -22,7 +22,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-cd $(dirname "$0")
+cd $(dirname "$0")/src/main/docker
 workingDir=$(pwd -P)
 
 # check that the properties to be used match the current machine
