@@ -224,8 +224,8 @@ function initialiseResult(name, message, isError) {
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone, stageStartTime) {
-    storeResult(name, message, stage, type, isError, isBuilding, isDone);
     buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (new Date().getTime() - stageStartTime);
+    storeResult(name, message, stage, type, isError, isBuilding, isDone);
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
