@@ -58,9 +58,12 @@ do
       git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
       echo "<br/>" >> $targetDir/git-push-log.html
       git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
+      # todo: this needs to be limited to XML and JSON
       cp $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g") $scriptDir/incoming/commits/
       # copy the static files to a working directory for frinex-gui to compile
       git diff --name-only $oldrev $newrev | sed -e "s/.json//g" | sed -e "s/.xml//g" >> $targetDir/git-push-log.html
+      # only static files in the directory for the commited XML and JSON types are copied here
+      # these static files are copied here after the XML or JSON are in place, so that the static files do not get cleaned up before the build starts
       cp -r $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | sed -e "s/.json//g" | sed -e "s/.xml//g") $scriptDir/incoming/static/
       echo "<br/>" >> $targetDir/git-push-log.html
     fi
