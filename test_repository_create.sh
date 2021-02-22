@@ -1,5 +1,5 @@
 # start the web server to host the build listing pages
-httpd
+#httpd
 # clean up previous testing data
 rm -r /FrinexBuildService/incoming/*
 rm -r /FrinexBuildService/processing/*
@@ -37,4 +37,5 @@ chown -R daemon /FrinexBuildService/git-repositories/TEST_REPOSITORY.git
 chown -R daemon /FrinexBuildService/git-checkedout/TEST_REPOSITORY
 chown -R daemon /usr/local/apache2/htdocs
 chown -R daemon /FrinexBuildService/incoming
-chown daemon /var/run/docker.sock
+# on restart of the machine this might have lost this permission
+#chown daemon /var/run/docker.sock
