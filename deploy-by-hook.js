@@ -236,6 +236,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #F3C3C3';
         for (var index in buildHistoryJson.table[name]) {
             if (buildHistoryJson.table[name][index].value === "queued") {
+                // todo: is this correct to label skipped when its the apk or exe that failed
                 buildHistoryJson.table[name][index].value = "skipped";
             }
         }
@@ -1488,6 +1489,7 @@ function moveIncomingToQueued() {
                             console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
                             fs.unlinkSync(stagingBuildingConfigFile);
                             try {
+                                // note that we dont stop currentName + '_undeploy' because it is probable that the committer intends to undeploy then redeploy and a partial undeploy would be undesirable
                                 execSync('docker stop ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
                             } catch (reason) {
                                 console.log(reason);
@@ -1507,6 +1509,7 @@ function moveIncomingToQueued() {
                         initialiseResult(currentName, 'validating', false);
                         //if (fs.existsSync(targetDirectory + "/" + currentName)) {
                         // todo: consider if this agressive removal is always wanted
+                        // todo: we might want this agressive target experiment name directory removal to prevent old output being served out
                         //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
                         //}
                         if (!fs.existsSync(targetDirectory + "/" + currentName)) {
