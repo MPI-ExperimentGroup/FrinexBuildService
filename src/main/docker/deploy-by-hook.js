@@ -224,11 +224,6 @@ function initialiseResult(name, message, isError) {
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone, stageStartTime) {
-    buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (new Date().getTime() - stageStartTime);
-    storeResult(name, message, stage, type, isError, isBuilding, isDone);
-}
-
-function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
     buildHistoryJson.table[name]["_date"].value = new Date().toISOString();
     //buildHistoryJson.table[name]["_date"].value = '<a href="' + currentEntry.buildName + '/' + name + '.xml">' + new Date().toISOString() + '</a>';
     buildHistoryJson.table[name]["_" + stage + "_" + type].value = message;
@@ -246,6 +241,9 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #C3F3C3';
     } else {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = '';
+    }
+    if (typeof stageStartTime !== "undefined") {
+        buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (new Date().getTime() - stageStartTime);
     }
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
