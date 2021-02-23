@@ -26,7 +26,7 @@ cd $(dirname "$0")
 workingDir=$(pwd -P)
 
 # check that the properties to be used match the current machine
-if ! grep -q $(hostname) publish.properties; then 
+if ! grep -q $(hostname) src/main/docker/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # remove the old frinexbuild
@@ -34,5 +34,5 @@ else
     docker container rm frinexbuild 
 
     # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
-    docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/usr/local/apache2/htdocs -v $(workingDir)/BackupFiles:/BackupFiles -dit --name frinexbuild -p 8070:80 frinexbuild:latest
+    docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/usr/local/apache2/htdocs -v $workingDir/BackupFiles:/BackupFiles -dit --name frinexbuild -p 8070:80 frinexbuild:latest
 fi;
