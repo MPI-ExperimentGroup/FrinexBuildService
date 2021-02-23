@@ -160,7 +160,8 @@ function startResult() {
     fs.writeSync(resultsFile, "tableCell.id = keyString + '_' + cellString;\n");
     fs.writeSync(resultsFile, "document.getElementById(keyString + '_row').appendChild(tableCell);\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value;\n");
+    fs.writeSync(resultsFile, "var buildTimeSting = (typeof data.table[keyString][cellString].ms !== 'undefined')? '(' + parseInt(data.table[keyString][cellString].id / 60000) + ':' + parseInt(data.table[keyString][cellString].id / 1000 % 60) + ')' : '';\n");
+    fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value + buildTimeSting;\n");
     //fs.writeSync(resultsFile, "var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
     fs.writeSync(resultsFile, "var statusStyle = (keyString + '_' + cellString in applicationStatus)?';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';':'';\n");
     fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
