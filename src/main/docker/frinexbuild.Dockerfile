@@ -67,6 +67,6 @@ RUN chown -R daemon /FrinexBuildService
 RUN chown -R daemon /usr/local/apache2/htdocs
 RUN chown -R daemon /BackupFiles
 # todo: this is required because the experiment commits check and starts the node build script, it would be nice to have more user isolation here
-RUN usermod -aG docker daemon
+RUN addgroup daemon docker
 WORKDIR /FrinexBuildService
 VOLUME ["buildServerTarget:/usr/local/apache2/htdocs"]
