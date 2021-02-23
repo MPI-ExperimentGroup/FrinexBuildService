@@ -18,7 +18,7 @@
 #
 
 #
-# @since 22 Feb 2021 14:08 PM (creation date)
+# @since 23 Feb 2021 14:10 PM (creation date)
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
@@ -29,10 +29,6 @@ workingDir=$(pwd -P)
 if ! grep -q $(hostname) src/main/docker/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
-    # remove the old frinexbuild
-    docker stop frinexbuild 
-    docker container rm frinexbuild 
-
-    # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
-    docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/usr/local/apache2/htdocs -v $workingDir/BackupFiles:/BackupFiles -dit --name frinexbuild -p 8070:80 frinexbuild:latest
+    # start the frinexbuild container and rsync the last backup into the required docker volumes
+    docker run -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v buildServerTarget:/usr/local/apache2/htdocs -v $workingDir/BackupFiles:/BackupFiles -it --name frinexbuild-restore frinexbuild:latest /bin/bash -c "rsync -a /BackupFiles/buildartifacts/ /usr/local/apache2/htdocs/; rsync -a /BackupFiles/git-* /FrinexBuildService/;";
 fi;
