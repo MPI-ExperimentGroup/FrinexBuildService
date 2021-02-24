@@ -28,7 +28,8 @@ RUN apk add --no-cache \
   docker \
   curl \
   bash \
-  rsync
+  rsync \
+  sudo
 RUN git config --global user.name "Frinex Build Service"
 RUN git config --global user.email "noone@frinexbuild.mpi.nl"
 RUN mkdir /FrinexBuildService/
