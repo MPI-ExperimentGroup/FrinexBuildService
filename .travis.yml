@@ -17,7 +17,6 @@ script:
 
   - mkdir target
   - mkdir incoming
-  - mkdir incoming/commits
   - mkdir incoming/static
   - bash src/main/docker/create_frinex_build_repository.sh test-repository
   - pwd
