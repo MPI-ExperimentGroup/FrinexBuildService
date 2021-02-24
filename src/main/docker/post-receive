@@ -97,7 +97,7 @@ else
   pwd
 #  git pull --depth 5000
 #  mvn clean install -DversionCheck.buildType=stable -DskipTests=true -gs /srv/development/.m2/settings.xml >> $targetDir/git-mvn-out.html
-  nohup nice node --use_strict $scriptDir/deploy-by-hook.js >> $targetDir/git-push-out.txt 2>> $targetDir/git-push-err.txt &
+  nohup nice sudo -u frinex node --use_strict $scriptDir/deploy-by-hook.js >> $targetDir/git-push-out.txt 2>> $targetDir/git-push-err.txt &
   pidof node-default
   pidof node
 fi

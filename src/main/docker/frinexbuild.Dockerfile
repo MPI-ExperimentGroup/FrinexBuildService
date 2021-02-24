@@ -62,12 +62,12 @@ RUN cd /FrinexBuildService/; npm install properties-reader
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh LADD
 #COPY ./test_repository_create.sh /FrinexBuildService/
 COPY ./settings.xml /FrinexBuildService/
+RUN adduser -S frinex -G docker sudo daemon
 # make sure that the required files are accessable by httpd
 RUN chown -R daemon /FrinexBuildService
 RUN chown -R daemon /usr/local/apache2/htdocs
 RUN mkdir /BackupFiles
-RUN chown -R daemon /BackupFiles
+RUN chown -R frinex /BackupFiles
 # todo: this is required because the experiment commits check and starts the node build script, it would be nice to have more user isolation here
-RUN addgroup daemon docker
 WORKDIR /FrinexBuildService
 VOLUME ["buildServerTarget:/usr/local/apache2/htdocs"]

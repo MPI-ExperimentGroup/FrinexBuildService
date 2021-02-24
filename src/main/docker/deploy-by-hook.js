@@ -1587,6 +1587,9 @@ function prepareBuildHistory() {
                     } else if (buildHistoryJsonTemp.table[keyString][cellString].value === 'queued') {
                         buildHistoryJson.table[keyString][cellString].value = '';
                         buildHistoryJson.table[keyString][cellString].style = '';
+                    } else if (buildHistoryJsonTemp.table[keyString][cellString].value === 'validating') {
+                        buildHistoryJson.table[keyString][cellString].value = '';
+                        buildHistoryJson.table[keyString][cellString].style = '';
                     } else {
                         buildHistoryJson.table[keyString][cellString].value = buildHistoryJsonTemp.table[keyString][cellString].value;
                         buildHistoryJson.table[keyString][cellString].style = buildHistoryJsonTemp.table[keyString][cellString].style;
