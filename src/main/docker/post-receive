@@ -26,8 +26,8 @@ cd $(dirname "$0")
 scriptDir=ScriptsDirectory
 targetDir=TargetDirectory
 checkoutDir=CheckoutDirectory/RepositoryName
-ls -l $targetDir
-ls -l $checkoutDir
+#ls -l $targetDir
+#ls -l $checkoutDir
 
 whoami >> $targetDir/git-update-log.txt
 
