@@ -64,7 +64,7 @@ RUN cd /FrinexBuildService/; npm install properties-reader
 #COPY ./test_repository_create.sh /FrinexBuildService/
 COPY ./settings.xml /FrinexBuildService/
 RUN adduser -S frinex -G docker
-RUN echo '%daemon ALL=(ALL) NOPASSWD:node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
+RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
 RUN chown -R daemon /FrinexBuildService
 RUN chown -R daemon /usr/local/apache2/htdocs
