@@ -65,9 +65,12 @@ RUN cd /FrinexBuildService/; npm install properties-reader
 COPY ./settings.xml /FrinexBuildService/
 RUN adduser -S frinex -G docker
 RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
+RUN echo '%frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
 RUN chown -R frinex:daemon /FrinexBuildService
+RUN chmod -R ug+rwx /FrinexBuildService
 RUN chown -R frinex:daemon /usr/local/apache2/htdocs
+RUN chmod -R ug+rwx /usr/local/apache2/htdocs
 RUN mkdir /BackupFiles
 RUN chown -R frinex /BackupFiles
 # todo: this is required because the experiment commits check and starts the node build script, it would be nice to have more user isolation here
