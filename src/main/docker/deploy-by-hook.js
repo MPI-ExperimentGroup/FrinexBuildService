@@ -265,9 +265,9 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploying</a>', "staging", "web", false, true, false, stageStartTime);
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
     var buildContainerName = currentEntry.buildName + '_undeploy';
-    var dockerString = 'docker stop ' + buildContainerName
+    var dockerString = 'sudo docker stop ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + 'docker run'
+        + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
@@ -302,9 +302,9 @@ function unDeploy(currentEntry) {
     }
     // undeploy staging admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false, stageStartTime);
-    var dockerString = 'docker stop ' + buildContainerName
+    var dockerString = 'sudo docker stop ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-        + 'docker run'
+        + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
@@ -339,9 +339,9 @@ function unDeploy(currentEntry) {
     }
     // undeploy production gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploying</a>', "production", "web", false, true, false, stageStartTime);
-    var dockerString = 'docker stop ' + buildContainerName
+    var dockerString = 'sudo docker stop ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-        + 'docker run'
+        + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
@@ -376,9 +376,9 @@ function unDeploy(currentEntry) {
     }
     // undeploy production admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploying</a>', "production", "admin", false, true, false, stageStartTime);
-    var dockerString = 'docker stop ' + buildContainerName
+    var dockerString = 'sudo docker stop ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-        + 'docker run'
+        + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
@@ -441,9 +441,9 @@ function deployStagingGui(currentEntry) {
         fs.renameSync(queuedConfigFile, stagingConfigFile);
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_web';
-        var dockerString = 'docker stop ' + buildContainerName
+        var dockerString = 'sudo docker stop ' + buildContainerName
             + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + 'docker run'
+            + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
@@ -579,9 +579,9 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
     } else {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
-        var dockerString = 'docker stop ' + buildContainerName
+        var dockerString = 'sudo docker stop ' + buildContainerName
             + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + 'docker run'
+            + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
@@ -719,9 +719,9 @@ function deployProductionGui(currentEntry) {
                     fs.renameSync(productionQueuedFile, productionConfigFile);
                     //  terminate existing docker containers by name 
                     var buildContainerName = currentEntry.buildName + '_production_web';
-                    var dockerString = 'docker stop ' + buildContainerName
+                    var dockerString = 'sudo docker stop ' + buildContainerName
                         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        + 'docker run'
+                        + 'sudo docker run'
                         + ' --rm '
                         + ' --name ' + buildContainerName
                         /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
@@ -878,9 +878,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
     } else {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_production_admin';
-        var dockerString = 'docker stop ' + buildContainerName
+        var dockerString = 'sudo docker stop ' + buildContainerName
             + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + 'docker run'
+            + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
@@ -987,8 +987,8 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false, stageStartTime);
         // we do not build in the docker volume because it would create redundant file synchronisation.
-        var dockerString = 'docker stop ' + buildName + '_' + stage + '_cordova;'
-            + 'docker run --name ' + buildName + '_' + stage + '_cordova --rm'
+        var dockerString = 'sudo docker stop ' + buildName + '_' + stage + '_cordova;'
+            + 'sudo docker run --name ' + buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
@@ -1053,8 +1053,8 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.txt", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false, stageStartTime);
-        var dockerString = 'docker stop ' + buildName + '_' + stage + '_electron;'
-            + 'docker run --name ' + buildName + '_' + stage + '_electron --rm'
+        var dockerString = 'sudo docker stop ' + buildName + '_' + stage + '_electron;'
+            + 'sudo docker run --name ' + buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' frinexapps /bin/bash -c "'
@@ -1489,7 +1489,7 @@ function moveIncomingToQueued() {
                             fs.unlinkSync(stagingBuildingConfigFile);
                             try {
                                 // note that we dont stop currentName + '_undeploy' because it is probable that the committer intends to undeploy then redeploy and a partial undeploy would be undesirable
-                                execSync('docker stop ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
+                                execSync('sudo docker stop ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
                             } catch (reason) {
                                 console.log(reason);
                             }
@@ -1500,7 +1500,7 @@ function moveIncomingToQueued() {
                             console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
                             fs.unlinkSync(productionBuildingConfigFile);
                             try {
-                                execSync('docker stop ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
+                                execSync('sudo docker stop ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
                             } catch (reason) {
                                 console.log(reason);
                             }
@@ -1538,9 +1538,9 @@ function moveIncomingToQueued() {
 
 function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
-    var dockerString = 'docker stop json_to_xml'
+    var dockerString = 'sudo docker stop json_to_xml'
         + ' &> /usr/local/apache2/htdocs/json_to_xml.txt;'
-        + 'docker run --rm'
+        + 'sudo docker run --rm'
         //+ ' --user "$(id -u):$(id -g)"'
         + ' --name json_to_xml'
         + ' -v incomingDirectory:/FrinexBuildService/incoming'
