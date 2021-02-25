@@ -65,6 +65,7 @@ RUN cd /FrinexBuildService/; npm install properties-reader
 COPY ./settings.xml /FrinexBuildService/
 # the docker group in the container us unlikely to match the host docker group id
 #RUN adduser -S frinex -G docker
+RUN adduser -S frinex
 RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
 RUN echo '%frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
