@@ -45,8 +45,6 @@ git pull --depth 5000 >> $targetDir/git-update-log.txt
 git status >> $targetDir/git-update-log.txt
 pwd >> $targetDir/git-update-log.txt
 ls -l  >> $targetDir/git-update-log.txt
-mkdir -p $scriptDir/incoming/commits/
-mkdir -p $scriptDir/incoming/static/
 
 while read oldrev newrev ref
 do

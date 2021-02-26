@@ -38,7 +38,8 @@ RUN mkdir /FrinexBuildService/git-checkedout
 RUN mkdir /FrinexBuildService/processing
 RUN mkdir /FrinexBuildService/incoming
 RUN mkdir /FrinexBuildService/listing
-RUN mkdir /usr/local/apache2/htdocs/target
+RUN mkdir /FrinexBuildService/incoming/commits/
+RUN mkdir /FrinexBuildService/incoming/static/
 COPY frinex-git-server.conf  /FrinexBuildService/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
