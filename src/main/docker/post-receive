@@ -44,7 +44,7 @@ git reset --hard >> $targetDir/git-update-log.txt
 git pull --depth 5000 >> $targetDir/git-update-log.txt
 git status >> $targetDir/git-update-log.txt
 pwd >> $targetDir/git-update-log.txt
-ls -l  >> $targetDir/git-update-log.txt
+#ls -l  >> $targetDir/git-update-log.txt
 
 while read oldrev newrev ref
 do
