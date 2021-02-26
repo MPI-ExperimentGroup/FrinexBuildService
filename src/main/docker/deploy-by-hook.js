@@ -843,9 +843,9 @@ function deployProductionGui(currentEntry) {
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
                 }
-                if (fs.existsSync(buildArtifactsFileName)) {
+                /*if (fs.existsSync(buildArtifactsFileName)) {
                     fs.unlinkSync(buildArtifactsFileName);
-                }
+                }*/
                 currentlyBuilding.delete(currentEntry.buildName);
             });
         } catch (exception) {
