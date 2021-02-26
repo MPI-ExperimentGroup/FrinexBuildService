@@ -68,7 +68,7 @@ COPY ./settings.xml /FrinexBuildService/
 #RUN adduser -S frinex -G docker
 RUN adduser -S frinex
 RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
-RUN echo '%frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
+RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
 RUN chown -R frinex:daemon /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
