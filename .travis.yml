@@ -23,7 +23,6 @@ script:
   - pwd
   - ls
   - ls target
-  - ls target/*
   - ls frinex-repositories
   - ls frinex-repositories/git
   - cd frinex-repositories/test-repository
