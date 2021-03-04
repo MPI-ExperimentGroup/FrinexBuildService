@@ -37,8 +37,14 @@ echo $GIT_DIR >> $targetDir/git-update-log.txt
 
 unset GIT_DIR
 
-cd $checkoutDir
+# verify that the checkout directory exists and check it out again if missing
+if [ ! -d $checkoutDir ]
+then
+  cd CheckoutDirectory;
+  git clone RepositoriesDirectory/RepositoryName.git;
+fi
 
+cd $checkoutDir
 pwd
 git reset --hard >> $targetDir/git-update-log.txt
 git pull --depth 5000 >> $targetDir/git-update-log.txt
