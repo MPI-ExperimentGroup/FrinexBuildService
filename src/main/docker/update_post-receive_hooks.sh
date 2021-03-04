@@ -35,5 +35,5 @@ for repositoryPath in RepositoriesDirectory/*.git ; do
     echo $repositoryName;
     cp $repositoryPath/hooks/post-receive $repositoryPath/hooks/post-receive.old
     sed "s/RepositoryName/$repositoryName/g" $scriptDir/post-receive > $repositoryPath/hooks/post-receive
-    diff $repositoryPath/hooks/post-receive $repositoryPath/hooks/post-receive.old
+    diff $repositoryPath/hooks/post-receive.old $repositoryPath/hooks/post-receive
 done
