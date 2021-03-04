@@ -58,7 +58,7 @@ COPY ./create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build
 RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/create_frinex_build_repository.sh
-COPY ./create_frinex_build_repository.sh /FrinexBuildService/update_post-receive_hooks.sh
+COPY ./update_post-receive_hooks.sh /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/update_post-receive_hooks.sh
