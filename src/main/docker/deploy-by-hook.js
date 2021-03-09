@@ -47,6 +47,7 @@ const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
+const buildHost = properties.get('settings.buildHost');
 const staticFilesDirectory = incomingDirectory + '/static';
 const targetDirectory = properties.get('settings.targetDirectory');
 const configServer = properties.get('webservice.configServer');
@@ -67,7 +68,7 @@ var hasDoneBackup = false;
 function startResult() {
     fs.writeSync(resultsFile, "<style>table, th, td {border: 1px solid #d4d4d4; border-spacing: 0px;}.shortmessage {border-bottom: 1px solid;position: relative;display: inline-block;}.shortmessage .longmessage {visibility: hidden; width: 300px; color: white; background-color: black; border-radius: 10px; padding: 5px; text-align: centre; position: absolute;}.shortmessage:hover .longmessage {visibility: visible;} tr:hover {background-color: #3f51b521;}</style>\n");
     fs.writeSync(resultsFile, "<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>\n");
-    //fs.writeSync(resultsFile, "<span id='buildLabel'>Building...</span>\n");
+    fs.writeSync(resultsFile, "<span id='buildLabel'>" + buildHost + "</span>\n");
     fs.writeSync(resultsFile, "<span id='buildDate'></span>\n");
     fs.writeSync(resultsFile, "<a href='frinex.html'>XML Documentation</a>\n");
     fs.writeSync(resultsFile, "<a href='frinex.xsd'>XML Schema</a>\n");
