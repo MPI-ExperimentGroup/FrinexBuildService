@@ -1594,6 +1594,8 @@ function prepareBuildHistory() {
                     } else {
                         buildHistoryJson.table[keyString][cellString].value = buildHistoryJsonTemp.table[keyString][cellString].value;
                         buildHistoryJson.table[keyString][cellString].style = buildHistoryJsonTemp.table[keyString][cellString].style;
+                        buildHistoryJson.table[keyString][cellString].ms = buildHistoryJsonTemp.table[keyString][cellString].ms;
+                        buildHistoryJson.table[keyString][cellString].built = buildHistoryJsonTemp.table[keyString][cellString].built;
                     }
                 }
             }
