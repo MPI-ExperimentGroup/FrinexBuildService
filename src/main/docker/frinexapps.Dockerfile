@@ -143,7 +143,7 @@ RUN mkdir /maven/.m2
 COPY settings.xml /maven/.m2/
 
 RUN cd /ExperimentTemplate \
-    && mvn clean generate-sources validate -gs /maven/.m2/settings.xml -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 RUN cd /ExperimentTemplate \
     && mvn clean generate-sources validate -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=alloptions
 
