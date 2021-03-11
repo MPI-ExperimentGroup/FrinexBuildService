@@ -844,7 +844,12 @@ function deployProductionGui(currentEntry) {
             }).on('error', function (error) {
                 console.log("existing frinex-gui production unknown, aborting build!");
                 console.log(error);
-                storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
+                if (fs.existsSync(productionQueuedFile)) {
+                    storeResult(currentEntry.buildName, "build error", "production", "web", true, false, false);
+                    fs.unlinkSync(productionQueuedFile);
+                } else {
+                    storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
+                }
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
                 }
