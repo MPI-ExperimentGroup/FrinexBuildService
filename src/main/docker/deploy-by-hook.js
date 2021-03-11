@@ -42,6 +42,7 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const listingDirectory = properties.get('settings.listingDirectory');
@@ -59,6 +60,7 @@ const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
 const resultsFile = fs.openSync(targetDirectory + "/index.html", "w"); //{ flags: 'w', mode: 0o755 });
+const statsFile = fs.openSync(targetDirectory + "/buildstats.txt", "a"); //{ flags: 'w', mode: 0o755 });
 const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
@@ -246,6 +248,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
     }
     if (typeof stageStartTime !== "undefined") {
         buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (new Date().getTime() - stageStartTime);
+        fs.writeSync(statsFile, new Date() + "," + name + "," + stage + "," + type + "," + (new Date().getTime() - stageStartTime) + "," + os.freemem() + "\n");
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
@@ -464,6 +467,7 @@ function deployStagingGui(currentEntry) {
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
             //+ ' -pl gwt-cordova'
+            + ((currentEntry.state === "debug") ? ' -Dgwt.draftCompile=true -Dgwt.extraJvmArgs="-Xmx1024m"' : '')
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
