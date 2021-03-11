@@ -248,7 +248,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
     }
     if (typeof stageStartTime !== "undefined") {
         buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (new Date().getTime() - stageStartTime);
-        fs.writeSync(statsFile, new Date() + "," + name + "," + stage + "," + type + "," + (new Date().getTime() - stageStartTime) + "," + os.freemem() + "\n");
+        fs.writeSync(statsFile, new Date().toISOString() + "," + name + "," + stage + "," + type + "," + (new Date().getTime() - stageStartTime) + "," + os.freemem() + "\n");
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
