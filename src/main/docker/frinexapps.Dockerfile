@@ -145,10 +145,10 @@ COPY settings.xml /maven/.m2/
 RUN cd /ExperimentTemplate \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 RUN cd /ExperimentTemplate \
-    && mvn clean generate-sources validate -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=alloptions
+    && mvn clean install -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=alloptions
 
 RUN cd /ExperimentTemplate \
-    && mvn clean generate-sources validate -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=with_stimulus_example
+    && mvn clean install -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=with_stimulus_example
 RUN mkdir /target
 
 RUN cd /ExperimentTemplate/gwt-cordova \
