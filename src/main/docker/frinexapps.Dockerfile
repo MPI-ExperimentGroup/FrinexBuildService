@@ -112,7 +112,7 @@ RUN mkdir /openjdk8 \
 ENV JAVA8_HOME=/openjdk8/jdk8u265-b01
 
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
-RUN cd /FrinexBuildService/; git clone https://github.com/chris-rudmin/opus-recorder.git
+RUN git clone https://github.com/chris-rudmin/opus-recorder.git
 
 # clone the Frinex repository including enough depth to give correct build numbers
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
