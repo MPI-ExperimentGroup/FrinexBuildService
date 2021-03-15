@@ -227,7 +227,7 @@ function initialiseResult(name, message, isError) {
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
-function storeResult(name, message, stage, type, isError, isBuilding, isDone, stageStartTime) {
+function storeResult(name, message, stage, type, isError, isBuilding, isDone, stageBuildTime) {
     buildHistoryJson.table[name]["_date"].value = new Date().toISOString();
     //buildHistoryJson.table[name]["_date"].value = '<a href="' + currentEntry.buildName + '/' + name + '.xml">' + new Date().toISOString() + '</a>';
     buildHistoryJson.table[name]["_" + stage + "_" + type].value = message;
@@ -246,9 +246,9 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
     } else {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = '';
     }
-    if (typeof stageStartTime !== "undefined") {
-        buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (new Date().getTime() - stageStartTime);
-        fs.writeSync(statsFile, new Date().toISOString() + "," + name + "," + stage + "," + type + "," + (new Date().getTime() - stageStartTime) + "," + os.freemem() + "\n");
+    if (typeof stageBuildTime !== "undefined") {
+        buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (stageBuildTime);
+        fs.writeSync(statsFile, new Date().toISOString() + "," + name + "," + stage + "," + type + "," + (stageBuildTime) + "," + os.freemem() + "\n");
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
@@ -515,7 +515,7 @@ function deployStagingGui(currentEntry) {
             console.error(`deployStagingGui stderr: ${stderr}`);
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
                 console.log("deployStagingGui finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true, stageStartTime);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true, new Date().getTime() - stageStartTime);
                 var buildArtifactsJson = { artifacts: {} };
                 const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
                 //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
@@ -639,7 +639,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
                 console.log("frinex-admin finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true, stageStartTime);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true, new Date().getTime() - stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
@@ -792,7 +792,7 @@ function deployProductionGui(currentEntry) {
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
                             console.log("deployProductionGui finished");
-                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, stageStartTime);
+                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, new Date().getTime() - stageStartTime);
                             var buildArtifactsJson = { artifacts: {} };
                             const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
                             buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production_web.war";
@@ -943,7 +943,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 console.log("frinex-admin finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true, stageStartTime);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true, new Date().getTime() - stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
@@ -1045,7 +1045,7 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
     }
     //add the XML and any json + template and any UML of the experiment to the buildArtifactsJson of the admin system
     console.log("build cordova finished");
-    storeResult(buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true, stageStartTime);
+    storeResult(buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true, new Date().getTime() - stageStartTime);
     //update artifacts.json
     //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + buildName + "_" + stage + '_artifacts.json';
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
@@ -1136,7 +1136,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
     //cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
     //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     console.log("build electron finished");
-    storeResult(buildName, resultString, stage, "desktop", hasFailed || !producedOutput, false, true, stageStartTime);
+    storeResult(buildName, resultString, stage, "desktop", hasFailed || !producedOutput, false, true, new Date().getTime() - stageStartTime);
     //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
