@@ -270,7 +270,7 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploying</a>', "staging", "web", false, true, false);
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
     var buildContainerName = currentEntry.buildName + '_undeploy';
-    var dockerString = 'sudo docker stop ' + buildContainerName
+    var dockerString = 'sudo docker rm -f ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + 'sudo docker run'
         + ' --rm '
@@ -307,7 +307,7 @@ function unDeploy(currentEntry) {
     }
     // undeploy staging admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false);
-    var dockerString = 'sudo docker stop ' + buildContainerName
+    var dockerString = 'sudo docker rm -f ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         + 'sudo docker run'
         + ' --rm '
@@ -344,7 +344,7 @@ function unDeploy(currentEntry) {
     }
     // undeploy production gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploying</a>', "production", "web", false, true, false);
-    var dockerString = 'sudo docker stop ' + buildContainerName
+    var dockerString = 'sudo docker rm -f ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         + 'sudo docker run'
         + ' --rm '
@@ -381,7 +381,7 @@ function unDeploy(currentEntry) {
     }
     // undeploy production admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploying</a>', "production", "admin", false, true, false);
-    var dockerString = 'sudo docker stop ' + buildContainerName
+    var dockerString = 'sudo docker rm -f ' + buildContainerName
         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + 'sudo docker run'
         + ' --rm '
@@ -446,7 +446,7 @@ function deployStagingGui(currentEntry) {
         fs.renameSync(queuedConfigFile, stagingConfigFile);
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_web';
-        var dockerString = 'sudo docker stop ' + buildContainerName
+        var dockerString = 'sudo docker rm -f ' + buildContainerName
             + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + 'sudo docker run'
             + ' --rm '
@@ -586,7 +586,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
     } else {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
-        var dockerString = 'sudo docker stop ' + buildContainerName
+        var dockerString = 'sudo docker rm -f ' + buildContainerName
             + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
@@ -726,7 +726,7 @@ function deployProductionGui(currentEntry) {
                     fs.renameSync(productionQueuedFile, productionConfigFile);
                     //  terminate existing docker containers by name 
                     var buildContainerName = currentEntry.buildName + '_production_web';
-                    var dockerString = 'sudo docker stop ' + buildContainerName
+                    var dockerString = 'sudo docker rm -f ' + buildContainerName
                         + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + 'sudo docker run'
                         + ' --rm '
@@ -890,7 +890,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
     } else {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_production_admin';
-        var dockerString = 'sudo docker stop ' + buildContainerName
+        var dockerString = 'sudo docker rm -f ' + buildContainerName
             + " &> /usr/local/apache2/htdocs/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
@@ -999,7 +999,7 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
         // we do not build in the docker volume because it would create redundant file synchronisation.
-        var dockerString = 'sudo docker stop ' + buildName + '_' + stage + '_cordova;'
+        var dockerString = 'sudo docker rm -f ' + buildName + '_' + stage + '_cordova;'
             + 'sudo docker run --name ' + buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
@@ -1065,7 +1065,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
         fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.txt", 'w'));
         resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.txt" + '">log</a>&nbsp;';
         storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        var dockerString = 'sudo docker stop ' + buildName + '_' + stage + '_electron;'
+        var dockerString = 'sudo docker rm -f ' + buildName + '_' + stage + '_electron;'
             + 'sudo docker run --name ' + buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
@@ -1501,7 +1501,7 @@ function moveIncomingToQueued() {
                             fs.unlinkSync(stagingBuildingConfigFile);
                             try {
                                 // note that we dont stop currentName + '_undeploy' because it is probable that the committer intends to undeploy then redeploy and a partial undeploy would be undesirable
-                                execSync('sudo docker stop ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
+                                execSync('sudo docker rm -f ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
                             } catch (reason) {
                                 console.log(reason);
                             }
@@ -1512,7 +1512,7 @@ function moveIncomingToQueued() {
                             console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
                             fs.unlinkSync(productionBuildingConfigFile);
                             try {
-                                execSync('sudo docker stop ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
+                                execSync('sudo docker rm -f ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
                             } catch (reason) {
                                 console.log(reason);
                             }
@@ -1550,7 +1550,7 @@ function moveIncomingToQueued() {
 
 function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
-    var dockerString = 'sudo docker stop json_to_xml'
+    var dockerString = 'sudo docker rm -f json_to_xml'
         + ' &> /usr/local/apache2/htdocs/json_to_xml.txt;'
         + 'sudo docker run --rm'
         //+ ' --user "$(id -u):$(id -g)"'
