@@ -459,7 +459,7 @@ function deployStagingGui(currentEntry) {
             + ' -v buildServerTarget:/usr/local/apache2/htdocs'
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
-            + " sed -i 's/-Xmx1g/-Xmx2g/g' pom.xml;"
+            //+ " sed -i 's/-Xmx1g/-Xmx2g/g' pom.xml;"
             + ' rm /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
             + ' rm /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
             + ' mvn clean '
