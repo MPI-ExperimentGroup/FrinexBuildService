@@ -519,22 +519,27 @@ function deployStagingGui(currentEntry) {
             console.error(`deployStagingGui stderr: ${stderr}`);
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
                 console.log("deployStagingGui finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true, new Date().getTime() - stageStartTime);
-                var buildArtifactsJson = { artifacts: {} };
-                const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
-                //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
-                //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
-                //        console.log(targetDirectory);
-                //        console.log(value);
-                buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_staging_web.war";
-                // update artifacts.json
-                fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                var browseLabel = ((currentEntry.state === "staging" || currentEntry.state === "production")) ? "browse" : currentEntry.state;
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">' + browseLabel + '</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true, new Date().getTime() - stageStartTime);
+                if (currentEntry.state === "staging" || currentEntry.state === "production") {
+                    var buildArtifactsJson = { artifacts: {} };
+                    const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
+                    //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
+                    //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
+                    //        console.log(targetDirectory);
+                    //        console.log(value);
+                    buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_staging_web.war";
+                    // update artifacts.json
+                    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                    // build cordova 
                 // build cordova 
-                if (currentEntry.isAndroid || currentEntry.isiOS) {
-                    buildApk(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
-                }
-                if (currentEntry.isDesktop) {
-                    buildElectron(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
+                    // build cordova 
+                    if (currentEntry.isAndroid || currentEntry.isiOS) {
+                        buildApk(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
+                    }
+                    if (currentEntry.isDesktop) {
+                        buildElectron(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
+                    }
                 }
                 // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
                 deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
