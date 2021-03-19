@@ -532,8 +532,6 @@ function deployStagingGui(currentEntry) {
                     // update artifacts.json
                     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
                     // build cordova 
-                // build cordova 
-                    // build cordova 
                     if (currentEntry.isAndroid || currentEntry.isiOS) {
                         buildApk(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
                     }
