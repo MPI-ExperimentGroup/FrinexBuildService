@@ -460,6 +460,8 @@ function deployStagingGui(currentEntry) {
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             //+ " sed -i 's/-Xmx1g/-Xmx2g/g' pom.xml;"
+            + ((currentEntry.state === "draft") ? " sed -i 's/<extraJvmArgs>/<draftCompile>true</draftCompile><extraJvmArgs>/g' pom.xml;" : '')
+            + ((currentEntry.state === "draft") ? " sed -i 's|<source|<collapse-all-properties /><source|g' src/main/resources/nl/mpi/tg/eg/ExperimentTemplate.gwt.xml;" : '')
             + ' rm /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
             + ' rm /usr/local/apache2/htdocs/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
             + ' mvn clean '
@@ -1157,7 +1159,7 @@ function buildNextExperiment() {
             listingMap.delete(currentKey);
             //console.log("starting generate stimulus");
             //execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
-            if (currentEntry.state === "staging" || currentEntry.state === "production") {
+            if (currentEntry.state === "draft" || currentEntry.state === "debug" || currentEntry.state === "staging" || currentEntry.state === "production") {
                 deployStagingGui(currentEntry);
             } else if (currentEntry.state === "undeploy") {
                 // todo: undeploy probably does not need to be limited by concurrentBuildCount
