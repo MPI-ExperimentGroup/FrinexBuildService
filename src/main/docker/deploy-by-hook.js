@@ -521,9 +521,9 @@ function deployStagingGui(currentEntry) {
                 console.log("deployStagingGui finished");
                 var browseLabel = ((currentEntry.state === "staging" || currentEntry.state === "production")) ? "browse" : currentEntry.state;
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">' + browseLabel + '</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true, new Date().getTime() - stageStartTime);
+                var buildArtifactsJson = { artifacts: {} };
+                const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
                 if (currentEntry.state === "staging" || currentEntry.state === "production") {
-                    var buildArtifactsJson = { artifacts: {} };
-                    const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
                     //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                     //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
                     //        console.log(targetDirectory);
