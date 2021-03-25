@@ -64,8 +64,14 @@ do
       git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
       echo "<br/>" >> $targetDir/git-push-log.html
       git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
-      # todo: this needs to be limited to XML and JSON
-      cp $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g") $scriptDir/incoming/commits/
+      # extracting a commit list limited to XML and JSON
+      for configFile in $(git diff --name-only $oldrev $newrev | grep -Ei '.xml|.json'| sed -e "s/[^ ]*\/[^ ]*//g"); 
+      do 
+        echo "copying $configFile to $scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")" >> $targetDir/git-push-log.html
+        # copy the configuration files to a lowercase destination
+        cp "$configFile" "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")";
+      done
+      #cp $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g") $scriptDir/incoming/commits/
       # copy the static files to a working directory for frinex-gui to compile
       git diff --name-only $oldrev $newrev | sed -e "s/.json//g" | sed -e "s/.xml//g" >> $targetDir/git-push-log.html
       # only static files in the directory for the commited XML and JSON types are copied here
