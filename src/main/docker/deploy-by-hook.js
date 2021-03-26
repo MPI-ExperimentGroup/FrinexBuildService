@@ -89,7 +89,7 @@ function startResult() {
     fs.writeSync(resultsFile, "<td><a href=\"#11\">production admin</a></td>\n");
     fs.writeSync(resultsFile, "<tr>\n");
     fs.writeSync(resultsFile, "</table>\n");
-    fs.writeSync(resultsFile, "<a href='git-push-log.html'>log</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='git-push-log.txt'>log</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='json_to_xml.txt'>json_to_xml</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='git-push-out.txt'>out</a>&nbsp;\n");
