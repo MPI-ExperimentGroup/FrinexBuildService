@@ -20,7 +20,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 
 
-#echo "<h2>push event</h2>" >> $targetDir/git-push-log.html
+#echo "push event" >> $targetDir/git-push-log.txt
 
 cd $(dirname "$0")
 scriptDir=ScriptsDirectory
@@ -54,32 +54,44 @@ pwd >> $targetDir/git-update-log.txt
 
 while read oldrev newrev ref
 do
-    echo "$ref $oldrev $newrev <br/>" >> $targetDir/git-push-log.html
+    echo "$ref $oldrev $newrev" >> $targetDir/git-push-log.txt
     if [ "$oldrev" = "0000000000000000000000000000000000000000" ]; then
-      echo "new repository found <br/>" >> $targetDir/git-push-log.html
+      echo "new repository found" >> $targetDir/git-push-log.txt
     else
-  #    echo "<br/>" >> $targetDir/git-push-log.html
+  #    echo "<br/>" >> $targetDir/git-push-log.txt
       #git diff --name-only $oldrev $newrev
-      echo "git log -1 : " >> $targetDir/git-push-log.html
-      git log -1 --format="%an %ad" >> $targetDir/git-push-log.html
-      echo "<br/>" >> $targetDir/git-push-log.html
-      git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.html
+      echo "git log -1 : " >> $targetDir/git-push-log.txt
+      git log -1 --format="%an %ad" >> $targetDir/git-push-log.txt
+      #echo "<br/>" >> $targetDir/git-push-log.txt
+      git diff --name-only $oldrev $newrev >> $targetDir/git-push-log.txt
       # extracting a commit list limited to XML and JSON
       for configFile in $(git diff --name-only $oldrev $newrev | grep -Ei '.xml|.json'| sed -e "s/[^ ]*\/[^ ]*//g"); 
       do 
-        echo "copying $configFile to $scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")" >> $targetDir/git-push-log.html
+        echo "copying $configFile to $scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")" >> $targetDir/git-push-log.txt
         # copy the configuration files to a lowercase destination
         cp "$configFile" "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")";
       done
       #cp $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g") $scriptDir/incoming/commits/
       # copy the static files to a working directory for frinex-gui to compile
-      git diff --name-only $oldrev $newrev | sed -e "s/.json//g" | sed -e "s/.xml//g" >> $targetDir/git-push-log.html
+      git diff --name-only $oldrev $newrev | sed -e "s/.json//g" | sed -e "s/.xml//g" >> $targetDir/git-push-log.txt
       # only static files in the directory for the commited XML and JSON types are copied here
       # these static files are copied here after the XML or JSON are in place, so that the static files do not get cleaned up before the build starts
-      cp -r $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | sed -e "s/.json//g" | sed -e "s/.xml//g") $scriptDir/incoming/static/
+      echo "copying static files"
+      #echo $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | tr "[:upper:]" "[:lower:]" | sed -e "s/.json//g" | sed -e "s/.xml//g");# >> $targetDir/git-push-log.txt
+      #find -iname $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | tr "[:upper:]" "[:lower:]" | sed -e "s/.json//g" | sed -e "s/.xml//g");# >> $targetDir/git-push-log.txt
+      for staticDirectory in $(find -iname $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | tr "[:upper:]" "[:lower:]" | sed -e "s/.json//g" | sed -e "s/.xml//g"));
+      do
+        staticDirectoryLowercase=$(echo $staticDirectory | tr "[:upper:]" "[:lower:]");
+        #echo $staticDirectory;# >> $targetDir/git-push-log.txt
+        #echo $staticDirectoryLowercase;# >> $targetDir/git-push-log.txt
+        mkdir $scriptDir/incoming/static/$staticDirectoryLowercase
+        cp -r $staticDirectory/* $scriptDir/incoming/static/$staticDirectoryLowercase/
+      done;
+      #ls -l $scriptDir/incoming/static/*
+#      cp -r $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | sed -e "s/.json//g" | sed -e "s/.xml//g | tr "[:upper:]" "[:lower:]") $scriptDir/incoming/static/
       chmod -R a+rw $scriptDir/incoming/commits/*
       chmod -R a+rw $scriptDir/incoming/static/*
-      echo "<br/>" >> $targetDir/git-push-log.html
+      #echo "<br/>" >> $targetDir/git-push-log.txt
     fi
 done
 
