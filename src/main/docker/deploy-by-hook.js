@@ -1387,7 +1387,7 @@ function checkForDuplicates(lowerCaseFileName) {
     // iterate all git repositories checking for duplicate files of XML or JSON regardless of case
     var repositoriesList = fs.readdirSync("/FrinexBuildService/git-repositories");
     for (var repositoryDirectory of repositoriesList) {
-        var repositoryDirectoryPath = path.resolve(processingDirectory, repositoryDirectory);
+        var repositoryDirectoryPath = path.resolve("/FrinexBuildService/git-repositories", repositoryDirectory);
         var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
         for (var repositoryEntry of repositoryEntries) {
             var fileNamePart = path.parse(repositoryEntry.toLowerCase()).name;
