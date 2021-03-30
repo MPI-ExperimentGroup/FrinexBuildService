@@ -1446,6 +1446,7 @@ function moveIncomingToQueued() {
             setTimeout(moveIncomingToQueued, 3000);
         } else {
             var remainingFiles = list.length;
+            var foundFilesCount = 0;
             if (remainingFiles <= 0) {
                 // check for files in process before exiting from this script 
                 var hasProcessingFiles = false;
@@ -1564,6 +1565,7 @@ function moveIncomingToQueued() {
                         //}
                         // this move is within the same volume so we can do it this easy way
                         fs.renameSync(incomingFile, queuedFile);
+                        foundFilesCount++;
                     } else {
                         fs.writeSync(resultsFile, "<div>removing unusable type: '" + filename + "'</div>");
                         //console.log('removing unusable type: ' + filename);
@@ -1573,10 +1575,13 @@ function moveIncomingToQueued() {
                         }
                     }
                     remainingFiles--;
-                    if (remainingFiles <= 0) {
+                    if (remainingFiles <= 0 || foundFilesCount > 5) {
                         buildNextExperiment(); // if there are existing experiments in the build queue they can be started before converting more with JsonToXml
-                        convertJsonToXml();
-                        setTimeout(moveIncomingToQueued, 3000);
+                        if (foundFilesCount > 0) {
+                            convertJsonToXml();
+                        } else {
+                            setTimeout(moveIncomingToQueued, 3000);
+                        }
                     }
                 });
             }
@@ -1617,6 +1622,7 @@ function convertJsonToXml() {
         console.log("convert JSON to XML failed");
         fs.writeSync(resultsFile, "<div>conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
     };
+    moveIncomingToQueued();
 }
 
 function prepareBuildHistory() {
