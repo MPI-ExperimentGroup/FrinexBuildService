@@ -1381,6 +1381,34 @@ function prepareForProcessing() {
     buildFromListing();
 }
 
+function checkForDuplicates(lowerCaseFileName) {
+    var experimentConfigCounter = 0;
+    var experimentConfigLocations = "";
+    // iterate all git repositories checking for duplicate files of XML or JSON regardless of case
+    var repositoriesList = fs.readdirSync("/FrinexBuildService/git-repositories");
+    for (var repositoryDirectory of repositoriesList) {
+        var repositoryDirectoryPath = path.resolve(processingDirectory, repositoryDirectory);
+        var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
+        for (var repositoryEntry of repositoryEntries) {
+            var fileNamePart = path.parse(repositoryEntry.toLowerCase()).name;
+            if (lowerCaseFileName === fileNamePart) {
+                experimentConfigCounter++;
+                experimentConfigLocations += repositoryEntry + " found in " + repositoryDirectory + "\n";
+            }
+        }
+    }
+    var configErrorPath = path.resolve(targetDirectory + "/" + lowerCaseFileName + "/" + lowerCaseFileName + "_conflict_error.txt");
+    if (experimentConfigCounter > 1) {
+        const queuedConfigFile = fs.openSync(configErrorPath, "w");
+        fs.writeSync(queuedConfigFile, "Multiple configuratin files found in the following locations:\n" + experimentConfigLocations);
+    } else {
+        if (fs.existsSync(configErrorPath)) {
+            fs.unlinkSync(configErrorPath);
+        }
+    }
+    return experimentConfigCounter;
+}
+
 function moveIncomingToQueued() {
     console.log("moveIncomingToQueued");
     if (!fs.existsSync(incomingDirectory + "/queued")) {
@@ -1459,11 +1487,19 @@ function moveIncomingToQueued() {
             } else {
                 list.forEach(function (filename) {
                     var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
-                    var queuedFile = path.resolve(incomingDirectory + '/queued/', filename);
-                    if ((path.extname(filename) === ".json" || path.extname(filename) === ".xml") && filename !== "listing.json") {
-                        fs.writeSync(resultsFile, "<div>initialise: '" + filename + "'</div>");
-                        console.log('initialise: ' + filename);
-                        var currentName = path.parse(filename).name;
+                    var lowerCaseFileName = filename.toLowerCase();
+                    var currentName = path.parse(lowerCaseFileName).name;
+                    var queuedFile = path.resolve(incomingDirectory + '/queued/', lowerCaseFileName);
+                    if (checkForDuplicates(lowerCaseFileName) !== 1) {
+                        // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
+                        initialiseResult(currentName, '<div class="shortmessage">conflict<span class="longmessage">Two or more configuration files for this experiment exist as a precaution this experiment not compile until this error is resovled. <a href="' + lowerCaseFileName + '/' + lowerCaseFileName + '_conflict_error.txt">locations</a></span></div>', true);
+                        console.log("this script will not build when two or more configuration files of the same name are found.");
+                        if (fs.existsSync(incomingFile)) {
+                            fs.unlinkSync(incomingFile);
+                        }
+                    } else if ((path.extname(lowerCaseFileName) === ".json" || path.extname(lowerCaseFileName) === ".xml") && lowerCaseFileName !== "listing.json") {
+                        fs.writeSync(resultsFile, "<div>initialise: '" + lowerCaseFileName + "'</div>");
+                        console.log('initialise: ' + lowerCaseFileName);
                         var mavenLogPathSG = targetDirectory + "/" + currentName + "/" + currentName + "_staging.txt";
                         var mavenLogPathSA = targetDirectory + "/" + currentName + "/" + currentName + "_staging_admin.txt";
                         var mavenLogPathPG = targetDirectory + "/" + currentName + "/" + currentName + "_production.txt";
