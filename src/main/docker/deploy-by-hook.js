@@ -1275,12 +1275,6 @@ function buildFromListing() {
                                     storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
                                 }
                             }
-                            /*} else {
-                                // todo: check all repositories for duplicate experiments by name and abort if any are found for this experiment name.
-                                initialiseResult(fileNamePart, '<div class="shortmessage">conflict in listing.json<span class="longmessage">Two or more listings for this experiment exist in ' + listingJsonFiles + ' as a precaution this script will not continue until this error is resovled.</span></div>', true);
-                                // todo: put this text and related information into an error text file with link
-                                console.log("this script will not build when two or more listings are found in " + listingJsonFiles);
-                            }*/
                         }
                     }
                     // if there is one available then started in the build process before looking for more
@@ -1492,7 +1486,7 @@ function moveIncomingToQueued() {
                     var queuedFile = path.resolve(incomingDirectory + '/queued/', lowerCaseFileName);
                     if (checkForDuplicates(lowerCaseFileName) !== 1) {
                         // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
-                        initialiseResult(currentName, '<div class="shortmessage">conflict<span class="longmessage">Two or more configuration files for this experiment exist as a precaution this experiment not compile until this error is resovled. <a href="' + lowerCaseFileName + '/' + lowerCaseFileName + '_conflict_error.txt">locations</a></span></div>', true);
+                        initialiseResult(currentName, '<a class="shortmessage" href="' + lowerCaseFileName + '/' + lowerCaseFileName + '_conflict_error.txt">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true);
                         console.log("this script will not build when two or more configuration files of the same name are found.");
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
