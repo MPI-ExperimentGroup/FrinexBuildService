@@ -82,7 +82,8 @@ RUN chmod -R ug+rwx /FrinexBuildService
 RUN chown -R frinex:daemon /usr/local/apache2/htdocs
 RUN chmod -R ug+rwx /usr/local/apache2/htdocs
 RUN mkdir /BackupFiles
-RUN chown -R frinex /BackupFiles
+RUN chown -R frinex:daemon /BackupFiles
+RUN chmod -R ug+rwx /BackupFiles
 # todo: this is required because the experiment commits check and starts the node build script, it would be nice to have more user isolation here
 WORKDIR /FrinexBuildService
 VOLUME ["buildServerTarget:/usr/local/apache2/htdocs"]
