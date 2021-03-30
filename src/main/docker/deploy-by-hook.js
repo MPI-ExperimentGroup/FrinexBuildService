@@ -1375,7 +1375,7 @@ function prepareForProcessing() {
     buildFromListing();
 }
 
-function checkForDuplicates(lowerCaseFileName) {
+function checkForDuplicates(lowerCaseName) {
     var experimentConfigCounter = 0;
     var experimentConfigLocations = "";
     // iterate all git repositories checking for duplicate files of XML or JSON regardless of case
@@ -1385,13 +1385,13 @@ function checkForDuplicates(lowerCaseFileName) {
         var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
         for (var repositoryEntry of repositoryEntries) {
             var fileNamePart = path.parse(repositoryEntry.toLowerCase()).name;
-            if (lowerCaseFileName === fileNamePart) {
+            if (lowerCaseName === fileNamePart) {
                 experimentConfigCounter++;
                 experimentConfigLocations += repositoryEntry + " found in " + repositoryDirectory + "\n";
             }
         }
     }
-    var configErrorPath = path.resolve(targetDirectory + "/" + lowerCaseFileName + "/" + lowerCaseFileName + "_conflict_error.txt");
+    var configErrorPath = path.resolve(targetDirectory + "/" + lowerCaseName + "/" + lowerCaseName + "_conflict_error.txt");
     if (experimentConfigCounter > 1) {
         const queuedConfigFile = fs.openSync(configErrorPath, "w");
         fs.writeSync(queuedConfigFile, "Multiple configuratin files found in the following locations:\n" + experimentConfigLocations);
@@ -1484,9 +1484,12 @@ function moveIncomingToQueued() {
                     var lowerCaseFileName = filename.toLowerCase();
                     var currentName = path.parse(lowerCaseFileName).name;
                     var queuedFile = path.resolve(incomingDirectory + '/queued/', lowerCaseFileName);
-                    if (checkForDuplicates(lowerCaseFileName) !== 1) {
+                    if (!fs.existsSync(targetDirectory + "/" + currentName)) {
+                        fs.mkdirSync(targetDirectory + '/' + currentName);
+                    }
+                    if (checkForDuplicates(currentName) !== 1) {
                         // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
-                        initialiseResult(currentName, '<a class="shortmessage" href="' + lowerCaseFileName + '/' + lowerCaseFileName + '_conflict_error.txt">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true);
+                        initialiseResult(currentName, '<a class="shortmessage" href="' + currentName + '/' + currentName + '_conflict_error.txt">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true);
                         console.log("this script will not build when two or more configuration files of the same name are found.");
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
@@ -1559,9 +1562,6 @@ function moveIncomingToQueued() {
                         // todo: we might want this agressive target experiment name directory removal to prevent old output being served out
                         //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
                         //}
-                        if (!fs.existsSync(targetDirectory + "/" + currentName)) {
-                            fs.mkdirSync(targetDirectory + '/' + currentName);
-                        }
                         // this move is within the same volume so we can do it this easy way
                         fs.renameSync(incomingFile, queuedFile);
                     } else {
