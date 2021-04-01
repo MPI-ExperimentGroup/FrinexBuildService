@@ -76,10 +76,10 @@ do
         #find -iname $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | tr "[:upper:]" "[:lower:]" | sed -e "s/.json//g" | sed -e "s/.xml//g") >> $targetDir/git-push-log.txt
         # only static files in the directory for the commited XML and JSON types are copied here
         # these static files are copied here after the XML or JSON are in place, so that the static files do not get cleaned up before the build starts
-        echo "copying static files"
+        echo "copying static files" >> $targetDir/git-push-log.txt
         #echo $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | tr "[:upper:]" "[:lower:]" | sed -e "s/.json//g" | sed -e "s/.xml//g");# >> $targetDir/git-push-log.txt
         #find -iname $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | tr "[:upper:]" "[:lower:]" | sed -e "s/.json//g" | sed -e "s/.xml//g");# >> $targetDir/git-push-log.txt
-        for staticDirectory in $(find -iname $(echo $configFile | sed -e "s/.json//g" | sed -e "s/.xml//g"));
+        for staticDirectory in $(find -iname $(echo $configFile | tr \"[:upper:]\" \"[:lower:]\" | sed -e "s/.json//g" | sed -e "s/.xml//g"));
         do
           staticDirectoryLowercase=$(echo $staticDirectory | tr "[:upper:]" "[:lower:]");
           echo $staticDirectory >> $targetDir/git-push-log.txt
