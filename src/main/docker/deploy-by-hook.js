@@ -540,6 +540,11 @@ function deployStagingGui(currentEntry) {
                     }
                     // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
                     deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
+                } else {
+                    if (fs.existsSync(stagingConfigFile)) {
+                        fs.unlinkSync(stagingConfigFile);
+                    }
+                    currentlyBuilding.delete(currentEntry.buildName);
                 }
             } else {
                 //console.log(targetDirectory);
