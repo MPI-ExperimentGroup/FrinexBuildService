@@ -82,8 +82,7 @@ do
         for staticDirectory in $(find -iname $(echo $configFile | tr \"[:upper:]\" \"[:lower:]\" | sed -e "s/.json//g" | sed -e "s/.xml//g"));
         do
           staticDirectoryLowercase=$(echo $staticDirectory | tr "[:upper:]" "[:lower:]");
-          echo $staticDirectory >> $targetDir/git-push-log.txt
-          echo $staticDirectoryLowercase >> $targetDir/git-push-log.txt
+          echo "$staticDirectory to $staticDirectoryLowercase" >> $targetDir/git-push-log.txt
           mkdir $scriptDir/incoming/static/$staticDirectoryLowercase
           cp -r $staticDirectory/* $scriptDir/incoming/static/$staticDirectoryLowercase/
         done;
