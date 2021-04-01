@@ -538,9 +538,9 @@ function deployStagingGui(currentEntry) {
                     if (currentEntry.isDesktop) {
                         buildElectron(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
                     }
+                    // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
+                    deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
                 }
-                // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
-                deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
             } else {
                 //console.log(targetDirectory);
                 //console.log(JSON.stringify(reason, null, 4));
