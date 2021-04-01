@@ -1478,7 +1478,7 @@ function moveIncomingToQueued() {
                 } else if (!hasDoneBackup) {
                     console.log("pre exit backup");
                     try {
-                        execSync('rsync -a /usr/local/apache2/htdocs/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/;', { stdio: [0, 1, 2] });
+                        execSync('rsync -a /usr/local/apache2/htdocs/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/ > /usr/local/apache2/htdocs/backup.log;', { stdio: [0, 1, 2] });
                     } catch (reason) {
                         console.log(reason);
                     }
