@@ -1387,9 +1387,9 @@ function checkForDuplicates(currentName) {
         var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
         for (var repositoryEntry of repositoryEntries) {
             console.log(repositoryEntry);
-            var fileNamePart = path.parse(repositoryEntry.toLowerCase()).name;
+            var lowercaseEntry = repositoryEntry.toLowerCase();
             console.log(fileNamePart);
-            if (currentName === fileNamePart) {
+            if (currentName + ".json" === lowercaseEntry || currentName + ".xml" === lowercaseEntry) {
                 experimentConfigCounter++;
                 experimentConfigLocations += repositoryEntry + " found in " + repositoryDirectory + "\n";
             }
