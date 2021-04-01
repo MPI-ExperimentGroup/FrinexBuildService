@@ -1324,7 +1324,7 @@ function prepareForProcessing() {
             //fs.renameSync(incomingFile, jsonStoreFile);
             console.log('moving JSON from validated to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>moving JSON from validated to target: " + filename + "</div>");
-            copyDeleteFileSync(incomingFile, jsonStoreFile);
+            copyDeleteFile(incomingFile, jsonStoreFile);
         } else if (path.extname(filename) === ".xml") {
             //var processingName = path.resolve(processingDirectory, filename);
             // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
@@ -1334,7 +1334,7 @@ function prepareForProcessing() {
             console.log('copying XML from queued to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
             // this move is not within the same volume
-            copyFileSync(incomingFile, configStoreFile);
+            //copyFileSync(incomingFile, configStoreFile);
             // this move is within the same volume so we can do it this easy way
             fs.renameSync(incomingFile, configQueuedFile);
             console.log('moved XML from validated to queued: ' + filename);
@@ -1345,34 +1345,34 @@ function prepareForProcessing() {
             //fs.renameSync(incomingFile, targetName);
             //console.log('copying UML from validated to target: ' + incomingFile);
             //fs.writeSync(resultsFile, "<div>copying UML from validated to target: " + incomingFile + "</div>");
-            copyDeleteFileSync(incomingFile, targetName);
+            copyDeleteFile(incomingFile, targetName);
         } else if (path.extname(filename) === ".svg") {
             // preserve the generated UML SVG to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //fs.renameSync(incomingFile, targetName);
             //console.log('copying SVG from validated to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>copying SVG from validated to target: " + filename + "</div>");
-            copyDeleteFileSync(incomingFile, targetName);
+            copyDeleteFile(incomingFile, targetName);
         } else if (path.extname(filename) === ".xsd") {
             // place the generated XSD file for use in XML editors
             var targetName = path.resolve(targetDirectory, filename);
             //console.log('copying XSD from validated to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>copying XSD from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, targetName);
-            copyDeleteFileSync(incomingFile, targetName);
+            copyDeleteFile(incomingFile, targetName);
         } else if (filename.endsWith("frinex.html")) {
             // place the generated documentation file for use in web browsers
             var targetName = path.resolve(targetDirectory, filename);
             //console.log('copying HTML from validated to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>copying HTML from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, targetName);
-            copyDeleteFileSync(incomingFile, targetName);
+            copyDeleteFile(incomingFile, targetName);
         } else if (filename.endsWith("_validation_error.txt")) {
             var configErrorFile = path.resolve(targetDirectory + "/" + fileNamePart.substring(0, fileNamePart.length - "_validation_error".length), filename);
             console.log('moving from validated to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>copying from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, processingName);
-            copyDeleteFileSync(incomingFile, configErrorFile);
+            copyDeleteFile(incomingFile, configErrorFile);
         } else if (fs.existsSync(incomingFile)) {
             console.log('deleting unkown file: ' + incomingFile);
             fs.writeSync(resultsFile, "<div>deleting unkown file: " + incomingFile + "</div>");
