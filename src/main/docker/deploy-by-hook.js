@@ -1375,24 +1375,29 @@ function prepareForProcessing() {
     buildFromListing();
 }
 
-function checkForDuplicates(lowerCaseName) {
+function checkForDuplicates(currentName) {
+    console.log("checkForDuplicates: " + currentName);
     var experimentConfigCounter = 0;
     var experimentConfigLocations = "";
     // iterate all git repositories checking for duplicate files of XML or JSON regardless of case
     var repositoriesList = fs.readdirSync("/FrinexBuildService/git-repositories");
     for (var repositoryDirectory of repositoriesList) {
+        console.log(repositoryDirectory);
         var repositoryDirectoryPath = path.resolve("/FrinexBuildService/git-repositories", repositoryDirectory);
         var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
         for (var repositoryEntry of repositoryEntries) {
+            console.log(repositoryEntry);
             var fileNamePart = path.parse(repositoryEntry.toLowerCase()).name;
-            if (lowerCaseName === fileNamePart) {
+            console.log(fileNamePart);
+            if (currentName === fileNamePart) {
                 experimentConfigCounter++;
                 experimentConfigLocations += repositoryEntry + " found in " + repositoryDirectory + "\n";
             }
         }
     }
-    var configErrorPath = path.resolve(targetDirectory + "/" + lowerCaseName + "/" + lowerCaseName + "_conflict_error.txt");
+    var configErrorPath = path.resolve(targetDirectory + "/" + currentName + "/" + currentName + "_conflict_error.txt");
     if (experimentConfigCounter > 1) {
+        console.log(experimentConfigLocations);
         const queuedConfigFile = fs.openSync(configErrorPath, "w");
         fs.writeSync(queuedConfigFile, "Multiple configuratin files found in the following locations:\n" + experimentConfigLocations);
     } else {
@@ -1492,6 +1497,7 @@ function moveIncomingToQueued() {
                         // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
                         initialiseResult(currentName, '<a class="shortmessage" href="' + currentName + '/' + currentName + '_conflict_error.txt">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true);
                         console.log("this script will not build when two or more configuration files of the same name are found.");
+                        fs.writeSync(resultsFile, "<div>conflict: '" + currentName + "'</div>");
                         if (fs.existsSync(incomingFile)) {
                             fs.unlinkSync(incomingFile);
                         }
