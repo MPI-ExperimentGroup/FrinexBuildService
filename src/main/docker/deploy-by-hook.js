@@ -1380,10 +1380,10 @@ function checkForDuplicates(currentName) {
     var experimentConfigCounter = 0;
     var experimentConfigLocations = "";
     // iterate all git repositories checking for duplicate files of XML or JSON regardless of case
-    var repositoriesList = fs.readdirSync("/FrinexBuildService/git-repositories");
+    var repositoriesList = fs.readdirSync("/FrinexBuildService/git-checkedout");
     for (var repositoryDirectory of repositoriesList) {
         console.log(repositoryDirectory);
-        var repositoryDirectoryPath = path.resolve("/FrinexBuildService/git-repositories", repositoryDirectory);
+        var repositoryDirectoryPath = path.resolve("/FrinexBuildService/git-checkedout", repositoryDirectory);
         var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
         for (var repositoryEntry of repositoryEntries) {
             console.log(repositoryEntry);
