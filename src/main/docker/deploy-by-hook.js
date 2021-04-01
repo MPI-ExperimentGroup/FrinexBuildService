@@ -1382,22 +1382,23 @@ function checkForDuplicates(currentName) {
     // iterate all git repositories checking for duplicate files of XML or JSON regardless of case
     var repositoriesList = fs.readdirSync("/FrinexBuildService/git-checkedout");
     for (var repositoryDirectory of repositoriesList) {
-        console.log(repositoryDirectory);
+        //console.log(repositoryDirectory);
         var repositoryDirectoryPath = path.resolve("/FrinexBuildService/git-checkedout", repositoryDirectory);
         var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
         for (var repositoryEntry of repositoryEntries) {
-            console.log(repositoryEntry);
+            //console.log(repositoryEntry);
             var lowercaseEntry = repositoryEntry.toLowerCase();
-            console.log(fileNamePart);
+            //console.log(fileNamePart);
             if (currentName + ".json" === lowercaseEntry || currentName + ".xml" === lowercaseEntry) {
                 experimentConfigCounter++;
                 experimentConfigLocations += repositoryEntry + " found in " + repositoryDirectory + "\n";
+                console.log(repositoryEntry + " found in " + repositoryDirectory);
             }
         }
     }
     var configErrorPath = path.resolve(targetDirectory + "/" + currentName + "/" + currentName + "_conflict_error.txt");
     if (experimentConfigCounter > 1) {
-        console.log(experimentConfigLocations);
+        //console.log(experimentConfigLocations);
         const queuedConfigFile = fs.openSync(configErrorPath, "w");
         fs.writeSync(queuedConfigFile, "Multiple configuratin files found in the following locations:\n" + experimentConfigLocations);
     } else {
