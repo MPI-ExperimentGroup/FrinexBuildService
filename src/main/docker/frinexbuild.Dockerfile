@@ -40,6 +40,8 @@ RUN mkdir /FrinexBuildService/incoming
 RUN mkdir /FrinexBuildService/listing
 RUN mkdir /FrinexBuildService/incoming/commits/
 RUN mkdir /FrinexBuildService/incoming/static/
+RUN mkdir /FrinexBuildService/target
+RUN mkdir /FrinexBuildService/html
 COPY frinex-git-server.conf  /FrinexBuildService/
 RUN sed -i "s|UrlLDAP|example.com|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|DcLDAP|DC=example,DC=com|g" /FrinexBuildService/frinex-git-server.conf 
@@ -47,7 +49,7 @@ RUN sed -i "s|UserLDAP|example|g" /FrinexBuildService/frinex-git-server.conf
 RUN sed -i "s|PassLDAP|example|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|#LDAPOPTION||g" /FrinexBuildService/frinex-git-server.conf 
 #RUN sed -i "s|#PUBLICOPTION||g" /FrinexBuildService/frinex-git-server.conf 
-COPY git_setup.html  /usr/local/apache2/htdocs/
+COPY git_setup.html  /FrinexBuildService/html/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
@@ -57,19 +59,19 @@ RUN sed -i "s|^#LoadModule ldap_module modules/mod_ldap.so|LoadModule ldap_modul
 COPY ./deploy-by-hook.js /FrinexBuildService/
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/deploy-by-hook.js
 COPY ./publish.properties /FrinexBuildService/
-RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/publish.properties
+RUN sed -i "s|TargetDirectory|/FrinexBuildService/target|g" /FrinexBuildService/publish.properties
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/publish.properties
 COPY ./post-receive /FrinexBuildService/post-receive
-RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/post-receive
+RUN sed -i "s|TargetDirectory|/FrinexBuildService/target|g" /FrinexBuildService/post-receive
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/post-receive
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/post-receive
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/post-receive
 COPY ./create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build_repository.sh
-RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/create_frinex_build_repository.sh
+RUN sed -i "s|TargetDirectory|/FrinexBuildService/target|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/create_frinex_build_repository.sh
 COPY ./update_post-receive_hooks.sh /FrinexBuildService/update_post-receive_hooks.sh
-RUN sed -i "s|TargetDirectory|/usr/local/apache2/htdocs|g" /FrinexBuildService/update_post-receive_hooks.sh
+RUN sed -i "s|TargetDirectory|/FrinexBuildService/target|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN cd /FrinexBuildService/; npm install properties-reader
@@ -86,11 +88,13 @@ RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
 RUN chown -R frinex:daemon /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
-RUN chown -R frinex:daemon /usr/local/apache2/htdocs
-RUN chmod -R ug+rwx /usr/local/apache2/htdocs
+RUN chown -R frinex:daemon /FrinexBuildService/target
+RUN chmod -R ug+rwx /FrinexBuildService/target
+RUN chown -R frinex:daemon /FrinexBuildService/html
+RUN chmod -R ug+rwx /FrinexBuildService/html
 RUN mkdir /BackupFiles
 RUN chown -R frinex:daemon /BackupFiles
 RUN chmod -R ug+rwx /BackupFiles
 # todo: this is required because the experiment commits check and starts the node build script, it would be nice to have more user isolation here
 WORKDIR /FrinexBuildService
-VOLUME ["buildServerTarget:/usr/local/apache2/htdocs"]
+VOLUME ["buildServerTarget:/FrinexBuildService/target"]
