@@ -47,6 +47,7 @@ RUN sed -i "s|UserLDAP|example|g" /FrinexBuildService/frinex-git-server.conf
 RUN sed -i "s|PassLDAP|example|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|#LDAPOPTION||g" /FrinexBuildService/frinex-git-server.conf 
 #RUN sed -i "s|#PUBLICOPTION||g" /FrinexBuildService/frinex-git-server.conf 
+COPY git_setup.html  /usr/local/apache2/htdocs/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
