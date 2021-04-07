@@ -271,14 +271,14 @@ function unDeploy(currentEntry) {
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
     var buildContainerName = currentEntry.buildName + '_undeploy';
     var dockerString = 'sudo docker rm -f ' + buildContainerName
-        + " &> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
         //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-        + ' -v buildServerTarget:/FrinexBuildService/target'
+        + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
         + ' mvn tomcat7:undeploy '
@@ -292,9 +292,9 @@ function unDeploy(currentEntry) {
         + ' -DversionCheck.buildType=' + 'stable'
         + ' -Dexperiment.destinationServer=' + stagingServer
         + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
-        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
-        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + '"';
     console.log(dockerString);
     try {
@@ -308,14 +308,14 @@ function unDeploy(currentEntry) {
     // undeploy staging admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">undeploying</a>', "staging", "admin", false, true, false);
     var dockerString = 'sudo docker rm -f ' + buildContainerName
-        + " &> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
         //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-        + ' -v buildServerTarget:/FrinexBuildService/target'
+        + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
         + ' mvn tomcat7:undeploy '
@@ -329,9 +329,9 @@ function unDeploy(currentEntry) {
         + ' -DversionCheck.buildType=' + 'stable'
         + ' -Dexperiment.destinationServer=' + stagingServer
         + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
-        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
-        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         + '"';
     console.log(dockerString);
     try {
@@ -345,14 +345,14 @@ function unDeploy(currentEntry) {
     // undeploy production gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">undeploying</a>', "production", "web", false, true, false);
     var dockerString = 'sudo docker rm -f ' + buildContainerName
-        + " &> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
         //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-        + ' -v buildServerTarget:/FrinexBuildService/target'
+        + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
         + ' mvn tomcat7:undeploy '
@@ -366,9 +366,9 @@ function unDeploy(currentEntry) {
         + ' -DversionCheck.buildType=' + 'stable'
         + ' -Dexperiment.destinationServer=' + productionServer
         + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
-        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
-        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         + '"';
     console.log(dockerString);
     try {
@@ -382,14 +382,14 @@ function unDeploy(currentEntry) {
     // undeploy production admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">undeploying</a>', "production", "admin", false, true, false);
     var dockerString = 'sudo docker rm -f ' + buildContainerName
-        + " &> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
         //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-        + ' -v buildServerTarget:/FrinexBuildService/target'
+        + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
         + ' mvn tomcat7:undeploy '
@@ -403,9 +403,9 @@ function unDeploy(currentEntry) {
         + ' -DversionCheck.buildType=' + 'stable'
         + ' -Dexperiment.destinationServer=' + productionServer
         + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
-        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
-        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + '"';
     console.log(dockerString);
     try {
@@ -447,7 +447,7 @@ function deployStagingGui(currentEntry) {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_web';
         var dockerString = 'sudo docker rm -f ' + buildContainerName
-            + " &> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
@@ -456,14 +456,14 @@ function deployStagingGui(currentEntry) {
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v incomingDirectory:/FrinexBuildService/incoming' // required for static files only
             //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-            + ' -v buildServerTarget:/FrinexBuildService/target'
+            + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             //+ " sed -i 's/-Xmx1g/-Xmx2g/g' pom.xml;"
             + ((currentEntry.state === "draft") ? " sed -i 's|<extraJvmArgs>|<draftCompile>true</draftCompile><extraJvmArgs>|g' pom.xml;" : '')
             + ((currentEntry.state === "draft") ? " sed -i 's|<source|<collapse-all-properties /><source|g' src/main/resources/nl/mpi/tg/eg/ExperimentTemplate.gwt.xml;" : '')
-            + ' rm /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
-            + ' rm /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
             + ' mvn clean '
             + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
@@ -483,34 +483,34 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            //+ ' free -h &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;'
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            //+ ' free -h &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;'
             // skipping electron and cordova if this is a draft build
             + ((currentEntry.state === "draft") ? "" : ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/staging-building/'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/staging-building/'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-cordova.sh'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' mv /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-electron.sh'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-sources.jar /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar'
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-*.sh;'
             + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*;'
-            + ' chmod a+rwx /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;')
+            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;')
             // end of skipping electron and cordova if this is a draft build
             //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging'
-            //+ " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             //+ ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
-            //+ " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war'
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             //+ ' chmod a+rwx /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging*;'
-            + ' chmod a+rwx /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
+            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
             //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/staging-building/'
-            //+ " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + " chmod a+rwx /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
         exec(dockerString, (error, stdout, stderr) => {
@@ -600,7 +600,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
         var dockerString = 'sudo docker rm -f ' + buildContainerName
-            + " &> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
@@ -608,14 +608,14 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
             + ' -v processingDirectory:/FrinexBuildService/processing'
             //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-            + ' -v buildServerTarget:/FrinexBuildService/target'
+            + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
-            + ' rm /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
-            + ' rm /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
-            + ' ls -l /FrinexBuildService/target/' + currentEntry.buildName + ' &>> /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
+            + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
             + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
@@ -626,7 +626,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
-            + ' -Dexperiment.artifactsJsonDirectory=/FrinexBuildService/target/' + currentEntry.buildName + '/'
+            + ' -Dexperiment.artifactsJsonDirectory=' + targetDirectory + '/' + currentEntry.buildName + '/'
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
             + ' -Dexperiment.destinationServer=' + stagingServer
@@ -635,18 +635,18 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             //+ ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' chmod a+rwx /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
-            + ' chmod a+rwx /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
-            + " chmod a+rwx /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war'
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar'
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
+            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
+            + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + '"';
         console.log(dockerString);
         try {
@@ -740,7 +740,7 @@ function deployProductionGui(currentEntry) {
                     //  terminate existing docker containers by name 
                     var buildContainerName = currentEntry.buildName + '_production_web';
                     var dockerString = 'sudo docker rm -f ' + buildContainerName
-                        + " &> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + 'sudo docker run'
                         + ' --rm '
                         + ' --name ' + buildContainerName
@@ -749,11 +749,11 @@ function deployProductionGui(currentEntry) {
                         + ' -v processingDirectory:/FrinexBuildService/processing'
                         + ' -v incomingDirectory:/FrinexBuildService/incoming' // required for static files only
                         //+ ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
-                        + ' -v buildServerTarget:/FrinexBuildService/target'
+                        + ' -v buildServerTarget:' + targetDirectory
                         + ' -v m2Directory:/maven/.m2/'
                         + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
-                        + ' rm /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
-                        + ' rm /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
+                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
+                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
                         + ' mvn clean '
                         + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
                         //+ 'package'
@@ -772,30 +772,30 @@ function deployProductionGui(currentEntry) {
                         + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
                         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
                         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/production-building/'
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/production-building/'
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-cordova.sh'
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' mv /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-electron.sh'
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-sources.jar /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar'
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar'
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production'
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         //+ ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war'
-                        + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war'
+                        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         //+ ' chmod a+rwx /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production*;'
                         + ' chmod a+rwx /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-*.sh;'
                         + ' chmod a+rwx /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*;'
-                        + ' chmod a+rwx /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
-                        + ' chmod a+rwx /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
+                        + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
+                        + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
                         //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/production-building/'
-                        //+ " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + '"';
                     console.log(dockerString);
                     exec(dockerString, (error, stdout, stderr) => {
@@ -904,7 +904,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_production_admin';
         var dockerString = 'sudo docker rm -f ' + buildContainerName
-            + " &> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
@@ -912,14 +912,14 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
             + ' -v processingDirectory:/FrinexBuildService/processing'
             //+ ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
-            + ' -v buildServerTarget:/FrinexBuildService/target'
+            + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
-            + ' rm /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
-            + ' rm /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
-            + ' ls -l /FrinexBuildService/target/' + currentEntry.buildName + ' &>> /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt;'
+            + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt;'
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
             + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
@@ -930,7 +930,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
-            + ' -Dexperiment.artifactsJsonDirectory=/FrinexBuildService/target/' + currentEntry.buildName + '/'
+            + ' -Dexperiment.artifactsJsonDirectory=' + targetDirectory + '/' + currentEntry.buildName + '/'
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
             + ' -Dexperiment.destinationServer=' + productionServer
@@ -939,18 +939,18 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             //+ ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar'
-            + " &>> /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + ' chmod a+rwx /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
-            + ' chmod a+rwx /FrinexBuildService/target/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
-            + " chmod a+rwx /FrinexBuildService/target/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war'
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar'
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
+            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
+            + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + '"';
         console.log(dockerString);
         try {
@@ -1015,7 +1015,7 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
         var dockerString = 'sudo docker rm -f ' + buildName + '_' + stage + '_cordova;'
             + 'sudo docker run --name ' + buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
-            + ' -v buildServerTarget:/FrinexBuildService/target'
+            + ' -v buildServerTarget:' + targetDirectory
             + ' frinexapps /bin/bash -c "'
             + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
@@ -1081,7 +1081,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
         var dockerString = 'sudo docker rm -f ' + buildName + '_' + stage + '_electron;'
             + 'sudo docker run --name ' + buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
-            + ' -v buildServerTarget:/FrinexBuildService/target'
+            + ' -v buildServerTarget:' + targetDirectory
             + ' frinexapps /bin/bash -c "'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
@@ -1480,7 +1480,7 @@ function moveIncomingToQueued() {
                 } else if (!hasDoneBackup) {
                     console.log("pre exit backup");
                     try {
-                        execSync('rsync -a /FrinexBuildService/target/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/ &> /FrinexBuildService/target/backup.log;', { stdio: [0, 1, 2] });
+                        execSync('rsync -a ' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
                     } catch (reason) {
                         console.log(reason);
                     }
@@ -1606,14 +1606,14 @@ function moveIncomingToQueued() {
 function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
     var dockerString = 'sudo docker rm -f json_to_xml'
-        + ' &> /FrinexBuildService/target/json_to_xml.txt;'
+        + ' &> ' + targetDirectory + '/json_to_xml.txt;'
         + 'sudo docker run --rm'
         //+ ' --user "$(id -u):$(id -g)"'
         + ' --name json_to_xml'
         + ' -v incomingDirectory:/FrinexBuildService/incoming'
         + ' -v processingDirectory:/FrinexBuildService/processing'
         + ' -v listingDirectory:/FrinexBuildService/listing'
-        + ' -v buildServerTarget:/FrinexBuildService/target'
+        + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
         + ' frinexapps:latest /bin/bash -c "mvn exec:exec'
@@ -1621,9 +1621,9 @@ function convertJsonToXml() {
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing\\"'
-        + ' &>> /FrinexBuildService/target/json_to_xml.txt;'
+        + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*'
-        + ' &>> /FrinexBuildService/target/json_to_xml.txt;"';
+        + ' &>> ' + targetDirectory + '/json_to_xml.txt;"';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".txt";
     console.log(dockerString);
     try {

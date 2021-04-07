@@ -3,7 +3,7 @@
 # clean up previous testing data
 rm -r /FrinexBuildService/incoming/*
 rm -r /FrinexBuildService/processing/*
-rm -r /FrinexBuildService/target/*
+rm -r /FrinexBuildService/artifacts/*
 # create a test repository
 bash /FrinexBuildService/create_frinex_build_repository.sh TEST_REPOSITORY
 # show any output in the termimal
@@ -33,7 +33,7 @@ do
 done
 chown -R daemon /FrinexBuildService/git-repositories/TEST_REPOSITORY.git
 chown -R daemon /FrinexBuildService/git-checkedout/TEST_REPOSITORY
-chown -R daemon /FrinexBuildService/target
+chown -R daemon /FrinexBuildService/artifacts
 chown -R daemon /FrinexBuildService/incoming
 # on restart of the machine this might have lost this permission
 #chown daemon /var/run/docker.sock
