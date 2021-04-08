@@ -1331,14 +1331,15 @@ function prepareForProcessing() {
             var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             var configQueuedFile = path.resolve(processingDirectory + "/queued", filename);
             console.log('configStoreFile: ' + configStoreFile);
-            console.log('copying XML from queued to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
             // this move is not within the same volume
             //copyFileSync(incomingFile, configStoreFile);
+            console.log('moving XML from validated to queued: ' + filename);
             // this move is within the same volume so we can do it this easy way
             fs.renameSync(incomingFile, configQueuedFile);
-            console.log('moved XML from validated to queued: ' + filename);
             //fs.writeSync(resultsFile, "<div>copied XML from validated to queued: " + filename + "</div>");
+            console.log('copying XML from queued to target: ' + filename);
+            fs.createReadStream(configQueuedFile).pipe(fs.createWriteStream(configStoreFile));
         } else if (path.extname(filename) === ".uml") {
             // preserve the generated UML to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
