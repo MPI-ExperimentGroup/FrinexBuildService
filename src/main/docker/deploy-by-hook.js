@@ -1640,6 +1640,35 @@ function convertJsonToXml() {
     moveIncomingToQueued();
 }
 
+function updateDocumentation() {
+    // extract the latest versions of frinex.xml frinex.xsd and minimal_example.xml from the frinexapps:latest image that is currently in use
+    var dockerString = 'sudo docker rm -f update_documentation'
+        + ' &> ' + targetDirectory + '/update_documentation.txt;'
+        + 'sudo docker run --rm'
+        + ' --name update_documentation'
+        + ' -v buildServerTarget:' + targetDirectory
+        + ' -v m2Directory:/maven/.m2/'
+        + ' -w /ExperimentTemplate/ExperimentDesigner'
+        + ' frinexapps:latest /bin/bash -c "mvn exec:exec'
+        + ' -gs /maven/.m2/settings.xml'
+        + ' -Dexec.executable=java'
+        + ' -Dexec.classpathScope=runtime'
+        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.DocumentationGenerator ' + targetDirectory + /*'/FrinexBuildService/docs '*/ ' ' + targetDirectory + '\\"'
+        + ' &>> ' + targetDirectory + '/update_documentation.txt;'
+        + ' chmod a+rwx /FrinexBuildService/docs/*'
+        + ' &>> ' + targetDirectory + '/update_documentation.txt;'
+        + ' chmod a+rwx ' + targetDirectory + '/frinex.xsd'
+        + ' &>> ' + targetDirectory + '/update_documentation.txt;"';
+    console.log(dockerString);
+    try {
+        execSync(dockerString, { stdio: [0, 1, 2] });
+        console.log("update_documentation finished");
+    } catch (reason) {
+        console.log(reason);
+        console.log("update_documentation failed");
+    };
+}
+
 function prepareBuildHistory() {
     if (fs.existsSync(buildHistoryFileName)) {
         try {
@@ -1679,6 +1708,7 @@ function prepareBuildHistory() {
         }
     }
     startResult();
+    updateDocumentation();
     moveIncomingToQueued();
 }
 
