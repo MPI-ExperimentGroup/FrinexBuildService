@@ -91,6 +91,7 @@ function startResult() {
     fs.writeSync(resultsFile, "</table>\n");
     fs.writeSync(resultsFile, "<a href='git-push-log.txt'>log</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='git-update-log.txt'>update-log</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='update_schema_docs.txt'>update_schema_docs</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='json_to_xml.txt'>json_to_xml</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='git-push-out.txt'>out</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='git-push-err.txt'>err</a>&nbsp;\n");
@@ -1642,10 +1643,10 @@ function convertJsonToXml() {
 
 function updateDocumentation() {
     // extract the latest versions of frinex.xml frinex.xsd and minimal_example.xml from the frinexapps:latest image that is currently in use
-    var dockerString = 'sudo docker rm -f update_documentation'
-        + ' &> ' + targetDirectory + '/update_documentation.txt;'
+    var dockerString = 'sudo docker rm -f update_schema_docs'
+        + ' &> ' + targetDirectory + '/update_schema_docs.txt;'
         + 'sudo docker run --rm'
-        + ' --name update_documentation'
+        + ' --name update_schema_docs'
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
@@ -1654,18 +1655,18 @@ function updateDocumentation() {
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.DocumentationGenerator ' + targetDirectory + /*'/FrinexBuildService/docs '*/ ' ' + targetDirectory + '\\"'
-        + ' &>> ' + targetDirectory + '/update_documentation.txt;'
+        + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
         + ' chmod a+rwx /FrinexBuildService/docs/*'
-        + ' &>> ' + targetDirectory + '/update_documentation.txt;'
+        + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
         + ' chmod a+rwx ' + targetDirectory + '/frinex.xsd'
-        + ' &>> ' + targetDirectory + '/update_documentation.txt;"';
+        + ' &>> ' + targetDirectory + '/update_schema_docs.txt;"';
     console.log(dockerString);
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
-        console.log("update_documentation finished");
+        console.log("update_schema_docs finished");
     } catch (reason) {
         console.log(reason);
-        console.log("update_documentation failed");
+        console.log("update_schema_docs failed");
     };
 }
 
