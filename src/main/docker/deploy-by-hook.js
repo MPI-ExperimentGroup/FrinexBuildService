@@ -1622,7 +1622,7 @@ function convertJsonToXml() {
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
-        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing\\"'
+        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing ' + targetDirectory /* the schema file is in the target directory, however it might be nicer to use a dedicated directory when we support multiple schema/build versions */ + '\\"'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;"';
