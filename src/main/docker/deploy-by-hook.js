@@ -1656,7 +1656,7 @@ function updateDocumentation() {
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.DocumentationGenerator ' + targetDirectory + /*'/FrinexBuildService/docs '*/ ' ' + targetDirectory + '\\"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + ' chmod a+rwx /FrinexBuildService/minimal_example.xml'
+        + ' chmod a+rwx ' + targetDirectory + '/minimal_example.xml'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
         + ' chmod a+rwx ' + targetDirectory + '/frinex.html'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
