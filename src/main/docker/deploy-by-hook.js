@@ -1656,8 +1656,10 @@ function updateDocumentation() {
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.DocumentationGenerator ' + targetDirectory + /*'/FrinexBuildService/docs '*/ ' ' + targetDirectory + '\\"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + ' chmod a+rwx /FrinexBuildService/docs/*'
+        + ' chmod a+rwx /FrinexBuildService/minimal_example.xml'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
+        + ' chmod a+rwx ' + targetDirectory + '/frinex.html'
+        + ' &>> ' + targetDirectory + '/update_schema_docs.txt;"'
         + ' chmod a+rwx ' + targetDirectory + '/frinex.xsd'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;"';
     console.log(dockerString);
