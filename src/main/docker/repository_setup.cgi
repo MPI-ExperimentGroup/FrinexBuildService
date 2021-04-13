@@ -1,0 +1,91 @@
+#!/bin/bash
+#
+# Copyright (C) 2021 Max Planck Institute for Psycholinguistics
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+
+#
+# @since 13 April2021 15:22 PM (creation date)
+# @author Peter Withers <peter.withers@mpi.nl>
+#
+
+# This script creates a repository for authenticated user for use in the Frinex build process
+# when commits are pushed to the resulting GIT repository any JSON and XML experiment 
+# configuration files will offered to the build service
+
+echo "Content-type: text/html"
+echo ''
+if [[ "$REMOTE_USER" == *mpi.nl ]]
+then
+        echo "ends with mpi"
+else
+        echo "mpi not found"
+        exit 0
+fi
+echo "<br/>"
+if [[ "$REMOTE_USER" == *ru.nl ]]
+then
+        echo "ends with ru"
+        exit 0
+else
+        echo "ru not found"
+        exit 0
+fi
+echo "<br/>"
+
+echo "tartegRepositoryName: "
+tartegRepositoryName=$(echo $REMOTE_USER | sed 's/^\([^@]*\)@.*$/\1/')
+echo $tartegRepositoryName
+echo "<br/>"
+
+echo "repository name length: "
+echo ${#tartegRepositoryName}
+echo "<br/>"
+
+if [ ${#tartegRepositoryName} -ge 6 ]
+then
+        echo "greater than 5"
+else
+        echo "less than 6"
+        exit 0
+fi
+echo "<br/>"
+
+echo RepositoriesDirectory/$tartegRepositoryName.git
+if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
+then
+    echo "target git repository already exists";
+    exit 0
+fi
+
+echo CheckoutDirectory/$tartegRepositoryName
+if [ -d CheckoutDirectory/$tartegRepositoryName ];
+then
+    echo "target repository checkout already exists";
+    exit 0
+fi
+
+# initialise the repository
+git init --bare RepositoriesDirectory/$tartegRepositoryName.git
+
+# add the post-receive hook
+sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
+
+# todo: perhaps an initial commit is require for ease of uses
+
+echo "<br/>"
+echo "done"
+echo "<br/>"

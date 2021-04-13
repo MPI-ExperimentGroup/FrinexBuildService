@@ -42,6 +42,7 @@ RUN mkdir /FrinexBuildService/incoming/commits/
 RUN mkdir /FrinexBuildService/incoming/static/
 RUN mkdir /FrinexBuildService/artifacts
 RUN mkdir /FrinexBuildService/docs
+RUN mkdir /FrinexBuildService/cgi
 COPY frinex-git-server.conf  /FrinexBuildService/
 RUN sed -i "s|UrlLDAP|example.com|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|DcLDAP|DC=example,DC=com|g" /FrinexBuildService/frinex-git-server.conf 
@@ -50,6 +51,7 @@ RUN sed -i "s|PassLDAP|example|g" /FrinexBuildService/frinex-git-server.conf
 RUN sed -i "s|#LDAPOPTION||g" /FrinexBuildService/frinex-git-server.conf 
 #RUN sed -i "s|#PUBLICOPTION||g" /FrinexBuildService/frinex-git-server.conf 
 COPY git_setup.html  /FrinexBuildService/docs/
+COPY repository_setup.cgi  /FrinexBuildService/cgi/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
@@ -65,6 +67,9 @@ RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/publis
 COPY ./post-receive /FrinexBuildService/post-receive
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/post-receive
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/post-receive
+RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/cgi/repository_setup.cgi
+RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/cgi/repository_setup.cgi
+RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/post-receive
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/post-receive
 COPY ./create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build_repository.sh
@@ -93,6 +98,8 @@ RUN chown -R frinex:daemon /FrinexBuildService/artifacts
 RUN chmod -R ug+rwx /FrinexBuildService/artifacts
 RUN chown -R frinex:daemon /FrinexBuildService/docs
 RUN chmod -R ug+rwx /FrinexBuildService/docs
+RUN chown -R frinex:daemon /FrinexBuildService/cgi
+RUN chmod -R ug+rwx /FrinexBuildService/cgi
 RUN mkdir /BackupFiles
 RUN chown -R frinex:daemon /BackupFiles
 RUN chmod -R ug+rwx /BackupFiles
