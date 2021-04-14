@@ -37,14 +37,19 @@ echo ''
 #fi
 #echo "<br/>"
 
-echo "Repository Path: "
+#echo "Repository Path: "
 tartegRepositoryName=$(echo $REMOTE_USER | sed 's/[^a-zA-Z0-9]/_/g')
-echo $tartegRepositoryName.git
-echo "<br/>"
+#echo $tartegRepositoryName.git
+#echo "<br/>"
 
 if [ ${#tartegRepositoryName} -ge 6 ]
 then
-    echo RepositoriesDirectory/$tartegRepositoryName.git
+    echo "Your build repository: "
+    echo HTTP_HOST
+    echo SERVER_PROTOCOL
+    echo SERVER_NAME
+    echo SERVER_PORT
+    echo "/git/$tartegRepositoryName.git"
     echo "<br/>"
     if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
     then
