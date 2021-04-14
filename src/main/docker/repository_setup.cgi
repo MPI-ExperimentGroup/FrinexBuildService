@@ -28,63 +28,47 @@
 
 echo "Content-type: text/html"
 echo ''
-if [[ "$REMOTE_USER" == *mpi.nl ]]
-then
-        echo "ends with mpi"
-else
-        echo "mpi not found"
-        exit 0
-fi
-echo "<br/>"
-if [[ "$REMOTE_USER" == *ru.nl ]]
-then
-        echo "ends with ru"
-        exit 0
-else
-        echo "ru not found"
-        exit 0
-fi
-echo "<br/>"
+#if [[ "$REMOTE_USER" == *mpi.nl ]]
+#then
+#        echo "ends with mpi"
+#else
+#        echo "mpi not found"
+#        exit 0
+#fi
+#echo "<br/>"
 
-echo "tartegRepositoryName: "
-tartegRepositoryName=$(echo $REMOTE_USER | sed 's/^\([^@]*\)@.*$/\1/')
-echo $tartegRepositoryName
-echo "<br/>"
-
-echo "repository name length: "
-echo ${#tartegRepositoryName}
+echo "Repository Path: "
+tartegRepositoryName=$(echo $REMOTE_USER | sed 's/[^a-zA-Z0-9]/_/g')
+echo $tartegRepositoryName.git
 echo "<br/>"
 
 if [ ${#tartegRepositoryName} -ge 6 ]
 then
-        echo "greater than 5"
+    echo RepositoriesDirectory/$tartegRepositoryName.git
+    echo "<br/>"
+    if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
+    then
+        echo "target git repository already exists";
+    else
+        if [ -d CheckoutDirectory/$tartegRepositoryName ];
+        then
+            #echo CheckoutDirectory/$tartegRepositoryName
+            echo "target repository checkout already exists";
+        else
+            # initialise the repository
+            git init --bare RepositoriesDirectory/$tartegRepositoryName.git
+
+            # add the post-receive hook
+            sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
+        fi
+    fi
 else
-        echo "less than 6"
-        exit 0
+    # if the tartegRepositoryName length is not at least 6 chars long then it could cause an issue so we abort here
+    echo "There is an issue determining the build repository for this user (error -5)."
 fi
 echo "<br/>"
 
-echo RepositoriesDirectory/$tartegRepositoryName.git
-if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
-then
-    echo "target git repository already exists";
-    exit 0
-fi
-
-echo CheckoutDirectory/$tartegRepositoryName
-if [ -d CheckoutDirectory/$tartegRepositoryName ];
-then
-    echo "target repository checkout already exists";
-    exit 0
-fi
-
-# initialise the repository
-git init --bare RepositoriesDirectory/$tartegRepositoryName.git
-
-# add the post-receive hook
-sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
-
-# todo: perhaps an initial commit is require for ease of uses
+# todo: perhaps an initial commit is require for ease of use
 
 echo "<br/>"
 echo "done"
