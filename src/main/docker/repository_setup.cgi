@@ -37,14 +37,20 @@ echo ''
 #fi
 #echo "<br/>"
 
+date >> TargetDirectory/repository_setup.txt
+echo $HTTP_REFERER >> TargetDirectory/repository_setup.txt
+echo $REMOTE_USER >> TargetDirectory/repository_setup.txt
+
 if [[ "$HTTP_REFERER" != *git_setup.html ]]
 then
+    echo "HTTP_REFERER not accepted: $HTTP_REFERER" >> TargetDirectory/repository_setup.txt
     echo "Service not available in this context."
 else
     #echo "Repository Path: "
     tartegRepositoryName=$(echo $REMOTE_USER | sed 's/[^a-zA-Z0-9]/_/g')
     #echo $tartegRepositoryName.git
     #echo "<br/>"
+    echo $tartegRepositoryName >> TargetDirectory/repository_setup.txt
 
     tartegRepositoryPath=$(echo $HTTP_REFERER | sed 's|/docs/git_setup.html$||g')
 
@@ -52,33 +58,36 @@ else
     then
         echo "Your build repository: "
         echo "$tartegRepositoryPath/git/$tartegRepositoryName.git"
+        echo "$tartegRepositoryPath/git/$tartegRepositoryName.git" >> TargetDirectory/repository_setup.txt
         echo "<br/>"
         if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
         then
             echo "target git repository already exists";
+            echo "target git repository already exists" >> TargetDirectory/repository_setup.txt
         else
             if [ -d CheckoutDirectory/$tartegRepositoryName ];
             then
                 #echo CheckoutDirectory/$tartegRepositoryName
                 echo "target repository checkout already exists";
+                echo "target repository checkout already exists" >> TargetDirectory/repository_setup.txt
             else
                 # initialise the repository
+                echo "initialising" >> TargetDirectory/repository_setup.txt
                 git init --bare RepositoriesDirectory/$tartegRepositoryName.git
 
-                # add the post-receive hook
+                # adding post-receive hook
+                echo "add the post-receive hook" >> TargetDirectory/repository_setup.txt
                 sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
 
                 echo "your repository is ready for use."
+                echo "ready for use" >> TargetDirectory/repository_setup.txt
             fi
         fi
     else
         # if the tartegRepositoryName length is not at least 6 chars long then it could cause an issue so we abort here
         echo "There is an issue determining the build repository for this user (error -5)."
+        echo "repository name is too short, aborting" >> TargetDirectory/repository_setup.txt
     fi
     echo "<br/>"
 fi
-# todo: perhaps an initial commit is require for ease of use
-
-echo "<br/>"
-echo "done"
-echo "<br/>"
+# todo: perhaps an initial commit is nice for ease of use, but the repository can be cloned and used as is
