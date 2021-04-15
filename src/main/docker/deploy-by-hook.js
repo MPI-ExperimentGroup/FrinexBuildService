@@ -1495,111 +1495,110 @@ function moveIncomingToQueued() {
                     stopUpdatingResults();
                 }
             } else {
-                list.forEach(function (filename) {
-                    var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
-                    var lowerCaseFileName = filename.toLowerCase();
-                    var currentName = path.parse(lowerCaseFileName).name;
-                    var queuedFile = path.resolve(incomingDirectory + '/queued/', lowerCaseFileName);
-                    if (!fs.existsSync(targetDirectory + "/" + currentName)) {
-                        fs.mkdirSync(targetDirectory + '/' + currentName);
-                    }
-                    if (checkForDuplicates(currentName) !== 1) {
-                        // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
-                        initialiseResult(currentName, '<a class="shortmessage" href="' + currentName + '/' + currentName + '_conflict_error.txt">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true);
-                        console.log("this script will not build when two or more configuration files of the same name are found.");
-                        fs.writeSync(resultsFile, "<div>conflict: '" + currentName + "'</div>");
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
+                for (var filename of list) {
+                    if (foundFilesCount < 6) { // limit the number of files to be validated each time
+                        var incomingFile = path.resolve(incomingDirectory + '/commits/', filename);
+                        var lowerCaseFileName = filename.toLowerCase();
+                        var currentName = path.parse(lowerCaseFileName).name;
+                        var queuedFile = path.resolve(incomingDirectory + '/queued/', lowerCaseFileName);
+                        if (!fs.existsSync(targetDirectory + "/" + currentName)) {
+                            fs.mkdirSync(targetDirectory + '/' + currentName);
                         }
-                    } else if ((path.extname(lowerCaseFileName) === ".json" || path.extname(lowerCaseFileName) === ".xml") && lowerCaseFileName !== "listing.json") {
-                        fs.writeSync(resultsFile, "<div>initialise: '" + lowerCaseFileName + "'</div>");
-                        console.log('initialise: ' + lowerCaseFileName);
-                        var mavenLogPathSG = targetDirectory + "/" + currentName + "/" + currentName + "_staging.txt";
-                        var mavenLogPathSA = targetDirectory + "/" + currentName + "/" + currentName + "_staging_admin.txt";
-                        var mavenLogPathPG = targetDirectory + "/" + currentName + "/" + currentName + "_production.txt";
-                        var mavenLogPathPA = targetDirectory + "/" + currentName + "/" + currentName + "_production_admin.txt";
-                        var artifactPathSvg = targetDirectory + "/" + currentName + "/" + currentName + ".svg";
-                        var artifactPathUml = targetDirectory + "/" + currentName + "/" + currentName + ".uml";
-                        var artifactPathJson = targetDirectory + "/" + currentName + "/" + currentName + ".json";
-                        var artifactPathXml = targetDirectory + "/" + currentName + "/" + currentName + ".xml";
-                        var artifactPathError = targetDirectory + "/" + currentName + "/" + currentName + "_validation_error.txt";
-                        if (fs.existsSync(mavenLogPathSG)) {
-                            fs.unlinkSync(mavenLogPathSG);
-                        }
-                        if (fs.existsSync(mavenLogPathSA)) {
-                            fs.unlinkSync(mavenLogPathSA);
-                        }
-                        if (fs.existsSync(mavenLogPathPG)) {
-                            fs.unlinkSync(mavenLogPathPG);
-                        }
-                        if (fs.existsSync(mavenLogPathPA)) {
-                            fs.unlinkSync(mavenLogPathPA);
-                        }
-                        if (fs.existsSync(artifactPathSvg)) {
-                            fs.unlinkSync(artifactPathSvg);
-                        }
-                        if (fs.existsSync(artifactPathUml)) {
-                            fs.unlinkSync(artifactPathUml);
-                        }
-                        if (fs.existsSync(artifactPathJson)) {
-                            fs.unlinkSync(artifactPathJson);
-                        }
-                        if (fs.existsSync(artifactPathXml)) {
-                            fs.unlinkSync(artifactPathXml);
-                        }
-                        if (fs.existsSync(artifactPathError)) {
-                            fs.unlinkSync(artifactPathError);
-                        }
-                        var stagingBuildingConfigFile = path.resolve(processingDirectory + '/staging-building', currentName + '.xml');
-                        if (fs.existsSync(stagingBuildingConfigFile)) {
-                            console.log("moveIncomingToQueued found: " + stagingBuildingConfigFile);
-                            console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
-                            fs.unlinkSync(stagingBuildingConfigFile);
-                            try {
-                                // note that we dont stop currentName + '_undeploy' because it is probable that the committer intends to undeploy then redeploy and a partial undeploy would be undesirable
-                                execSync('sudo docker rm -f ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
-                            } catch (reason) {
-                                console.log(reason);
+                        if (checkForDuplicates(currentName) !== 1) {
+                            // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
+                            initialiseResult(currentName, '<a class="shortmessage" href="' + currentName + '/' + currentName + '_conflict_error.txt">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true);
+                            console.log("this script will not build when two or more configuration files of the same name are found.");
+                            fs.writeSync(resultsFile, "<div>conflict: '" + currentName + "'</div>");
+                            if (fs.existsSync(incomingFile)) {
+                                fs.unlinkSync(incomingFile);
                             }
-                        }
-                        var productionBuildingConfigFile = path.resolve(processingDirectory + '/production-building', currentName + '.xml');
-                        if (fs.existsSync(productionBuildingConfigFile)) {
-                            console.log("moveIncomingToQueued found: " + productionBuildingConfigFile);
-                            console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
-                            fs.unlinkSync(productionBuildingConfigFile);
-                            try {
-                                execSync('sudo docker rm -f ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
-                            } catch (reason) {
-                                console.log(reason);
+                        } else if ((path.extname(lowerCaseFileName) === ".json" || path.extname(lowerCaseFileName) === ".xml") && lowerCaseFileName !== "listing.json") {
+                            fs.writeSync(resultsFile, "<div>initialise: '" + lowerCaseFileName + "'</div>");
+                            console.log('initialise: ' + lowerCaseFileName);
+                            var mavenLogPathSG = targetDirectory + "/" + currentName + "/" + currentName + "_staging.txt";
+                            var mavenLogPathSA = targetDirectory + "/" + currentName + "/" + currentName + "_staging_admin.txt";
+                            var mavenLogPathPG = targetDirectory + "/" + currentName + "/" + currentName + "_production.txt";
+                            var mavenLogPathPA = targetDirectory + "/" + currentName + "/" + currentName + "_production_admin.txt";
+                            var artifactPathSvg = targetDirectory + "/" + currentName + "/" + currentName + ".svg";
+                            var artifactPathUml = targetDirectory + "/" + currentName + "/" + currentName + ".uml";
+                            var artifactPathJson = targetDirectory + "/" + currentName + "/" + currentName + ".json";
+                            var artifactPathXml = targetDirectory + "/" + currentName + "/" + currentName + ".xml";
+                            var artifactPathError = targetDirectory + "/" + currentName + "/" + currentName + "_validation_error.txt";
+                            if (fs.existsSync(mavenLogPathSG)) {
+                                fs.unlinkSync(mavenLogPathSG);
                             }
-                        }
-                        initialiseResult(currentName, 'validating', false);
-                        //if (fs.existsSync(targetDirectory + "/" + currentName)) {
-                        // todo: consider if this agressive removal is always wanted
-                        // todo: we might want this agressive target experiment name directory removal to prevent old output being served out
-                        //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
-                        //}
-                        // this move is within the same volume so we can do it this easy way
-                        fs.renameSync(incomingFile, queuedFile);
-                        foundFilesCount++;
-                    } else {
-                        fs.writeSync(resultsFile, "<div>removing unusable type: '" + filename + "'</div>");
-                        //console.log('removing unusable type: ' + filename);
-                        if (fs.existsSync(incomingFile)) {
-                            fs.unlinkSync(incomingFile);
-                            console.log('deleted unusable file: ' + incomingFile);
-                        }
-                    }
-                    remainingFiles--;
-                    if (remainingFiles <= 0 || foundFilesCount > 5) {
-                        buildNextExperiment(); // if there are existing experiments in the build queue they can be started before converting more with JsonToXml
-                        if (foundFilesCount > 0) {
-                            convertJsonToXml();
+                            if (fs.existsSync(mavenLogPathSA)) {
+                                fs.unlinkSync(mavenLogPathSA);
+                            }
+                            if (fs.existsSync(mavenLogPathPG)) {
+                                fs.unlinkSync(mavenLogPathPG);
+                            }
+                            if (fs.existsSync(mavenLogPathPA)) {
+                                fs.unlinkSync(mavenLogPathPA);
+                            }
+                            if (fs.existsSync(artifactPathSvg)) {
+                                fs.unlinkSync(artifactPathSvg);
+                            }
+                            if (fs.existsSync(artifactPathUml)) {
+                                fs.unlinkSync(artifactPathUml);
+                            }
+                            if (fs.existsSync(artifactPathJson)) {
+                                fs.unlinkSync(artifactPathJson);
+                            }
+                            if (fs.existsSync(artifactPathXml)) {
+                                fs.unlinkSync(artifactPathXml);
+                            }
+                            if (fs.existsSync(artifactPathError)) {
+                                fs.unlinkSync(artifactPathError);
+                            }
+                            var stagingBuildingConfigFile = path.resolve(processingDirectory + '/staging-building', currentName + '.xml');
+                            if (fs.existsSync(stagingBuildingConfigFile)) {
+                                console.log("moveIncomingToQueued found: " + stagingBuildingConfigFile);
+                                console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
+                                fs.unlinkSync(stagingBuildingConfigFile);
+                                try {
+                                    // note that we dont stop currentName + '_undeploy' because it is probable that the committer intends to undeploy then redeploy and a partial undeploy would be undesirable
+                                    execSync('sudo docker rm -f ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
+                                } catch (reason) {
+                                    console.log(reason);
+                                }
+                            }
+                            var productionBuildingConfigFile = path.resolve(processingDirectory + '/production-building', currentName + '.xml');
+                            if (fs.existsSync(productionBuildingConfigFile)) {
+                                console.log("moveIncomingToQueued found: " + productionBuildingConfigFile);
+                                console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
+                                fs.unlinkSync(productionBuildingConfigFile);
+                                try {
+                                    execSync('sudo docker rm -f ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
+                                } catch (reason) {
+                                    console.log(reason);
+                                }
+                            }
+                            initialiseResult(currentName, 'validating', false);
+                            //if (fs.existsSync(targetDirectory + "/" + currentName)) {
+                            // todo: consider if this agressive removal is always wanted
+                            // todo: we might want this agressive target experiment name directory removal to prevent old output being served out
+                            //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
+                            //}
+                            // this move is within the same volume so we can do it this easy way
+                            fs.renameSync(incomingFile, queuedFile);
+                            foundFilesCount++;
                         } else {
-                            setTimeout(moveIncomingToQueued, 3000);
+                            fs.writeSync(resultsFile, "<div>removing unusable type: '" + filename + "'</div>");
+                            //console.log('removing unusable type: ' + filename);
+                            if (fs.existsSync(incomingFile)) {
+                                fs.unlinkSync(incomingFile);
+                                console.log('deleted unusable file: ' + incomingFile);
+                            }
                         }
                     }
-                });
+                }
+                buildNextExperiment(); // if there are existing experiments in the build queue they can be started before converting more with JsonToXml
+                if (foundFilesCount > 0) {
+                    convertJsonToXml();
+                } else {
+                    setTimeout(moveIncomingToQueued, 3000);
+                }
             }
         }
     });
