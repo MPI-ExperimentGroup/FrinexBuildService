@@ -56,13 +56,14 @@ else
 
     if [ ${#tartegRepositoryName} -ge 6 ]
     then
-        echo "Your build repository: "
+        echo "Your build repository: <b>"
         echo "$tartegRepositoryPath/git/$tartegRepositoryName.git"
+        echo "</b>"
         echo "$tartegRepositoryPath/git/$tartegRepositoryName.git" >> TargetDirectory/repository_setup.txt
         echo "<br/>"
         if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
         then
-            echo "target git repository already exists";
+            #echo "your repository is ready for use";
             echo "target git repository already exists" >> TargetDirectory/repository_setup.txt
         else
             if [ -d CheckoutDirectory/$tartegRepositoryName ];
@@ -79,7 +80,7 @@ else
                 echo "add the post-receive hook" >> TargetDirectory/repository_setup.txt
                 sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
 
-                echo "your repository is ready for use."
+                echo "Your repository is ready for use."
                 echo "ready for use" >> TargetDirectory/repository_setup.txt
             fi
         fi
