@@ -46,7 +46,7 @@ else
     #echo $tartegRepositoryName.git
     #echo "<br/>"
 
-    tartegRepositoryPath=$(echo $HTTP_REFERER | sed 's/[git_setup.html$]/_/g')
+    tartegRepositoryPath=$(echo $HTTP_REFERER | sed 's/^(.*)git_setup.html$/\1/g')
 
     if [ ${#tartegRepositoryName} -ge 6 ]
     then
