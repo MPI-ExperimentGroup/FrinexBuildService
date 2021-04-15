@@ -37,42 +37,47 @@ echo ''
 #fi
 #echo "<br/>"
 
-#echo "Repository Path: "
-tartegRepositoryName=$(echo $REMOTE_USER | sed 's/[^a-zA-Z0-9]/_/g')
-#echo $tartegRepositoryName.git
-#echo "<br/>"
-
-if [ ${#tartegRepositoryName} -ge 6 ]
+if [[ "$HTTP_REFERER" != *git_setup.html ]]
 then
-    echo "Your build repository: "
-    echo HTTP_HOST
-    echo SERVER_PROTOCOL
-    echo SERVER_NAME
-    echo SERVER_PORT
-    echo "/git/$tartegRepositoryName.git"
-    echo "<br/>"
-    if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
-    then
-        echo "target git repository already exists";
-    else
-        if [ -d CheckoutDirectory/$tartegRepositoryName ];
-        then
-            #echo CheckoutDirectory/$tartegRepositoryName
-            echo "target repository checkout already exists";
-        else
-            # initialise the repository
-            git init --bare RepositoriesDirectory/$tartegRepositoryName.git
-
-            # add the post-receive hook
-            sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
-        fi
-    fi
+    echo "Service not available in this context."
 else
-    # if the tartegRepositoryName length is not at least 6 chars long then it could cause an issue so we abort here
-    echo "There is an issue determining the build repository for this user (error -5)."
-fi
-echo "<br/>"
+    #echo "Repository Path: "
+    tartegRepositoryName=$(echo $REMOTE_USER | sed 's/[^a-zA-Z0-9]/_/g')
+    #echo $tartegRepositoryName.git
+    #echo "<br/>"
 
+    tartegRepositoryPath=$(echo $HTTP_REFERER | sed 's/[git_setup.html$]/_/g')
+
+    if [ ${#tartegRepositoryName} -ge 6 ]
+    then
+        echo "Your build repository: "
+        echo $tartegRepositoryPath
+        echo "/git/$tartegRepositoryName.git"
+        echo "<br/>"
+        if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
+        then
+            echo "target git repository already exists";
+        else
+            if [ -d CheckoutDirectory/$tartegRepositoryName ];
+            then
+                #echo CheckoutDirectory/$tartegRepositoryName
+                echo "target repository checkout already exists";
+            else
+                # initialise the repository
+                git init --bare RepositoriesDirectory/$tartegRepositoryName.git
+
+                # add the post-receive hook
+                sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
+
+                echo "your repository is ready for use."
+            fi
+        fi
+    else
+        # if the tartegRepositoryName length is not at least 6 chars long then it could cause an issue so we abort here
+        echo "There is an issue determining the build repository for this user (error -5)."
+    fi
+    echo "<br/>"
+fi
 # todo: perhaps an initial commit is require for ease of use
 
 echo "<br/>"
