@@ -69,16 +69,16 @@ else
             if [ -d CheckoutDirectory/$tartegRepositoryName ];
             then
                 #echo CheckoutDirectory/$tartegRepositoryName
-                echo "target repository checkout already exists";
+                echo "Error: target repository checkout already exists.";
                 echo "target repository checkout already exists" >> TargetDirectory/repository_setup.txt
             else
                 # initialise the repository
                 echo "initialising" >> TargetDirectory/repository_setup.txt
-                git init --bare RepositoriesDirectory/$tartegRepositoryName.git
+                git init --bare RepositoriesDirectory/$tartegRepositoryName.git >> TargetDirectory/repository_setup.txt
 
                 # adding post-receive hook
                 echo "add the post-receive hook" >> TargetDirectory/repository_setup.txt
-                sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
+                sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive >> TargetDirectory/repository_setup.txt
 
                 echo "Your repository is ready for use."
                 echo "ready for use" >> TargetDirectory/repository_setup.txt
