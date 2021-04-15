@@ -46,13 +46,12 @@ else
     #echo $tartegRepositoryName.git
     #echo "<br/>"
 
-    tartegRepositoryPath=$(echo $HTTP_REFERER | sed 's/^(.*)git_setup.html$/\1/g')
+    tartegRepositoryPath=$(echo $HTTP_REFERER | sed 's|/docs/git_setup.html$||g')
 
     if [ ${#tartegRepositoryName} -ge 6 ]
     then
         echo "Your build repository: "
-        echo $tartegRepositoryPath
-        echo "/git/$tartegRepositoryName.git"
+        echo "$tartegRepositoryPath/git/$tartegRepositoryName.git"
         echo "<br/>"
         if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
         then
