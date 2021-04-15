@@ -26,14 +26,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     <script>
         function requestRepostoryLocoation() {
             try {
+                document.getElementById("buildRepositoryResult").innerHTML = "Calculating repository location";
                 var repositoryRequest = new XMLHttpRequest();
                 repositoryRequest.onreadystatechange = function () {
                     if (repositoryRequest.readyState == 4) {
                         document.getElementById("buildRepositoryResult").innerHTML = repositoryRequest.responseText;
                     }
                 };
-                request.open("GET", "cgi/repository_setup.cgi", true);
-                request.send();
+                repositoryRequest.open("GET", "/cgi/repository_setup.cgi", true);
+                repositoryRequest.send();
             } catch (error) {
                 document.getElementById("buildRepositoryResult").innerHTML = "Unable to determine the repository location";
             }
@@ -48,7 +49,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     <p>One such tool is <a href="https://en.wikipedia.org/wiki/Visual_Studio_Code">Visual Studio Code</a>, which has the advantage of providing an XML editor and a GIT client in the same tool. If you chose to use Visual Studio Code then you might also want to use the <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-xml">XML Language Support by Red Hat</a> extension. The XML extension will validate your XML but can also incorporate the Frinex documentation into that validation and provide help in the form of context based documentation and code completion.</p>
     <p>Whichever tool you choose to edit your XML you will want to ensure that the <a hred="/frinex.xsd">Frinex XSD</a> is correcty specified at the start of your XML document. You can find an example of this in the <a href="/minimal_example.xml">minimal_example.xml</a>. The XML documentation can also be viewed directly in the <a href="/frinex.html">Frinex Markup</a> document.</p>
     <p />
-    <p><button onclick="requestRepostoryLocoation()">Calculate Repository URL</button></p>
-    <p id="buildRepositoryResult"></p>
+    <p id="buildRepositoryResult"><button onclick="requestRepostoryLocoation()">Calculate Repository URL</button></p>
 </body>
 </html>
