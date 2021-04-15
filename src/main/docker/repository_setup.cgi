@@ -78,7 +78,7 @@ else
 
                 # adding post-receive hook
                 echo "add the post-receive hook" >> TargetDirectory/repository_setup.txt
-                sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive >> TargetDirectory/repository_setup.txt
+                sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
 
                 echo "Your repository is ready for use."
                 echo "ready for use" >> TargetDirectory/repository_setup.txt
