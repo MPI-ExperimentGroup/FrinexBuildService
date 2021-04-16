@@ -81,6 +81,7 @@ then
             git clone RepositoriesDirectory/$tartegRepositoryName.git
 
             # add a readme file, commit and push
+            # this initial commit is nice for ease of the end user, while the repository can be cloned without it there can also be issues with the naming of the default branch depending on the client used
             cd $tartegRepositoryName
             date > CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "This repository can be used to push experiments to the Frinex build server." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
@@ -91,7 +92,9 @@ then
             echo "For information on Frinex XML features see BuildServerUrl/frinex.html." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "The XML schema file BuildServerUrl/frinex.html should be declaired in the relevant section of your XML files." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
             git add readme.txt
-            git commit -m "initial commit" readme.txt
+            # commit and push the readme.txt
+            git commit -m "Adding a readme file to initialise this repository." readme.txt
+            git push
 
             echo "Your repository is ready for use."
             echo "ready for use" >> TargetDirectory/repository_setup.txt
@@ -103,5 +106,3 @@ else
     echo "repository name is too short, aborting" >> TargetDirectory/repository_setup.txt
 fi
 echo "<br/>"
-
-# todo: perhaps an initial commit is nice for ease of use, but the repository can be cloned and used as is
