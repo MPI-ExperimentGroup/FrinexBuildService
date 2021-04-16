@@ -78,11 +78,13 @@ then
 
             # checkout a copy
             cd CheckoutDirectory
-            git clone RepositoriesDirectory/$tartegRepositoryName.git
+            git clone -b build RepositoriesDirectory/$tartegRepositoryName.git
 
             # add a readme file, commit and push
             # this initial commit is nice for ease of the end user, while the repository can be cloned without it there can also be issues with the naming of the default branch depending on the client used
             cd $tartegRepositoryName
+            git config user.email "frinexbuild@BuildServerUrl"
+            git config user.name "FrinexBuildServer"
             date > CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "This repository can be used to push experiments to the Frinex build server." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "When experiment configuration files are committed and pushed the build process will begin." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
