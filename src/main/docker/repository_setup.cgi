@@ -78,13 +78,13 @@ then
 
             # checkout a copy
             cd CheckoutDirectory
-            git clone -b build RepositoriesDirectory/$tartegRepositoryName.git
+            git clone RepositoriesDirectory/$tartegRepositoryName.git >> TargetDirectory/repository_setup.txt
 
             # add a readme file, commit and push
             # this initial commit is nice for ease of the end user, while the repository can be cloned without it there can also be issues with the naming of the default branch depending on the client used
             cd $tartegRepositoryName
-            git config user.email "frinexbuild@BuildServerUrl"
-            git config user.name "FrinexBuildServer"
+            git config user.email "frinexbuild@BuildServerUrl" >> TargetDirectory/repository_setup.txt
+            git config user.name "FrinexBuildServer" >> TargetDirectory/repository_setup.txt
             date > CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "This repository can be used to push experiments to the Frinex build server." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "When experiment configuration files are committed and pushed the build process will begin." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
@@ -93,10 +93,10 @@ then
             echo "When a mobile or desktop app is required, an icon.png file should be included in directory of the same name as the experiment configuration fle." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "For information on Frinex XML features see BuildServerUrl/frinex.html." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "The XML schema file BuildServerUrl/frinex.html should be declaired in the relevant section of your XML files." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
-            git add readme.txt
+            git add readme.txt >> TargetDirectory/repository_setup.txt
             # commit and push the readme.txt
-            git commit -m "Adding a readme file to initialise this repository." readme.txt
-            git push
+            git commit -m "Adding a readme file to initialise this repository." readme.txt  >> TargetDirectory/repository_setup.txt
+            git push >> TargetDirectory/repository_setup.txt
 
             echo "Your repository is ready for use."
             echo "ready for use" >> TargetDirectory/repository_setup.txt
