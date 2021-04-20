@@ -82,7 +82,7 @@ COPY ./update_post-receive_hooks.sh /FrinexBuildService/update_post-receive_hook
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/update_post-receive_hooks.sh
-RUN cd /FrinexBuildService/; npm install properties-reader
+RUN cd /FrinexBuildService/; npm install properties-reader; npm install diskusage
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh NBL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh LADD
