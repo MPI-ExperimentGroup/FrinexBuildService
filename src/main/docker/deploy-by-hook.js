@@ -43,7 +43,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const disk = require('diskusage');
+const disk = require('check-disk-space');
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const listingDirectory = properties.get('settings.listingDirectory');
@@ -255,9 +255,9 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
         fs.writeSync(statsFile, new Date().toISOString() + "," + name + "," + stage + "," + type + "," + (stageBuildTime) + "," + os.freemem() + "\n");
         buildHistoryJson.freeMemory = os.freemem();
         buildHistoryJson.totalMemory = os.totalmem();
-        disk.check('/', function(err, info) {
+        disk.check('/').then((info) => {
             buildHistoryJson.diskFree =  info.free;
-            buildHistoryJson.diskTotal = info.total;
+            buildHistoryJson.diskTotal = info.size;
         });
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
