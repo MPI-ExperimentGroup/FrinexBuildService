@@ -86,6 +86,7 @@ do
           mkdir $scriptDir/incoming/static/$staticDirectoryLowercase
           cp -r $staticDirectory/* $scriptDir/incoming/static/$staticDirectoryLowercase/
         done;
+        echo "{repository: 'RepositoryName', user: '$REMOTE_USER'}" > "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\" | sed -e "s/.json//g" | sed -e "s/.xml//g").commit";
       done
       #ls -l $scriptDir/incoming/static/*
 #      cp -r $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | sed -e "s/.json//g" | sed -e "s/.xml//g | tr "[:upper:]" "[:lower:]") $scriptDir/incoming/static/

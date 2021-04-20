@@ -488,18 +488,18 @@ function deployStagingGui(currentEntry) {
             //+ ' free -h &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;'
             // skipping electron and cordova if this is a draft build
             + ((currentEntry.state === "draft") ? "" : ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/staging-building/'
-            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/staging-building/'
-            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-cordova.sh'
-            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-electron.sh'
-            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar'
-            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-*.sh;'
-            + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*;'
-            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;')
+                + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+                + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/processing/staging-building/'
+                + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+                + ' mv /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-cordova.sh'
+                + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+                + ' mv /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-electron.sh'
+                + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+                + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar'
+                + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+                + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-*.sh;'
+                + ' chmod a+rwx /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*;'
+                + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;')
             // end of skipping electron and cordova if this is a draft build
             //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging'
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -934,9 +934,14 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -Dexperiment.artifactsJsonDirectory=' + targetDirectory + '/' + currentEntry.buildName + '/'
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
-            + ' -Dexperiment.destinationServer=' + productionServer
-            + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
-            + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
+            + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
+                ' -Dexperiment.destinationServer=' + currentEntry.productionServer
+                + ' -Dexperiment.destinationServerUrl=https://' + currentEntry.productionServer
+                + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer
+                : ' -Dexperiment.destinationServer=' + productionServer
+                + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+                + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
+            )
             + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
@@ -1400,8 +1405,8 @@ function checkForDuplicates(currentName) {
             //console.log(fileNamePart);
             if (currentName + ".json" === lowercaseEntry || currentName + ".xml" === lowercaseEntry) {
                 experimentConfigCounter++;
-                experimentConfigLocations += repositoryEntry + " found in " + repositoryDirectory + "\n";
-                console.log(repositoryEntry + " found in " + repositoryDirectory);
+                experimentConfigLocations += repositoryEntry + " found in /git/" + repositoryDirectory + ".git" + "\n";
+                console.log(repositoryEntry + " found in /git/" + repositoryDirectory + ".git");
             }
         }
     }
@@ -1409,7 +1414,7 @@ function checkForDuplicates(currentName) {
     if (experimentConfigCounter > 1) {
         //console.log(experimentConfigLocations);
         const queuedConfigFile = fs.openSync(configErrorPath, "w");
-        fs.writeSync(queuedConfigFile, "Multiple configuratin files found in the following locations:\n" + experimentConfigLocations);
+        fs.writeSync(queuedConfigFile, "Multiple configuration files found in the following locations:\n" + experimentConfigLocations);
     } else {
         if (fs.existsSync(configErrorPath)) {
             fs.unlinkSync(configErrorPath);
