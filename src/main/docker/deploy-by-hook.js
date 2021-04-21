@@ -43,7 +43,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const disk = require('check-disk-space');
+const diskSpace = require('check-disk-space');
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const listingDirectory = properties.get('settings.listingDirectory');
@@ -255,7 +255,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
         fs.writeSync(statsFile, new Date().toISOString() + "," + name + "," + stage + "," + type + "," + (stageBuildTime) + "," + os.freemem() + "\n");
         buildHistoryJson.freeMemory = os.freemem();
         buildHistoryJson.totalMemory = os.totalmem();
-        disk.check('/').then((info) => {
+        diskSpace('/').then((info) => {
             buildHistoryJson.diskFree =  info.free;
             buildHistoryJson.diskTotal = info.size;
         });
@@ -1518,7 +1518,9 @@ function moveIncomingToQueued() {
                         if (!fs.existsSync(targetDirectory + "/" + currentName)) {
                             fs.mkdirSync(targetDirectory + '/' + currentName);
                         }
-                        if (checkForDuplicates(currentName) !== 1) {
+                        if (path.extname(lowerCaseFileName) === ".commit") {
+                            // the committer info is used when the XML or JSON file is processed
+                        } else if (checkForDuplicates(currentName) !== 1) {
                             // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
                             initialiseResult(currentName, '<a class="shortmessage" href="' + currentName + '/' + currentName + '_conflict_error.txt">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true, '', '');
                             console.log("this script will not build when two or more configuration files of the same name are found.");
@@ -1526,8 +1528,6 @@ function moveIncomingToQueued() {
                             if (fs.existsSync(incomingFile)) {
                                 fs.unlinkSync(incomingFile);
                             }
-                        } else if (path.extname(lowerCaseFileName) === ".commit") {
-                            // the committer info is used when the XML or JSON file is processed
                         } else if ((path.extname(lowerCaseFileName) === ".json" || path.extname(lowerCaseFileName) === ".xml") && lowerCaseFileName !== "listing.json") {
                             fs.writeSync(resultsFile, "<div>initialise: '" + lowerCaseFileName + "'</div>");
                             console.log('initialise: ' + lowerCaseFileName);
