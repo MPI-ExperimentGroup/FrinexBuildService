@@ -374,8 +374,12 @@ function unDeploy(currentEntry) {
         //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
         + ' -DversionCheck.allowSnapshots=' + 'false'
         + ' -DversionCheck.buildType=' + 'stable'
-        + ' -Dexperiment.destinationServer=' + productionServer
-        + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+        + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
+            ' -Dexperiment.destinationServer=' + currentEntry.productionServer
+            + ' -Dexperiment.destinationServerUrl=https://' + currentEntry.productionServer
+            : ' -Dexperiment.destinationServer=' + productionServer
+            + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+        )
         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
@@ -411,6 +415,12 @@ function unDeploy(currentEntry) {
         //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
         + ' -DversionCheck.allowSnapshots=' + 'false'
         + ' -DversionCheck.buildType=' + 'stable'
+        + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
+            ' -Dexperiment.destinationServer=' + currentEntry.productionServer
+            + ' -Dexperiment.destinationServerUrl=https://' + currentEntry.productionServer
+            : ' -Dexperiment.destinationServer=' + productionServer
+            + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+        )
         + ' -Dexperiment.destinationServer=' + productionServer
         + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
@@ -725,9 +735,10 @@ function deployProductionGui(currentEntry) {
         storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
-        console.log("existing deployment check: " + productionServerUrl + '/' + currentEntry.buildName);
+        var existingDeploymentUrl = ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? "https://" + currentEntry.productionServer : productionServerUrl) + "/" + currentEntry.buildName;
+        console.log("existing deployment check: " + existingDeploymentUrl);
         try {
-            var deploymentCheckUrl = new URL(productionServerUrl + '/' + currentEntry.buildName);
+            var deploymentCheckUrl = new URL(existingDeploymentUrl);
             ((deploymentCheckUrl.protocol == "https:") ? https : http).get(deploymentCheckUrl, function (response) {
                 console.log("statusCode: " + response.statusCode);
                 if (response.statusCode !== 404) {
@@ -776,9 +787,14 @@ function deployProductionGui(currentEntry) {
                         + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
                         + ' -DversionCheck.allowSnapshots=' + 'false'
                         + ' -DversionCheck.buildType=' + 'stable'
-                        + ' -Dexperiment.destinationServer=' + productionServer
-                        + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
-                        + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
+                        + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
+                            ' -Dexperiment.destinationServer=' + currentEntry.productionServer
+                            + ' -Dexperiment.destinationServerUrl=https://' + currentEntry.productionServer
+                            + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer
+                            : ' -Dexperiment.destinationServer=' + productionServer
+                            + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+                            + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
+                        )
                         + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
                         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
                         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
