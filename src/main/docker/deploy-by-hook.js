@@ -375,8 +375,8 @@ function unDeploy(currentEntry) {
         + ' -DversionCheck.allowSnapshots=' + 'false'
         + ' -DversionCheck.buildType=' + 'stable'
         + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-            ' -Dexperiment.destinationServer=' + currentEntry.productionServer
-            + ' -Dexperiment.destinationServerUrl=https://' + currentEntry.productionServer
+            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+            + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
             : ' -Dexperiment.destinationServer=' + productionServer
             + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
         )
@@ -416,8 +416,8 @@ function unDeploy(currentEntry) {
         + ' -DversionCheck.allowSnapshots=' + 'false'
         + ' -DversionCheck.buildType=' + 'stable'
         + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-            ' -Dexperiment.destinationServer=' + currentEntry.productionServer
-            + ' -Dexperiment.destinationServerUrl=https://' + currentEntry.productionServer
+            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+            + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
             : ' -Dexperiment.destinationServer=' + productionServer
             + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
         )
@@ -735,7 +735,7 @@ function deployProductionGui(currentEntry) {
         storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
-        var existingDeploymentUrl = ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? "https://" + currentEntry.productionServer : productionServerUrl) + "/" + currentEntry.buildName;
+        var existingDeploymentUrl = ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer : productionServerUrl) + "/" + currentEntry.buildName;
         console.log("existing deployment check: " + existingDeploymentUrl);
         try {
             var deploymentCheckUrl = new URL(existingDeploymentUrl);
@@ -788,9 +788,9 @@ function deployProductionGui(currentEntry) {
                         + ' -DversionCheck.allowSnapshots=' + 'false'
                         + ' -DversionCheck.buildType=' + 'stable'
                         + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-                            ' -Dexperiment.destinationServer=' + currentEntry.productionServer
-                            + ' -Dexperiment.destinationServerUrl=https://' + currentEntry.productionServer
-                            + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer
+                            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+                            + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
+                            + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer.replace(/^https?:\/\//,'')
                             : ' -Dexperiment.destinationServer=' + productionServer
                             + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                             + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
@@ -960,9 +960,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-                ' -Dexperiment.destinationServer=' + currentEntry.productionServer
-                + ' -Dexperiment.destinationServerUrl=https://' + currentEntry.productionServer
-                + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer
+                ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+                + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
+                + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer.replace(/^https?:\/\//,'')
                 : ' -Dexperiment.destinationServer=' + productionServer
                 + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                 + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
