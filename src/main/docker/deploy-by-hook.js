@@ -256,7 +256,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
         buildHistoryJson.freeMemory = os.freemem();
         buildHistoryJson.totalMemory = os.totalmem();
         diskSpace('/').then((info) => {
-            buildHistoryJson.diskFree =  info.free;
+            buildHistoryJson.diskFree = info.free;
             buildHistoryJson.diskTotal = info.size;
         });
     }
@@ -1705,6 +1705,9 @@ function prepareBuildHistory() {
         try {
             var buildHistoryJsonTemp = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
             fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o755 });
+            var now = new Date();
+            var datedFileSuffix = '-' + now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate();
+            fs.writeFileSync(buildHistoryFileName + datedFileSuffix, JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o755 });
             for (var keyString in buildHistoryJsonTemp.table) {
                 buildHistoryJson.table[keyString] = {};
                 for (var cellString in buildHistoryJsonTemp.table[keyString]) {
