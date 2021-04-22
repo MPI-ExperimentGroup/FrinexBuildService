@@ -85,6 +85,7 @@ then
             cd $tartegRepositoryName
             git config user.email "frinexbuild@BuildServerUrl" >> TargetDirectory/repository_setup.txt
             git config user.name "FrinexBuildServer" >> TargetDirectory/repository_setup.txt
+            git config pull.rebase true >> TargetDirectory/repository_setup.txt
             date > CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "This repository can be used to push experiments to the Frinex build server." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
             echo "When experiment configuration files are committed and pushed the build process will begin." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
