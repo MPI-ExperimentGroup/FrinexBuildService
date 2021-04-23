@@ -899,8 +899,8 @@ function deployProductionGui(currentEntry) {
                 currentlyBuilding.delete(currentEntry.buildName);
             });
         } catch (exception) {
-            console.log(exception);
-            console.log("frinex-gui production failed");
+            console.error(exception);
+            console.error("frinex-gui production failed");
             storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
             if (fs.existsSync(productionConfigFile)) {
                 fs.unlinkSync(productionConfigFile);
@@ -1064,7 +1064,8 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
             + '"';
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
-    } catch (ex) {
+    } catch (reason) {
+        console.error(reason);
         resultString += 'failed&nbsp;';
         hasFailed = true;
     }
@@ -1136,7 +1137,8 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
         //resultString += "built&nbsp;";
-    } catch (ex) {
+    } catch (reason) {
+        console.error(reason);
         resultString += "failed&nbsp;";
         hasFailed = true;
     }
@@ -1325,6 +1327,7 @@ function buildFromListing() {
 }
 
 function copyDeleteFile(incomingFile, targetFile) {
+    try {
     var incomingReadStream = fs.createReadStream(incomingFile);
     incomingReadStream.on('close', function () {
         if (fs.existsSync(incomingFile)) {
@@ -1334,6 +1337,9 @@ function copyDeleteFile(incomingFile, targetFile) {
         }
     });
     incomingReadStream.pipe(fs.createWriteStream(targetFile));
+    } catch (reason) {
+        console.error("copyDeleteFile failed: " + incomingFile + ":" + targetFile + ":" + reason);
+    }
 }
 
 function prepareForProcessing() {
@@ -1514,7 +1520,7 @@ function moveIncomingToQueued() {
                     try {
                         execSync('rsync -a ' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
                     } catch (reason) {
-                        console.log(reason);
+                        console.error(reason);
                     }
                     hasDoneBackup = true;
                     setTimeout(moveIncomingToQueued, 3000);
@@ -1592,7 +1598,7 @@ function moveIncomingToQueued() {
                                     // note that we dont stop currentName + '_undeploy' because it is probable that the committer intends to undeploy then redeploy and a partial undeploy would be undesirable
                                     execSync('sudo docker rm -f ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
                                 } catch (reason) {
-                                    console.log(reason);
+                                    console.error(reason);
                                 }
                             }
                             var productionBuildingConfigFile = path.resolve(processingDirectory + '/production-building', currentName + '.xml');
@@ -1603,7 +1609,7 @@ function moveIncomingToQueued() {
                                 try {
                                     execSync('sudo docker rm -f ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
                                 } catch (reason) {
-                                    console.log(reason);
+                                    console.error(reason);
                                 }
                             }
                             var repositoryName = "";
@@ -1678,8 +1684,8 @@ function convertJsonToXml() {
         //fs.writeSync(resultsFile, "<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         prepareForProcessing();
     } catch (reason) {
-        console.log(reason);
-        console.log("convert JSON to XML failed");
+        console.error(reason);
+        console.error("convert JSON to XML failed");
         fs.writeSync(resultsFile, "<div>conversion from JSON to XML failed, '" + new Date().toISOString() + "'</div>");
     };
     moveIncomingToQueued();
@@ -1711,8 +1717,8 @@ function updateDocumentation() {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("update_schema_docs finished");
     } catch (reason) {
-        console.log(reason);
-        console.log("update_schema_docs failed");
+        console.error(reason);
+        console.error("update_schema_docs failed");
     };
 }
 
@@ -1747,13 +1753,13 @@ function prepareBuildHistory() {
                 }
             }
         } catch (error) {
-            console.log("faild to read " + buildHistoryJson);
-            console.log(error);
+            console.error("faild to read " + buildHistoryJson);
+            console.error(error);
             try {
                 buildHistoryJson = JSON.parse(fs.readFileSync(buildHistoryFileName + ".temp", 'utf8'));
             } catch (error) {
-                console.log("faild to read " + buildHistoryJson + ".temp");
-                console.log(error);
+                console.error("faild to read " + buildHistoryJson + ".temp");
+                console.error(error);
             }
         }
     }
