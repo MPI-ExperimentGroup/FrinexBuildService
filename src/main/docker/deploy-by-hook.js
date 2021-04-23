@@ -375,7 +375,7 @@ function unDeploy(currentEntry) {
         + ' -DversionCheck.allowSnapshots=' + 'false'
         + ' -DversionCheck.buildType=' + 'stable'
         + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
             + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
             : ' -Dexperiment.destinationServer=' + productionServer
             + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
@@ -416,7 +416,7 @@ function unDeploy(currentEntry) {
         + ' -DversionCheck.allowSnapshots=' + 'false'
         + ' -DversionCheck.buildType=' + 'stable'
         + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
             + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
             : ' -Dexperiment.destinationServer=' + productionServer
             + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
@@ -788,9 +788,9 @@ function deployProductionGui(currentEntry) {
                         + ' -DversionCheck.allowSnapshots=' + 'false'
                         + ' -DversionCheck.buildType=' + 'stable'
                         + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-                            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+                            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                             + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
-                            + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+                            + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                             : ' -Dexperiment.destinationServer=' + productionServer
                             + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                             + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
@@ -832,7 +832,7 @@ function deployProductionGui(currentEntry) {
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
                             console.log("deployProductionGui finished");
-                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, new Date().getTime() - stageStartTime);
+                            storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, new Date().getTime() - stageStartTime);
                             var buildArtifactsJson = { artifacts: {} };
                             const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
                             buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production_web.war";
@@ -960,9 +960,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-                ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+                ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
-                + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer.replace(/^https?:\/\//,'')
+                + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 : ' -Dexperiment.destinationServer=' + productionServer
                 + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                 + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
@@ -988,7 +988,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 console.log("frinex-admin finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexproduction.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true, new Date().getTime() - stageStartTime);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true, new Date().getTime() - stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
