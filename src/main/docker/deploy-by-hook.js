@@ -421,8 +421,6 @@ function unDeploy(currentEntry) {
             : ' -Dexperiment.destinationServer=' + productionServer
             + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
         )
-        + ' -Dexperiment.destinationServer=' + productionServer
-        + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
