@@ -147,17 +147,17 @@ COPY settings.xml /maven/.m2/
 RUN cd /ExperimentTemplate \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 RUN cd /ExperimentTemplate \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=alloptions
+    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile -Dexperiment.configuration.name=alloptions
 
 RUN cd /ExperimentTemplate \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=with_stimulus_example
+    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile -Dexperiment.configuration.name=with_stimulus_example
 RUN mkdir /target
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
     && convert -gravity center -size 512x513 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
+    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
 RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
     && stat target/with_stimulus_example-win32-x64.zip \
@@ -171,7 +171,7 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
     && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
+    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
 RUN cd /ExperimentTemplate/gwt-cordova \
     && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
     && stat target/rosselfieldkit-win32-x64.zip \
