@@ -290,7 +290,7 @@ function unDeploy(currentEntry) {
         //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+        + ' -w /ExperimentTemplate frinexapps:latest /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
         + ' mvn tomcat7:undeploy '
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
@@ -327,7 +327,7 @@ function unDeploy(currentEntry) {
         //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
+        + ' -w /ExperimentTemplate frinexapps:latest /bin/bash -c "cd /ExperimentTemplate/registration;'
         + ' mvn tomcat7:undeploy '
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
@@ -364,7 +364,7 @@ function unDeploy(currentEntry) {
         //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+        + ' -w /ExperimentTemplate frinexapps:latest /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
         + ' mvn tomcat7:undeploy '
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
@@ -405,7 +405,7 @@ function unDeploy(currentEntry) {
         //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
+        + ' -w /ExperimentTemplate frinexapps:latest /bin/bash -c "cd /ExperimentTemplate/registration;'
         + ' mvn tomcat7:undeploy '
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
@@ -476,7 +476,9 @@ function deployStagingGui(currentEntry) {
             //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+            + ' -w /ExperimentTemplate frinexapps:'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             //+ " sed -i 's/-Xmx1g/-Xmx2g/g' pom.xml;"
             + ((currentEntry.state === "draft") ? " sed -i 's|<extraJvmArgs>|<draftCompile>true</draftCompile><extraJvmArgs>|g' pom.xml;" : '')
             + ((currentEntry.state === "draft") ? " sed -i 's|<source|<collapse-all-properties /><source|g' src/main/resources/nl/mpi/tg/eg/ExperimentTemplate.gwt.xml;" : '')
@@ -628,7 +630,9 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
+            + ' -w /ExperimentTemplate frinexapps:'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
@@ -770,7 +774,9 @@ function deployProductionGui(currentEntry) {
                         //+ ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
                         + ' -v buildServerTarget:' + targetDirectory
                         + ' -v m2Directory:/maven/.m2/'
-                        + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+                        + ' -w /ExperimentTemplate frinexapps:'
+                        + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+                        + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
                         + ' mvn clean '
@@ -938,7 +944,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             //+ ' -v webappsTomcatProduction:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps /bin/bash -c "cd /ExperimentTemplate/registration;'
+            + ' -w /ExperimentTemplate frinexapps:'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
@@ -1045,7 +1053,9 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
             + 'sudo docker run --name ' + buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
-            + ' frinexapps /bin/bash -c "'
+            + ' frinexapps:'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ' /bin/bash -c "'
             + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
@@ -1112,7 +1122,9 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
             + 'sudo docker run --name ' + buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
-            + ' frinexapps /bin/bash -c "'
+            + ' frinexapps:'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ' /bin/bash -c "'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'

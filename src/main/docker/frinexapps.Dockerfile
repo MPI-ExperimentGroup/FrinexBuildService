@@ -123,6 +123,8 @@ RUN sed -i 's|<versionCheck.buildType>testing</versionCheck.buildType>|<versionC
 RUN cd /ExperimentTemplate \
     && sed -i '/war/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all gwt-cordova)'-stable/}' gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
+    && git rev-list --count --all gwt-cordova > /ExperimentTemplate/gwt-cordova.version
+RUN cd /ExperimentTemplate \
     && sed -i '/adaptive-vocabulary-assessment-module/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all AdaptiveVocabularyAssessmentModule)'-stable/}' /ExperimentTemplate/AdaptiveVocabularyAssessmentModule/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
     && sed -i '/Frinex Experiment Designer/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all ExperimentDesigner)'-stable/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
