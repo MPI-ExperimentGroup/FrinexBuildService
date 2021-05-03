@@ -477,7 +477,7 @@ function deployStagingGui(currentEntry) {
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps:'
-            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest')
             + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             //+ " sed -i 's/-Xmx1g/-Xmx2g/g' pom.xml;"
             + ((currentEntry.state === "draft") ? " sed -i 's|<extraJvmArgs>|<draftCompile>true</draftCompile><extraJvmArgs>|g' pom.xml;" : '')
