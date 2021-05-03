@@ -631,7 +631,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps:'
-            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest')
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
@@ -775,7 +775,7 @@ function deployProductionGui(currentEntry) {
                         + ' -v buildServerTarget:' + targetDirectory
                         + ' -v m2Directory:/maven/.m2/'
                         + ' -w /ExperimentTemplate frinexapps:'
-                        + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+                        + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest')
                         + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
@@ -945,7 +945,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps:'
-            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest')
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
@@ -1054,7 +1054,7 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
             + ' frinexapps:'
-            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest')
             + ' /bin/bash -c "'
             + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
             + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
@@ -1123,7 +1123,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
             + ' frinexapps:'
-            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest'
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest')
             + ' /bin/bash -c "'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
             + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
