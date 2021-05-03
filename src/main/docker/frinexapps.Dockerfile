@@ -134,8 +134,6 @@ RUN cd /ExperimentTemplate \
 RUN cd /ExperimentTemplate \
     && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
     && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn -q -gs /maven/.m2/settings.xml -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
 RUN mkdir /ExperimentTemplate/target
 
@@ -143,6 +141,9 @@ RUN mkdir /ExperimentTemplate/target
 RUN mkdir /maven
 RUN mkdir /maven/.m2
 COPY settings.xml /maven/.m2/
+
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && mvn -q -gs /maven/.m2/settings.xml -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
 RUN cd /ExperimentTemplate \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
