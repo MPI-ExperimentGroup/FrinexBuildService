@@ -142,13 +142,13 @@ RUN mkdir /maven
 RUN mkdir /maven/.m2
 COPY settings.xml /maven/.m2/
 
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn -q -gs /maven/.m2/settings.xml -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
-
 RUN cd /ExperimentTemplate \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 RUN cd /ExperimentTemplate \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile -Dexperiment.configuration.name=alloptions
+
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && mvn -q -gs /maven/.m2/settings.xml -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
 RUN cd /ExperimentTemplate \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile -Dexperiment.configuration.name=with_stimulus_example
