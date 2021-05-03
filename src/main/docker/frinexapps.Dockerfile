@@ -122,8 +122,6 @@ RUN sed -i 's|<versionCheck.buildType>testing</versionCheck.buildType>|<versionC
 
 RUN cd /ExperimentTemplate \
     && sed -i '/war/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all gwt-cordova)'-stable/}' gwt-cordova/pom.xml
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn -q -gs /maven/.m2/settings.xml -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 RUN cd /ExperimentTemplate \
     && sed -i '/adaptive-vocabulary-assessment-module/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all AdaptiveVocabularyAssessmentModule)'-stable/}' /ExperimentTemplate/AdaptiveVocabularyAssessmentModule/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
@@ -136,6 +134,8 @@ RUN cd /ExperimentTemplate \
 RUN cd /ExperimentTemplate \
     && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
     && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && mvn -q -gs /maven/.m2/settings.xml -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
 RUN mkdir /ExperimentTemplate/target
 
