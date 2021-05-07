@@ -75,8 +75,8 @@ function startResult() {
     fs.writeSync(resultsFile, "<span id='buildDate'></span>\n");
     fs.writeSync(resultsFile, "<a href='frinex.html'>XML Documentation</a>\n");
     fs.writeSync(resultsFile, "<a href='frinex.xsd'>XML Schema</a>\n");
-    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='diskFree'>Disk</span></span>\n");
-    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='memoryFree'>Memory</span></span>\n");
+    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='diskFree' style='background-color: mediumaquamarine;width: 0%; display: block;'>Disk</span></span>\n");
+    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='memoryFree' style='background-color: mediumaquamarine;width: 0%; display: block;'>Memory</span></span>\n");
     fs.writeSync(resultsFile, "<table id='buildTable'>\n");
     fs.writeSync(resultsFile, "<tr>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#1\">experiment</a></td>\n");
@@ -182,8 +182,22 @@ function startResult() {
     fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "if (data.memoryTotal !== 'undefined') document.getElementById('memoryFree').innerHTML = Math.floor(data.memoryFree / data.memoryTotal * 100) + '% memory';\n");
-    fs.writeSync(resultsFile, "if (data.diskTotal !== 'undefined') document.getElementById('diskFree').innerHTML = Math.floor(data.diskFree / data.diskTotal * 100) + '% disk';\n");
+    fs.writeSync(resultsFile, "if (typeof data.memoryTotal === 'undefined' || data.memoryTotal === null) {\n");
+    fs.writeSync(resultsFile, "document.getElementById('memoryFree').innerHTML = '---';\n");
+    fs.writeSync(resultsFile, "document.getElementById('memoryFree').style.width = '0%';\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "var memoryFreeValue = Math.floor(data.memoryFree / data.memoryTotal * 100);\n");
+    fs.writeSync(resultsFile, "document.getElementById('memoryFree').innerHTML = memoryFreeValue + '%&nbsp;memory';\n");
+    fs.writeSync(resultsFile, "document.getElementById('memoryFree').style.width = memoryFreeValue + '%';\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "if (typeof data.diskTotal === 'undefined' || data.diskTotal === null) {\n");
+    fs.writeSync(resultsFile, "document.getElementById('diskFree').innerHTML = '---';\n");
+    fs.writeSync(resultsFile, "document.getElementById('diskFree').style.width = '0%';\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "var diskFreeValue = Math.floor(data.diskFree / data.diskTotal * 100);\n");
+    fs.writeSync(resultsFile, "document.getElementById('diskFree').innerHTML = diskFreeValue + '%&nbsp;disk';\n");
+    fs.writeSync(resultsFile, "document.getElementById('diskFree').style.width = diskFreeValue + '%';\n");
+    fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "doSort();\n");
     fs.writeSync(resultsFile, "clearTimeout(updateTimer);\n");
     fs.writeSync(resultsFile, "if(data.building){\n");
@@ -1338,7 +1352,9 @@ function buildFromListing() {
                                 if (listingJsonData.isDesktop) {
                                     storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
                                 }
-                                storeResult(fileNamePart, listingFile.productionServer, "production", "target", false, false, false);
+                                if (typeof listingFile.productionServer !== "undefined") {
+                                    storeResult(fileNamePart, listingFile.productionServer, "production", "target", false, false, false);
+                                }
                             }
                         }
                     }
