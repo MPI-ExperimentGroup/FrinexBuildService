@@ -234,6 +234,7 @@ function initialiseResult(name, message, isError, repositoryName, committerName)
         "_staging_android": { value: '', style: '' },
         "_staging_desktop": { value: '', style: '' },
         "_staging_admin": { value: '', style: '' },
+        "_production_target": { value: '', style: '' },
         "_production_web": { value: '', style: '' },
         "_production_android": { value: '', style: '' },
         "_production_desktop": { value: '', style: '' },
@@ -1313,6 +1314,7 @@ function buildFromListing() {
                             storeResult(fileNamePart, '', "staging", "admin", false, false, false);
                             storeResult(fileNamePart, '', "staging", "android", false, false, false);
                             storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
+                            storeResult(fileNamePart, '', "production", "target", false, false, false);
                             storeResult(fileNamePart, '', "production", "web", false, false, false);
                             storeResult(fileNamePart, '', "production", "admin", false, false, false);
                             storeResult(fileNamePart, '', "production", "android", false, false, false);
@@ -1336,6 +1338,7 @@ function buildFromListing() {
                                 if (listingJsonData.isDesktop) {
                                     storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
                                 }
+                                storeResult(fileNamePart, listingFile.productionServer, "production", "target", false, false, false);
                             }
                         }
                     }
