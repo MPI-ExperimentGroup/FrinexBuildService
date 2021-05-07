@@ -81,15 +81,18 @@ function startResult() {
     fs.writeSync(resultsFile, "<tr>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#1\">experiment</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#2\">last update</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#3\">validation</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#4\">staging web</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#5\">staging android</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#6\">staging desktop</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#7\">staging admin</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#8\">production web</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#9\">production android</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#10\">production desktop</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#11\">production admin</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#3\">repository</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#4\">committer</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#5\">validation</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#6\">staging web</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#7\">staging android</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#8\">staging desktop</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#9\">staging admin</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#10\">production server</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#11\">production web</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#12\">production android</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#13\">production desktop</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#14\">production admin</a></td>\n");
     fs.writeSync(resultsFile, "<tr>\n");
     fs.writeSync(resultsFile, "</table>\n");
     fs.writeSync(resultsFile, "<a href='git-push-log.txt'>log</a>&nbsp;\n");
@@ -110,10 +113,11 @@ function startResult() {
     fs.writeSync(resultsFile, "if (!experimentRow) {\n");
     fs.writeSync(resultsFile, "var tableRow = document.createElement('tr');\n");
     fs.writeSync(resultsFile, "tableRow.id = keyString+ '_row';\n");
-    fs.writeSync(resultsFile, "for (var cellString in ['_experiment', '_repository', '_committer', '_date', '_validation_json_xsd', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {\n");
+    fs.writeSync(resultsFile, "for (var cellString of ['_experiment', '_date', '_repository', '_committer', '_validation_json_xsd', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_target', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {\n");
     fs.writeSync(resultsFile, "var tableCell = document.createElement('td');\n");
     fs.writeSync(resultsFile, "tableCell.id = keyString + '_' + cellString;\n");
     fs.writeSync(resultsFile, "tableRow.appendChild(tableCell);\n");
+    fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "document.getElementById('buildTable').appendChild(tableRow);\n");
     // check the spring health here and show http and db status via applicationStatus array
     // the path -admin/health is for spring boot 1.4.1
@@ -178,8 +182,8 @@ function startResult() {
     fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "if (data.memoryTotal !== 'undefined') document.getElementById('memoryFree').innerHTML = (data.memoryTotal / data.memoryFree * 100) + '% memory';\n");
-    fs.writeSync(resultsFile, "if (data.diskTotal !== 'undefined') document.getElementById('diskFree').innerHTML = (data.diskTotal / data.diskFree * 100) + '% disk';\n");
+    fs.writeSync(resultsFile, "if (data.memoryTotal !== 'undefined') document.getElementById('memoryFree').innerHTML = Math.floor(data.memoryFree / data.memoryTotal * 100) + '% memory';\n");
+    fs.writeSync(resultsFile, "if (data.diskTotal !== 'undefined') document.getElementById('diskFree').innerHTML = Math.floor(data.diskFree / data.diskTotal * 100) + '% disk';\n");
     fs.writeSync(resultsFile, "doSort();\n");
     fs.writeSync(resultsFile, "clearTimeout(updateTimer);\n");
     fs.writeSync(resultsFile, "if(data.building){\n");
