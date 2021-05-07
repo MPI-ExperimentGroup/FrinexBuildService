@@ -75,6 +75,8 @@ function startResult() {
     fs.writeSync(resultsFile, "<span id='buildDate'></span>\n");
     fs.writeSync(resultsFile, "<a href='frinex.html'>XML Documentation</a>\n");
     fs.writeSync(resultsFile, "<a href='frinex.xsd'>XML Schema</a>\n");
+    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='diskFree'>Disk</span></span>\n");
+    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='memoryFree'>Memory</span></span>\n");
     fs.writeSync(resultsFile, "<table id='buildTable'>\n");
     fs.writeSync(resultsFile, "<tr>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#1\">experiment</a></td>\n");
@@ -108,6 +110,10 @@ function startResult() {
     fs.writeSync(resultsFile, "if (!experimentRow) {\n");
     fs.writeSync(resultsFile, "var tableRow = document.createElement('tr');\n");
     fs.writeSync(resultsFile, "tableRow.id = keyString+ '_row';\n");
+    fs.writeSync(resultsFile, "for (var cellString in ['_experiment', '_repository', '_committer', '_date', '_validation_json_xsd', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {\n");
+    fs.writeSync(resultsFile, "var tableCell = document.createElement('td');\n");
+    fs.writeSync(resultsFile, "tableCell.id = keyString + '_' + cellString;\n");
+    fs.writeSync(resultsFile, "tableRow.appendChild(tableCell);\n");
     fs.writeSync(resultsFile, "document.getElementById('buildTable').appendChild(tableRow);\n");
     // check the spring health here and show http and db status via applicationStatus array
     // the path -admin/health is for spring boot 1.4.1
@@ -172,6 +178,8 @@ function startResult() {
     fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "if (data.memoryTotal !== 'undefined') document.getElementById('memoryFree').innerHTML = (data.memoryTotal / data.memoryFree * 100) + '% memory';\n");
+    fs.writeSync(resultsFile, "if (data.diskTotal !== 'undefined') document.getElementById('diskFree').innerHTML = (data.diskTotal / data.diskFree * 100) + '% disk';\n");
     fs.writeSync(resultsFile, "doSort();\n");
     fs.writeSync(resultsFile, "clearTimeout(updateTimer);\n");
     fs.writeSync(resultsFile, "if(data.building){\n");
@@ -212,8 +220,8 @@ function initialiseResult(name, message, isError, repositoryName, committerName)
     }
     buildHistoryJson.table[name] = {
         "_experiment": { value: name, style: '' },
-        //"_repository": { value: repositoryName, style: '' },
-        //"_committer": { value: committerName, style: '' },
+        "_repository": { value: repositoryName, style: '' },
+        "_committer": { value: committerName, style: '' },
         "_date": { value: new Date().toISOString(), style: '' },
         //"_validation_link_json": {value: '', style: ''},
         //"_validation_link_xml": {value: '', style: ''},
@@ -253,8 +261,8 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
     if (typeof stageBuildTime !== "undefined") {
         buildHistoryJson.table[name]["_" + stage + "_" + type].ms = (stageBuildTime);
         fs.writeSync(statsFile, new Date().toISOString() + "," + name + "," + stage + "," + type + "," + (stageBuildTime) + "," + os.freemem() + "\n");
-        buildHistoryJson.freeMemory = os.freemem();
-        buildHistoryJson.totalMemory = os.totalmem();
+        buildHistoryJson.memoryFree = os.freemem();
+        buildHistoryJson.memoryTotal = os.totalmem();
         diskSpace('/').then((info) => {
             buildHistoryJson.diskFree = info.free;
             buildHistoryJson.diskTotal = info.size;
