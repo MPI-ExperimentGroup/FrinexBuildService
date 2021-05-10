@@ -75,8 +75,8 @@ function startResult() {
     fs.writeSync(resultsFile, "<span id='buildDate'></span>\n");
     fs.writeSync(resultsFile, "<a href='frinex.html'>XML Documentation</a>\n");
     fs.writeSync(resultsFile, "<a href='frinex.xsd'>XML Schema</a>\n");
-    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='diskFree' style='background-color: mediumaquamarine;width: 0%; display: block;'>Disk</span></span>\n");
-    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='memoryFree' style='background-color: mediumaquamarine;width: 0%; display: block;'>Memory</span></span>\n");
+    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='diskFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Disk</span></span>\n");
+    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='memoryFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Memory</span></span>\n");
     fs.writeSync(resultsFile, "<table id='buildTable'>\n");
     fs.writeSync(resultsFile, "<tr>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#1\">experiment</a></td>\n");
@@ -113,7 +113,7 @@ function startResult() {
     fs.writeSync(resultsFile, "if (!experimentRow) {\n");
     fs.writeSync(resultsFile, "var tableRow = document.createElement('tr');\n");
     fs.writeSync(resultsFile, "tableRow.id = keyString+ '_row';\n");
-    fs.writeSync(resultsFile, "for (var cellString of ['_experiment', '_date', '_repository', '_committer', '_validation_json_xsd', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_target', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {\n");
+    fs.writeSync(resultsFile, "for (var cellString of ['_repository', '_committer', '_experiment', '_date', '_validation_json_xsd', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_target', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {\n");
     fs.writeSync(resultsFile, "var tableCell = document.createElement('td');\n");
     fs.writeSync(resultsFile, "tableCell.id = keyString + '_' + cellString;\n");
     fs.writeSync(resultsFile, "tableRow.appendChild(tableCell);\n");
@@ -183,7 +183,7 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "if (typeof data.memoryTotal === 'undefined' || data.memoryTotal === null) {\n");
-    fs.writeSync(resultsFile, "document.getElementById('memoryFree').innerHTML = '---';\n");
+    fs.writeSync(resultsFile, "document.getElementById('memoryFree').innerHTML = '';\n");
     fs.writeSync(resultsFile, "document.getElementById('memoryFree').style.width = '0%';\n");
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "var memoryFreeValue = Math.floor(data.memoryFree / data.memoryTotal * 100);\n");
@@ -191,7 +191,7 @@ function startResult() {
     fs.writeSync(resultsFile, "document.getElementById('memoryFree').style.width = memoryFreeValue + '%';\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "if (typeof data.diskTotal === 'undefined' || data.diskTotal === null) {\n");
-    fs.writeSync(resultsFile, "document.getElementById('diskFree').innerHTML = '---';\n");
+    fs.writeSync(resultsFile, "document.getElementById('diskFree').innerHTML = '';\n");
     fs.writeSync(resultsFile, "document.getElementById('diskFree').style.width = '0%';\n");
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "var diskFreeValue = Math.floor(data.diskFree / data.diskTotal * 100);\n");
@@ -1352,8 +1352,10 @@ function buildFromListing() {
                                 if (listingJsonData.isDesktop) {
                                     storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
                                 }
-                                if (typeof listingFile.productionServer !== "undefined") {
-                                    storeResult(fileNamePart, listingFile.productionServer, "production", "target", false, false, false);
+                                if (typeof listingJsonData.productionServer !== "undefined") {
+                                    storeResult(fileNamePart, listingJsonData.productionServer, "production", "target", false, false, false);
+                                } else {
+                                    storeResult(fileNamePart, productionServerUrl, "production", "target", false, false, false);
                                 }
                             }
                         }
