@@ -75,14 +75,14 @@ function startResult() {
     fs.writeSync(resultsFile, "<span id='buildDate'></span>\n");
     fs.writeSync(resultsFile, "<a href='frinex.html'>XML Documentation</a>\n");
     fs.writeSync(resultsFile, "<a href='frinex.xsd'>XML Schema</a>\n");
-    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='diskFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Disk</span></span>\n");
-    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block;'><span id='memoryFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Memory</span></span>\n");
+    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block; margin: 3px;'><span id='diskFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Disk</span></span>\n");
+    fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block; margin: 3px;'><span id='memoryFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Memory</span></span>\n");
     fs.writeSync(resultsFile, "<table id='buildTable'>\n");
     fs.writeSync(resultsFile, "<tr>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#1\">experiment</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#2\">last update</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#3\">repository</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#4\">committer</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#1\">repository</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#2\">committer</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#3\">experiment</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#4\">last update</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#5\">validation</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#6\">staging web</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#7\">staging android</a></td>\n");
@@ -1352,7 +1352,7 @@ function buildFromListing() {
                                 if (listingJsonData.isDesktop) {
                                     storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
                                 }
-                                if (typeof listingJsonData.productionServer !== "undefined") {
+                                if (listingJsonData.productionServer != null && listingJsonData.productionServer.length > 0) {
                                     storeResult(fileNamePart, listingJsonData.productionServer, "production", "target", false, false, false);
                                 } else {
                                     storeResult(fileNamePart, productionServerUrl, "production", "target", false, false, false);
