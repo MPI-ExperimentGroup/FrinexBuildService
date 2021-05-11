@@ -751,7 +751,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
 
 function deployProductionGui(currentEntry) {
     var stageStartTime = new Date().getTime();
-    console.log("deployProductionGui started");
+    console.log("deployProductionGui started: " + currentEntry.buildName);
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt");
     }
@@ -862,7 +862,7 @@ function deployProductionGui(currentEntry) {
                         console.log(`deployProductionGui stdout: ${stdout}`);
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
-                            console.log("deployProductionGui finished");
+                            console.log("deployProductionGui finished: " + currentEntry.buildName);
                             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, new Date().getTime() - stageStartTime);
                             var buildArtifactsJson = { artifacts: {} };
                             const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
@@ -881,7 +881,7 @@ function deployProductionGui(currentEntry) {
                         } else {
                             //console.log(targetDirectory);
                             //console.log(JSON.stringify(reason, null, 4));
-                            console.log("deployProductionGui failed");
+                            console.log("deployProductionGui failed: " + currentEntry.buildName);
                             console.log(currentEntry.experimentDisplayName);
                             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">failed</a>', "production", "web", true, false, false);
                             //var errorFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_production.html", {flags: 'w'});
@@ -1561,9 +1561,10 @@ function moveIncomingToQueued() {
                 } else if (!hasDoneBackup) {
                     console.log("pre exit backup");
                     try {
-                        execSync('rsync -a ' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
+                        execSync('rsync -a --no-perms --no-owner --no-group --no-times' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
                     } catch (reason) {
                         console.error("check backup.log for messages");
+                        console.error(reason);
                     }
                     hasDoneBackup = true;
                     setTimeout(moveIncomingToQueued, 3000);
