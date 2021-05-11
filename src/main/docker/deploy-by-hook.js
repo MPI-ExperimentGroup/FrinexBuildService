@@ -582,10 +582,10 @@ function deployStagingGui(currentEntry) {
                     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
                     // build cordova 
                     if (currentEntry.isAndroid || currentEntry.isiOS) {
-                        buildApk(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
+                        buildApk(currentEntry, "staging", buildArtifactsJson, buildArtifactsFileName);
                     }
                     if (currentEntry.isDesktop) {
-                        buildElectron(currentEntry.buildName, "staging", buildArtifactsJson, buildArtifactsFileName);
+                        buildElectron(currentEntry, "staging", buildArtifactsJson, buildArtifactsFileName);
                     }
                     // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
                     deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
@@ -871,10 +871,10 @@ function deployProductionGui(currentEntry) {
                             fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
                             // build cordova 
                             if (currentEntry.isAndroid || currentEntry.isiOS) {
-                                buildApk(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
+                                buildApk(currentEntry, "production", buildArtifactsJson, buildArtifactsFileName);
                             }
                             if (currentEntry.isDesktop) {
-                                buildElectron(currentEntry.buildName, "production", buildArtifactsJson, buildArtifactsFileName);
+                                buildElectron(currentEntry, "production", buildArtifactsJson, buildArtifactsFileName);
                             }
                             // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
                             deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
@@ -1062,40 +1062,40 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
     }
 }
 
-function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) {
+function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileName) {
     var stageStartTime = new Date().getTime();
     console.log("starting cordova build");
-    storeResult(buildName, "building", stage, "android", false, true, false);
+    storeResult(currentEntry.buildName, "building", stage, "android", false, true, false);
     var resultString = "";
     var hasFailed = false;
     try {
-        if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.txt")) {
-            fs.unlinkSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.txt");
+        if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_android.txt")) {
+            fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_android.txt");
         }
-        fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.txt", 'w'));
-        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.txt" + '">log</a>&nbsp;';
-        storeResult(buildName, "building " + resultString, stage, "android", false, true, false);
+        fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_android.txt", 'w'));
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_android.txt" + '">log</a>&nbsp;';
+        storeResult(currentEntry.buildName, "building " + resultString, stage, "android", false, true, false);
         // we do not build in the docker volume because it would create redundant file synchronisation.
-        var dockerString = 'sudo docker rm -f ' + buildName + '_' + stage + '_cordova;'
-            + 'sudo docker run --name ' + buildName + '_' + stage + '_cordova --rm'
+        var dockerString = 'sudo docker rm -f ' + currentEntry.buildName + '_' + stage + '_cordova;'
+            + 'sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
             + ' frinexapps:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest')
             + ' /bin/bash -c "'
-            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' rm ' + targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_ios.zip &>> " + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' mkdir /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-cordova.sh /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' bash /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' ls /FrinexBuildService/cordova-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' cp /FrinexBuildService/cordova-' + stage + '-build/app-release.apk ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.apk &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-cordova.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-android.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + buildName + '-frinex-gui-*-stable-ios.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_android.txt;'
-            + ' chmod a+rwx ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_cordova.*;'
+            + ' rm ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_cordova.zip &>> " + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_android.zip &>> " + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' rm ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_ios.zip &>> " + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' mkdir /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + currentEntry.buildName + '_setup-cordova.sh /FrinexBuildService/processing/' + stage + '-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/cordova-' + stage + '-build &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' bash /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '_setup-cordova.sh &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' ls /FrinexBuildService/cordova-' + stage + '-build/* &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' cp /FrinexBuildService/cordova-' + stage + '-build/app-release.apk ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.apk &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-android.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-ios.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.*;'
             + '"';
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
@@ -1106,70 +1106,70 @@ function buildApk(buildName, stage, buildArtifactsJson, buildArtifactsFileName) 
     }
     // check for build products and add links to the output JSON
     var producedOutput = false;
-    if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.apk")) {
-        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_cordova.apk" + '">apk</a>&nbsp;';
-        buildArtifactsJson.artifacts.apk = buildName + "_" + stage + "_cordova.apk";
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_cordova.apk")) {
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_cordova.apk" + '">apk</a>&nbsp;';
+        buildArtifactsJson.artifacts.apk = currentEntry.buildName + "_" + stage + "_cordova.apk";
         producedOutput = true;
     }
-    if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_cordova.zip")) {
-        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_cordova.zip" + '">src</a>&nbsp;';
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_cordova.zip")) {
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_cordova.zip" + '">src</a>&nbsp;';
     }
-    if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_android.zip")) {
-        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_android.zip" + '">android-src</a>&nbsp;';
-        buildArtifactsJson.artifacts.apk_src = buildName + "_" + stage + "_android.zip";
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_android.zip")) {
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_android.zip" + '">android-src</a>&nbsp;';
+        buildArtifactsJson.artifacts.apk_src = currentEntry.buildName + "_" + stage + "_android.zip";
         producedOutput = true;
     }
-    if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_ios.zip")) {
-        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_ios.zip" + '">ios-src</a>&nbsp;';
-        buildArtifactsJson.artifacts.ios_src = buildName + "_" + stage + "_ios.zip";
+    if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_ios.zip")) {
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_ios.zip" + '">ios-src</a>&nbsp;';
+        buildArtifactsJson.artifacts.ios_src = currentEntry.buildName + "_" + stage + "_ios.zip";
         producedOutput = true;
     }
     //add the XML and any json + template and any UML of the experiment to the buildArtifactsJson of the admin system
     console.log("build cordova finished");
-    storeResult(buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true, new Date().getTime() - stageStartTime);
+    storeResult(currentEntry.buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true, new Date().getTime() - stageStartTime);
     //update artifacts.json
-    //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + buildName + "_" + stage + '_artifacts.json';
+    //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + currentEntry.buildName + "_" + stage + '_artifacts.json';
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
-function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileName) {
+function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFileName) {
     var stageStartTime = new Date().getTime();
     console.log("starting electron build");
-    storeResult(buildName, "building", stage, "desktop", false, true, false);
+    storeResult(currentEntry.buildName, "building", stage, "desktop", false, true, false);
     var resultString = "";
     var hasFailed = false;
     try {
-        if (fs.existsSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.txt")) {
-            fs.unlinkSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.txt");
+        if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_electron.txt")) {
+            fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_electron.txt");
         }
-        fs.closeSync(fs.openSync(targetDirectory + "/" + buildName + "/" + buildName + "_" + stage + "_electron.txt", 'w'));
-        resultString += '<a href="' + buildName + '/' + buildName + "_" + stage + "_electron.txt" + '">log</a>&nbsp;';
-        storeResult(buildName, "building " + resultString, stage, "desktop", false, true, false);
-        var dockerString = 'sudo docker rm -f ' + buildName + '_' + stage + '_electron;'
-            + 'sudo docker run --name ' + buildName + '_' + stage + '_electron --rm'
+        fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_electron.txt", 'w'));
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_electron.txt" + '">log</a>&nbsp;';
+        storeResult(currentEntry.buildName, "building " + resultString, stage, "desktop", false, true, false);
+        var dockerString = 'sudo docker rm -f ' + currentEntry.buildName + '_' + stage + '_electron;'
+            + 'sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
             + ' frinexapps:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'latest')
             + ' /bin/bash -c "'
-            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.asar &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' rm ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.dmg &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' mkdir /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '_setup-electron.sh /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/electron-' + stage + '-build/ &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' bash /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_setup-electron.sh &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' ls /FrinexBuildService/electron-' + stage + '-build/* &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '_' + stage + '_electron.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-win32-ia32.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-win32-x64.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-darwin-x64.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + buildName + '-frinex-gui-*-linux-x64.zip ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.txt;'
-            + ' chmod a+rwx ' + targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_*.zip;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.asar &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.dmg &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' mkdir /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + currentEntry.buildName + '_setup-electron.sh /FrinexBuildService/electron-' + stage + '-build &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' mv /FrinexBuildService/processing/' + stage + '-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip /FrinexBuildService/electron-' + stage + '-build/ &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' bash /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '_setup-electron.sh &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' ls /FrinexBuildService/electron-' + stage + '-build/* &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '_' + stage + '_electron.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-win32-ia32.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-win32-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-darwin-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-linux-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_*.zip;'
             + '"';
         console.log(dockerString);
         execSync(dockerString, { stdio: [0, 1, 2] });
@@ -1181,38 +1181,38 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
     }
     var producedOutput = false;
     // update the links and artifacts JSON
-    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_electron.zip')) {
-        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_electron.zip">src</a>&nbsp;';
-        buildArtifactsJson.artifacts['src'] = buildName + '_' + stage + '_electron.zip';
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.zip')) {
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.zip">src</a>&nbsp;';
+        buildArtifactsJson.artifacts['src'] = currentEntry.buildName + '_' + stage + '_electron.zip';
     }
-    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip')) {
-        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_win32-ia32.zip">win32</a>&nbsp;';
-        buildArtifactsJson.artifacts['win32'] = buildName + '_' + stage + '_win32-ia32.zip';
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-ia32.zip')) {
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-ia32.zip">win32</a>&nbsp;';
+        buildArtifactsJson.artifacts['win32'] = currentEntry.buildName + '_' + stage + '_win32-ia32.zip';
         producedOutput = true;
     }
-    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip')) {
-        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_win32-x64.zip">win64</a>&nbsp;';
-        buildArtifactsJson.artifacts['win64'] = buildName + '_' + stage + '_win32-x64.zip';
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64.zip')) {
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64.zip">win64</a>&nbsp;';
+        buildArtifactsJson.artifacts['win64'] = currentEntry.buildName + '_' + stage + '_win32-x64.zip';
         producedOutput = true;
     }
-    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip')) {
-        resultString += '<a href="' + buildName + '/' + buildName + '_' + stage + '_darwin-x64.zip">mac</a>&nbsp;';
-        buildArtifactsJson.artifacts['mac'] = buildName + '_' + stage + '_darwin-x64.zip';
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64.zip')) {
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64.zip">mac</a>&nbsp;';
+        buildArtifactsJson.artifacts['mac'] = currentEntry.buildName + '_' + stage + '_darwin-x64.zip';
         producedOutput = true;
     }
-    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '_linux-x64.zip')) {
-        resultString += '<a href="' + buildName + '_' + stage + '_linux-x64.zip">linux</a>&nbsp;';
-        buildArtifactsJson.artifacts['linux'] = buildName + '_' + stage + '_linux-x64.zip';
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64.zip')) {
+        resultString += '<a href="' + currentEntry.buildName + '_' + stage + '_linux-x64.zip">linux</a>&nbsp;';
+        buildArtifactsJson.artifacts['linux'] = currentEntry.buildName + '_' + stage + '_linux-x64.zip';
         producedOutput = true;
     }
-    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.asar')) {
-        resultString += '<a href="' + buildName + '_' + stage + '.asar">asar</a>&nbsp;';
-        buildArtifactsJson.artifacts['asar'] = buildName + '_' + stage + '.asar';
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.asar')) {
+        resultString += '<a href="' + currentEntry.buildName + '_' + stage + '.asar">asar</a>&nbsp;';
+        buildArtifactsJson.artifacts['asar'] = currentEntry.buildName + '_' + stage + '.asar';
         producedOutput = true;
     }
-    if (fs.existsSync(targetDirectory + '/' + buildName + '/' + buildName + '_' + stage + '.dmg')) {
-        resultString += '<a href="' + buildName + '_' + stage + '.dmg">dmg</a>&nbsp;';
-        buildArtifactsJson.artifacts['dmg'] = buildName + '_' + stage + '.dmg';
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.dmg')) {
+        resultString += '<a href="' + currentEntry.buildName + '_' + stage + '.dmg">dmg</a>&nbsp;';
+        buildArtifactsJson.artifacts['dmg'] = currentEntry.buildName + '_' + stage + '.dmg';
         producedOutput = true;
     }
     //mkdir /srv/target/electron
@@ -1220,7 +1220,7 @@ function buildElectron(buildName, stage, buildArtifactsJson, buildArtifactsFileN
     //cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
     //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     console.log("build electron finished");
-    storeResult(buildName, resultString, stage, "desktop", hasFailed || !producedOutput, false, true, new Date().getTime() - stageStartTime);
+    storeResult(currentEntry.buildName, resultString, stage, "desktop", hasFailed || !producedOutput, false, true, new Date().getTime() - stageStartTime);
     //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
