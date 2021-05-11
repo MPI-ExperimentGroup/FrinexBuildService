@@ -716,7 +716,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                     var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
                     // this move is within the same volume so we can do it this easy way
                     fs.renameSync(stagingConfigFile, productionQueuedFile);
-                    deployProductionGui(currentEntry);
+                    deployProductionGui(currentEntry, 3);
                 } else {
                     if (fs.existsSync(stagingConfigFile)) {
                         fs.unlinkSync(stagingConfigFile);
@@ -749,9 +749,10 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
     }
 }
 
-function deployProductionGui(currentEntry) {
+function deployProductionGui(currentEntry, retryCounter) {
     var stageStartTime = new Date().getTime();
     console.log("deployProductionGui started: " + currentEntry.buildName);
+    console.log("retryCounter: " + retryCounter);
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt");
     }
@@ -785,6 +786,7 @@ function deployProductionGui(currentEntry) {
                         console.log("deployProductionGui if another process already building it will be terminated: " + currentEntry.buildName);
                         fs.unlinkSync(productionConfigFile);
                     }
+                    console.log("renameSync: " + productionQueuedFile);
                     // this move is within the same volume so we can do it this easy way
                     fs.renameSync(productionQueuedFile, productionConfigFile);
                     //  terminate existing docker containers by name 
@@ -916,18 +918,25 @@ function deployProductionGui(currentEntry) {
                 console.log("existing frinex-gui production unknown, aborting build: " + currentEntry.buildName);
                 console.log(error);
                 if (fs.existsSync(productionQueuedFile)) {
-                    storeResult(currentEntry.buildName, "build error", "production", "web", true, false, false);
-                    fs.unlinkSync(productionQueuedFile);
+                    if (retryCounter > 0) {
+                        retryCounter--;
+                        storeResult(currentEntry.buildName, "retry", "production", "web", true, false, false);
+                        deployProductionGui(currentEntry, retryCounter);
+                    } else {
+                        storeResult(currentEntry.buildName, "build error", "production", "web", true, false, false);
+                        fs.unlinkSync(productionQueuedFile);
+                        currentlyBuilding.delete(currentEntry.buildName);
+                    }
                 } else {
                     storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
+                    if (fs.existsSync(productionConfigFile)) {
+                        fs.unlinkSync(productionConfigFile);
+                    }
+                    /*if (fs.existsSync(buildArtifactsFileName)) {
+                        fs.unlinkSync(buildArtifactsFileName);
+                    }*/
+                    currentlyBuilding.delete(currentEntry.buildName);
                 }
-                if (fs.existsSync(productionConfigFile)) {
-                    fs.unlinkSync(productionConfigFile);
-                }
-                /*if (fs.existsSync(buildArtifactsFileName)) {
-                    fs.unlinkSync(buildArtifactsFileName);
-                }*/
-                currentlyBuilding.delete(currentEntry.buildName);
             });
         } catch (exception) {
             console.error(exception);
