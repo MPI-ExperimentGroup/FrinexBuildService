@@ -913,7 +913,7 @@ function deployProductionGui(currentEntry) {
                     });
                 }
             }).on('error', function (error) {
-                console.log("existing frinex-gui production unknown, aborting build!");
+                console.log("existing frinex-gui production unknown, aborting build: " + currentEntry.buildName);
                 console.log(error);
                 if (fs.existsSync(productionQueuedFile)) {
                     storeResult(currentEntry.buildName, "build error", "production", "web", true, false, false);
@@ -931,7 +931,7 @@ function deployProductionGui(currentEntry) {
             });
         } catch (exception) {
             console.error(exception);
-            console.error("frinex-gui production failed");
+            console.error("frinex-gui production failed: " + currentEntry.buildName);
             storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
             if (fs.existsSync(productionConfigFile)) {
                 fs.unlinkSync(productionConfigFile);
@@ -1563,7 +1563,7 @@ function moveIncomingToQueued() {
                     try {
                         execSync('rsync -a ' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
                     } catch (reason) {
-                        console.error(reason);
+                        console.error("check backup.log for messages");
                     }
                     hasDoneBackup = true;
                     setTimeout(moveIncomingToQueued, 3000);
