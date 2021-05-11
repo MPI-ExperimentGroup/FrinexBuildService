@@ -1561,7 +1561,7 @@ function moveIncomingToQueued() {
                 } else if (!hasDoneBackup) {
                     console.log("pre exit backup");
                     try {
-                        execSync('rsync -a --no-perms --no-owner --no-group --no-times' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
+                        execSync('rsync -a --no-perms --no-owner --no-group --no-times ' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
                     } catch (reason) {
                         console.error("check backup.log for messages");
                         console.error(reason);
