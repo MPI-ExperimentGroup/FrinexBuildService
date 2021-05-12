@@ -1139,7 +1139,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
     //add the XML and any json + template and any UML of the experiment to the buildArtifactsJson of the admin system
     console.log("build cordova finished");
     var isError = hasFailed || !producedOutput;
-    storeResult(currentEntry.buildName, resultString, stage, "android", isError, !isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
+    storeResult(currentEntry.buildName, resultString, stage, "android", isError, isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
     //update artifacts.json
     //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + currentEntry.buildName + "_" + stage + '_artifacts.json';
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
@@ -1234,7 +1234,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
     //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     console.log("build electron finished");
     var isError = hasFailed || !producedOutput;
-    storeResult(currentEntry.buildName, resultString, stage, "desktop", isError, !isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
+    storeResult(currentEntry.buildName, resultString, stage, "desktop", isError, isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
     //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
