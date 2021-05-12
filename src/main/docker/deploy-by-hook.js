@@ -264,10 +264,13 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
     buildHistoryJson.table[name]["_" + stage + "_" + type].value = message;
     if (isError) {
         buildHistoryJson.table[name]["_" + stage + "_" + type].style = 'background: #F3C3C3';
-        for (var index in buildHistoryJson.table[name]) {
-            if (buildHistoryJson.table[name][index].value === "queued") {
-                // todo: is this correct to label skipped when its the apk or exe that failed
-                buildHistoryJson.table[name][index].value = "skipped";
+        if (!isBuilding) {
+            // if no longer building after the error then update the queued labels to indicate skipped
+            for (var index in buildHistoryJson.table[name]) {
+                if (buildHistoryJson.table[name][index].value === "queued") {
+                    // updating the label to skipped is not wanted when its the apk or exe that failed because they do not terminate later parts of the build
+                    buildHistoryJson.table[name][index].value = "skipped";
+                }
             }
         }
     } else if (isBuilding) {
@@ -1135,7 +1138,8 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
     }
     //add the XML and any json + template and any UML of the experiment to the buildArtifactsJson of the admin system
     console.log("build cordova finished");
-    storeResult(currentEntry.buildName, resultString, stage, "android", hasFailed || !producedOutput, false, true, new Date().getTime() - stageStartTime);
+    var isError = hasFailed || !producedOutput;
+    storeResult(currentEntry.buildName, resultString, stage, "android", isError, !isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
     //update artifacts.json
     //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + currentEntry.buildName + "_" + stage + '_artifacts.json';
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
@@ -1229,7 +1233,8 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
     //cp out/make/*win32*.zip ../with_stimulus_example-win32.zip
     //cp out/make/*darwin*.zip ../with_stimulus_example-darwin.zip
     console.log("build electron finished");
-    storeResult(currentEntry.buildName, resultString, stage, "desktop", hasFailed || !producedOutput, false, true, new Date().getTime() - stageStartTime);
+    var isError = hasFailed || !producedOutput;
+    storeResult(currentEntry.buildName, resultString, stage, "desktop", isError, !isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
     //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
