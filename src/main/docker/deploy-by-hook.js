@@ -1810,6 +1810,17 @@ function prepareBuildHistory() {
                     }
                 }
             }
+            // get the current free memory
+            buildHistoryJson.memoryFree = os.freemem();
+            buildHistoryJson.memoryTotal = os.totalmem();
+            // remember the last free disk
+            buildHistoryJson.diskFree = buildHistoryJsonTemp.diskFree;
+            buildHistoryJson.diskTotal = buildHistoryJsonTemp.diskTotal;
+            // request the current free disk
+            diskSpace('/').then((info) => {
+                buildHistoryJson.diskFree = info.free;
+                buildHistoryJson.diskTotal = info.size;
+            });
         } catch (error) {
             console.error("faild to read " + buildHistoryJson);
             console.error(error);
