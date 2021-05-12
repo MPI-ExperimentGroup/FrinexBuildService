@@ -68,8 +68,6 @@ do
       for configFile in $(git diff --name-only $oldrev $newrev | grep -Ei '.xml|.json'| sed -e "s/[^ ]*\/[^ ]*//g"); 
       do 
         echo "copying $configFile to $scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")" >> $targetDir/git-push-log.txt
-        # copy the configuration files to a lowercase destination
-        cp "$configFile" "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")";
         #cp $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g") $scriptDir/incoming/commits/
         # copy the static files to a working directory for frinex-gui to compile
         #git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | tr "[:upper:]" "[:lower:]" | sed -e "s/.json//g" | sed -e "s/.xml//g" >> $targetDir/git-push-log.txt
@@ -87,6 +85,9 @@ do
           cp -r $staticDirectory/* $scriptDir/incoming/static/$staticDirectoryLowercase/
         done;
         echo "{\"repository\": \"/git/RepositoryName.git\", \"user\": \"$REMOTE_USER\"}" > "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\").commit";
+        # it is important that the XML or JSON file is copied after the static files and the commit info file are in place because the XML and JSON files are what trigger the build/rebuild process
+        # copy the configuration files to a lowercase destination
+        cp "$configFile" "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")";
       done
       #ls -l $scriptDir/incoming/static/*
 #      cp -r $(git diff --name-only $oldrev $newrev | sed -e "s/[^ ]*\/[^ ]*//g" | sed -e "s/.json//g" | sed -e "s/.xml//g | tr "[:upper:]" "[:lower:]") $scriptDir/incoming/static/
