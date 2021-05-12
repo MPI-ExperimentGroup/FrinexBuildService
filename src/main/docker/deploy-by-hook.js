@@ -920,10 +920,10 @@ function deployProductionGui(currentEntry, retryCounter) {
                 if (fs.existsSync(productionQueuedFile)) {
                     if (retryCounter > 0) {
                         retryCounter--;
-                        storeResult(currentEntry.buildName, "retry", "production", "web", true, false, false);
+                        storeResult(currentEntry.buildName, "retry", "production", "web", false, true, false);
                         deployProductionGui(currentEntry, retryCounter);
                     } else {
-                        storeResult(currentEntry.buildName, "build error", "production", "web", true, false, false);
+                        storeResult(currentEntry.buildName, "network error", "production", "web", true, false, false);
                         fs.unlinkSync(productionQueuedFile);
                         currentlyBuilding.delete(currentEntry.buildName);
                     }
