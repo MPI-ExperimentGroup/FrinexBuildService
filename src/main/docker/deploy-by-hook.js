@@ -186,7 +186,7 @@ function startResult() {
     fs.writeSync(resultsFile, "document.getElementById('memoryFree').innerHTML = '';\n");
     fs.writeSync(resultsFile, "document.getElementById('memoryFree').style.width = '0%';\n");
     fs.writeSync(resultsFile, "} else {\n");
-    fs.writeSync(resultsFile, "var memoryFreeValue = Math.floor(data.memoryFree / data.memoryTotal * 100);\n");
+    fs.writeSync(resultsFile, "var memoryFreeValue = Math.floor((data.memoryTotal - data.memoryFree) / data.memoryTotal * 100);\n");
     fs.writeSync(resultsFile, "document.getElementById('memoryFree').innerHTML = memoryFreeValue + '%&nbsp;memory';\n");
     fs.writeSync(resultsFile, "document.getElementById('memoryFree').style.width = memoryFreeValue + '%';\n");
     fs.writeSync(resultsFile, "}\n");
@@ -194,7 +194,7 @@ function startResult() {
     fs.writeSync(resultsFile, "document.getElementById('diskFree').innerHTML = '';\n");
     fs.writeSync(resultsFile, "document.getElementById('diskFree').style.width = '0%';\n");
     fs.writeSync(resultsFile, "} else {\n");
-    fs.writeSync(resultsFile, "var diskFreeValue = Math.floor(data.diskFree / data.diskTotal * 100);\n");
+    fs.writeSync(resultsFile, "var diskFreeValue = Math.floor((data.diskTotal - data.diskFree) / data.diskTotal * 100);\n");
     fs.writeSync(resultsFile, "document.getElementById('diskFree').innerHTML = diskFreeValue + '%&nbsp;disk';\n");
     fs.writeSync(resultsFile, "document.getElementById('diskFree').style.width = diskFreeValue + '%';\n");
     fs.writeSync(resultsFile, "}\n");
