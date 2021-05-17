@@ -46,6 +46,7 @@ const os = require('os');
 const diskSpace = require('check-disk-space');
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
+const deploymentType = properties.get('settings.deploymentType');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
@@ -470,6 +471,27 @@ function unDeploy(currentEntry) {
     currentlyBuilding.delete(currentEntry.buildName);
 }
 
+function deployDockerService(currentEntry, warFileName, serviceName) {
+    const warFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + warFileName;
+    const dockerFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + serviceName + ".Docker";
+    fs.writeFileSync(dockerFilePath,
+        "FROM openjdk:11\n"
+        + "COPY " + warFilePath + " /" + warFileName + "\n"
+        + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\"]\n"
+        , { mode: 0o755 });
+    const serviceSetupString = "docker build --no-cache -f " + serviceName + ".Docker -t " + serviceName + ":latest " + targetDirectory + "/" + currentEntry.buildName + "/\n"
+        + "docker push localhost:5000/" + serviceName + ":latest \n"
+        + "docker service create --name " + serviceName + " -d -p 8080 localhost:5000/" + serviceName + "\n";
+    try {
+        execSync(serviceSetupString, { stdio: [0, 1, 2] });
+        console.log("deployDockerService " + serviceName + " finished");
+        // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">DockerService</a>', "production", "admin", false, false, false);
+    } catch (error) {
+        console.error("deployDockerService " + serviceName + " error:" + error);
+        // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">DockerService error</a>', "production", "admin", true, false, true);
+    }
+}
+
 function deployStagingGui(currentEntry) {
     console.log("deployStagingGui");
     var stageStartTime = new Date().getTime();
@@ -515,7 +537,7 @@ function deployStagingGui(currentEntry) {
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
             + ' mvn clean '
-            + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((currentEntry.isWebApp && deploymentType === 'tomcat') ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -570,6 +592,9 @@ function deployStagingGui(currentEntry) {
             console.log(`deployStagingGui stdout: ${stdout}`);
             console.error(`deployStagingGui stderr: ${stderr}`);
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
+                if (deploymentType === 'docker') {
+                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_web.war;', currentEntry.buildName + '_staging_web');
+                }
                 console.log("deployStagingGui finished");
                 var browseLabel = ((currentEntry.state === "staging" || currentEntry.state === "production")) ? "browse" : currentEntry.state;
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '">' + browseLabel + '</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true, new Date().getTime() - stageStartTime);
@@ -669,7 +694,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
             + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
-            + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((/* currentEntry.isWebApp && this is incorrect, non web apps still need the admin */ deploymentType === 'tomcat') ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -704,6 +729,9 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
         try {
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
+                if (deploymentType === 'docker') {
+                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war;', currentEntry.buildName + '_staging_admin');
+                }
                 console.log("frinex-admin finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true, new Date().getTime() - stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
@@ -812,7 +840,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
                         + ' mvn clean '
-                        + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+                        + ((currentEntry.isWebApp && deploymentType === 'tomcat') ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
                         //+ 'package'
                         + ' -gs /maven/.m2/settings.xml'
                         + ' -DskipTests'
@@ -867,6 +895,9 @@ function deployProductionGui(currentEntry, retryCounter) {
                         console.log(`deployProductionGui stdout: ${stdout}`);
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
+                            if (deploymentType === 'docker') {
+                                deployDockerService(currentEntry, currentEntry.buildName + '_production_web.war;', currentEntry.buildName + '_production_web');
+                            }
                             console.log("deployProductionGui finished: " + currentEntry.buildName);
                             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, new Date().getTime() - stageStartTime);
                             var buildArtifactsJson = { artifacts: {} };
@@ -992,7 +1023,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
             + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt;'
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
-            + ((currentEntry.isWebApp) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((/* currentEntry.isWebApp && this is incorrect, non web apps still need the admin */ deploymentType === 'tomcat') ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -1032,6 +1063,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
         try {
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
+                if (deploymentType === 'docker') {
+                    deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war;', currentEntry.buildName + '_production_admin');
+                }
                 console.log("frinex-admin finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true, new Date().getTime() - stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_production_admin.war";
