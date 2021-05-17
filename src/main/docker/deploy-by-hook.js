@@ -594,7 +594,7 @@ function deployStagingGui(currentEntry) {
             console.error(`deployStagingGui stderr: ${stderr}`);
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
                 if (deploymentType === 'docker') {
-                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_web.war;', currentEntry.buildName + '_staging_web');
+                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_web.war', currentEntry.buildName + '_staging_web');
                 }
                 console.log("deployStagingGui finished");
                 var browseLabel = ((currentEntry.state === "staging" || currentEntry.state === "production")) ? "browse" : currentEntry.state;
@@ -731,7 +731,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
                 if (deploymentType === 'docker') {
-                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war;', currentEntry.buildName + '_staging_admin');
+                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war', currentEntry.buildName + '_staging_admin');
                 }
                 console.log("frinex-admin finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true, new Date().getTime() - stageStartTime);
@@ -897,7 +897,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
                             if (deploymentType === 'docker') {
-                                deployDockerService(currentEntry, currentEntry.buildName + '_production_web.war;', currentEntry.buildName + '_production_web');
+                                deployDockerService(currentEntry, currentEntry.buildName + '_production_web.war', currentEntry.buildName + '_production_web');
                             }
                             console.log("deployProductionGui finished: " + currentEntry.buildName);
                             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, new Date().getTime() - stageStartTime);
@@ -1065,7 +1065,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 if (deploymentType === 'docker') {
-                    deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war;', currentEntry.buildName + '_production_admin');
+                    deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war', currentEntry.buildName + '_production_admin');
                 }
                 console.log("frinex-admin finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true, new Date().getTime() - stageStartTime);
