@@ -472,11 +472,11 @@ function unDeploy(currentEntry) {
 }
 
 function deployDockerService(currentEntry, warFileName, serviceName) {
-    const warFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + warFileName;
+    //const warFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + warFileName;
     const dockerFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + serviceName + ".Docker";
     fs.writeFileSync(dockerFilePath,
         "FROM openjdk:11\n"
-        + "COPY " + warFilePath + " /" + warFileName + "\n"
+        + "COPY " + warFileName + " /" + warFileName + "\n"
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\"]\n"
         , { mode: 0o755 });
     const serviceSetupString = "cd " + targetDirectory + "/" + currentEntry.buildName + "\n"
