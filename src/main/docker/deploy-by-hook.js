@@ -479,7 +479,8 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "COPY " + warFilePath + " /" + warFileName + "\n"
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\"]\n"
         , { mode: 0o755 });
-    const serviceSetupString = "docker build --no-cache -f " + serviceName + ".Docker -t " + serviceName + ":latest " + targetDirectory + "/" + currentEntry.buildName + "/\n"
+    const serviceSetupString = "cd " + targetDirectory + "/" + currentEntry.buildName + "\n"
+        + "docker build --no-cache -f " + serviceName + ".Docker -t " + serviceName + ":latest ./\n"
         + "docker push localhost:5000/" + serviceName + ":latest \n"
         + "docker service create --name " + serviceName + " -d -p 8080 localhost:5000/" + serviceName + "\n";
     try {
