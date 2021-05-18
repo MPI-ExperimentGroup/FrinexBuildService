@@ -47,6 +47,7 @@ const diskSpace = require('check-disk-space');
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
+const dockerRegistry = properties.get('settings.dockerRegistry');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
@@ -481,7 +482,8 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         , { mode: 0o755 });
     const serviceSetupString = "cd " + targetDirectory + "/" + currentEntry.buildName + "\n"
         + "docker build --no-cache -f " + serviceName + ".Docker -t " + serviceName + ":latest ./\n"
-        + "docker push localhost:5000/" + serviceName + ":latest \n"
+        + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":latest \n"
+        + "docker push " + dockerRegistry + "/" + serviceName + ":latest \n"
         + "docker service create --name " + serviceName + " -d -p 8080 localhost:5000/" + serviceName + "\n";
     try {
         execSync(serviceSetupString, { stdio: [0, 1, 2] });
