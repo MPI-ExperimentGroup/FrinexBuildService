@@ -481,10 +481,10 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\"]\n"
         , { mode: 0o755 });
     const serviceSetupString = "cd " + targetDirectory + "/" + currentEntry.buildName + "\n"
-        + "docker build --no-cache -f " + serviceName + ".Docker -t " + serviceName + ":latest ./\n"
+        + "docker build --no-cache -f " + serviceName + ".Docker -t " + serviceName + ":latest .\n"
         + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":latest \n"
         + "docker push " + dockerRegistry + "/" + serviceName + ":latest \n"
-        + "docker service create --name " + serviceName + " -d -p 8080 localhost:5000/" + serviceName + "\n";
+        + "docker service create --name " + serviceName + " -d -p 8080 " + dockerRegistry + "/" + serviceName + "\n";
     try {
         execSync(serviceSetupString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
