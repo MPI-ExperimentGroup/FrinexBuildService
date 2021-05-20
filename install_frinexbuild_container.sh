@@ -62,7 +62,7 @@ else
     docker container rm frinex_db_manager 
 
     # start the frinex_db_manager in the bridge network
-    docker run  --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d --rm frinex_db_manager:latest
+    docker run --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
 
     # remove the old frinexbuild
     docker stop frinexbuild 
