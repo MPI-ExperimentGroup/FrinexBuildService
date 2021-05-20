@@ -24,6 +24,7 @@ RUN apk add --no-cache \
   curl \
   bash \
   rsync \
+  postgresql-client \
   sudo
 RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/cgi
