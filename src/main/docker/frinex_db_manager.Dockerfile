@@ -36,8 +36,11 @@ RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_mod
 #RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
 RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/psql' >> /etc/sudoers
+# provide an authentication menthod for the CGI script
+RUN echo "example.com:5432:postgres:frinex_db_user:examplepassword" > /FrinexBuildService/frinex_db_user_authentication
 RUN chown -R daemon:daemon /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 RUN chown -R daemon:daemon /FrinexBuildService/cgi
 RUN chmod -R ug+rwx /FrinexBuildService/cgi
+RUN chmod 600 /FrinexBuildService/frinex_db_user_authentication
 WORKDIR /FrinexBuildService
