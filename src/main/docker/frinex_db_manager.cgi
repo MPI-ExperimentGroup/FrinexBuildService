@@ -45,7 +45,7 @@ export PGPASSFILE
 
 #if [[ "frinex_example_db" =~ ^frinex_[a-z0-9_]*_db$ ]]; then echo "ok"; fi;
 
-if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]] ]]; then
+if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
   echo "OK: $QUERY_STRING"
 else
   echo "Not a valid Frinex database: $QUERY_STRING"
