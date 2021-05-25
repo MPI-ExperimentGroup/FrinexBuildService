@@ -27,4 +27,26 @@
 echo "Content-type: text/html"
 echo ''
 
-TODO: complete content
+PGPASSFILE=/FrinexBuildService/frinex_db_user_authentication
+export PGPASSFILE
+
+# appNameInternal must be a "lowercaseValue" enforced by the the XSD, defined as "[a-z]([a-z_0-9]){3,}"
+
+# echo "These should pass:"
+# curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_example_db
+# curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_example_longer_db
+# curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_exampl0_12345_l0nger_db
+# echo "These should fail:"
+# curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_example
+# curl frinex_db_manager/cgi/frinex_db_manager.cgi?example_db
+# curl "frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_exam$ple_db"
+# curl "frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_e@xample_db"
+# curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_eXample_db
+
+#if [[ "frinex_example_db" =~ ^frinex_[a-z0-9_]*_db$ ]]; then echo "ok"; fi;
+
+if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]] ]]; then
+  echo "OK: $QUERY_STRING"
+else
+  echo "Not a valid Frinex database: $QUERY_STRING"
+fi
