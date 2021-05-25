@@ -49,9 +49,9 @@ export PGPASSFILE
 
 if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
     appNameInternal=${QUERY_STRING#"frinex_"}
-    appNameInternal=${QUERY_STRING%"_db"}
+    appNameInternal=${appNameInternal%"_db"}
     if [[ ${#appNameInternal} -gt 2 ]] ; then
-        echo $appNameInternal
+        echo "appNameInternal: $appNameInternal"
         echo "OK: $QUERY_STRING"
     else
         echo "Frinex experiment name too short: $appNameInternal"    
