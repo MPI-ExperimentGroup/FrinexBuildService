@@ -1393,6 +1393,13 @@ function buildFromListing() {
                                 if (listingJsonData.isDesktop) {
                                     storeResult(listingJsonData.buildName, 'queued', "staging", "desktop", false, false, false);
                                 }
+                                if (deploymentType === 'docker') {
+                                    http.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildName + "_db", function (response) {
+                                        console.log("frinex_db_manager: " + buildName + " : " + response.statusCode);
+                                    }).on('error', function (error) {
+                                        console.log("frinex_db_manager: " + buildName + " : " + error);
+                                    });
+                                }
                             }
                             if (listingJsonData.state === "production") {
                                 storeResult(listingJsonData.buildName, 'queued', "production", "web", false, false, false);
