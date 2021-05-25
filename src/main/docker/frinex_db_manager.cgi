@@ -36,17 +36,26 @@ export PGPASSFILE
 # curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_example_db
 # curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_example_longer_db
 # curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_exampl0_12345_l0nger_db
+# curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_le3_db
 # echo "These should fail:"
 # curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_example
 # curl frinex_db_manager/cgi/frinex_db_manager.cgi?example_db
 # curl "frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_exam$ple_db"
 # curl "frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_e@xample_db"
 # curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_eXample_db
+# curl frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_le_db
 
 #if [[ "frinex_example_db" =~ ^frinex_[a-z0-9_]*_db$ ]]; then echo "ok"; fi;
 
 if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
-  echo "OK: $QUERY_STRING"
+    appNameInternal=${QUERY_STRING#"frinex_"}
+    appNameInternal=${QUERY_STRING%"_db"}
+    if [[ ${#appNameInternal} -gt 2 ]] ; then
+        echo $appNameInternal
+        echo "OK: $QUERY_STRING"
+    else
+        echo "Frinex experiment name too short: $appNameInternal"    
+    fi
 else
   echo "Not a valid Frinex database: $QUERY_STRING"
 fi
