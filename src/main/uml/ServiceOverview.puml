@@ -1,4 +1,6 @@
 @startuml
+title Overview of the Frinex build server when configured to deploy to separate tomcat servers for staging and production.
+
 package "BuildServer" {
   GIT - [BuildProcess]
   [BuildProcess] - BuildListing
