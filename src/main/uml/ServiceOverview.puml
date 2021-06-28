@@ -1,0 +1,43 @@
+@startuml
+package "BuildServer" {
+  GIT - [BuildProcess]
+  [BuildProcess] - BuildListing
+}
+
+XML --> GIT
+JSON --> GIT
+
+package "Staging" {
+  database "S_Postgres" {
+    [S_DataA]
+    [S_DataB]
+    [S_DataC]
+  }
+  folder "S_Tomcat" {
+    [S_ExperimentA] --> S_DataA
+    [S_ExperimentB] --> S_DataB
+    [S_ExperimentC] --> S_DataC
+  }
+  [S_CRON] --> S_Postgres 
+}
+
+package "Production" {
+  database "P_Postgres" {
+    [P_DataA]
+    [P_DataB]
+    [P_DataC]
+  }
+  folder "P_Tomcat" {
+    [P_ExperimentA] --> P_DataA
+    [P_ExperimentB] --> P_DataB
+    [P_ExperimentC] --> P_DataC
+  }
+  [P_CRON] --> P_Postgres 
+}
+
+BuildServer --> ElectronApps
+BuildServer --> MobileApps
+
+BuildServer --> Staging
+BuildServer --> Production
+@enduml
