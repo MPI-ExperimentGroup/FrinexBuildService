@@ -81,8 +81,10 @@ do
         do
           staticDirectoryLowercase=$(echo $staticDirectory | tr "[:upper:]" "[:lower:]");
           echo "$staticDirectory to $staticDirectoryLowercase" >> $targetDir/git-push-log.txt
-          mkdir $scriptDir/incoming/static/$staticDirectoryLowercase
-          cp -r $staticDirectory/* $scriptDir/incoming/static/$staticDirectoryLowercase/
+          # this directory might exist from the last commit so we use the -p option
+          mkdir -p $scriptDir/incoming/static/$staticDirectoryLowercase
+          # these files might exist from the last commit but might also have been changed by this commit so we use the -fu options
+          cp -rfu $staticDirectory/* $scriptDir/incoming/static/$staticDirectoryLowercase/
         done;
         echo "{\"repository\": \"/git/RepositoryName.git\", \"user\": \"$REMOTE_USER\"}" > "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\").commit";
         # it is important that the XML or JSON file is copied after the static files and the commit info file are in place because the XML and JSON files are what trigger the build/rebuild process
