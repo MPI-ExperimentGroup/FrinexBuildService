@@ -24,7 +24,7 @@
 
 cd $(dirname "$0")
 workingDir=$(pwd -P)
-cd $(dirname "$0")/src/main/docker
+cd $(dirname "$0")/src/main/
 
 # check that the properties to be used match the current machine
 if ! grep -q $(hostname) publish.properties; then 
@@ -34,8 +34,9 @@ else
     git pull
 
     # build the frinexbuild dockerfile
-    docker build --no-cache -f frinexbuild.Dockerfile -t frinexbuild:latest .
+    docker build --no-cache -f docker/frinexbuild.Dockerfile -t frinexbuild:latest .
 
+    cd docker
     # build the frinexapps dockerfile:
     docker build --rm -f frinexapps.Dockerfile -t frinexapps:latest .
 

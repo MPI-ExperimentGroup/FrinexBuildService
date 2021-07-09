@@ -43,15 +43,18 @@ RUN mkdir /FrinexBuildService/incoming/static/
 RUN mkdir /FrinexBuildService/artifacts
 RUN mkdir /FrinexBuildService/docs
 RUN mkdir /FrinexBuildService/cgi
-COPY frinex-git-server.conf  /FrinexBuildService/
+COPY docker/frinex-git-server.conf  /FrinexBuildService/
 RUN sed -i "s|UrlLDAP|example.com|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|DcLDAP|DC=example,DC=com|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|UserLDAP|example|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|PassLDAP|example|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|#LDAPOPTION||g" /FrinexBuildService/frinex-git-server.conf 
 #RUN sed -i "s|#PUBLICOPTION||g" /FrinexBuildService/frinex-git-server.conf 
-COPY git_setup.html  /FrinexBuildService/docs/
-COPY repository_setup.cgi  /FrinexBuildService/cgi/
+COPY docker/git_setup.html  /FrinexBuildService/docs/
+COPY uml/overview.html  /FrinexBuildService/docs/
+COPY uml/ServiceOverview.svg  /FrinexBuildService/docs/
+COPY uml/DockerSwarmOverview.svg  /FrinexBuildService/docs/    
+COPY docker/repository_setup.cgi  /FrinexBuildService/cgi/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
@@ -59,12 +62,12 @@ RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_mod
 RUN sed -i "s|^#LoadModule authnz_ldap_module modules/mod_authnz_ldap.so|LoadModule authnz_ldap_module modules/mod_authnz_ldap.so|g" /usr/local/apache2/conf/httpd.conf
 RUN sed -i "s|^#LoadModule ldap_module modules/mod_ldap.so|LoadModule ldap_module modules/mod_ldap.so|g" /usr/local/apache2/conf/httpd.conf
 RUN sed -i "s|/usr/local/apache2/htdocs|/FrinexBuildService/artifacts|g" /usr/local/apache2/conf/httpd.conf
-COPY ./deploy-by-hook.js /FrinexBuildService/
+COPY docker/deploy-by-hook.js /FrinexBuildService/
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/deploy-by-hook.js
-COPY ./publish.properties /FrinexBuildService/
+COPY docker/publish.properties /FrinexBuildService/
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/publish.properties
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/publish.properties
-COPY ./post-receive /FrinexBuildService/post-receive
+COPY docker/post-receive /FrinexBuildService/post-receive
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/post-receive
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/post-receive
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/cgi/repository_setup.cgi
@@ -74,11 +77,11 @@ RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/repos
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/post-receive
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/post-receive
-COPY ./create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build_repository.sh
+COPY docker/create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/create_frinex_build_repository.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/create_frinex_build_repository.sh
-COPY ./update_post-receive_hooks.sh /FrinexBuildService/update_post-receive_hooks.sh
+COPY docker/update_post-receive_hooks.sh /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/update_post-receive_hooks.sh
@@ -87,7 +90,7 @@ RUN cd /FrinexBuildService/; npm install properties-reader; npm install check-di
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh LADD
 #COPY ./test_repository_create.sh /FrinexBuildService/
-COPY ./settings.xml /FrinexBuildService/
+COPY docker/settings.xml /FrinexBuildService/
 # the docker group in the container us unlikely to match the host docker group id
 #RUN adduser -S frinex -G docker
 RUN adduser -S frinex
