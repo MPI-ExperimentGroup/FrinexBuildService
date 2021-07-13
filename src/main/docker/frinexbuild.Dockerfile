@@ -105,9 +105,9 @@ RUN chown -R frinex:daemon /FrinexBuildService/docs
 RUN chmod -R ug+rwx /FrinexBuildService/docs
 RUN chown -R frinex:daemon /FrinexBuildService/cgi
 RUN chmod -R ug+rwx /FrinexBuildService/cgi
-RUN mkdir /BackupFiles
-RUN chown -R frinex:daemon /BackupFiles
-RUN chmod -R ug+rwx /BackupFiles
+#RUN mkdir /BackupFiles
+#RUN chown -R frinex:daemon /BackupFiles
+#RUN chmod -R ug+rwx /BackupFiles
 # todo: this is required because the experiment commits check and starts the node build script, it would be nice to have more user isolation here
 WORKDIR /FrinexBuildService
 VOLUME ["buildServerTarget:/FrinexBuildService/artifacts"]

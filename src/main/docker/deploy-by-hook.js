@@ -1617,13 +1617,15 @@ function moveIncomingToQueued() {
                     prepareForProcessing();
                     setTimeout(moveIncomingToQueued, 3000);
                 } else if (!hasDoneBackup) {
-                    console.log("pre exit backup");
+                    // this exit backup process takes too long when a new commit comes in and needs to be built
+                    console.log("pre exit backup disabled");
+                    /*console.log("pre exit backup");
                     try {
                         execSync('rsync -a --no-perms --no-owner --no-group --no-times ' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
                     } catch (reason) {
                         console.error("check backup.log for messages");
                         console.error(reason);
-                    }
+                    }*/
                     hasDoneBackup = true;
                     setTimeout(moveIncomingToQueued, 3000);
                 } else {
