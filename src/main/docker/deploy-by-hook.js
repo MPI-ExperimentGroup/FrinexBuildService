@@ -38,12 +38,11 @@ const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 const execSync = require('child_process').execSync;
 const { exec } = require('child_process');
-const https = require('https');
-const http = require('http');
+const got = require('got');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const diskSpace = require('check-disk-space');
+const diskSpace = require('check-disk-space').default;
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
@@ -802,8 +801,7 @@ function deployProductionGui(currentEntry, retryCounter) {
         var existingDeploymentUrl = ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer : productionServerUrl) + "/" + currentEntry.buildName;
         console.log("existing deployment check: " + existingDeploymentUrl);
         try {
-            var deploymentCheckUrl = new URL(existingDeploymentUrl);
-            ((deploymentCheckUrl.protocol == "https:") ? https : http).get(deploymentCheckUrl, function (response) {
+            got.get(existingDeploymentUrl, {responseType: 'text'}).then(response => {
                 console.log("statusCode: " + response.statusCode);
                 if (response.statusCode !== 404) {
                     console.log("existing frinex-gui production found, aborting build!");
@@ -951,9 +949,9 @@ function deployProductionGui(currentEntry, retryCounter) {
                         }*/
                     });
                 }
-            }).on('error', function (error) {
+            }).catch(error => {
                 console.log("existing frinex-gui production unknown, aborting build: " + currentEntry.buildName);
-                console.log(error);
+                console.log(error.message);
                 if (fs.existsSync(productionQueuedFile)) {
                     if (retryCounter > 0) {
                         retryCounter--;
@@ -1394,9 +1392,9 @@ function buildFromListing() {
                                     storeResult(listingJsonData.buildName, 'queued', "staging", "desktop", false, false, false);
                                 }
                                 if (deploymentType === 'docker') {
-                                    http.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildName + "_db", function (response) {
+                                    got.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildName + "_db", {responseType: 'text'}).then(response => {
                                         console.log("frinex_db_manager: " + buildName + " : " + response.statusCode);
-                                    }).on('error', function (error) {
+                                    }).catch(error => {
                                         console.log("frinex_db_manager: " + buildName + " : " + error);
                                     });
                                 }
