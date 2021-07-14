@@ -36,7 +36,6 @@ else
     # build the frinexbuild dockerfile
     docker build --no-cache -f docker/frinexbuild.Dockerfile -t frinexbuild:latest .
 
-    cd docker
     # build the frinexapps dockerfile:
     docker build --rm -f docker/frinexapps.Dockerfile -t frinexapps:latest .
 

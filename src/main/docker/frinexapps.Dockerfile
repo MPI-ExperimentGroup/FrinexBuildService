@@ -113,6 +113,8 @@ ENV JAVA8_HOME=/openjdk8/jdk8u265-b01
 
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
 RUN git clone https://github.com/chris-rudmin/opus-recorder.git
+RUN cd opus-recorder; git checkout tags/v8.0.3
+#RUN cd opus-recorder; git checkout tags/v6.2.0 # v6.2.0 is the last version used on the old build server and is available as a tag in 1.3-audiofix
 
 # clone the Frinex repository including enough depth to give correct build numbers
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
