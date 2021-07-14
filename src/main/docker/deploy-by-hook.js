@@ -554,7 +554,7 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
-            + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+            + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -711,7 +711,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
-            + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+            + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
@@ -860,7 +860,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                             + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                             + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
                         )
-                        + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+                        + ' -Dexperiment.isScalable=' + currentEntry.isScalable
                         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
                         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
                         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
@@ -1044,7 +1044,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                 + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
             )
-            + ' -Dexperiment.isScaleable=' + currentEntry.isScaleable
+            + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"

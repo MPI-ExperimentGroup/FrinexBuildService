@@ -122,7 +122,7 @@ buildExperiment = function (listing) {
                     'experiment.destinationServer': stagingServer,
                     'experiment.destinationServerUrl': stagingServerUrl,
                     'experiment.groupsSocketUrl': stagingGroupsSocketUrl,
-                    'experiment.isScaleable': currentEntry.isScaleable,
+                    'experiment.isScalable': currentEntry.isScalable,
                     'experiment.defaultScale': currentEntry.defaultScale
 //                    'experiment.scriptSrcUrl': stagingServerUrl,
 //                    'experiment.staticFilesUrl': stagingServerUrl
@@ -166,7 +166,7 @@ buildExperiment = function (listing) {
 //                                    'experiment.destinationServer': productionServer,
 //                                    'experiment.destinationServerUrl': productionServerUrl,
 //                                    'experiment.groupsSocketUrl': productionGroupsSocketUrl,
-//                                    'experiment.isScaleable': currentEntry.isScaleable,
+//                                    'experiment.isScalable': currentEntry.isScalable,
 //                                    'experiment.defaultScale': currentEntry.defaultScale
 ////                            'experiment.scriptSrcUrl': productionServerUrl,
 ////                            'experiment.staticFilesUrl': productionServerUrl
