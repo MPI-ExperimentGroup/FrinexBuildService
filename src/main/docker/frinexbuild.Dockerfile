@@ -64,7 +64,7 @@ RUN sed -i "s|^#LoadModule ldap_module modules/mod_ldap.so|LoadModule ldap_modul
 RUN sed -i "s|/usr/local/apache2/htdocs|/FrinexBuildService/artifacts|g" /usr/local/apache2/conf/httpd.conf
 COPY docker/deploy-by-hook.js /FrinexBuildService/
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/deploy-by-hook.js
-COPY docker/publish.properties /FrinexBuildService/
+COPY config/publish.properties /FrinexBuildService/
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/publish.properties
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/publish.properties
 COPY docker/post-receive /FrinexBuildService/post-receive

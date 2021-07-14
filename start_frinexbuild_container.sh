@@ -26,7 +26,7 @@ cd $(dirname "$0")
 workingDir=$(pwd -P)
 
 # check that the properties to be used match the current machine
-if ! grep -q $(hostname) src/main/docker/publish.properties; then 
+if ! grep -q $(hostname) src/main/config/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # remove the old frinexbuild
