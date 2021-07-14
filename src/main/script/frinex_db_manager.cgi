@@ -52,7 +52,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
     appNameInternal=${appNameInternal%"_db"}
     if [[ ${#appNameInternal} -gt 2 ]] ; then
         echo "appNameInternal: $appNameInternal"
-        if [ "$(psql -h lux24.mpi.nl -p 5432 -U frinex_db_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
+        if [ "$(psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
             echo "Database already exists"
         else
             echo "Database being created"
