@@ -29,7 +29,7 @@ RUN apk add --no-cache \
 RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/cgi
 COPY config/frinex_db_manager.conf  /FrinexBuildService/
-COPY frinex_db_manager.cgi  /FrinexBuildService/cgi/
+COPY script/frinex_db_manager.cgi  /FrinexBuildService/cgi/
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 #RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
