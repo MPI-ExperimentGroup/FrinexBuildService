@@ -27,7 +27,7 @@ workingDir=$(pwd -P)
 cd $(dirname "$0")/src/main/
 
 # check that the properties to be used match the current machine
-if ! grep -q $(hostname) publish.properties; then 
+if ! grep -q $(hostname) config/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # get the latest version of this repository
@@ -38,10 +38,10 @@ else
 
     cd docker
     # build the frinexapps dockerfile:
-    docker build --rm -f frinexapps.Dockerfile -t frinexapps:latest .
+    docker build --rm -f docker/frinexapps.Dockerfile -t frinexapps:latest .
 
     # build a tomcat docker image to test deployments
-    #docker build --rm -f tomcatstaging.Dockerfile -t tomcatstaging:latest .
+    #docker build --rm -f docker/tomcatstaging.Dockerfile -t tomcatstaging:latest .
 
     # stop all containers (probably not wanted in future usage)
     #docker stop $(docker ps -a -q)
@@ -53,7 +53,7 @@ else
     #docker run --name tomcatstaging -d --rm -i -p 8071:8080 -v webappsTomcatStaging:/usr/local/tomcat/webapps tomcatstaging:latest
 
     # build the frinex_db_manager
-    docker build --rm -f frinex_db_manager.Dockerfile -t frinex_db_manager:latest .
+    docker build --rm -f docker/frinex_db_manager.Dockerfile -t frinex_db_manager:latest .
     
     # create the frinex_db_manager bridge network 
     docker network create frinex_db_manager_net
