@@ -801,7 +801,7 @@ function deployProductionGui(currentEntry, retryCounter) {
         var existingDeploymentUrl = ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer : productionServerUrl) + "/" + currentEntry.buildName;
         console.log("existing deployment check: " + existingDeploymentUrl);
         try {
-            got.get(existingDeploymentUrl, {responseType: 'text'}).then(response => {
+            got.get(existingDeploymentUrl, {responseType: 'text', timeout: {request: 3000}}).then(response => {
                 console.log("statusCode: " + response.statusCode);
                 console.log("existing frinex-gui production found, aborting build!");
                 console.log(response.statusCode);
@@ -811,9 +811,8 @@ function deployProductionGui(currentEntry, retryCounter) {
                 }
                 currentlyBuilding.delete(currentEntry.buildName);
             }).catch(error => {
-                console.log("statusCode: " + error.response.statusCode);
                 console.log(error.message);
-                if (error.response.statusCode !== 404) {
+                if (typeof error.response !== 'undefined' && error.response.statusCode !== 404) {
                     console.log("existing frinex-gui production unknown, aborting build: " + currentEntry.buildName);
                     if (fs.existsSync(productionQueuedFile)) {
                         if (retryCounter > 0) {
