@@ -803,14 +803,38 @@ function deployProductionGui(currentEntry, retryCounter) {
         try {
             got.get(existingDeploymentUrl, {responseType: 'text'}).then(response => {
                 console.log("statusCode: " + response.statusCode);
-                if (response.statusCode !== 404) {
-                    console.log("existing frinex-gui production found, aborting build!");
-                    console.log(response.statusCode);
-                    storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
+                console.log("existing frinex-gui production found, aborting build!");
+                console.log(response.statusCode);
+                storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
+                if (fs.existsSync(productionQueuedFile)) {
+                    fs.unlinkSync(productionQueuedFile);
+                }
+                currentlyBuilding.delete(currentEntry.buildName);
+            }).catch(error => {
+                console.log("statusCode: " + error.response.statusCode);
+                console.log(error.message);
+                if (error.response.statusCode !== 404) {
+                    console.log("existing frinex-gui production unknown, aborting build: " + currentEntry.buildName);
                     if (fs.existsSync(productionQueuedFile)) {
-                        fs.unlinkSync(productionQueuedFile);
+                        if (retryCounter > 0) {
+                            retryCounter--;
+                            storeResult(currentEntry.buildName, "retry", "production", "web", false, true, false);
+                            deployProductionGui(currentEntry, retryCounter);
+                        } else {
+                            storeResult(currentEntry.buildName, "network error", "production", "web", true, false, false);
+                            fs.unlinkSync(productionQueuedFile);
+                            currentlyBuilding.delete(currentEntry.buildName);
+                        }
+                    } else {
+                        storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
+                        if (fs.existsSync(productionConfigFile)) {
+                            fs.unlinkSync(productionConfigFile);
+                        }
+                        /*if (fs.existsSync(buildArtifactsFileName)) {
+                            fs.unlinkSync(buildArtifactsFileName);
+                        }*/
+                        currentlyBuilding.delete(currentEntry.buildName);
                     }
-                    currentlyBuilding.delete(currentEntry.buildName);
                 } else {
                     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt">building</a>', "production", "web", false, true, false);
                     if (fs.existsSync(productionConfigFile)) {
@@ -948,29 +972,6 @@ function deployProductionGui(currentEntry, retryCounter) {
                             fs.unlinkSync(electronZipFile);
                         }*/
                     });
-                }
-            }).catch(error => {
-                console.log("existing frinex-gui production unknown, aborting build: " + currentEntry.buildName);
-                console.log(error.message);
-                if (fs.existsSync(productionQueuedFile)) {
-                    if (retryCounter > 0) {
-                        retryCounter--;
-                        storeResult(currentEntry.buildName, "retry", "production", "web", false, true, false);
-                        deployProductionGui(currentEntry, retryCounter);
-                    } else {
-                        storeResult(currentEntry.buildName, "network error", "production", "web", true, false, false);
-                        fs.unlinkSync(productionQueuedFile);
-                        currentlyBuilding.delete(currentEntry.buildName);
-                    }
-                } else {
-                    storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
-                    if (fs.existsSync(productionConfigFile)) {
-                        fs.unlinkSync(productionConfigFile);
-                    }
-                    /*if (fs.existsSync(buildArtifactsFileName)) {
-                        fs.unlinkSync(buildArtifactsFileName);
-                    }*/
-                    currentlyBuilding.delete(currentEntry.buildName);
                 }
             });
         } catch (exception) {
