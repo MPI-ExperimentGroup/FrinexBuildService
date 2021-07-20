@@ -46,7 +46,8 @@ const diskSpace = require('check-disk-space').default;
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
-const dockerRegistry = properties.get('settings.dockerRegistry');
+const dockerRegistry = properties.get('dockerservice.dockerRegistry');
+const dockerServiceOptions = properties.get('dockerservice.serviceOptions');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
@@ -489,10 +490,10 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\"]\n"
         , { mode: 0o755 });
     const serviceSetupString = "cd " + targetDirectory + "/" + currentEntry.buildName + "\n"
-        + "sudo docker build --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":latest .\n"
-        // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":latest \n"
-        + "sudo docker push " + dockerRegistry + "/" + serviceName + ":latest \n"
-        + "sudo docker service create --name " + serviceName + " -d -p 8080 " + dockerRegistry + "/" + serviceName + "\n";
+        + "sudo docker build --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":stable .\n"
+        // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":stable \n"
+        + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
+        + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + "\n";
     try {
         execSync(serviceSetupString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
