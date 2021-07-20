@@ -76,7 +76,7 @@ function startResult() {
     fs.writeSync(resultsFile, "<span id='buildDate'></span>\n");
     fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block; margin: 3px;'><span id='diskFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Disk</span></span>\n");
     fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block; margin: 3px;'><span id='memoryFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Memory</span></span>\n");
-    fs.writeSync(resultsFile, "<br/>\n");
+    fs.writeSync(resultsFile, "<br/><tr>\n");
     fs.writeSync(resultsFile, "<a href='frinex.html'>Current XML Documentation</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='frinex.xsd'>Current XML Schema</a><br/>\n");
     fs.writeSync(resultsFile, "To build with the current stable either omit the frinexVersion attribute or specify frinexVersion=\"stable\" and set the schema location in your XML to use \"frinex.xsd\".<br/>\n");
@@ -85,9 +85,9 @@ function startResult() {
     fs.writeSync(resultsFile, "To build with the release candidate frinexVersion=\"beta\" and set the schema location in your XML to use \"beta.xsd\".<br/>\n");
     fs.writeSync(resultsFile, "<a href='beta.html'>Latest snapshot XML Documentation</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='beta.xsd'>Latest snapshot XML Schema</a><br/>\n");
-    fs.writeSync(resultsFile, "The latest snapshot changes very frequently and is not usually recommended but can be used with frinexVersion=\"latest\" and set the schema location in your XML to use \"latest.xsd\".<br/>\n");
+    fs.writeSync(resultsFile, "The latest snapshot changes very frequently and is not usually recommended but can be used with frinexVersion=\"latest\" and the schema location in your XML using \"latest.xsd\".<br/>\n");
     fs.writeSync(resultsFile, "<table id='buildTable'>\n");
-    fs.writeSync(resultsFile, "<tr>\n");
+    fs.writeSync(resultsFile, "<tr><tr><tr>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#1\">repository</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#2\">committer</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#3\">experiment</a></td>\n");
