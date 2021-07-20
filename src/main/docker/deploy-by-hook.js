@@ -78,13 +78,13 @@ function startResult() {
     fs.writeSync(resultsFile, "<span style='width: 100px;background-color: lightgray;display: inline-block; margin: 3px;'><span id='memoryFree' style='background-color: mediumaquamarine;width: 0%; display: block; white-space: nowrap;'>Memory</span></span>\n");
     fs.writeSync(resultsFile, "<br/>\n");
     fs.writeSync(resultsFile, "<a href='frinex.html'>Current XML Documentation</a>&nbsp;\n");
-    fs.writeSync(resultsFile, "<a href='frinex.xsd'>Current XML Schema</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='frinex.xsd'>Current XML Schema</a><br/>\n");
     fs.writeSync(resultsFile, "To build with the current stable either omit the frinexVersion attribute or specify frinexVersion=\"stable\" and set the schema location in your XML to use \"frinex.xsd\".<br/>\n");
     fs.writeSync(resultsFile, "<a href='beta.html'>Release candidate XML Documentation</a>&nbsp;\n");
-    fs.writeSync(resultsFile, "<a href='beta.xsd'>Release candidate XML Schema</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='beta.xsd'>Release candidate XML Schema</a><br/>\n");
     fs.writeSync(resultsFile, "To build with the release candidate frinexVersion=\"beta\" and set the schema location in your XML to use \"beta.xsd\".<br/>\n");
     fs.writeSync(resultsFile, "<a href='beta.html'>Latest snapshot XML Documentation</a>&nbsp;\n");
-    fs.writeSync(resultsFile, "<a href='beta.xsd'>Latest snapshot XML Schema</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='beta.xsd'>Latest snapshot XML Schema</a><br/>\n");
     fs.writeSync(resultsFile, "The latest snapshot changes very frequently and is not usually recommended but can be used with frinexVersion=\"latest\" and set the schema location in your XML to use \"latest.xsd\".<br/>\n");
     fs.writeSync(resultsFile, "<table id='buildTable'>\n");
     fs.writeSync(resultsFile, "<tr>\n");
