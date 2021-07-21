@@ -24,7 +24,7 @@
 
 cd $(dirname "$0")
 workingDir=$(pwd -P)
-cd $(dirname "$0")/src/main/docker
+cd $(dirname "$0")/src/main/config
 
 # check that the properties to be used match the current machine
 if ! grep -q $(hostname) publish.properties; then 
