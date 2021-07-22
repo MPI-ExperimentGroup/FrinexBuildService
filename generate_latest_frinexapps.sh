@@ -34,7 +34,7 @@ else
     git pull
 
     # build the frinexapps dockerfile:
-    docker build --no-cache -f frinexapps.Dockerfile -t frinexapps:latest .
+    docker build --no-cache -f docker/frinexapps.Dockerfile -t frinexapps:latest .
 
     # tag the latest version with its own build version
     latestVersion=$(docker run --rm -w /ExperimentTemplate/gwt-cordova frinexapps:latest /bin/bash -c "cat /ExperimentTemplate/gwt-cordova.version")
