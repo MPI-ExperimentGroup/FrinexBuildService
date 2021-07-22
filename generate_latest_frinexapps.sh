@@ -27,7 +27,7 @@ workingDir=$(pwd -P)
 cd $(dirname "$0")/src/main/docker
 
 # check that the properties to be used match the current machine
-if ! grep -q $(hostname) publish.properties; then 
+if ! grep -q $(hostname) config/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # get the latest version of this repository
