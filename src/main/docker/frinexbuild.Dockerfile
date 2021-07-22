@@ -90,7 +90,7 @@ RUN cd /FrinexBuildService/; npm install properties-reader; npm install check-di
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh LADD
 #COPY ./test_repository_create.sh /FrinexBuildService/
-COPY docker/settings.xml /FrinexBuildService/
+COPY config/settings.xml /FrinexBuildService/
 # the docker group in the container us unlikely to match the host docker group id
 #RUN adduser -S frinex -G docker
 RUN adduser -S frinex
