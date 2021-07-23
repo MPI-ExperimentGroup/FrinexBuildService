@@ -28,7 +28,7 @@
 #RUN dpkg --add-architecture i386 && apk update && apk -y install wine32
 FROM openjdk:11
 #ENV JAVA_OPTS="--add-modules java.se.ee"
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
