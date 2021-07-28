@@ -11,28 +11,28 @@ JSON --> GIT
 
 package "Staging" {
   database "S_Postgres" {
-    [S_DataA]
-    [S_DataB]
-    [S_DataC]
+    [S_ExperimentA_DB]
+    [S_ExperimentB_DB]
+    [S_ExperimentC_DB]
   }
   folder "S_Tomcat" {
-    [S_ExperimentA] --> S_DataA
-    [S_ExperimentB] --> S_DataB
-    [S_ExperimentC] --> S_DataC
+    [S_ExperimentA] --> S_ExperimentA_DB
+    [S_ExperimentB] --> S_ExperimentB_DB
+    [S_ExperimentC] --> S_ExperimentC_DB
   }
   [S_CRON] --> S_Postgres 
 }
 
 package "Production" {
   database "P_Postgres" {
-    [P_DataA]
-    [P_DataB]
-    [P_DataC]
+    [P_ExperimentA_DB]
+    [P_ExperimentB_DB]
+    [P_ExperimentC_DB]
   }
   folder "P_Tomcat" {
-    [P_ExperimentA] --> P_DataA
-    [P_ExperimentB] --> P_DataB
-    [P_ExperimentC] --> P_DataC
+    [P_ExperimentA] --> P_ExperimentA_DB
+    [P_ExperimentB] --> P_ExperimentB_DB
+    [P_ExperimentC] --> P_ExperimentC_DB
   }
   [P_CRON] --> P_Postgres 
 }

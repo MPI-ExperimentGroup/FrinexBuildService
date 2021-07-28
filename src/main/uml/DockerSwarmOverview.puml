@@ -4,20 +4,20 @@ left to right direction
 package "DatabaseHost" {
   database "StagingPostgres" {
     card S_Postgres[
-      S_DataA
+      S_ExperimentA_DB
       ----
-      S_DataB
+      S_ExperimentB_DB
       ----
-      S_DataC
+      S_ExperimentC_DB
     ]
   }
   database "ProductionPostgres" {
     card P_Postgres [
-      P_DataA
+      P_ExperimentA_DB
       ----
-      P_DataB
+      P_ExperimentB_DB
       ----
-      P_DataC
+      P_ExperimentC_DB
     ]
   }
 }
