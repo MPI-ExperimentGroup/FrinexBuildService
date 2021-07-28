@@ -43,6 +43,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const diskSpace = require('check-disk-space').default;
+const generatePassword = require('omgopass');
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
@@ -68,6 +69,8 @@ const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
+const experimentTokensFileName = "/FrinexBuildService/cgi/tokens.json";
+var experimentTokensJson = {};
 var hasDoneBackup = false;
 
 function startResult() {
@@ -242,6 +245,17 @@ function startResult() {
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
+function getExperimentToken(name) {
+    // perhaps store the token mapped to authenticate committer and the expriment name so that the commiter can be used in the CGI as authenticated user
+    if (typeof experimentTokensJson[name] !== "undefined") {
+        return experimentTokensJson[name];
+    } else {
+        const tokenString = generatePassword();
+        experimentTokensJson[name] = tokenString;
+        fs.writeFileSync(experimentTokensFileName, JSON.stringify(experimentTokensJson, null, 4), { mode: 0o755 });
+        return tokenString;
+    }
+}
 
 function initialiseResult(name, message, isError, repositoryName, committerName) {
     var style = '';
@@ -1047,6 +1061,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -Dexperiment.artifactsJsonDirectory=' + targetDirectory + '/' + currentEntry.buildName + '/'
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
+            + ' -Dexperiment.configuration.admin.password=' + getExperimentToken(currentEntry.buildName)
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
                 ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
@@ -1853,6 +1868,24 @@ function updateDocumentation() {
 }
 
 function prepareBuildHistory() {
+    if (fs.existsSync(experimentTokensFileName)) {
+        try {
+            var experimentTokensJson = JSON.parse(fs.readFileSync(experimentTokensFileName, 'utf8'));
+            fs.writeFileSync(experimentTokensFileName + ".temp", JSON.stringify(experimentTokensJson, null, 4), { mode: 0o755 });
+            var now = new Date();
+            var datedFileSuffix = '-' + now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate();
+            fs.writeFileSync(experimentTokensFileName + datedFileSuffix, JSON.stringify(experimentTokensJson, null, 4), { mode: 0o755 });
+        } catch (error) {
+            console.error("faild to read " + experimentTokensJson);
+            console.error(error);
+            try {
+                experimentTokensJson = JSON.parse(fs.readFileSync(experimentTokensFileName + ".temp", 'utf8'));
+            } catch (error) {
+                console.error("faild to read " + experimentTokensJson + ".temp");
+                console.error(error);
+            }
+        }
+    }
     if (fs.existsSync(buildHistoryFileName)) {
         try {
             var buildHistoryJsonTemp = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
