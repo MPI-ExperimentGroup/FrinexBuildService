@@ -41,6 +41,7 @@ RUN mkdir /FrinexBuildService/listing
 RUN mkdir /FrinexBuildService/incoming/commits/
 RUN mkdir /FrinexBuildService/incoming/static/
 RUN mkdir /FrinexBuildService/artifacts
+RUN mkdir /FrinexBuildService/protected
 RUN mkdir /FrinexBuildService/docs
 RUN mkdir /FrinexBuildService/cgi
 COPY docker/frinex-git-server.conf  /FrinexBuildService/
@@ -66,6 +67,7 @@ COPY docker/deploy-by-hook.js /FrinexBuildService/
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/deploy-by-hook.js
 COPY config/publish.properties /FrinexBuildService/
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/publish.properties
+RUN sed -i "s|ProtectedDirectory|/FrinexBuildService/protected|g" /FrinexBuildService/publish.properties
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/publish.properties
 COPY docker/post-receive /FrinexBuildService/post-receive
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/post-receive
@@ -75,6 +77,7 @@ RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBui
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/repository_setup.cgi
+RUN sed -i "s|ProtectedDirectory|/FrinexBuildService/protected|g" /FrinexBuildService/cgi/experiment_access.cgi
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/post-receive
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/post-receive
 COPY docker/create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build_repository.sh
@@ -101,6 +104,8 @@ RUN chown -R frinex:daemon /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 RUN chown -R frinex:daemon /FrinexBuildService/artifacts
 RUN chmod -R ug+rwx /FrinexBuildService/artifacts
+RUN chown -R frinex:daemon /FrinexBuildService/protected
+RUN chmod -R ug+rwx /FrinexBuildService/protected
 RUN chown -R frinex:daemon /FrinexBuildService/docs
 RUN chmod -R ug+rwx /FrinexBuildService/docs
 RUN chown -R frinex:daemon /FrinexBuildService/cgi
@@ -110,4 +115,5 @@ RUN chmod -R ug+rwx /FrinexBuildService/cgi
 #RUN chmod -R ug+rwx /BackupFiles
 # todo: this is required because the experiment commits check and starts the node build script, it would be nice to have more user isolation here
 WORKDIR /FrinexBuildService
+VOLUME ["protectedDirectory:/FrinexBuildService/protected"]
 VOLUME ["buildServerTarget:/FrinexBuildService/artifacts"]

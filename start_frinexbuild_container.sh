@@ -34,7 +34,7 @@ else
     docker container rm frinexbuild 
 
     # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
-    docker run --restart unless-stopped --net frinex_db_manager_net -v /var/run/docker.sock:/var/run/docker.sock  -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+    docker run --restart unless-stopped --net frinex_db_manager_net -v /var/run/docker.sock:/var/run/docker.sock  -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v buildServerTarget:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
     # -v $workingDir/BackupFiles:/BackupFiles 
     # the -v m2Directory:/maven/.m2/ volume is not strictly needed in this container but it makes it easer to run docker purge without destroying the .m2/settings.xml etc
 fi;

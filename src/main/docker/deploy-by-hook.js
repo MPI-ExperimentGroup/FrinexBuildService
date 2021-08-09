@@ -55,6 +55,7 @@ const processingDirectory = properties.get('settings.processingDirectory');
 const buildHost = properties.get('settings.buildHost');
 const staticFilesDirectory = incomingDirectory + '/static';
 const targetDirectory = properties.get('settings.targetDirectory');
+const protectedDirectory = properties.get('settings.protectedDirectory');
 const configServer = properties.get('webservice.configServer');
 const stagingServer = properties.get('staging.serverName');
 const stagingServerUrl = properties.get('staging.serverUrl');
@@ -69,7 +70,7 @@ const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
-const experimentTokensFileName = "/FrinexBuildService/cgi/tokens.json";
+const experimentTokensFileName = protectedDirectory + "/tokens.json";
 var experimentTokensJson = {};
 var hasDoneBackup = false;
 
