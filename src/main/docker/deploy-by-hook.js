@@ -127,6 +127,7 @@ function startResult() {
     fs.writeSync(resultsFile, "var experimentRow = document.getElementById(keyString+ '_row');\n");
     fs.writeSync(resultsFile, "if (!experimentRow) {\n");
     fs.writeSync(resultsFile, "var tableRow = document.createElement('tr');\n");
+    fs.writeSync(resultsFile, "experimentRow = tableRow;\n");
     fs.writeSync(resultsFile, "tableRow.id = keyString+ '_row';\n");
     fs.writeSync(resultsFile, "for (var cellString of ['_repository', '_committer', '_experiment', '_date', '_validation_json_xsd', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_target', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {\n");
     fs.writeSync(resultsFile, "var tableCell = document.createElement('td');\n");
@@ -182,6 +183,9 @@ function startResult() {
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
     fs.writeSync(resultsFile, "}\n");
+    // use the UTC date stored in a data attribute of the row to check if the row has changes before updating it
+    fs.writeSync(resultsFile, "if (data.table[keyString]['_date'].value !== experimentRow.dataset.lastchange) {\n");
+    fs.writeSync(resultsFile, "experimentRow.dataset.lastchange = data.table[keyString]['_date'].value;\n");
     fs.writeSync(resultsFile, "for (var cellString in data.table[keyString]) {\n");
     //fs.writeSync(resultsFile, "console.log(cellString);\n");
     fs.writeSync(resultsFile, "var experimentCell = document.getElementById(keyString + '_' + cellString);\n");
@@ -199,6 +203,7 @@ function startResult() {
     //fs.writeSync(resultsFile, "var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
     fs.writeSync(resultsFile, "var statusStyle = (keyString + '_' + cellString in applicationStatus)?';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';':'';\n");
     fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
+    fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "if (typeof data.memoryTotal === 'undefined' || data.memoryTotal === null) {\n");
@@ -229,8 +234,8 @@ function startResult() {
     fs.writeSync(resultsFile, "var updateTimer = window.setTimeout(doUpdate, 100);\n");
     fs.writeSync(resultsFile, "function doSort() {\n");
     fs.writeSync(resultsFile, "var sortData = location.href.split('#')[1];\n");
-    fs.writeSync(resultsFile, "var sortItem = sortData.split('_')[0];\n");
-    fs.writeSync(resultsFile, "var sortDirection = sortData.split('_')[1];\n");
+    fs.writeSync(resultsFile, "var sortItem = (sortData)? sortData.split('_')[0] : '4';\n");
+    fs.writeSync(resultsFile, "var sortDirection = (sortData)? sortData.split('_')[1] : 'd';\n");
     fs.writeSync(resultsFile, "if($.isNumeric(sortItem)){\n");
     fs.writeSync(resultsFile, "if(sortDirection === 'd'){\n");
     fs.writeSync(resultsFile, "$('tr:gt(1)').each(function() {}).sort(function (b, a) {return $('td:nth-of-type('+sortItem+')', a).text().localeCompare($('td:nth-of-type('+sortItem+')', b).text());}).appendTo('tbody');\n");
