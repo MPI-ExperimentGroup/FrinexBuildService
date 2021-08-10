@@ -1418,7 +1418,7 @@ function buildFromListing() {
                             storeResult(fileNamePart, '', "staging", "android", false, false, false);
                             storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
                             storeResult(fileNamePart, '', "production", "target", false, false, false);
-                            storeResult(fileNamePart, ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable'), "frinex", "version", false, false, false);
+                            storeResult(fileNamePart, ((listingJsonData.frinexVersion != null && listingJsonData.frinexVersion.length > 0) ? listingJsonData.frinexVersion : 'stable'), "frinex", "version", false, false, false);
                             storeResult(fileNamePart, '', "production", "web", false, false, false);
                             storeResult(fileNamePart, '', "production", "admin", false, false, false);
                             storeResult(fileNamePart, '', "production", "android", false, false, false);
