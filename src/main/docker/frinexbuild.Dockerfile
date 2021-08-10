@@ -56,6 +56,7 @@ COPY uml/overview.html  /FrinexBuildService/docs/
 COPY uml/ServiceOverview.svg  /FrinexBuildService/docs/
 COPY uml/DockerSwarmOverview.svg  /FrinexBuildService/docs/    
 COPY cgi/repository_setup.cgi  /FrinexBuildService/cgi/
+COPY cgi/experiment_access.cgi  /FrinexBuildService/cgi/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
