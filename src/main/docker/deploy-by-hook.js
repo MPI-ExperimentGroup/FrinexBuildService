@@ -276,6 +276,7 @@ function initialiseResult(name, message, isError, repositoryName, committerName)
         "_experiment": { value: name, style: '' },
         "_repository": { value: repositoryName, style: '' },
         "_committer": { value: committerName, style: '' },
+        "_frinex_version": { value: '', style: '' },
         "_date": { value: new Date().toISOString(), style: '' },
         //"_validation_link_json": {value: '', style: ''},
         //"_validation_link_xml": {value: '', style: ''},
