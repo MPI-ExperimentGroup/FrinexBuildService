@@ -1416,6 +1416,7 @@ function buildFromListing() {
                             storeResult(fileNamePart, '', "staging", "android", false, false, false);
                             storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
                             storeResult(fileNamePart, '', "production", "target", false, false, false);
+                            storeResult(fileNamePart, listingJsonData.frinexVersion, "frinex", "version", false, false, false);
                             storeResult(fileNamePart, '', "production", "web", false, false, false);
                             storeResult(fileNamePart, '', "production", "admin", false, false, false);
                             storeResult(fileNamePart, '', "production", "android", false, false, false);
