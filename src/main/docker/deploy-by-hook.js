@@ -99,8 +99,8 @@ function startResult() {
     fs.writeSync(resultsFile, "<td><a href=\"#2\">committer</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#3\">experiment</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#4\">last update</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#5\">validation</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#6\">version</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#5\">version</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#6\">validation</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#7\">staging web</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#8\">staging android</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#9\">staging desktop</a></td>\n");
