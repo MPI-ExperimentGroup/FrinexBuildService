@@ -131,7 +131,7 @@ function startResult() {
     fs.writeSync(resultsFile, "var tableRow = document.createElement('tr');\n");
     fs.writeSync(resultsFile, "experimentRow = tableRow;\n");
     fs.writeSync(resultsFile, "tableRow.id = keyString+ '_row';\n");
-    fs.writeSync(resultsFile, "for (var cellString of ['_repository', '_committer', '_experiment', '_date', '_validation_json_xsd', '_frinex_version', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_target', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {\n");
+    fs.writeSync(resultsFile, "for (var cellString of ['_repository', '_committer', '_experiment', '_date', '_frinex_version', '_validation_json_xsd', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_target', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {\n");
     fs.writeSync(resultsFile, "var tableCell = document.createElement('td');\n");
     fs.writeSync(resultsFile, "tableCell.id = keyString + '_' + cellString;\n");
     fs.writeSync(resultsFile, "tableRow.appendChild(tableCell);\n");
@@ -1418,7 +1418,7 @@ function buildFromListing() {
                             storeResult(fileNamePart, '', "staging", "android", false, false, false);
                             storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
                             storeResult(fileNamePart, '', "production", "target", false, false, false);
-                            storeResult(fileNamePart, listingJsonData.frinexVersion, "frinex", "version", false, false, false);
+                            storeResult(fileNamePart, ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable'), "frinex", "version", false, false, false);
                             storeResult(fileNamePart, '', "production", "web", false, false, false);
                             storeResult(fileNamePart, '', "production", "admin", false, false, false);
                             storeResult(fileNamePart, '', "production", "android", false, false, false);
