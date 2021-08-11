@@ -1680,12 +1680,6 @@ function moveIncomingToQueued() {
                         var lowerCaseFileName = filename.toLowerCase();
                         var currentName = path.parse(lowerCaseFileName).name;
                         var queuedFile = path.resolve(incomingDirectory + '/queued/', lowerCaseFileName);
-                        if (!fs.existsSync(targetDirectory + "/" + currentName)) {
-                            fs.mkdirSync(targetDirectory + '/' + currentName);
-                        }
-                        if (!fs.existsSync(protectedDirectory + "/" + currentName)) {
-                            fs.mkdirSync(protectedDirectory + '/' + currentName);
-                        }
                         if (path.extname(lowerCaseFileName) === ".commit") {
                             // the committer info is used when the XML or JSON file is processed
                         } else if (checkForDuplicates(currentName) !== 1) {
@@ -1699,6 +1693,12 @@ function moveIncomingToQueued() {
                         } else if ((path.extname(lowerCaseFileName) === ".json" || path.extname(lowerCaseFileName) === ".xml") && lowerCaseFileName !== "listing.json") {
                             fs.writeSync(resultsFile, "<div>initialise: '" + lowerCaseFileName + "'</div>");
                             console.log('initialise: ' + lowerCaseFileName);
+                            if (!fs.existsSync(targetDirectory + "/" + currentName)) {
+                                fs.mkdirSync(targetDirectory + '/' + currentName);
+                            }
+                            if (!fs.existsSync(protectedDirectory + "/" + currentName)) {
+                                fs.mkdirSync(protectedDirectory + '/' + currentName);
+                            }
                             var mavenLogPathSG = targetDirectory + "/" + currentName + "/" + currentName + "_staging.txt";
                             var mavenLogPathSA = targetDirectory + "/" + currentName + "/" + currentName + "_staging_admin.txt";
                             var mavenLogPathPG = targetDirectory + "/" + currentName + "/" + currentName + "_production.txt";
