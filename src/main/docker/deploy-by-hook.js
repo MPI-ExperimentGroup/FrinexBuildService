@@ -772,7 +772,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                     deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war', currentEntry.buildName + '_staging_admin');
                 }
                 console.log("frinex-admin finished");
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true, new Date().getTime() - stageStartTime);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt">log</a>&nbsp;<a href="/cgi/experiment_access.cgi?' + currentEntry.buildName + '">access</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war">download</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="https://frinexstaging.mpi.nl/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true, new Date().getTime() - stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin.war";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
