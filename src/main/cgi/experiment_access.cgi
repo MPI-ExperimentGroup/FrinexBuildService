@@ -29,6 +29,11 @@
 echo "Content-type: text/html"
 echo ''
 echo "<br/>"
-# todo: select the required data from the json file and display it to the authenticated user
-ProtectedDirectory
+# the experiment name will only contain lowercase, numbers and underscore so we remove any other characters to prevent unwanted behaviour
+cleanedExperimentName=$(echo $QUERY_STRING | sed 's/[^a-z_0-9]/_/g')
+echo "<!--$cleanedExperimentName-->";
+echo "<b>"
+# todo: add some informative messages to the user if no record is found
+grep "\"$cleanedExperimentName\"" ProtectedDirectory/tokens.json | sed 's/[,]//g'
+echo "</b>"
 echo "<br/>"
