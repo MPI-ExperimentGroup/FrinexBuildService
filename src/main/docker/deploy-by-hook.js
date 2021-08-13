@@ -578,7 +578,7 @@ function deployStagingGui(currentEntry) {
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
             + ' mvn clean '
-            + ((currentEntry.isWebApp && deploymentType === 'tomcat') ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((currentEntry.isWebApp && deploymentType.includes('tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -636,7 +636,7 @@ function deployStagingGui(currentEntry) {
             console.log(`deployStagingGui stdout: ${stdout}`);
             console.error(`deployStagingGui stderr: ${stderr}`);
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
-                if (deploymentType === 'docker') {
+                if (deploymentType.includes('docker')) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_staging_web.war', currentEntry.buildName + '_staging_web');
                 }
                 console.log("deployStagingGui finished");
@@ -739,7 +739,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
             + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
-            + ((/* currentEntry.isWebApp && this is incorrect, non web apps still need the admin */ deploymentType === 'tomcat') ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -774,7 +774,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
         try {
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
-                if (deploymentType === 'docker') {
+                if (deploymentType.includes('docker')) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war', currentEntry.buildName + '_staging_admin');
                 }
                 console.log("frinex-admin finished");
@@ -909,7 +909,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
                         + ' mvn clean '
-                        + ((currentEntry.isWebApp && deploymentType === 'tomcat') ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+                        + ((currentEntry.isWebApp && deploymentType.includes('tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
                         //+ 'package'
                         + ' -gs /maven/.m2/settings.xml'
                         + ' -DskipTests'
@@ -967,7 +967,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         console.log(`deployProductionGui stdout: ${stdout}`);
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
-                            if (deploymentType === 'docker') {
+                            if (deploymentType.includes('docker')) {
                                 deployDockerService(currentEntry, currentEntry.buildName + '_production_web.war', currentEntry.buildName + '_production_web');
                             }
                             console.log("deployProductionGui finished: " + currentEntry.buildName);
@@ -1073,7 +1073,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
             + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt;'
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
-            + ((/* currentEntry.isWebApp && this is incorrect, non web apps still need the admin */ deploymentType === 'tomcat') ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -1114,7 +1114,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
         try {
             execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
-                if (deploymentType === 'docker') {
+                if (deploymentType.includes('docker')) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war', currentEntry.buildName + '_production_admin');
                 }
                 console.log("frinex-admin finished");
