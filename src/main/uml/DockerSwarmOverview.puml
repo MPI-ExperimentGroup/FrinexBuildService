@@ -94,4 +94,27 @@ BuildProcess -ri-> ElectronApps
 BuildProcess -ri-> MobileApps
 
 BuildProcess --> Registry
+
+cloud WebAccess {
+S_ExperimentA_http_host_30001 --> Staging1
+S_ExperimentA_http_host_30001 --> Staging2
+S_ExperimentA_http_host_30001 --> Staging3
+S_ExperimentB_http_host_30002 --> Staging1
+S_ExperimentB_http_host_30002 --> Staging2
+S_ExperimentB_http_host_30002 --> Staging3
+S_ExperimentC_http_host_30003 --> Staging1
+S_ExperimentC_http_host_30003 --> Staging2
+S_ExperimentC_http_host_30003 --> Staging3
+
+P_ExperimentA_http_host_30004 --> Production1
+P_ExperimentA_http_host_30004 --> Production2
+P_ExperimentA_http_host_30004 --> Production3
+P_ExperimentB_http_host_30005 --> Production1
+P_ExperimentB_http_host_30005 --> Production2
+P_ExperimentB_http_host_30005 --> Production3
+P_ExperimentC_http_host_30006 --> Production1
+P_ExperimentC_http_host_30006 --> Production2
+P_ExperimentC_http_host_30006 --> Production3
+}
+
 @enduml

@@ -42,4 +42,14 @@ BuildServer --> MobileApps
 
 BuildServer --> Staging
 BuildServer --> Production
+
+cloud WebAccess {
+  http_host_80_S_ExperimentA --> S_ExperimentA
+  http_host_80_S_ExperimentB --> S_ExperimentB
+  http_host_80_S_ExperimentC --> S_ExperimentC
+  http_host_80_P_ExperimentA --> P_ExperimentA
+  http_host_80_P_ExperimentB --> P_ExperimentB
+  http_host_80_P_ExperimentC --> P_ExperimentC
+}
+
 @enduml
