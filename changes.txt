@@ -1,0 +1,24 @@
+
+Updated the last build date in the experiment listing to show the time in the browsers timezone. 
+Prevented a javascript error in the build listing when the URL has no fragment to split. 
+Prevented JS modifying the build listing page unless an actual change will be made.
+Added separate randomised authentication tokens for each production admin deployment.
+Added a CGI script to provide information per experiment to authenticated users.
+Added the requested frinex version to the JSON build history.
+Moved the docker service set up files into the protected directory.
+Added more documentation.
+Added networking information to the UML diagrams.
+Restructuring the file layout to make the image building more flexible.
+Added script to promote the latest version to beta along with its change list for testers.
+Added a script to terminate experiment web applications running in the docker swarm.
+Bumped the node version to 16.
+Forced old config removal from processing when the script restarts. 
+Added the beta change list to the build page. 
+Redirected container removal output.
+Updated the build server start command with that used in the install script.
+Updated the default build version to stable and added docker serviceOptions to the configuration files.
+Added the cleaning up old messages after a failed build server run.
+Added links to the stable, beta and latest versions of the documentation and schema files.
+Added content to the readme for sysadmin so they know how to revive the build server independently 
+Changed the http library to use "got" due to issues with non returning reponses blocking the build process.
+Correct the path the the electron sources needed to make the DMG file for osX.
