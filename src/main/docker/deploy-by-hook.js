@@ -1598,6 +1598,10 @@ function checkForDuplicates(currentName) {
     var configErrorPath = path.resolve(targetDirectory + "/" + currentName + "/" + currentName + "_conflict_error.txt");
     if (experimentConfigCounter > 1) {
         //console.log(experimentConfigLocations);
+        if (!fs.existsSync(targetDirectory + "/" + currentName)) {
+            fs.mkdirSync(targetDirectory + "/" + currentName);
+            console.log(targetDirectory + "/" + currentName + " directory created");
+        }
         const queuedConfigFile = fs.openSync(configErrorPath, "w");
         fs.writeSync(queuedConfigFile, "Multiple configuration files found in the following locations:\n" + experimentConfigLocations);
     } else {
