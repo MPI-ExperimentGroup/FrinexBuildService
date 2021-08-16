@@ -522,6 +522,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + "\n";
     try {
+        console.log(serviceSetupString);
         execSync(serviceSetupString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">DockerService</a>', "production", "admin", false, false, false);
