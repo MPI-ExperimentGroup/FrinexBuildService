@@ -1482,15 +1482,15 @@ function buildFromListing() {
 
 function copyDeleteFile(incomingFile, targetFile) {
     try {
-    var incomingReadStream = fs.createReadStream(incomingFile);
-    incomingReadStream.on('close', function () {
-        if (fs.existsSync(incomingFile)) {
-            fs.unlinkSync(incomingFile);
-            console.log('removed: ' + incomingFile);
-            //fs.writeSync(resultsFile, "<div>removed: " + incomingFile + "</div>");
-        }
-    });
-    incomingReadStream.pipe(fs.createWriteStream(targetFile));
+        var incomingReadStream = fs.createReadStream(incomingFile);
+        incomingReadStream.on('close', function () {
+            if (fs.existsSync(incomingFile)) {
+                fs.unlinkSync(incomingFile);
+                console.log('removed: ' + incomingFile);
+                //fs.writeSync(resultsFile, "<div>removed: " + incomingFile + "</div>");
+            }
+        });
+        incomingReadStream.pipe(fs.createWriteStream(targetFile));
     } catch (reason) {
         console.error("copyDeleteFile failed: " + incomingFile + ":" + targetFile + ":" + reason);
     }
@@ -1795,8 +1795,8 @@ function moveIncomingToQueued() {
                             // todo: we might want this agressive target experiment name directory removal to prevent old output being served out
                             //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
                             //}
-                            // this move is within the same volume so we can do it this easy way
-                            fs.renameSync(incomingFile, queuedFile);
+                            // even though this move is within the same volume fs.renameSync has been observed to cause issues
+                            copyDeleteFile(incomingFile, queuedFile);
                             foundFilesCount++;
                         } else {
                             fs.writeSync(resultsFile, "<div>removing unusable type: '" + filename + "'</div>");
