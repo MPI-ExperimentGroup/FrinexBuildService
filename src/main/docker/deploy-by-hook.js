@@ -1812,7 +1812,8 @@ function moveIncomingToQueued() {
                     }
                 }
                 buildNextExperiment(); // if there are existing experiments in the build queue they can be started before converting more with JsonToXml
-                if (foundFilesCount > 0) {
+                var queuedList = fs.readdirSync(incomingDirectory + '/queued');
+                if (queuedList.length > 0) {
                     convertJsonToXml();
                 } else {
                     setTimeout(moveIncomingToQueued, 3000);
