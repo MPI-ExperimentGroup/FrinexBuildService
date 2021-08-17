@@ -1798,8 +1798,8 @@ function moveIncomingToQueued() {
                             // todo: we might want this agressive target experiment name directory removal to prevent old output being served out
                             //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
                             //}
-                            // even though this move is within the same volume fs.renameSync has been observed to cause issues
-                            copyDeleteFile(incomingFile, queuedFile);
+                            // Reverted to sync method when copying files to prevent premature usage by later stages and duplicate later stages while the file move is in process.
+                            fs.renameSync(incomingFile, queuedFile);
                             foundFilesCount++;
                         } else {
                             fs.writeSync(resultsFile, "<div>removing unusable type: '" + filename + "'</div>");
