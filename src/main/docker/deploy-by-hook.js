@@ -520,7 +520,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "sudo docker build --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":stable .\n"
         // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
-        + "sudo docker service rm " + serviceName + "\n"; // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
+        + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
     try {
         console.log(serviceSetupString);
