@@ -1711,6 +1711,9 @@ function moveIncomingToQueued() {
                             if (fs.existsSync(incomingFile)) {
                                 fs.unlinkSync(incomingFile);
                             }
+                            if (fs.existsSync(incomingFile + ".commit")) {
+                                fs.unlinkSync(incomingFile + ".commit");
+                            }
                         } else if ((path.extname(lowerCaseFileName) === ".json" || path.extname(lowerCaseFileName) === ".xml") && lowerCaseFileName !== "listing.json") {
                             fs.writeSync(resultsFile, "<div>initialise: '" + lowerCaseFileName + "'</div>");
                             console.log('initialise: ' + lowerCaseFileName);
