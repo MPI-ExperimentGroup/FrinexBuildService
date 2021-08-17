@@ -1489,11 +1489,11 @@ function copyDeleteFile(incomingFile, targetFile) {
                 console.log('removed: ' + incomingFile);
                 //fs.writeSync(resultsFile, "<div>removed: " + incomingFile + "</div>");
             }
-            fs.rename(targetFile + '.tmp', targetFile, function (reason) {
+            /*fs.rename(targetFile + '.tmp', targetFile, function (reason) {
                 if (reason) console.error("copyDeleteFile.tmp failed: " + incomingFile + ":" + targetFile + ":" + reason);
-            });
+            });*/
         });
-        incomingReadStream.pipe(fs.createWriteStream(targetFile + '.tmp'));
+        incomingReadStream.pipe(fs.createWriteStream(targetFile)); // + '.tmp' at the point of close the destination file is still not accessable for rename.
     } catch (reason) {
         console.error("copyDeleteFile failed: " + incomingFile + ":" + targetFile + ":" + reason);
     }
