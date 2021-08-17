@@ -1489,8 +1489,11 @@ function copyDeleteFile(incomingFile, targetFile) {
                 console.log('removed: ' + incomingFile);
                 //fs.writeSync(resultsFile, "<div>removed: " + incomingFile + "</div>");
             }
+            fs.rename(targetFile + '.tmp', targetFile, function (reason) {
+                if (reason) console.error("copyDeleteFile.tmp failed: " + incomingFile + ":" + targetFile + ":" + reason);
+            });
         });
-        incomingReadStream.pipe(fs.createWriteStream(targetFile));
+        incomingReadStream.pipe(fs.createWriteStream(targetFile + '.tmp'));
     } catch (reason) {
         console.error("copyDeleteFile failed: " + incomingFile + ":" + targetFile + ":" + reason);
     }
