@@ -18,7 +18,7 @@
 #
 
 #
-# @since 23 July 2021 15:35 PM (creation date)
+# @since 31 August 2021 13:46 PM (creation date)
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
@@ -30,15 +30,17 @@ cd $(dirname "$0")/src/main/
 if ! grep -q $(hostname) config/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
-    # tag the old beta
-    docker tag frinexbuild:beta frinexbuild:beta_$(date +%F)
-    # tag latest as the new beta
-    docker tag frinexapps:latest frinexapps:beta
+    # tag the old stable
+    docker tag frinexbuild:stable frinexbuild:stable_$(date +%F)
+    # tag beta as the new stable
+    docker tag frinexapps:beta frinexapps:stable
 
-    # make the current XSD available for this beta so that they can be used by frinex builds with frinexVersion
-    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:beta /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/beta.xsd"
-    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:beta /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/beta.html"
-    # make the changes file available for this beta so that they can be viewed from the build page
-    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:beta /bin/bash -c "cp /ExperimentTemplate/changes.txt /FrinexBuildService/artifacts/betachanges.txt"
+    # make the current XSD available for this stable so that they can be used by frinex builds with frinexVersion
+    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/frinex.xsd"
+    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/frinex.html"
+    # make the changes file available for this stable so that they can be viewed from the build page
+    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:stable /bin/bash -c "cp /ExperimentTemplate/changes.txt /FrinexBuildService/artifacts/stablechanges.txt"
     docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "chown frinex:daemon /FrinexBuildService/artifacts/*.xsd; chown frinex:daemon /FrinexBuildService/artifacts/*.html; chown frinex:daemon /FrinexBuildService/artifacts/*.txt;"
 fi;
+
+
