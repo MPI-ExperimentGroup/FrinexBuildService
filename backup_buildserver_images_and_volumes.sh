@@ -33,20 +33,20 @@ else
     # this script can be run from a cron job or manually as needed
 
     # todo: repeat this for each relevant image
-    # make a backup of each relevant image that is not already on disk based
-    frinexappsStable=$(docker image ls frinexapps:stable | awk 'NR>1 {print $1 "_" $2 "_" $3}')
+    # make a backup of each relevant image that is not already on disk
+    frinexappsStable=$(docker image ls frinexapps:stable | awk 'NR>1 {print $1 "_" $2 "_" $3 "_"}')
 
     if [ -s "$workingDir/BackupFiles/$frinexappsStable*" ]
     then 
         echo "A backup of $frinexappsStable already exists and will not be replaced."
     else
         echo "Creating a backup of $frinexappsStable."
-        docker save frinexapps:stable | gzip > $workingDir/BackupFiles/$frinexappsStable_$(date +%F).tar.gz
+        docker save frinexapps:stable | gzip > $workingDir/BackupFiles/$frinexappsStable$(date +%F).tar.gz
     fi
 
     # the following rsync process is run in a docker container so that it has access to the volumes which will be backed up
     # only directories that cannot be regenerated will be backed up to minimise disk use, however this also means that the first commits to the build server after a restore will take more time and probably require a second commit to start the build process
-    docker run --rm -v $workingDir/BackupFiles:/BackupFiles -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -v gitRepositories:/FrinexBuildService/git-repositories -w /ExperimentTemplate/ frinexapps:stable /bin/bash -c "rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/artifacts /BackupFiles/; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/git-repositories /BackupFiles/; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/protected /BackupFiles/;"
+    docker run --rm -v $workingDir/BackupFiles:/BackupFiles -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -v gitRepositories:/FrinexBuildService/git-repositories -w /ExperimentTemplate/ frinexbuild:stable /bin/bash -c "rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/artifacts /BackupFiles/; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/git-repositories /BackupFiles/; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/protected /BackupFiles/;"
 fi;
 
 
