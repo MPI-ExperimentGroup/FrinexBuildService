@@ -31,7 +31,7 @@ if ! grep -q $(hostname) config/publish.properties; then
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # tag the old stable
-    docker tag frinexbuild:stable frinexbuild:stable_$(date +%F)
+    docker tag frinexapps:stable frinexapps:stable_$(date +%F)
     # tag beta as the new stable
     docker tag frinexapps:beta frinexapps:stable
 
