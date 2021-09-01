@@ -52,6 +52,7 @@ else
 
     # the following rsync process is run in a docker container so that it has access to the volumes which will be backed up into ./BackupFiles
     # only directories that cannot be regenerated will be backed up to minimise disk use, however this also means that the first commits to the build server after a restore will take more time and probably require a second commit to start the build process
+    echo "Copying the contents of critical volumes to ./BackupFiles"
     docker run --rm -v $workingDir/BackupFiles:/BackupFiles -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -v gitRepositories:/FrinexBuildService/git-repositories -w /ExperimentTemplate/ frinexbuild:stable /bin/bash -c "rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/artifacts /BackupFiles/; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/git-repositories /BackupFiles/; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/protected /BackupFiles/;"
 fi;
 
