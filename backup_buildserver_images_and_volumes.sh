@@ -32,19 +32,25 @@ if ! grep -q $(hostname) config/publish.properties; then
 else
     # this script can be run from a cron job or manually as needed
 
-    # todo: repeat this for each relevant image
-    # make a backup of each relevant image that is not already on disk
-    frinexappsStable=$(docker image ls frinexapps:stable | awk 'NR>1 {print $1 "_" $2 "_" $3 "_"}')
+    # compress and store the docker images in ./BackupFiles
+    # repeat the back the up process for each relevant image
+    for imageName in "frinexbuild:stable" "frinexapps:stable" "frinexapps:beta"; do
+        # make a backup of each relevant image that is not already on disk
+        backupName=$(docker image ls $imageName | awk 'NR>1 {print $1 "_" $2 "_" $3 "_"}')$(date +%F).tar.gz
+        if [[ $backupName == *"frinex"* ]]; then
+            if [ -s "$workingDir/BackupFiles/$backupName" ]
+            then 
+                echo "A backup of $backupName already exists and will not be replaced."
+            else
+                echo "Creating a backup of $imageName to $backupName."
+                docker save frinexapps:stable | gzip > $workingDir/BackupFiles/$backupName
+            fi
+        else
+            echo "No image $imageName to back up."
+        fi
+    done
 
-    if [ -s "$workingDir/BackupFiles/$frinexappsStable*" ]
-    then 
-        echo "A backup of $frinexappsStable already exists and will not be replaced."
-    else
-        echo "Creating a backup of $frinexappsStable."
-        docker save frinexapps:stable | gzip > $workingDir/BackupFiles/$frinexappsStable$(date +%F).tar.gz
-    fi
-
-    # the following rsync process is run in a docker container so that it has access to the volumes which will be backed up
+    # the following rsync process is run in a docker container so that it has access to the volumes which will be backed up into ./BackupFiles
     # only directories that cannot be regenerated will be backed up to minimise disk use, however this also means that the first commits to the build server after a restore will take more time and probably require a second commit to start the build process
     docker run --rm -v $workingDir/BackupFiles:/BackupFiles -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -v gitRepositories:/FrinexBuildService/git-repositories -w /ExperimentTemplate/ frinexbuild:stable /bin/bash -c "rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/artifacts /BackupFiles/; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/git-repositories /BackupFiles/; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/protected /BackupFiles/;"
 fi;
