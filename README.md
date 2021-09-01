@@ -27,13 +27,28 @@ clean_frinex_docker.sh
     deletes non mandatory volumes, cache and images
 
 start_frinexbuild_container.sh
-    Starts the Frinex build service image, if the build service is running it will be terminated first.
+    Starts the Frinex build service container, if the build service is running it will be terminated first.
+
+terminate_swarm_experiments.sh
+    Terminates all running experiment instances running in the Docker swarm.
 
 # Image Maintenance Scripts
+
 generate_latest_frinexapps.sh
+    Generates the image used to compile Frinex experiemnts and tags the image as "latest".
+    Extracts the latest XSD and documentation files that will be served by HTTPD in the frinexbuild container.
+
 install_frinexbuild_container.sh
+    Sets up the requirements of the build server such as the frinex_db_manager and its network.
+    Generates the build server image and tags the image as "latest".
+    Runs the build server image and sets it to auto start.
+
 test_stable_candidate.sh
-promote_latest_to_beta.sh 
+promote_latest_to_beta.sh
+promote_beta_to_stable.sh
 
 # Backup Scripts
+
+backup_buildserver_images_and_volumes.sh
+
 restore_frinexbuild_backup.sh
