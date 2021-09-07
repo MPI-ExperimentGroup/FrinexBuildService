@@ -1828,8 +1828,10 @@ function moveIncomingToQueued() {
 
 function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
-    var dockerString = 'sudo docker container rm -f json_to_xml'
+    var dockerString = 'if [[ $(docker container ls) == *"json_to_xml"* ]]; then'
+        + ' sudo docker container rm -f json_to_xml'
         + ' 2>&1 ' + targetDirectory + '/json_to_xml.txt;'
+        + ' fi;'
         + 'sudo docker run --rm'
         //+ ' --user "$(id -u):$(id -g)"'
         + ' --name json_to_xml'
@@ -1845,7 +1847,7 @@ function convertJsonToXml() {
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing ' + targetDirectory /* the schema file is in the target directory, however it might be nicer to use a dedicated directory when we support multiple schema/build versions */ + '\\"'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
-        + ' chmod a+rwx /FrinexBuildService/processing/validated/* /FrinexBuildService/listing/*'
+        + ' chmod a+rwx -R /FrinexBuildService/processing/validated /FrinexBuildService/listing'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;"';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".txt";
     console.log(dockerString);
