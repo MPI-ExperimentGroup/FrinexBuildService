@@ -1,4 +1,7 @@
 
+Cleaned up the exit result from the json_to_xml process to prevent invalid XML appearing to stuck in the "validating" phase.
+Updated the beta promotion script and added a stable promotion script.
+Added a script to make a backup of each relevant docker image that is not already on disk.
 Updated the last build date in the experiment listing to show the time in the browsers timezone. 
 Prevented a javascript error in the build listing when the URL has no fragment to split. 
 Prevented JS modifying the build listing page unless an actual change will be made.
