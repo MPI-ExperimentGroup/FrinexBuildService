@@ -150,6 +150,7 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
+    // TODO: when testing the running health in production this request should use the target server when provided in the XML and otherwise use the default target server
     fs.writeSync(resultsFile, "$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/health', (function(experimentName) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
     fs.writeSync(resultsFile, "if (key === 'status') {\n");
@@ -347,6 +348,7 @@ function unDeploy(currentEntry) {
     // undeploy staging gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt">undeploying</a>', "staging", "web", false, true, false);
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
+    // TODO: check if the deploymentType is tomcat vs docker and do the required undeployment process
     var buildContainerName = currentEntry.buildName + '_undeploy';
     var dockerString = 'sudo docker container rm -f ' + buildContainerName
         + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -515,6 +517,9 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         "FROM openjdk:11\n"
         + "COPY " + warFileName + " /" + warFileName + "\n"
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\"]\n"
+        // TODO: it should not be necessary to service stop first, but this needs to be tested 
+        // TODO: it should not be necessary to do a service start, but this needs to be tested 
+        // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
         , { mode: 0o755 });
     const serviceSetupString = "cd " + protectedDirectory + "/" + currentEntry.buildName + "\n"
         + "sudo docker build --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":stable .\n"
@@ -527,6 +532,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         execSync(serviceSetupString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">DockerService</a>', "production", "admin", false, false, false);
+        // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
     } catch (error) {
         console.error("deployDockerService " + serviceName + " error:" + error);
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt">DockerService error</a>', "production", "admin", true, false, true);
@@ -756,6 +762,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
+            // admin login is not needed for staging + ' -Dexperiment.configuration.admin.password=' + getExperimentToken(currentEntry.buildName)
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
@@ -1841,6 +1848,7 @@ function convertJsonToXml() {
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
+        // TODO: at some point this might need to change to stable rather than latest
         + ' frinexapps:latest /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dexec.executable=java'
