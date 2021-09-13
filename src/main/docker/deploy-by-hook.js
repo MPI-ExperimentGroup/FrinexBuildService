@@ -1828,7 +1828,7 @@ function moveIncomingToQueued() {
 
 function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
-    var dockerString = 'if [[ $(docker container ls) == *"json_to_xml"* ]]; then'
+    var dockerString = 'if [[ $(sudo docker container ls) == *"json_to_xml"* ]]; then'
         + ' sudo docker container rm -f json_to_xml'
         + ' 2>&1 ' + targetDirectory + '/json_to_xml.txt;'
         + ' fi;'
