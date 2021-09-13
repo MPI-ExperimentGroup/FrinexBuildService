@@ -49,7 +49,7 @@ echo $tartegRepositoryName >> TargetDirectory/repository_setup.txt
 
 if [ ${#tartegRepositoryName} -ge 6 ]
 then
-    echo "Your build repository: <b>"
+    echo "Your build repository is located at: <b>"
     echo "BuildServerUrl/git/$tartegRepositoryName.git"
     echo "</b>"
     echo "BuildServerUrl/git/$tartegRepositoryName.git" >> TargetDirectory/repository_setup.txt
