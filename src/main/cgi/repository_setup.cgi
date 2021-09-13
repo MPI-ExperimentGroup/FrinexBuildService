@@ -98,7 +98,9 @@ then
             # commit and push the readme.txt
             git commit -m "Adding a readme file to initialise this repository." readme.txt  >> TargetDirectory/repository_setup.txt
             git push >> TargetDirectory/repository_setup.txt
-
+            # set up fast forward by default
+            git config pull.ff only >> TargetDirectory/repository_setup.txt
+            
             echo "Your repository is ready for use."
             echo "ready for use" >> TargetDirectory/repository_setup.txt
         fi
