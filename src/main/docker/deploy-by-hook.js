@@ -157,7 +157,7 @@ function startResult() {
     fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
-    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString][cellString].style)));\n");
+    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_staging_admin'].style)));\n");
     // TODO: when testing the running health in production this request should use the target server when provided in the XML and otherwise use the default target server
     fs.writeSync(resultsFile, "$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
@@ -170,7 +170,7 @@ function startResult() {
     fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_production_admin', cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
-    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString][cellString].style)));\n");
+    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_production_admin'].style)));\n");
     // the path -admin/actuator/health is for spring boot 2.3.0
     fs.writeSync(resultsFile, "$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
@@ -183,7 +183,7 @@ function startResult() {
     fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
-    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString][cellString].style)));\n");
+    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_staging_admin'].style)));\n");
     fs.writeSync(resultsFile, "$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
     fs.writeSync(resultsFile, "if (key === 'status') {\n");
@@ -195,7 +195,7 @@ function startResult() {
     fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_production_admin', cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
-    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString][cellString].style)));\n");
+    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_production_admin'].style)));\n");
     fs.writeSync(resultsFile, "}\n");
     // use the UTC date stored in a data attribute of the row to check if the row has changes before updating it
     fs.writeSync(resultsFile, "if (data.table[keyString]['_date'].value !== experimentRow.dataset.lastchange) {\n");
