@@ -216,8 +216,8 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     //fs.writeSync(resultsFile, "var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, '_staging_admin', data.table[keyString][cellString].style);\n");
-    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, '_production_admin', data.table[keyString][cellString].style);\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, '_staging_admin', data.table[keyString]['_staging_admin'].style);\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, '_production_admin', data.table[keyString]['_production_admin'].style);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "if (typeof data.memoryTotal === 'undefined' || data.memoryTotal === null) {\n");
