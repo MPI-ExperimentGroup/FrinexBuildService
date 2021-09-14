@@ -143,6 +143,7 @@ function startResult() {
     fs.writeSync(resultsFile, "tableCell.id = keyString + '_' + cellString;\n");
     fs.writeSync(resultsFile, "tableRow.appendChild(tableCell);\n");
     fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "var cellStyle = data.table[keyString][cellString].style;\n");
     fs.writeSync(resultsFile, "document.getElementById('buildTable').appendChild(tableRow);\n");
     // check the spring health here and show http and db status via applicationStatus array
     // the path -admin/health is for spring boot 1.4.1
@@ -154,7 +155,7 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString, cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
@@ -167,7 +168,7 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production_admin'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString, cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
@@ -180,7 +181,7 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString, cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
@@ -192,7 +193,7 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production_admin'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString, cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
