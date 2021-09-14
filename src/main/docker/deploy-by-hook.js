@@ -120,6 +120,13 @@ function startResult() {
     fs.writeSync(resultsFile, "<a href='git-push-err.txt'>err</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<script>\n");
     fs.writeSync(resultsFile, "var applicationStatus = {};\n");
+    fs.writeSync(resultsFile, "function updateDeploymentStatus(keyString, cellString) {\n");
+    fs.writeSync(resultsFile, "var experimentCell = document.getElementById(keyString + '_' + cellString);\n");
+    fs.writeSync(resultsFile, "if (experimentCell) {\n");
+    fs.writeSync(resultsFile, "var statusStyle = (keyString + '_' + cellString in applicationStatus)?';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';':'';\n");
+    fs.writeSync(resultsFile, "experimentCell.style = data.table[keyString][cellString].style + statusStyle;\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "function doUpdate() {\n");
     fs.writeSync(resultsFile, "updateTimer = window.setTimeout(doUpdate, 60000);\n");
     fs.writeSync(resultsFile, "$.getJSON('buildhistory.json?'+new Date().getTime(), function(data) {\n");
@@ -147,6 +154,7 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
@@ -159,6 +167,7 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production_admin'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
@@ -171,6 +180,7 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging_admin'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
@@ -182,6 +192,7 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production_admin'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString)));\n");
@@ -204,8 +215,7 @@ function startResult() {
     fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value + buildTimeSting;\n");
     fs.writeSync(resultsFile, "}\n");
     //fs.writeSync(resultsFile, "var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';\n");
-    fs.writeSync(resultsFile, "var statusStyle = (keyString + '_' + cellString in applicationStatus)?';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';':'';\n");
-    fs.writeSync(resultsFile, "document.getElementById(keyString + '_' + cellString).style = data.table[keyString][cellString].style + statusStyle;\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(keyString, cellString);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "}\n");
