@@ -1,4 +1,5 @@
 
+Prevented the end user's browser caching the build log files.
 Cleaned up the exit result from the json_to_xml process to prevent invalid XML appearing to stuck in the "validating" phase.
 Updated the beta promotion script and added a stable promotion script.
 Added a script to make a backup of each relevant docker image that is not already on disk.
