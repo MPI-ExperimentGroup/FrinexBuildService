@@ -1189,7 +1189,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_android.txt");
         }
         fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_android.txt", 'w'));
-        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_android.txt" + new Date().getTime() + '">log</a>&nbsp;';
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_android.txt?" + new Date().getTime() + '">log</a>&nbsp;';
         storeResult(currentEntry.buildName, "building " + resultString, stage, "android", false, true, false);
         // we do not build in the docker volume because it would create redundant file synchronisation.
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_cordova'
@@ -1261,7 +1261,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_electron.txt");
         }
         fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_electron.txt", 'w'));
-        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_electron.txt" + new Date().getTime() + '">log</a>&nbsp;';
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_electron.txt?" + new Date().getTime() + '">log</a>&nbsp;';
         storeResult(currentEntry.buildName, "building " + resultString, stage, "desktop", false, true, false);
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_electron'
             + ' 2>&1 ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
