@@ -2029,9 +2029,9 @@ function deleteOldProcessing() {
             var currentDirectoryPath = path.resolve(staticFilesDirectory, currentDirectory);
             console.log('deleting static files: ' + currentDirectory);
             fs.rmdirSync(currentDirectoryPath, { recursive: true });
-            if (fs.existsSync(currentDirectoryPath + ".commit")) {
-                console.log('deleting stray commit info file: ' + currentDirectoryPath + ".commit");
-                fs.unlinkSync(currentDirectoryPath + ".commit");
+            if (fs.existsSync(incomingDirectory + '/commits/' + currentDirectory + ".xml.commit")) {
+                console.log('deleting stray commit info file: ' + currentDirectory + ".xml.commit");
+                fs.unlinkSync(incomingDirectory + '/commits/' + currentDirectory + ".xml.commit");
             }
         }
     }
