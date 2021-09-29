@@ -1191,7 +1191,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
         fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_android.txt", 'w'));
         resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_android.txt?" + new Date().getTime() + '">log</a>&nbsp;';
         storeResult(currentEntry.buildName, "building " + resultString, stage, "android", false, true, false);
-        // we do not build in the docker volume because it would create redundant file synchronisation.
+        // the mvn target directory is not in the docker volume so that the build process does not cause redundant file synchronisation across the docker volume.
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_cordova'
             + ' 2>&1 ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_cordova --rm'
