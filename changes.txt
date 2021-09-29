@@ -1,4 +1,6 @@
 
+Bumped the audio recoring library verson to v8.0.4
+On start up added a check for and deletion of any stray commit info files.
 Prevented the end user's browser caching the build log files.
 Cleaned up the exit result from the json_to_xml process to prevent invalid XML appearing to stuck in the "validating" phase.
 Updated the beta promotion script and added a stable promotion script.
