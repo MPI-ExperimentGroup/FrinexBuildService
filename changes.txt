@@ -1,4 +1,5 @@
 
+Corrected the date sorting in the build listing page.
 Bumped the audio recoring library verson to v8.0.4
 On start up added a check for and deletion of any stray commit info files.
 Prevented the end user's browser caching the build log files.
