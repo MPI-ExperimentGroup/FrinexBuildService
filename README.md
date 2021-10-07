@@ -52,3 +52,13 @@ promote_beta_to_stable.sh
 backup_buildserver_images_and_volumes.sh
 
 restore_frinexbuild_backup.sh
+
+# CGI Scripts
+/cgi/experiment_access.cgi
+    Extracts and displays the information required to access a given experiment.
+
+/cgi/frinex_services.cgi
+    Provides a JSON file of experiments and port numbers for services running in the Docker swarm.
+
+/cgi/repository_setup.cgi
+    Creates a GIT repository for the currently authenticated user to be used in the Frinex build process.
