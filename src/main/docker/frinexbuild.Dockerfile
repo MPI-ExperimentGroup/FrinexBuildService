@@ -51,12 +51,13 @@ RUN sed -i "s|UserLDAP|example|g" /FrinexBuildService/frinex-git-server.conf
 RUN sed -i "s|PassLDAP|example|g" /FrinexBuildService/frinex-git-server.conf 
 RUN sed -i "s|#LDAPOPTION||g" /FrinexBuildService/frinex-git-server.conf 
 #RUN sed -i "s|#PUBLICOPTION||g" /FrinexBuildService/frinex-git-server.conf 
-COPY docker/git_setup.html  /FrinexBuildService/docs/
-COPY uml/overview.html  /FrinexBuildService/docs/
-COPY uml/ServiceOverview.svg  /FrinexBuildService/docs/
-COPY uml/DockerSwarmOverview.svg  /FrinexBuildService/docs/    
-COPY cgi/repository_setup.cgi  /FrinexBuildService/cgi/
-COPY cgi/experiment_access.cgi  /FrinexBuildService/cgi/
+COPY docker/git_setup.html /FrinexBuildService/docs/
+COPY uml/overview.html /FrinexBuildService/docs/
+COPY uml/ServiceOverview.svg /FrinexBuildService/docs/
+COPY uml/DockerSwarmOverview.svg /FrinexBuildService/docs/    
+COPY cgi/repository_setup.cgi /FrinexBuildService/cgi/
+COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
+COPY cgi/frinex_services.cgi /FrinexBuildService/cgi/
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
