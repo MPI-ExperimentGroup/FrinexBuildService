@@ -27,6 +27,5 @@
 echo "Content-type: text/json"
 echo ''
 echo "{\n"
-for imageName in "frinexbuild:stable" "frinexapps:stable" "frinexapps:beta"; do
-$(docker service ls | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' | awk 'NR>1 {print "  \"" $2 "\":" $6 ",\n"}')
+docker service ls | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' | awk 'NR>1 {print "  \"" $2 "\":" $6 ",\n"}'
 echo "}\n"
