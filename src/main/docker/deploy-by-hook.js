@@ -537,9 +537,12 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
+        const servicesJsonFileName = targetDirectory + "/services.json";
+        const createJsonServiceListingString = 'echo "{\n" > ' + servicesJsonFileName + '; sudo docker service ls | sed \'s/[*:]//g\' | sed \'s/->8080\/tcp//g\' | awk \'NR>1 {print "  \"" $2 "\":" $6 ",\n"}\' >> ' + servicesJsonFileName + '; echo "}\n" >> ' + servicesJsonFileName + ';';
     try {
         console.log(serviceSetupString);
         execSync(serviceSetupString, { stdio: [0, 1, 2] });
+        execSync(createJsonServiceListingString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
         // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
