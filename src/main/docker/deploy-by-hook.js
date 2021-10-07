@@ -538,7 +538,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
         const servicesJsonFileName = targetDirectory + "/services.json";
-        const createJsonServiceListingString = 'echo "{\n" > ' + servicesJsonFileName + '; sudo docker service ls | sed \'s/[*:]//g\' | sed \'s/->8080\/tcp//g\' | awk \'NR>1 {print "  \"" $2 "\":" $6 ",\n"}\' >> ' + servicesJsonFileName + '; echo "}\n" >> ' + servicesJsonFileName + ';';
+        const createJsonServiceListingString = 'echo "{" > ' + servicesJsonFileName + '; sudo docker service ls | sed \'s/[*:]//g\' | sed \'s/->8080\\/tcp//g\' | awk \'NR>1 {print "  \\"" $2 "\\":" $6 ","}\' >> ' + servicesJsonFileName + '; echo "}" >> ' + servicesJsonFileName + ';';
     try {
         console.log(serviceSetupString);
         execSync(serviceSetupString, { stdio: [0, 1, 2] });
