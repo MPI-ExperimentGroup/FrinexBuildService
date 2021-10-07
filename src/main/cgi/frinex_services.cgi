@@ -27,5 +27,5 @@
 echo "Content-type: text/json"
 echo ''
 echo "{\n"
-docker service ls | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' | awk 'NR>1 {print "  \"" $2 "\":" $6 ",\n"}'
+sudo docker service ls | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' | awk 'NR>1 {print "  \"" $2 "\":" $6 ",\n"}'
 echo "}\n"
