@@ -1940,12 +1940,12 @@ function prepareBuildHistory() {
             var datedFileSuffix = '-' + now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate();
             fs.writeFileSync(experimentTokensFileName + datedFileSuffix, JSON.stringify(experimentTokensJson, null, 4), { mode: 0o755 });
         } catch (error) {
-            console.error("faild to read " + experimentTokensJson);
+            console.error("faild to read " + experimentTokensFileName);
             console.error(error);
             try {
                 experimentTokensJson = JSON.parse(fs.readFileSync(experimentTokensFileName + ".temp", 'utf8'));
             } catch (error) {
-                console.error("faild to read " + experimentTokensJson + ".temp");
+                console.error("faild to read " + experimentTokensFileName + ".temp");
                 console.error(error);
             }
         }
