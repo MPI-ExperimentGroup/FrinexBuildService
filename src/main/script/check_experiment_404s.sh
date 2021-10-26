@@ -32,7 +32,7 @@ echo $scriptDir
 
 # grep any 404 lines, and extract the first element in the URL path that coresponds with the experiment name, then sanity check with grep again to filter out lines containing non alpha numeric characters, then remove duplicate names
 # requests to /actuator/health are ignored because this would be the build page not an active user
-possibleExperiment404s=$(sudo grep -E "GET /[[:alpha:]][[:alnum:]]{3,}/.*/.* 404" /var/log/tomcat/localhost_access_log.$(date +%F).txt | grep -v "/actuator/health" | cut -d / -f 4 | grep -E "^[[:alpha:]][[:alnum:]]{3,}$" | uniq)
+possibleExperiment404s=$(sudo grep -E "GET /[[:alpha:]][[:alnum:]]{3,}/.*/.* 404" /var/log/tomcat/localhost_access_log.$(date +%F).txt | grep -v "/actuator/health" | cut -d / -f 4 | grep -E "^[[:alpha:]][[:alnum:]]{3,}$" | uniq | paste -sd "|")
 echo $possibleExperiment404s
 
 for undeployedPath in `find /srv/tomcat/webapps/ -maxdepth 1 -mindepth 1 -type f -name *-admin.war.disabled -printf '%f\n'`
@@ -41,8 +41,9 @@ do
     undeployedExperimentName=${undeployedPath/-admin.war.disabled/}
     echo $undeployedExperimentName
 
-    if [[ $possibleExperiment404s == *$undeployedExperimentName* ]]; then
+    if [[ "|$possibleExperiment404s|" == *"|$undeployedExperimentName|"* ]]; then
         echo "Resurecting: $undeployedExperimentName"
+        echo "Resurecting: $undeployedExperimentName" >> $scriptDir/check_experiment_404s_$(date +%F).log
         mv /srv/tomcat/webapps/$undeployedPath-admin.war.disabled /srv/tomcat/webapps/$undeployedPath-admin.war
         mv /srv/tomcat/webapps/$undeployedPath.war.disabled /srv/tomcat/webapps/$undeployedPath.war
     else
