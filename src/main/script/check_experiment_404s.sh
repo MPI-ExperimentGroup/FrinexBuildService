@@ -28,7 +28,21 @@
 
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
-echo $scriptDir
+#echo $scriptDir
+
+lockFile=$scriptDir/check_experiment_404s.pid
+if [ -e $lockFile ]; then
+    lockFilePID=`cat $lockFile`
+    if kill -0 $lockFilePID &>> $scriptDir/check_experiment_404s_$(date +%F).log; then
+        echo "Existing process found, did not terminate, exiting" >> $scriptDir/check_experiment_404s_$(date +%F).log
+        exit 1
+    else
+        rm $lockFile
+        echo "Existing process terminated" >> $scriptDir/check_experiment_404s_$(date +%F).log
+    fi
+fi
+echo $BASHPID > $lockFile
+cat $lockFile >> $scriptDir/check_experiment_404s_$(date +%F).log
 
 # grep any 404 lines, and extract the first element in the URL path that coresponds with the experiment name, then sanity check with grep again to filter out lines containing non alpha numeric characters, then remove duplicate names
 # requests to /actuator/health are ignored because this would be the build page not an active user
@@ -42,7 +56,7 @@ do
     #echo $undeployedExperimentName
     # if both .war.disabled and .war files exist then delete .war.disabled because it will be out of date
     if [ -f /srv/tomcat/webapps/$undeployedExperimentName.war ]; then
-        echo "Existing $undeployedExperimentName.war found, will not resurect." >> $scriptDir/check_experiment_404s_$(date +%F).log
+        echo "Existing $undeployedExperimentName.war found, will not resurect, deleting .war.disabled files." >> $scriptDir/check_experiment_404s_$(date +%F).log
         sudo rm /srv/tomcat/webapps/$undeployedExperimentName-admin.war.disabled
         sudo rm /srv/tomcat/webapps/$undeployedExperimentName.war.disabled
     else
@@ -56,3 +70,4 @@ do
         fi
     fi
 done
+rm $lockFile
