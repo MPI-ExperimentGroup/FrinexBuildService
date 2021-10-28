@@ -40,13 +40,19 @@ do
     #echo $undeployedPath;
     undeployedExperimentName=${undeployedPath/-admin.war.disabled/}
     #echo $undeployedExperimentName
-
-    if [[ "|$possibleExperiment404s|" == *"|$undeployedExperimentName|"* ]]; then
-        #echo "Resurecting: $undeployedExperimentName"
-        echo "Resurecting: $undeployedExperimentName" >> $scriptDir/check_experiment_404s_$(date +%F).log
-        sudo mv /srv/tomcat/webapps/$undeployedExperimentName-admin.war.disabled /srv/tomcat/webapps/$undeployedExperimentName-admin.war
-        sudo mv /srv/tomcat/webapps/$undeployedExperimentName.war.disabled /srv/tomcat/webapps/$undeployedExperimentName.war
-    #else
-    #    echo "Nothing to do for: $undeployedExperimentName"
+    # if both .war.disabled and .war files exist then delete .war.disabled because it will be out of date
+    if [ -f /srv/tomcat/webapps/$undeployedExperimentName.war ]; then
+        echo "Existing $undeployedExperimentName.war found, will not resurect." >> $scriptDir/check_experiment_404s_$(date +%F).log
+        sudo rm /srv/tomcat/webapps/$undeployedExperimentName-admin.war.disabled
+        sudo rm /srv/tomcat/webapps/$undeployedExperimentName.war.disabled
+    else
+        if [[ "|$possibleExperiment404s|" == *"|$undeployedExperimentName|"* ]]; then
+            #echo "Resurecting: $undeployedExperimentName"
+            echo "Resurecting: $undeployedExperimentName" >> $scriptDir/check_experiment_404s_$(date +%F).log
+            sudo mv /srv/tomcat/webapps/$undeployedExperimentName-admin.war.disabled /srv/tomcat/webapps/$undeployedExperimentName-admin.war
+            sudo mv /srv/tomcat/webapps/$undeployedExperimentName.war.disabled /srv/tomcat/webapps/$undeployedExperimentName.war
+        #else
+        #    echo "Nothing to do for: $undeployedExperimentName"
+        fi
     fi
 done
