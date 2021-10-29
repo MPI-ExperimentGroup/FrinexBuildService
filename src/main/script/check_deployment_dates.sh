@@ -67,8 +67,10 @@ do
             let "inUseCounter++"
             break
         elif [ $dayOffset -eq $daysWithoutUse ]; then
-            #echo "$runningExperimentName not used in $dayOffset days, can be sent to sleep"
+            echo "$runningExperimentName not used in $dayOffset days, sending to sleep"
             let "canSleepCounter++"
+            sudo mv /srv/tomcat/webapps/$runningExperimentName-admin.war /srv/tomcat/webapps/$runningExperimentName-admin.war.disabled
+            sudo mv /srv/tomcat/webapps/$runningExperimentName.war /srv/tomcat/webapps/$runningExperimentName.war.disabled
         fi
     done
 done
