@@ -50,24 +50,31 @@ echo $BASHPID > $lockFile
 cat $lockFile >> $scriptDir/check_deployment_dates_$(date +%F).log
 date >> $scriptDir/check_deployment_dates_$(date +%F).log
 
+daysWithoutUse=15
+inUseCounter=0
+canSleepCounter=0
 # find all admin war files that were deployed -mtime +7 days or more ago and consider them for sleep mode
-for deployedPath in `find /srv/tomcat/webapps/ -maxdepth 1 -mindepth 1 -type f -mtime +7 -name *-admin.war -printf '%f\n'`
+for deployedPath in `find /srv/tomcat/webapps/ -maxdepth 1 -mindepth 1 -type f -mtime +$daysWithoutUse -name *-admin.war -printf '%f\n'`
 do
     #echo $deployedPath;
     runningExperimentName=${deployedPath/-admin.war/}
     #echo $runningExperimentName
-    if sudo grep --quiet "/$runningExperimentName/" /var/log/tomcat/localhost_access_log.$(date +%F).txt; then
-        echo "$runningExperimentName has been used today"
-    #else
-    #    echo "not used today"
-    fi
+    for dayOffset in $(seq 0 $daysWithoutUse)
+    do
+        #echo $dayOffset
+        if sudo grep --quiet "/$runningExperimentName/" /var/log/tomcat/localhost_access_log.$(date -d "$d - $dayOffset day" +%F).txt; then
+            echo "$runningExperimentName has been used $dayOffset days ago on the $(date -d "$d - $dayOffset day" +%F)" >> $scriptDir/check_deployment_dates_$(date +%F).log
+            let "inUseCounter++"
+            break
+        elif [ $dayOffset -eq $daysWithoutUse ]; then
+            #echo "$runningExperimentName not used in $dayOffset days, can be sent to sleep"
+            let "canSleepCounter++"
+        fi
+    done
 done
 
-# grep any 404 lines, and extract the first element in the URL path that coresponds with the experiment name, then sanity check with grep again to filter out lines containing non alpha numeric characters, then remove duplicate names
-# requests to /actuator/health are ignored because this would be the build page not an active user
-#possibleExperiment404sWithAdmin=$(sudo grep -E "GET /[a-z][a-z0-9_]{3,}(-admin)?/.*/.* 404" /var/log/tomcat/localhost_access_log.$(date +%F).txt | grep -v "/actuator/health" | cut -d / -f 4 | grep -E "^[a-z][a-z0-9_]{3,}(-admin)?$" | sort | uniq | paste -sd "|")
-#possibleExperiment404s=$(echo "|$possibleExperiment404sWithAdmin|" | sed "s/-admin|/|/g")
-#echo $possibleExperiment404s
+echo "$inUseCounter in use" >> $scriptDir/check_deployment_dates_$(date +%F).log
+echo "$canSleepCounter can sleep" >> $scriptDir/check_deployment_dates_$(date +%F).log
 
 date >> $scriptDir/check_deployment_dates_$(date +%F).log
 rm $lockFile
