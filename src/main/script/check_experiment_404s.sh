@@ -43,10 +43,12 @@ if [ -e $lockFile ]; then
 fi
 echo $BASHPID > $lockFile
 cat $lockFile >> $scriptDir/check_experiment_404s_$(date +%F).log
+#date >> $scriptDir/check_experiment_404s_$(date +%F).log
 
 # grep any 404 lines, and extract the first element in the URL path that coresponds with the experiment name, then sanity check with grep again to filter out lines containing non alpha numeric characters, then remove duplicate names
 # requests to /actuator/health are ignored because this would be the build page not an active user
-possibleExperiment404s=$(sudo grep -E "GET /[a-z][a-z0-9_]{3,}(-admin)?/.*/.* 404" /var/log/tomcat/localhost_access_log.$(date +%F).txt | grep -v "/actuator/health" | cut -d / -f 4 | grep -E "^[a-z][a-z0-9_]{3,}(-admin)?$" | sort | uniq | paste -sd "|")
+possibleExperiment404sWithAdmin=$(sudo grep -E "GET /[a-z][a-z0-9_]{3,}(-admin)?/.*/.* 404" /var/log/tomcat/localhost_access_log.$(date +%F).txt | grep -v "/actuator/health" | cut -d / -f 4 | grep -E "^[a-z][a-z0-9_]{3,}(-admin)?$" | sort | uniq | paste -sd "|")
+possibleExperiment404s=$(echo "|$possibleExperiment404sWithAdmin|" | sed "s/-admin|/|/g")
 #echo $possibleExperiment404s
 
 for undeployedPath in `find /srv/tomcat/webapps/ -maxdepth 1 -mindepth 1 -type f -name *-admin.war.disabled -printf '%f\n'`
@@ -60,7 +62,7 @@ do
         sudo rm /srv/tomcat/webapps/$undeployedExperimentName-admin.war.disabled
         sudo rm /srv/tomcat/webapps/$undeployedExperimentName.war.disabled
     else
-        if [[ "|$possibleExperiment404s|" == *"|$undeployedExperimentName|"* ]]; then
+        if [[ "$possibleExperiment404s" == *"|$undeployedExperimentName|"* ]]; then
             #echo "Resurecting: $undeployedExperimentName"
             echo "Resurecting: $undeployedExperimentName" >> $scriptDir/check_experiment_404s_$(date +%F).log
             sudo mv /srv/tomcat/webapps/$undeployedExperimentName-admin.war.disabled /srv/tomcat/webapps/$undeployedExperimentName-admin.war
@@ -70,4 +72,5 @@ do
         fi
     fi
 done
+#date >> $scriptDir/check_experiment_404s_$(date +%F).log
 rm $lockFile
