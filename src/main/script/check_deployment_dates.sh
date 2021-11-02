@@ -50,7 +50,7 @@ echo $BASHPID > $lockFile
 cat $lockFile >> $scriptDir/check_deployment_dates_$(date +%F).log
 date >> $scriptDir/check_deployment_dates_$(date +%F).log
 
-daysWithoutUse=15
+daysWithoutUse=120
 inUseCounter=0
 canSleepCounter=0
 # find all admin war files that were deployed -mtime +7 days or more ago and consider them for sleep mode
@@ -77,6 +77,11 @@ done
 
 echo "$inUseCounter in use" >> $scriptDir/check_deployment_dates_$(date +%F).log
 echo "$canSleepCounter can sleep" >> $scriptDir/check_deployment_dates_$(date +%F).log
+
+runningCounter=$(ls -l /srv/tomcat/webapps/*-admin.war | wc -l)
+sleepingCounter=$(ls -l /srv/tomcat/webapps/*-admin.war.disabled | wc -l)
+echo "$runningCounter experiments running" >> $scriptDir/check_deployment_dates_$(date +%F).log
+echo "$sleepingCounter experiments sleeping" >> $scriptDir/check_deployment_dates_$(date +%F).log
 
 date >> $scriptDir/check_deployment_dates_$(date +%F).log
 rm $lockFile
