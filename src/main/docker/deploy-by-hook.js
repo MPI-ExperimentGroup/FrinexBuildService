@@ -1933,7 +1933,7 @@ function updateDocumentation() {
 function prepareBuildHistory() {
     if (fs.existsSync(experimentTokensFileName)) {
         try {
-            var experimentTokensJson = JSON.parse(fs.readFileSync(experimentTokensFileName, 'utf8'));
+            experimentTokensJson = JSON.parse(fs.readFileSync(experimentTokensFileName, 'utf8'));
             fs.writeFileSync(experimentTokensFileName + ".temp", JSON.stringify(experimentTokensJson, null, 4), { mode: 0o755 });
             var now = new Date();
             var datedFileSuffix = '-' + now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate();
