@@ -47,7 +47,7 @@ cat $lockFile >> $scriptDir/check_experiment_404s_$(date +%F).log
 
 # grep any 404 lines, and extract the first element in the URL path that coresponds with the experiment name, then sanity check with grep again to filter out lines containing non alpha numeric characters, then remove duplicate names
 # requests to /actuator/health are ignored because this would be the build page not an active user
-possibleExperiment404sWithAdmin=$(sudo grep -E "GET /[a-z][a-z0-9_]{3,}(-admin)?/.*/.* 404" /var/log/tomcat/localhost_access_log.$(date +%F).txt | grep -v "/actuator/health" | cut -d / -f 4 | grep -E "^[a-z][a-z0-9_]{3,}(-admin)?$" | sort | uniq | paste -sd "|")
+possibleExperiment404sWithAdmin=$(sudo grep -E "GET /[a-z][a-z0-9_]{3,}(-admin)?/.*/.* 404" /var/log/tomcat/localhost_access_log.$(date +%F).txt | grep -v "/health HTTP" | cut -d / -f 4 | grep -E "^[a-z][a-z0-9_]{3,}(-admin)?$" | sort | uniq | paste -sd "|")
 possibleExperiment404s=$(echo "|$possibleExperiment404sWithAdmin|" | sed "s/-admin|/|/g")
 #echo $possibleExperiment404s
 
@@ -56,6 +56,12 @@ do
     #echo $undeployedPath;
     undeployedExperimentName=${undeployedPath/-admin.war.disabled/}
     #echo $undeployedExperimentName
+    if [ -d /srv/tomcat/webapps/$undeployedExperimentName/ ]; then
+        echo "Stray directory found : $undeployedExperimentName" >> $scriptDir/check_experiment_404s_$(date +%F).log
+    fi
+    if [ -d /srv/tomcat/webapps/$undeployedExperimentName-admin/ ]; then
+        echo "Stray directory found : $undeployedExperimentName-admin" >> $scriptDir/check_experiment_404s_$(date +%F).log
+    fi
     # if both .war.disabled and .war files exist then delete .war.disabled because it will be out of date
     if [ -f /srv/tomcat/webapps/$undeployedExperimentName.war ]; then
         echo "Existing $undeployedExperimentName.war found, will not resurect, deleting .war.disabled files." >> $scriptDir/check_experiment_404s_$(date +%F).log
