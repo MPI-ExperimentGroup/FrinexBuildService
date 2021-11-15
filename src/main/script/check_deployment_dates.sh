@@ -71,6 +71,8 @@ do
             let "canSleepCounter++"
             sudo mv /srv/tomcat/webapps/$runningExperimentName-admin.war /srv/tomcat/webapps/$runningExperimentName-admin.war.disabled
             sudo mv /srv/tomcat/webapps/$runningExperimentName.war /srv/tomcat/webapps/$runningExperimentName.war.disabled
+            #sudo rm -rf /srv/tomcat/webapps/$runningExperimentName-admin/
+            #sudo rm -rf /srv/tomcat/webapps/$runningExperimentName/
         fi
     done
 done
