@@ -87,7 +87,7 @@ echo "$sleepingCounter experiments sleeping" >> $scriptDir/check_deployment_date
 # sudo chown tomcat:tomcat /srv/tomcat/webapps/ROOT/known_sleepers.json
 # sudo chmod a+w /srv/tomcat/webapps/ROOT/known_sleepers.json
 echo "{" > /srv/tomcat/webapps/ROOT/known_sleepers.json
-find /srv/tomcat/webapps/ -maxdepth 1 -mindepth 1 -type f -name *-admin.war.disabled -printf '"%f,' | sed "s/-admin.war.disabled/\"/g" >> /srv/tomcat/webapps/ROOT/known_sleepers.json
+find /srv/tomcat/webapps/ -maxdepth 1 -mindepth 1 -type f -name *-admin.war.disabled -printf '"%f,' | sed "s/-admin.war.disabled/\"/g" | sed 's/,$/\n/' >> /srv/tomcat/webapps/ROOT/known_sleepers.json
 echo "}" >> /srv/tomcat/webapps/ROOT/known_sleepers.json
 
 date >> $scriptDir/check_deployment_dates_$(date +%F).log
