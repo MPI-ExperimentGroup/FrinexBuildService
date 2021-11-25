@@ -83,5 +83,12 @@ sleepingCounter=$(ls -l /srv/tomcat/webapps/*-admin.war.disabled | wc -l)
 echo "$runningCounter experiments running" >> $scriptDir/check_deployment_dates_$(date +%F).log
 echo "$sleepingCounter experiments sleeping" >> $scriptDir/check_deployment_dates_$(date +%F).log
 
+# sudo sudo touch /srv/tomcat/webapps/ROOT/known_sleepers.json
+# sudo chown tomcat:tomcat /srv/tomcat/webapps/ROOT/known_sleepers.json
+# sudo chmod a+w /srv/tomcat/webapps/ROOT/known_sleepers.json
+echo "{" > /srv/tomcat/webapps/ROOT/known_sleepers.json
+find /srv/tomcat/webapps/ -maxdepth 1 -mindepth 1 -type f -name *-admin.war.disabled -printf '"%f,' | sed "s/-admin.war.disabled/\"/g" >> /srv/tomcat/webapps/ROOT/known_sleepers.json
+echo "}" >> /srv/tomcat/webapps/ROOT/known_sleepers.json
+
 date >> $scriptDir/check_deployment_dates_$(date +%F).log
 rm $lockFile
