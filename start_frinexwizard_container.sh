@@ -22,18 +22,18 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-cd $(dirname "$0")
+cd $(dirname "$0")/src/main/
 workingDir=$(pwd -P)
 
 # check that the properties to be used match the current machine
-if ! grep -q $(hostname) src/main/config/publish.properties; then 
+if ! grep -q $(hostname) config/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # build the frinexwizard dockerfile
     docker build --no-cache -f docker/frinexwizard.Dockerfile -t frinexwizard:latest .
 
     # remove the old frinexwizard
-    docker stop frinexwizaed
+    docker stop frinexwizard
     docker container rm frinexwizard
 
     # start the frinexwizard container
