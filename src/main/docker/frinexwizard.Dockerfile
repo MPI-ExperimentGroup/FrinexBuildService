@@ -40,6 +40,14 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 #    && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
 #    && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
 
+# TODO: for now we are not using postgres
+RUN cd /ExperimentTemplate \
+    && sed -i '/frinex-parent/{n;s/postgresql/h2/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
+
+# the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
+RUN git clone https://github.com/chris-rudmin/opus-recorder.git
+RUN cd opus-recorder; git checkout tags/v8.0.4
+
 # TODO: the use of template_example here will be replaced by actual templates
 RUN cd /ExperimentTemplate \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=template_example
