@@ -72,10 +72,12 @@ RUN cd /ExperimentTemplate \
 RUN cd /ExperimentTemplate \
     && sed -i 's/POSTGRESQL/H2/' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties \
     && sed -i 's/PostgreSQLDialect/H2Dialect/' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties \
+    && sed -i 's/org.postgresql.Driver/org.h2.Driver/' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties \
+    && sed -i 's|jdbc:postgresql://localhost:5432/frinex_experiment_designer_db_admin|jdbc:h2:file:/data/wizard|' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties \
     && sed -i 's/spring.jpa.show-sql=false/spring.jpa.show-sql=true/' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
-    && mvn clean install -Dmaven.javadoc.skip=true -B -V
+    && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-1.4-testing-SNAPSHOT.war /frinexwizard.war
 
