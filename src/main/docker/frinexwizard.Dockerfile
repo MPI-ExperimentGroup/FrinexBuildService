@@ -43,7 +43,24 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 # TODO: the use of template_example here will be replaced by actual templates
 RUN cd /ExperimentTemplate \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=template_example
-RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example
+RUN mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/ExperimentTemplate /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/opus-recorder /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/groups.js /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/stomp-websocket /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/grouptestframes.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/grouptestpage.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/version.json /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/scss /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/template_example.xml /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/StyleTestPage.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/index.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/sockjs-client /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/static /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/jquery /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/css /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/TestingFrame.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+
 
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
