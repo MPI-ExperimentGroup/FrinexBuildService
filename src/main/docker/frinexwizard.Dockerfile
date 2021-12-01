@@ -42,8 +42,8 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 
 # TODO: the use of template_example here will be replaced by actual templates
 RUN cd /ExperimentTemplate \
-    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=template_example
-RUN cp /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example
+    && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=template_example
+RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example
 
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
