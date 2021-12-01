@@ -69,9 +69,9 @@ RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4
 RUN cd /ExperimentTemplate \
     && sed -i '/frinex-parent/{n;s/postgresql/h2/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-parent/{n;s/POSTGRESQL/H2/}' /ExperimentDesigner/src/main/resources/ExperimentDesigner/src/main/resources \
-    && sed -i '/frinex-parent/{n;s/PostgreSQLDialect/H2Dialect/}' /ExperimentDesigner/src/main/resources/ExperimentDesigner/src/main/resources \
-    && sed -i '/frinex-parent/{n;s/spring.jpa.show-sql=false/spring.jpa.show-sql=true/}' /ExperimentDesigner/src/main/resources/ExperimentDesigner/src/main/resources \
+    && sed -i '/frinex-parent/{n;s/POSTGRESQL/H2/}' /ExperimentDesigner/src/main/resources/ExperimentDesigner/src/main/resources/application.properties \
+    && sed -i '/frinex-parent/{n;s/PostgreSQLDialect/H2Dialect/}' /ExperimentDesigner/src/main/resources/ExperimentDesigner/src/main/resources/application.properties \
+    && sed -i '/frinex-parent/{n;s/spring.jpa.show-sql=false/spring.jpa.show-sql=true/}' /ExperimentDesigner/src/main/resources/ExperimentDesigner/src/main/resources/application.properties
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
     && mvn clean install -Dmaven.javadoc.skip=true -B -V
