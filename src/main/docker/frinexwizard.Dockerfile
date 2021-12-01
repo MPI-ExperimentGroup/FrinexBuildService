@@ -45,15 +45,15 @@ RUN cd /ExperimentTemplate \
     && sed -i '/frinex-parent/{n;s/postgresql/h2/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
 
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
-RUN git clone https://github.com/chris-rudmin/opus-recorder.git
-RUN cd opus-recorder; git checkout tags/v8.0.4
+#RUN git clone https://github.com/chris-rudmin/opus-recorder.git
+#RUN cd opus-recorder; git checkout tags/v8.0.4
 
 # TODO: the use of template_example here will be replaced by actual templates
 RUN cd /ExperimentTemplate \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=template_example
 RUN mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example
 RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/ExperimentTemplate /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
-RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/opus-recorder /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
+#RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/opus-recorder /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
 RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/groups.js /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
 RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/stomp-websocket /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
 RUN cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/grouptestframes.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/template_example/
