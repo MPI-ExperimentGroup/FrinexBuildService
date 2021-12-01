@@ -37,5 +37,7 @@ else
     docker container rm frinexwizard
 
     # start the frinexwizard container
-    docker run --restart unless-stopped -dit --name frinexwizard  -p 7070:80 frinexwizard:latest
+    docker run --restart unless-stopped -dit --name frinexwizard  -p 7070:8080 frinexwizard:latest
 fi;
+
+# docker run -it --name frinexwizard bash
