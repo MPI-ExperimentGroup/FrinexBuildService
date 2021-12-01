@@ -42,7 +42,7 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 
 # TODO: for now we are not using postgres
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-parent/{n;s/postgresql/h2/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
+    && sed -i '/frinex-parent/{n;s/postgresql/h2/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
 
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
 #RUN git clone https://github.com/chris-rudmin/opus-recorder.git
