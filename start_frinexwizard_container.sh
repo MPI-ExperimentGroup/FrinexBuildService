@@ -29,6 +29,9 @@ workingDir=$(pwd -P)
 if ! grep -q $(hostname) src/main/config/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
+    # build the frinexwizard dockerfile
+    docker build --no-cache -f docker/frinexwizard.Dockerfile -t frinexwizard:latest .
+
     # remove the old frinexwizard
     docker stop frinexwizaed
     docker container rm frinexwizard
