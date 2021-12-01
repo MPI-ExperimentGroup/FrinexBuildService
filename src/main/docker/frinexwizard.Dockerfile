@@ -16,11 +16,13 @@
 #
 
 #
-# @since 01 November 2021 12:37 PM (creation date)
+# @since 01 December 2021 12:37 PM (creation date)
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
 FROM openjdk:11
+
+RUN apt-get -y install maven
 
 # clone the Frinex repository including enough depth to give correct build numbers
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
