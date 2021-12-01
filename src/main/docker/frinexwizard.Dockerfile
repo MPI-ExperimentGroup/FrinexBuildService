@@ -22,6 +22,8 @@
 
 FROM openjdk:11
 
+RUN apt-get update
+RUN apt-get -y upgrade
 RUN apt-get -y install maven
 
 # clone the Frinex repository including enough depth to give correct build numbers
