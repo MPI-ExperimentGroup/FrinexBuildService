@@ -81,10 +81,12 @@ RUN sed -i "s|ou=exampleGroups|ou=groups|g" /ExperimentTemplate/ExperimentDesign
 RUN sed -i "s|exampleAttribute|passwordAttribute|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 RUN sed -i "s|uid=admin,ou=system|uid=exampleManager|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 RUN sed -i "s|managerDnPassword|examplePassword|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
+RUN sed -i "s|userDnPatterns=uid=|userDnPatterns=dn=|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-1.4-testing-SNAPSHOT.war /frinexwizard.war
 
+#CMD ["java", "-Dlogging.level.org.springframework=TRACE", "-jar", "/frinexwizard.war"]
 CMD ["java", "-jar", "/frinexwizard.war"]
