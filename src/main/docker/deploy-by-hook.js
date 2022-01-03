@@ -206,10 +206,10 @@ function startResult() {
     fs.writeSync(resultsFile, "} else {\n");
     fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging'] = 'red';\n");
     fs.writeSync(resultsFile, "}\n");
-    fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_staging', cellStyle);\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_staging_web', cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
-    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_staging'].style)));\n");
+    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_staging_web'].style)));\n");
     fs.writeSync(resultsFile, "$.getJSON(data.table[keyString]['_production_target'].value+'/'+keyString+'/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
     fs.writeSync(resultsFile, "if (key === 'status') {\n");
