@@ -197,7 +197,6 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_production_admin'].style)));\n");
-    fs.writeSync(resultsFile, "}\n");
     // get the health of the GUI
     fs.writeSync(resultsFile, "$.getJSON('" + stagingServerUrl + "/'+keyString+'/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
