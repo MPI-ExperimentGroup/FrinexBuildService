@@ -145,6 +145,7 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "document.getElementById('buildTable').appendChild(tableRow);\n");
     // check the spring health here and show http and db status via applicationStatus array
+    // get the health of the admin
     // the path -admin/health is for spring boot 1.4.1
     fs.writeSync(resultsFile, "$.getJSON('" + stagingServerUrl + "/'+keyString+'-admin/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
@@ -184,7 +185,7 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_staging_admin'].style)));\n");
-    fs.writeSync(resultsFile, "$.getJSON('" + productionServerUrl + "/'+keyString+'-admin/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.getJSON(data.table[keyString]['_production_target'].value+'/'+keyString+'-admin/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
     fs.writeSync(resultsFile, "if (key === 'status') {\n");
     fs.writeSync(resultsFile, "if (val === 'UP') {\n");
@@ -196,6 +197,32 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_production_admin'].style)));\n");
+    fs.writeSync(resultsFile, "}\n");
+    // get the health of the GUI
+    fs.writeSync(resultsFile, "$.getJSON('" + stagingServerUrl + "/'+keyString+'/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
+    fs.writeSync(resultsFile, "if (key === 'status') {\n");
+    fs.writeSync(resultsFile, "if (val === 'UP') {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging'] = 'green';\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__staging'] = 'red';\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_staging', cellStyle);\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "});\n");
+    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_staging'].style)));\n");
+    fs.writeSync(resultsFile, "$.getJSON(data.table[keyString]['_production_target'].value+'/'+keyString+'/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
+    fs.writeSync(resultsFile, "if (key === 'status') {\n");
+    fs.writeSync(resultsFile, "if (val === 'UP') {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production'] = 'green';\n");
+    fs.writeSync(resultsFile, "} else {\n");
+    fs.writeSync(resultsFile, "applicationStatus[experimentName + '__production'] = 'red';\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_production', cellStyle);\n");
+    fs.writeSync(resultsFile, "}\n");
+    fs.writeSync(resultsFile, "});\n");
+    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_production'].style)));\n");
     fs.writeSync(resultsFile, "}\n");
     // use the UTC date stored in a data attribute of the row to check if the row has changes before updating it
     fs.writeSync(resultsFile, "if (data.table[keyString]['_date'].value !== experimentRow.dataset.lastchange) {\n");
