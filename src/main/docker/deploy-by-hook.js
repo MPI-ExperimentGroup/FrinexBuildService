@@ -497,13 +497,13 @@ function unDeploy(currentEntry) {
     try {
         execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-gui undeploy finished");
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?'+new Date().getTime() + '">undeployed</a>', "production", "web", false, false, false);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">undeployed</a>', "production", "web", false, false, false);
     } catch (error) {
         console.error(`production frinex-gui undeploy error: ${error}`);
-        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?'+new Date().getTime() + '">undeploy error</a>', "production", "web", true, false, true);
+        storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">undeploy error</a>', "production", "web", true, false, true);
     }
     // undeploy production admin
-    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?'+new Date().getTime() + '">undeploying</a>', "production", "admin", false, true, false);
+    storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">undeploying</a>', "production", "admin", false, true, false);
     var dockerString = 'sudo docker container rm -f ' + buildContainerName
         + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + 'sudo docker run'
@@ -566,8 +566,8 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
-        const servicesJsonFileName = targetDirectory + "/services.json";
-        const createJsonServiceListingString = 'echo "{" > ' + servicesJsonFileName + '; sudo docker service ls | sed \'s/[*:]//g\' | sed \'s/->8080\\/tcp//g\' | awk \'NR>1 {print "  \\"" $2 "\\":" $6 ","}\' >> ' + servicesJsonFileName + '; echo "}" >> ' + servicesJsonFileName + ';';
+    const servicesJsonFileName = targetDirectory + "/services.json";
+    const createJsonServiceListingString = 'echo "{" > ' + servicesJsonFileName + '; sudo docker service ls | sed \'s/[*:]//g\' | sed \'s/->8080\\/tcp//g\' | awk \'NR>1 {print "  \\"" $2 "\\":" $6 ","}\' >> ' + servicesJsonFileName + '; echo "}" >> ' + servicesJsonFileName + ';';
     try {
         console.log(serviceSetupString);
         execSync(serviceSetupString, { stdio: [0, 1, 2] });
@@ -1140,7 +1140,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -Dexperiment.artifactsJsonDirectory=' + targetDirectory + '/' + currentEntry.buildName + '/'
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
-            + ' -Dexperiment.configuration.admin.password=' + getExperimentToken(currentEntry.buildName)
+            // only use a token for the admin password here so that the passwords do not get stored in the logs
+            + ' -Dexperiment.configuration.admin.password=_admin_password_'
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
                 ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
@@ -1167,7 +1168,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + '"';
         console.log(dockerString);
         try {
-            execSync(dockerString, { stdio: [0, 1, 2] });
+            // after the log has been written replace the token with the admin password
+            execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 if (deploymentType.includes('docker')) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war', currentEntry.buildName + '_production_admin');
