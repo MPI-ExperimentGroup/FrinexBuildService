@@ -38,7 +38,7 @@ const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 const execSync = require('child_process').execSync;
 const { exec } = require('child_process');
-const got = require('got');
+const got = import('got');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -401,6 +401,7 @@ function unDeploy(currentEntry) {
         + ' mvn tomcat7:undeploy '
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
+        + ' -Dlog4j2.version=2.17.0'
         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
         + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
         + ' -Dexperiment.webservice=' + configServer
@@ -438,6 +439,7 @@ function unDeploy(currentEntry) {
         + ' mvn tomcat7:undeploy '
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
+        + ' -Dlog4j2.version=2.17.0'
         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
         + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
         + ' -Dexperiment.webservice=' + configServer
@@ -475,6 +477,7 @@ function unDeploy(currentEntry) {
         + ' mvn tomcat7:undeploy '
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
+        + ' -Dlog4j2.version=2.17.0'
         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
         + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
         + ' -Dexperiment.webservice=' + configServer
@@ -516,6 +519,7 @@ function unDeploy(currentEntry) {
         + ' mvn tomcat7:undeploy '
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
+        + ' -Dlog4j2.version=2.17.0'
         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
         + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
         + ' -Dexperiment.webservice=' + configServer
@@ -629,6 +633,7 @@ function deployStagingGui(currentEntry) {
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
+            + ' -Dlog4j2.version=2.17.0'
             //+ ' -pl gwt-cordova'
             + ((currentEntry.state === "debug") ? ' -Dgwt.draftCompile=true -Dgwt.extraJvmArgs="-Xmx1024m"' : '')
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
@@ -790,6 +795,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
+            + ' -Dlog4j2.version=2.17.0'
             //+ ' -pl frinex-admin'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
@@ -961,6 +967,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         //+ 'package'
                         + ' -gs /maven/.m2/settings.xml'
                         + ' -DskipTests'
+                        + ' -Dlog4j2.version=2.17.0'
                         //+ ' -pl gwt-cordova'
                         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
                         + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
@@ -1125,6 +1132,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
+            + ' -Dlog4j2.version=2.17.0'
             //+ ' -pl frinex-admin'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
@@ -1890,6 +1898,7 @@ function convertJsonToXml() {
         // TODO: at some point this might need to change to stable rather than latest
         + ' frinexapps:latest /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
+        + ' -Dlog4j2.version=2.17.0'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/queued /FrinexBuildService/processing/validated /FrinexBuildService/listing ' + targetDirectory /* the schema file is in the target directory, however it might be nicer to use a dedicated directory when we support multiple schema/build versions */ + '\\"'
@@ -1937,6 +1946,7 @@ function updateDocumentation() {
         + ' -w /ExperimentTemplate/ExperimentDesigner'
         + ' frinexapps:stable /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
+        + ' -Dlog4j2.version=2.17.0'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.DocumentationGenerator ' + targetDirectory + /*'/FrinexBuildService/docs '*/ ' ' + targetDirectory + '\\"'
