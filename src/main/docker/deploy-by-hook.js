@@ -185,7 +185,7 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_staging_admin'].style)));\n");
-    fs.writeSync(resultsFile, "$.getJSON(data.table[keyString]['_production_target'].value+'/'+keyString+'-admin/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : '" + productionServerUrl + "')+'/'+keyString+'-admin/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
     fs.writeSync(resultsFile, "if (key === 'status') {\n");
     fs.writeSync(resultsFile, "if (val === 'UP') {\n");
@@ -210,7 +210,7 @@ function startResult() {
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
     fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_staging_web'].style)));\n");
-    fs.writeSync(resultsFile, "$.getJSON(data.table[keyString]['_production_target'].value+'/'+keyString+'/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
+    fs.writeSync(resultsFile, "$.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value:'" + productionServerUrl + "')+'/'+keyString+'/actuator/health', (function(experimentName, cellStyle) { return function(data) {\n");
     fs.writeSync(resultsFile, "$.each(data, function (key, val) {\n");
     fs.writeSync(resultsFile, "if (key === 'status') {\n");
     fs.writeSync(resultsFile, "if (val === 'UP') {\n");
