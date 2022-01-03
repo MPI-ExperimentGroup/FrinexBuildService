@@ -221,7 +221,7 @@ function startResult() {
     fs.writeSync(resultsFile, "updateDeploymentStatus(experimentName, '_production', cellStyle);\n");
     fs.writeSync(resultsFile, "}\n");
     fs.writeSync(resultsFile, "});\n");
-    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_production'].style)));\n");
+    fs.writeSync(resultsFile, "};}(keyString, data.table[keyString]['_production_web'].style)));\n");
     fs.writeSync(resultsFile, "}\n");
     // use the UTC date stored in a data attribute of the row to check if the row has changes before updating it
     fs.writeSync(resultsFile, "if (data.table[keyString]['_date'].value !== experimentRow.dataset.lastchange) {\n");
