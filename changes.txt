@@ -1,4 +1,10 @@
 
+Updated the experiment health status to incude the GUI and different production deployment targets.
+Updated to the second patched version of log4j, note that this property will not be needed when all the current build images are replaced with newer images.
+Added ldap/activedirectory for the frinex wizard.
+Added a docker image for the frinex wizard.
+Adding a JSON list of sleeping experiments to help the 404 page give more relevant information.
+Added a script to disable experiments in TomCat when not used for N days.
 Added a script to restart disabled experiments in TomCat when a 404 is found indicating a need for that experiment to be running.
 Added a CGI script that returns a JSON file of the experiment services running in the Docker swarm.
 Corrected the date sorting in the build listing page.
