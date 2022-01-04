@@ -1,0 +1,11 @@
+{
+  "name": "deploy-by-hook",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "deploy-by-hook.js",
+  "author": "Peter Withers <peter.withers@mpi.nl>",
+  "dependencies": {
+    "got": "^12.0.0"
+  }
+}
