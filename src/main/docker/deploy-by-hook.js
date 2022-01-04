@@ -38,7 +38,7 @@ const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 const execSync = require('child_process').execSync;
 const { exec } = require('child_process');
-const got = import('got');
+import got from 'got';
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -901,7 +901,6 @@ function deployProductionGui(currentEntry, retryCounter) {
             got.get(existingDeploymentUrl, { responseType: 'text', timeout: { request: 3000 } }).then(response => {
                 console.log("statusCode: " + response.statusCode);
                 console.log("existing frinex-gui production found, aborting build!");
-                console.log(response.statusCode);
                 storeResult(currentEntry.buildName, "existing production found, aborting build!", "production", "web", true, false, false);
                 if (fs.existsSync(productionQueuedFile)) {
                     fs.unlinkSync(productionQueuedFile);
