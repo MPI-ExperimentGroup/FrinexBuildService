@@ -34,7 +34,7 @@ else
 
     # compress and store the docker images in ./BackupFiles
     # repeat the back the up process for each relevant image
-    for imageName in "frinexbuild:stable" "frinexapps:stable" "frinexapps:beta"; do
+    for imageName in "frinexbuild:stable" "frinexapps:stable" "frinexapps:beta" "frinexapps:alpha" "frinexapps:latest"; do
         # make a backup of each relevant image that is not already on disk
         backupName=$(docker image ls $imageName | awk 'NR>1 {print $1 "_" $2 "_" $3 "_"}')$(date +%F).tar.gz
         if [[ $backupName == *"frinex"* ]]; then
@@ -43,10 +43,25 @@ else
                 echo "A backup of $backupName already exists and will not be replaced."
             else
                 echo "Creating a backup of $imageName to $backupName."
-                docker save frinexapps:stable | gzip > $workingDir/BackupFiles/$backupName
+                docker save $imageName | gzip > $workingDir/BackupFiles/$backupName
             fi
         else
             echo "No image $imageName to back up."
+        fi
+    done
+    for frinexImageTag in $(docker images | grep frinexapps | awk 'NR>1 {print $2}'); do
+        # make a backup of each relevant image that is not already on disk
+        backupName=frinexapps_$frinexImageTag.tar.gz
+        if [[ $backupName == *"frinex"* ]]; then
+            if [ -s "$workingDir/BackupFiles/$backupName" ]
+            then 
+                echo "A backup of $backupName already exists and will not be replaced."
+            else
+                echo "Creating a backup of $frinexImageTag to $backupName."
+                docker save frinexapps:$frinexImageTag | gzip > $workingDir/BackupFiles/$backupName
+            fi
+        else
+            echo "No image $frinexImageTag to back up."
         fi
     done
 
