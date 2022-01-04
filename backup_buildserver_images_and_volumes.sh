@@ -34,7 +34,7 @@ else
 
     # compress and store the docker images in ./BackupFiles
     # repeat the back the up process for each relevant image
-    for imageName in "frinexbuild:stable" "frinexapps:stable" "frinexapps:beta" "frinexapps:alpha" "frinexapps:latest"; do
+    for imageName in "frinexbuild:stable" "frinexapps:stable" "frinexapps:beta" "frinexapps:alpha" "frinexapps:latest" "frinexapps:1.3-audiofix"; do
         # make a backup of each relevant image that is not already on disk
         backupName=$(docker image ls $imageName | awk 'NR>1 {print $1 "_" $2 "_" $3 "_"}')$(date +%F).tar.gz
         if [[ $backupName == *"frinex"* ]]; then
