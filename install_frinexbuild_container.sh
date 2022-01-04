@@ -71,6 +71,9 @@ else
     # make sure the relevant directories have the correct permissions after an install or update
     docker run  -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected --rm -it --name frinexbuild-permissions frinexbuild:latest bash -c \
       "chmod -R ug+rwx /FrinexBuildService; chown -R frinex:daemon /FrinexBuildService/artifacts; chmod -R ug+rwx /FrinexBuildService/artifacts; chown -R frinex:daemon /FrinexBuildService/git-checkedout; chmod -R ug+rwx /FrinexBuildService/git-checkedout; chown -R frinex:daemon /FrinexBuildService/git-repositories; chmod -R ug+rwx /FrinexBuildService/git-repositories; chown -R frinex:daemon /FrinexBuildService/docs; chmod -R ug+rwx /FrinexBuildService/docs; chown -R frinex:daemon /FrinexBuildService/protected; chmod -R ug+rwx /FrinexBuildService/protected;";
+    # move the old logs out of the way, note that this could overwrite old out of the way logs from the same date
+    docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinexbuild-moveoldlogs frinexbuild:latest bash -c \
+      "mkdir artifacts/logs-$(date +%F)/; mv artifacts/git-*.txt artifacts/logs-$(date +%F)/;";
     # -v $workingDir/BackupFiles:/BackupFiles
     # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
 
