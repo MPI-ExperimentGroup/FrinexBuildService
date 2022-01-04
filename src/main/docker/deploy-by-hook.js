@@ -895,6 +895,7 @@ function deployProductionGui(currentEntry, retryCounter) {
         currentlyBuilding.delete(currentEntry.buildName);
     } else {
         var existingDeploymentUrl = ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer : productionServerUrl) + "/" + currentEntry.buildName;
+    const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
         console.log("existing deployment check: " + existingDeploymentUrl);
         try {
             got.get(existingDeploymentUrl, { responseType: 'text', timeout: { request: 3000 } }).then(response => {
@@ -1027,7 +1028,6 @@ function deployProductionGui(currentEntry, retryCounter) {
                             console.log("deployProductionGui finished: " + currentEntry.buildName);
                             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer + '/' : 'https://frinexproduction.mpi.nl/') + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, new Date().getTime() - stageStartTime);
                             var buildArtifactsJson = { artifacts: {} };
-                            const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
                             buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production_web.war";
                             // update artifacts.json
                             fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
