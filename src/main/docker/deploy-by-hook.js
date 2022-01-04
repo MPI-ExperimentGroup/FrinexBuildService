@@ -36,8 +36,7 @@
 
 import PropertiesReader from 'properties-reader';
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
-import execSync from 'child_process';
-import exec from 'child_process';
+import child_process from 'child_process';
 import got from 'got';
 import fs from 'fs';
 import path from 'path';
@@ -415,7 +414,7 @@ function unDeploy(currentEntry) {
         + '"';
     console.log(dockerString);
     try {
-        execSync(dockerString, { stdio: [0, 1, 2] });
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("staging frinex-gui undeploy finished");
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt?' + new Date().getTime() + '">undeployed</a>', "staging", "web", false, false, false);
     } catch (error) {
@@ -453,7 +452,7 @@ function unDeploy(currentEntry) {
         + '"';
     console.log(dockerString);
     try {
-        execSync(dockerString, { stdio: [0, 1, 2] });
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("staging frinex-admin undeploy finished");
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt?' + new Date().getTime() + '">undeployed</a>', "staging", "admin", false, false, false);
     } catch (error) {
@@ -495,7 +494,7 @@ function unDeploy(currentEntry) {
         + '"';
     console.log(dockerString);
     try {
-        execSync(dockerString, { stdio: [0, 1, 2] });
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-gui undeploy finished");
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">undeployed</a>', "production", "web", false, false, false);
     } catch (error) {
@@ -537,7 +536,7 @@ function unDeploy(currentEntry) {
         + '"';
     console.log(dockerString);
     try {
-        execSync(dockerString, { stdio: [0, 1, 2] });
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-admin undeploy finished");
         storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">undeployed</a>', "production", "admin", false, false, false);
     } catch (error) {
@@ -570,8 +569,8 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
     const createJsonServiceListingString = 'echo "{" > ' + servicesJsonFileName + '; sudo docker service ls | sed \'s/[*:]//g\' | sed \'s/->8080\\/tcp//g\' | awk \'NR>1 {print "  \\"" $2 "\\":" $6 ","}\' >> ' + servicesJsonFileName + '; echo "}" >> ' + servicesJsonFileName + ';';
     try {
         console.log(serviceSetupString);
-        execSync(serviceSetupString, { stdio: [0, 1, 2] });
-        execSync(createJsonServiceListingString, { stdio: [0, 1, 2] });
+        child_process.execSync(serviceSetupString, { stdio: [0, 1, 2] });
+        child_process.execSync(createJsonServiceListingString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
         // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
@@ -680,7 +679,7 @@ function deployStagingGui(currentEntry) {
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
-        exec(dockerString, (error, stdout, stderr) => {
+        child_process.exec(dockerString, (error, stdout, stderr) => {
             if (error) {
                 console.error(`deployStagingGui error: ${error}`);
             }
@@ -825,7 +824,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + '"';
         console.log(dockerString);
         try {
-            execSync(dockerString, { stdio: [0, 1, 2] });
+            child_process.execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
                 if (deploymentType.includes('docker')) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war', currentEntry.buildName + '_staging_admin');
@@ -1014,7 +1013,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + '"';
                     console.log(dockerString);
-                    exec(dockerString, (error, stdout, stderr) => {
+                    child_process.exec(dockerString, (error, stdout, stderr) => {
                         if (error) {
                             console.error(`deployProductionGui error: ${error}`);
                         }
@@ -1168,7 +1167,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
         console.log(dockerString);
         try {
             // after the log has been written replace the token with the admin password
-            execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
+            child_process.execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 if (deploymentType.includes('docker')) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war', currentEntry.buildName + '_production_admin');
@@ -1252,7 +1251,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.*;'
             + '"';
         console.log(dockerString);
-        execSync(dockerString, { stdio: [0, 1, 2] });
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
     } catch (reason) {
         console.error(reason);
         resultString += 'failed&nbsp;';
@@ -1328,7 +1327,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_*.zip;'
             + '"';
         console.log(dockerString);
-        execSync(dockerString, { stdio: [0, 1, 2] });
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         //resultString += "built&nbsp;";
     } catch (reason) {
         console.error(reason);
@@ -1395,7 +1394,7 @@ function buildNextExperiment() {
             currentlyBuilding.set(currentEntry.buildName, currentEntry);
             listingMap.delete(currentKey);
             //console.log("starting generate stimulus");
-            //execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
+            //child_process.execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
             if (currentEntry.state === "draft" || currentEntry.state === "debug" || currentEntry.state === "staging" || currentEntry.state === "production") {
                 deployStagingGui(currentEntry);
             } else if (currentEntry.state === "undeploy") {
@@ -1735,7 +1734,7 @@ function moveIncomingToQueued() {
                     console.log("pre exit backup disabled");
                     /*console.log("pre exit backup");
                     try {
-                        execSync('rsync -a --no-perms --no-owner --no-group --no-times ' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
+                        child_process.execSync('rsync -a --no-perms --no-owner --no-group --no-times ' + targetDirectory + '/ /BackupFiles/buildartifacts; rsync -a --no-perms --no-owner --no-group --no-times /FrinexBuildService/git-repositories /BackupFiles/ &> ' + targetDirectory + '/backup.log;', { stdio: [0, 1, 2] });
                     } catch (reason) {
                         console.error("check backup.log for messages");
                         console.error(reason);
@@ -1820,7 +1819,7 @@ function moveIncomingToQueued() {
                                 fs.unlinkSync(stagingBuildingConfigFile);
                                 try {
                                     // note that we dont stop currentName + '_undeploy' because it is probable that the committer intends to undeploy then redeploy and a partial undeploy would be undesirable
-                                    execSync('sudo docker container rm -f ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
+                                    child_process.execSync('sudo docker container rm -f ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
                                 } catch (reason) {
                                     console.error(reason);
                                 }
@@ -1831,7 +1830,7 @@ function moveIncomingToQueued() {
                                 console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
                                 fs.unlinkSync(productionBuildingConfigFile);
                                 try {
-                                    execSync('sudo docker container rm -f ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
+                                    child_process.execSync('sudo docker container rm -f ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
                                 } catch (reason) {
                                     console.error(reason);
                                 }
@@ -1908,7 +1907,7 @@ function convertJsonToXml() {
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".txt";
     console.log(dockerString);
     try {
-        execSync(dockerString, { stdio: [0, 1, 2] });
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("convert JSON to XML finished");
         //fs.writeSync(resultsFile, "<div>Conversion from JSON to XML finished, '" + new Date().toISOString() + "'</div>");
         prepareForProcessing();
@@ -1959,7 +1958,7 @@ function updateDocumentation() {
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;"';
     console.log(dockerString);
     try {
-        execSync(dockerString, { stdio: [0, 1, 2] });
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("update_schema_docs finished");
     } catch (reason) {
         console.error(reason);
