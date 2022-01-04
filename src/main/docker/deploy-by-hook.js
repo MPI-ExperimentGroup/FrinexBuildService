@@ -34,16 +34,16 @@
 
 "use strict";
 
-const PropertiesReader = require('properties-reader');
+import PropertiesReader from 'properties-reader';
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
-const execSync = require('child_process').execSync;
-const { exec } = require('child_process');
+import execSync from 'child_process';
+import exec from 'child_process';
 import got from 'got';
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const diskSpace = require('check-disk-space').default;
-const generatePassword = require('omgopass');
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import diskSpace from 'check-disk-space';
+import generatePassword from 'omgopass';
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
