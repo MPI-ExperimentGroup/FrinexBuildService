@@ -101,12 +101,12 @@ function startResult() {
     fs.writeSync(resultsFile, "<td><a href=\"#5\">version</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#6\">validation</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#7\">staging web</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#8\">staging android</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#8\">staging mobile</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#9\">staging desktop</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#10\">staging admin</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#11\">production server</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#12\">production web</a></td>\n");
-    fs.writeSync(resultsFile, "<td><a href=\"#13\">production android</a></td>\n");
+    fs.writeSync(resultsFile, "<td><a href=\"#13\">production mobile</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#14\">production desktop</a></td>\n");
     fs.writeSync(resultsFile, "<td><a href=\"#15\">production admin</a></td>\n");
     fs.writeSync(resultsFile, "<tr>\n");
