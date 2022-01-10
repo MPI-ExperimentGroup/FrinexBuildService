@@ -57,12 +57,8 @@ RUN cd /ExperimentTemplate \
     && sed -i 's|jdbc:postgresql://localhost:5432/frinex_experiment_designer_db_admin|jdbc:h2:file:/data/wizard|' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties \
     && sed -i 's/spring.jpa.show-sql=false/spring.jpa.show-sql=true/' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 
-RUN sed -i "s|ldaps://ldap.example.com:33389/dc=myco,dc=org|ldap://ldap.example.com/DC=example,DC=com|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
-RUN sed -i "s|ou=exampleGroups|ou=groups|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
-RUN sed -i "s|exampleAttribute|passwordAttribute|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
-RUN sed -i "s|uid=admin,ou=system|uid=exampleManager|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
-RUN sed -i "s|managerDnPassword|examplePassword|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
-RUN sed -i "s|userDnPatterns=uid=|userDnPatterns=dn=|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
+# apply location specific settings to the various configuration files
+RUN bash filter_config_settings.sh
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
@@ -70,4 +66,5 @@ RUN cd /ExperimentTemplate/ExperimentDesigner \
 RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-1.4-testing-SNAPSHOT.war /frinexwizard.war
 
 #CMD ["java", "-Dlogging.level.org.springframework=TRACE", "-jar", "/frinexwizard.war"]
+#CMD ["java", "-Dlogging.level.org.springframework=DEBUG", "-jar", "/frinexwizard.war"]
 CMD ["java", "-jar", "/frinexwizard.war"]
