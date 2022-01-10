@@ -44,7 +44,7 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 #RUN git clone https://github.com/chris-rudmin/opus-recorder.git
 #RUN cd opus-recorder; git checkout tags/v8.0.4
 
-RUN docker/compile_wizard_tempates.sh
+RUN bash docker/compile_wizard_tempates.sh
 
 # TODO: for now we are not using postgres
 RUN cd /ExperimentTemplate \
