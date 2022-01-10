@@ -43,8 +43,8 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
 #RUN git clone https://github.com/chris-rudmin/opus-recorder.git
 #RUN cd opus-recorder; git checkout tags/v8.0.4
-
-RUN bash docker/compile_wizard_tempates.sh
+COPY docker/compile_wizard_tempates.sh /FrinexBuildService/
+RUN /FrinexBuildService/compile_wizard_tempates.sh
 
 # TODO: for now we are not using postgres
 RUN cd /ExperimentTemplate \
@@ -58,7 +58,8 @@ RUN cd /ExperimentTemplate \
     && sed -i 's/spring.jpa.show-sql=false/spring.jpa.show-sql=true/' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 
 # apply location specific settings to the various configuration files
-RUN bash docker/filter_config_settings.sh
+COPY docker/filter_config_settings.sh /FrinexBuildService/
+RUN /FrinexBuildService/filter_config_settings.sh
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V

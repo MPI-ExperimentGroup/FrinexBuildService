@@ -85,7 +85,8 @@ RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildServi
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/update_post-receive_hooks.sh
 # apply location specific settings to the various configuration files
-RUN bash docker/filter_config_settings.sh
+COPY docker/filter_config_settings.sh /FrinexBuildService/
+RUN /FrinexBuildService/filter_config_settings.sh
 RUN cd /FrinexBuildService/; npm install properties-reader; npm install check-disk-space; npm install got; npm install omgopass;
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh NBL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
