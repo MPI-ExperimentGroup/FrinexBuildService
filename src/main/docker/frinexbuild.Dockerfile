@@ -45,12 +45,6 @@ RUN mkdir /FrinexBuildService/protected
 RUN mkdir /FrinexBuildService/docs
 RUN mkdir /FrinexBuildService/cgi
 COPY docker/frinex-git-server.conf  /FrinexBuildService/
-RUN sed -i "s|UrlLDAP|example.com|g" /FrinexBuildService/frinex-git-server.conf 
-RUN sed -i "s|DcLDAP|DC=example,DC=com|g" /FrinexBuildService/frinex-git-server.conf 
-RUN sed -i "s|UserLDAP|example|g" /FrinexBuildService/frinex-git-server.conf 
-RUN sed -i "s|PassLDAP|example|g" /FrinexBuildService/frinex-git-server.conf 
-RUN sed -i "s|#LDAPOPTION||g" /FrinexBuildService/frinex-git-server.conf 
-#RUN sed -i "s|#PUBLICOPTION||g" /FrinexBuildService/frinex-git-server.conf 
 COPY docker/git_setup.html /FrinexBuildService/docs/
 COPY uml/overview.html /FrinexBuildService/docs/
 COPY uml/ServiceOverview.svg /FrinexBuildService/docs/
@@ -78,7 +72,6 @@ RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBui
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/cgi/repository_setup.cgi
-RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|ProtectedDirectory|/FrinexBuildService/protected|g" /FrinexBuildService/cgi/experiment_access.cgi
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/post-receive
@@ -91,6 +84,8 @@ COPY docker/update_post-receive_hooks.sh /FrinexBuildService/update_post-receive
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/update_post-receive_hooks.sh
+# apply location specific settings to the various configuration files
+RUN bash filter_config_settings.sh
 RUN cd /FrinexBuildService/; npm install properties-reader; npm install check-disk-space; npm install got; npm install omgopass;
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh NBL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
