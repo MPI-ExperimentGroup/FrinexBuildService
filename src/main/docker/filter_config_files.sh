@@ -17,10 +17,10 @@ sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/repositor
 sed -i "s|ldaps://ldap.example.com:33389/dc=myco,dc=org|ldap://example.com:389/DC=example,DC=com|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 sed -i "s|ou=exampleGroups|ou=example|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 sed -i "s|exampleAttribute|example|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
-+#sed -i "s|uid=admin,ou=system|uid=example|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
+#sed -i "s|uid=admin,ou=system|uid=example|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 sed -i "s|uid=admin,ou=system|example|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 sed -i "s|managerDnPassword|example|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
-+#sed -i "s|uid={0},ou=examplePattern|CN={0},CN=Users|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
+#sed -i "s|uid={0},ou=examplePattern|CN={0},CN=Users|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 sed -i "s|uid={0},ou=examplePattern|userPrincipalName={0}|g" /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 #sed -i "s|.anyRequest().authenticated()|.anyRequest().fullyAuthenticated()|g" /ExperimentTemplate/ExperimentDesigner/src/main/java/nl/mpi/tg/eg/experimentdesigner/WebSecurityConfig.java
 # this option disables authentication in the wizard: sed -i "s|.anyRequest().authenticated()|.anyRequest().permitAll()|g" /ExperimentTemplate/ExperimentDesigner/src/main/java/nl/mpi/tg/eg/experimentdesigner/WebSecurityConfig.java
