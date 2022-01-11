@@ -43,9 +43,10 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
 #RUN git clone https://github.com/chris-rudmin/opus-recorder.git
 #RUN cd opus-recorder; git checkout tags/v8.0.4
-COPY docker/compile_wizard_tempates.sh /FrinexBuildService/
-RUN chmod +x /FrinexBuildService/compile_wizard_tempates.sh
-RUN /FrinexBuildService/compile_wizard_tempates.sh
+RUN mkdir /FrinexWizardUtils
+COPY docker/compile_wizard_tempates.sh /FrinexWizardUtils/
+RUN chmod +x /FrinexWizardUtils/compile_wizard_tempates.sh
+RUN /FrinexWizardUtils/compile_wizard_tempates.sh
 
 # TODO: for now we are not using postgres
 RUN cd /ExperimentTemplate \
@@ -59,9 +60,9 @@ RUN cd /ExperimentTemplate \
     && sed -i 's/spring.jpa.show-sql=false/spring.jpa.show-sql=true/' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 
 # apply location specific settings to the various configuration files
-COPY docker/filter_config_settings.sh /FrinexBuildService/
-RUN chmod +x /FrinexBuildService/filter_config_settings.sh
-RUN /FrinexBuildService/filter_config_settings.sh
+COPY docker/filter_config_settings.sh /FrinexWizardUtils/
+RUN chmod +x /FrinexWizardUtils/filter_config_settings.sh
+RUN /FrinexWizardUtils/filter_config_settings.sh
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
