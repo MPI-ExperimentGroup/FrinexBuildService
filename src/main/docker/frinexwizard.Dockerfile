@@ -60,9 +60,9 @@ RUN cd /ExperimentTemplate \
     && sed -i 's/spring.jpa.show-sql=false/spring.jpa.show-sql=true/' /ExperimentTemplate/ExperimentDesigner/src/main/resources/application.properties
 
 # apply location specific settings to the various configuration files
-COPY docker/filter_config_settings.sh /FrinexWizardUtils/
-RUN chmod +x /FrinexWizardUtils/filter_config_settings.sh
-RUN /FrinexWizardUtils/filter_config_settings.sh
+COPY docker/filter_config_files.sh /FrinexWizardUtils/
+RUN chmod +x /FrinexWizardUtils/filter_config_files.sh
+RUN /FrinexWizardUtils/filter_config_files.sh
 
 RUN cd /ExperimentTemplate/ExperimentDesigner \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
