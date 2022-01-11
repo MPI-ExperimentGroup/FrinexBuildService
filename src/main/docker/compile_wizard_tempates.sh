@@ -27,7 +27,10 @@
 mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/
 mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/
 
+# TODO: start a file listing all of the successfully compiled templates
+
 # TODO: the use of template_example here will be replaced by actual templates
+# TODO: loop on find XML files containing "templateInfo" and stuff the contents of the templateInfo element into JSON object for each template
 cd /ExperimentTemplate \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=template_example
 mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/template_example
@@ -48,4 +51,6 @@ cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-tes
 cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/css /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/template_example/
 cp -r /ExperimentTemplate/gwt-cordova/target/template_example-frinex-gui-1.4-testing-SNAPSHOT/TestingFrame.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/template_example/
 
+# TODO: append the file listing all of the successfully compiled templates
 
+# TODO: end the file listing all of the successfully compiled templates
