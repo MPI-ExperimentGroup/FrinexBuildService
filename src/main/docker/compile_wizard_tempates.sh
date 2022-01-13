@@ -63,7 +63,7 @@ for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesi
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/jquery /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/css /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/TestingFrame.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    ls -l /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/
+    ls -l /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/*
 done
 # TODO: append the file listing all of the successfully compiled templates
 
