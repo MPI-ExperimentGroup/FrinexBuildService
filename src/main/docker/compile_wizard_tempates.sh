@@ -28,10 +28,10 @@ mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/
 mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/
 
 # make sure we have the dependencies built
-cd /ExperimentTemplate/common \
-    && mvn install -DskipTests=true -Dmaven.javadoc.skip=true
-cd /ExperimentTemplate/AdaptiveVocabularyAssessmentModule \
-    && mvn install -DskipTests=true -Dmaven.javadoc.skip=true
+cd /ExperimentTemplate/common
+mvn install -DskipTests=true -Dmaven.javadoc.skip=true
+cd /ExperimentTemplate/AdaptiveVocabularyAssessmentModule
+mvn install -DskipTests=true -Dmaven.javadoc.skip=true
 
 # TODO: start a file listing all of the successfully compiled templates
 
@@ -70,4 +70,4 @@ done
 # TODO: append the file listing all of the successfully compiled templates
 
 # TODO: end the file listing all of the successfully compiled templates
-# grep -o "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/*.xml
+grep -o "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/*.xml
