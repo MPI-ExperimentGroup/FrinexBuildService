@@ -27,6 +27,12 @@
 mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/
 mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/
 
+# make sure we have the dependencies built
+cd /ExperimentTemplate/common \
+    && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+cd /ExperimentTemplate/AdaptiveVocabularyAssessmentModule \
+    && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+
 # TODO: start a file listing all of the successfully compiled templates
 
 # TODO: the use of template_example here will be replaced by actual templates
@@ -39,7 +45,8 @@ for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesi
     echo $templatePath
     echo $templateDirectory
     echo $templateName
-    cd /ExperimentTemplate \
+    # TODO: we might not want draftCompile when this is in production
+    cd /ExperimentTemplate/gwt-cordova
         && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.path=$templateDirectory -Dexperiment.configuration.name=$templateName
     mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/ExperimentTemplate /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
