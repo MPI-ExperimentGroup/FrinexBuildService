@@ -31,10 +31,10 @@ mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_
 cd /ExperimentTemplate/
 mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true
 
-# TODO: start a file listing all of the successfully compiled templates
+# start a file listing all of the successfully compiled templates
+echo "{" > /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
 
-# TODO: the use of template_example here will be replaced by actual templates
-# TODO: loop on find XML files containing "templateInfo" and stuff the contents of the templateInfo element into JSON object for each template
+# loop on find XML files containing "templateInfo" and stuff the contents of the templateInfo element into JSON object for each template
 for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/frinex-templates/*.xml /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/*.xml); do
     # templateFileName=$(basename $templatePath);
     # templateName=${templateFileName/.xml/}
@@ -63,9 +63,15 @@ for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesi
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/jquery /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/css /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/TestingFrame.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    ls -l /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/*
+    // TODO: this ls can be silenced later 
+    ls -l /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+    # append the file listing all of the successfully compiled templates
+    grep -o "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml 
+    echo "templateName: $templateName," >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
+    sed -n 's/.*<templateInfo \([^>]*\).*/\1/p' /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
 done
-# TODO: append the file listing all of the successfully compiled templates
 
-# TODO: end the file listing all of the successfully compiled templates
-grep -o "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/*.xml
+# end the file listing all of the successfully compiled templates
+echo "}" >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
+cat /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
+grep -o "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/*/*.xml
