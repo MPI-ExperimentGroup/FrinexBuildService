@@ -29,9 +29,9 @@ mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_
 
 # make sure we have the dependencies built
 cd /ExperimentTemplate/common \
-    && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+    && mvn install -DskipTests=true -Dmaven.javadoc.skip=true
 cd /ExperimentTemplate/AdaptiveVocabularyAssessmentModule \
-    && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+    && mvn install -DskipTests=true -Dmaven.javadoc.skip=true
 
 # TODO: start a file listing all of the successfully compiled templates
 
