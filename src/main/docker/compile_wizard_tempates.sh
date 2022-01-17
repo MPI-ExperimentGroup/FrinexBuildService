@@ -33,6 +33,7 @@ mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -
 
 # start a file listing all of the successfully compiled templates
 echo "{" > /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
+echo "\"compile_date\": \"$(date)\"" >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
 
 # loop on find XML files containing "templateInfo" and stuff the contents of the templateInfo element into JSON object for each template
 for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/frinex-templates/*.xml /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/*.xml); do
@@ -63,16 +64,17 @@ for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesi
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/jquery /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/css /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
     cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/TestingFrame.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    // TODO: this ls can be silenced later 
+    # TODO: this ls can be silenced later 
     ls -l /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
     # append the file listing all of the successfully compiled templates
     # grep -o "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml 
-    echo "templateName: $templateName," >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
-    attributeValues=$(sed -n 's/.*<templateInfo \([^>]*\)\/.*/\1/p' /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml)
+    echo ",\"$templateName\": {" >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
+    attributeValues=$(sed -n 's/.*<templateInfo \([^>]*\)\/.*/\"\1/\"p' /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml)
     # echo -n "name: \"" >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
     # echo $attributeValues | 's/.* name=\"\([^\"]*\).*/\1/p' >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
     # echo -n "\"," >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
-    echo $attributeValues | sed -e 's/=\"/:\"/g' | sed -e 's/\" /\", /g' >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
+    echo $attributeValues | sed -e 's/=\"/\":\"\"/g' | sed -e 's/\" /\", \"/g' >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
+    echo "}" >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
 done
 
 # end the file listing all of the successfully compiled templates
