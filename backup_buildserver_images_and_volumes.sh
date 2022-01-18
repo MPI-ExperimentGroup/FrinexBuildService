@@ -50,11 +50,10 @@ else
     #         echo "No image $imageName to back up."
     #     fi
     # done
-    for frinexImageEntry in $(docker images | grep frinexapps); do
+    for frinexImageTag in $(docker images | grep frinexapps | awk 'NR>1 {print $2}'); do
         # make a backup of each relevant image that is not already on disk
-        frinexImageTag=$(echo $frinexImageEntry | awk 'NR>1 {print $2}')
-        frinexImageID=$(echo $frinexImageEntry | awk 'NR>1 {print $3}')
-        backupName=frinexapps_$frinexImageTag_$frinexImageID.tar.gz
+        # backupName=frinexapps_$frinexImageTag.tar.gz
+        backupName=$(docker image ls frinexapps:$frinexImageTag | awk 'NR>1 {print $1 "_" $2 "_" $3}').tar.gz
         if [[ $backupName == *"frinex"* ]]; then
             if [ -s "$workingDir/BackupFiles/$backupName" ]
             then 
