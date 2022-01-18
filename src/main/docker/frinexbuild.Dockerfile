@@ -52,6 +52,10 @@ COPY uml/DockerSwarmOverview.svg /FrinexBuildService/docs/
 COPY cgi/repository_setup.cgi /FrinexBuildService/cgi/
 COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
 COPY cgi/frinex_services.cgi /FrinexBuildService/cgi/
+# apply location specific settings to the various configuration files
+COPY docker/filter_config_files.sh /FrinexBuildService/
+RUN chmod +x /FrinexBuildService/filter_config_files.sh
+RUN /FrinexBuildService/filter_config_files.sh
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
@@ -84,10 +88,6 @@ COPY docker/update_post-receive_hooks.sh /FrinexBuildService/update_post-receive
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/update_post-receive_hooks.sh
 RUN sed -i "s|CheckoutDirectory|/FrinexBuildService/git-checkedout|g" /FrinexBuildService/update_post-receive_hooks.sh
-# apply location specific settings to the various configuration files
-COPY docker/filter_config_files.sh /FrinexBuildService/
-RUN chmod +x /FrinexBuildService/filter_config_files.sh
-RUN /FrinexBuildService/filter_config_files.sh
 RUN cd /FrinexBuildService/; npm install properties-reader; npm install check-disk-space; npm install got; npm install omgopass;
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh NBL
 #RUN sh /FrinexBuildService/create_frinex_build_repository.sh POL
