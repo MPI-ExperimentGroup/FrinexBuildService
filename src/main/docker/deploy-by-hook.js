@@ -88,9 +88,9 @@ function startResult() {
     fs.writeSync(resultsFile, "<a href='beta.xsd'>Release Candidate XML Schema</a>&nbsp;\n");
     fs.writeSync(resultsFile, "<a href='betachanges.txt'>Release Candidate changes</a><br/>\n");
     fs.writeSync(resultsFile, "To build with the release candidate frinexVersion=\"beta\" and set the schema location in your XML to use \"beta.xsd\".<br/><br/>\n");
-    fs.writeSync(resultsFile, "<a href='latest.html'>Latest Snapshot XML Documentation</a>&nbsp;\n");
-    fs.writeSync(resultsFile, "<a href='latest.xsd'>Latest Snapshot XML Schema</a><br/>\n");
-    fs.writeSync(resultsFile, "The latest snapshot changes very frequently and is not usually recommended but can be used with frinexVersion=\"latest\" and the schema location in your XML using \"latest.xsd\".<br/>\n");
+    fs.writeSync(resultsFile, "<a href='alpha.html'>Latest Snapshot XML Documentation</a>&nbsp;\n");
+    fs.writeSync(resultsFile, "<a href='alpha.xsd'>Latest Snapshot XML Schema</a><br/>\n");
+    fs.writeSync(resultsFile, "The latest snapshot changes very frequently and is not usually recommended but can be used with frinexVersion=\"latest\" and the schema location in your XML using \"alpha.xsd\".<br/>\n");
     fs.writeSync(resultsFile, "<br/><br/>\n");
     fs.writeSync(resultsFile, "<table id='buildTable'>\n");
     fs.writeSync(resultsFile, "<tr>\n");
