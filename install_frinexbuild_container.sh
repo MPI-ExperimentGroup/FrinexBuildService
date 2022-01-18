@@ -52,17 +52,17 @@ else
     #docker run --name tomcatstaging -d --rm -i -p 8071:8080 -v webappsTomcatStaging:/usr/local/tomcat/webapps tomcatstaging:latest
 
     # build the frinex_db_manager
-    docker build --rm -f docker/frinex_db_manager.Dockerfile -t frinex_db_manager:latest .
+    # docker build --rm -f docker/frinex_db_manager.Dockerfile -t frinex_db_manager:latest .
     
     # create the frinex_db_manager bridge network 
-    docker network create frinex_db_manager_net
+    # docker network create frinex_db_manager_net
 
     # remove the old frinex_db_manager
-    docker stop frinex_db_manager 
-    docker container rm frinex_db_manager 
+    # docker stop frinex_db_manager 
+    # docker container rm frinex_db_manager 
 
     # start the frinex_db_manager in the bridge network
-    docker run --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
+    # docker run --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
 
     # remove the old frinexbuild
     docker stop frinexbuild 
@@ -78,7 +78,8 @@ else
     # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
 
     # start the frinexbuild container with access to docker.sock so that it can create sibling containers of frinexapps
-    docker run --restart unless-stopped --net frinex_db_manager_net -v /var/run/docker.sock:/var/run/docker.sock  -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+    # docker run --restart unless-stopped --net frinex_db_manager_net -v /var/run/docker.sock:/var/run/docker.sock  -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+    docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock  -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
     # -v $workingDir/BackupFiles:/BackupFiles 
     # the -v m2Directory:/maven/.m2/ volume is not strictly needed in this container but it makes it easer to run docker purge without destroying the .m2/settings.xml etc
     #docker run  -v /var/run/docker.sock:/var/run/docker.sock -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinexbuild-temp frinexbuild:latest bash
