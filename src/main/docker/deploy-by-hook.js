@@ -1894,8 +1894,7 @@ function convertJsonToXml() {
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
-        // TODO: at some point this might need to change to stable rather than latest
-        + ' frinexapps:latest /bin/bash -c "mvn exec:exec'
+        + ' frinexapps:stable /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dlog4j2.version=2.17.1'
         + ' -Dexec.executable=java'
