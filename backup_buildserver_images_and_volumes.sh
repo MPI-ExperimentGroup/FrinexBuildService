@@ -52,8 +52,8 @@ else
     # done
     for frinexImageEntry in $(docker images | grep frinexapps); do
         # make a backup of each relevant image that is not already on disk
-        frinexImageTag=$(echo frinexImageEntry | awk 'NR>1 {print $2}')
-        frinexImageID=$(echo frinexImageEntry | awk 'NR>1 {print $3}')
+        frinexImageTag=$(echo $frinexImageEntry | awk 'NR>1 {print $2}')
+        frinexImageID=$(echo $frinexImageEntry | awk 'NR>1 {print $3}')
         backupName=frinexapps_$frinexImageTag_$frinexImageID.tar.gz
         if [[ $backupName == *"frinex"* ]]; then
             if [ -s "$workingDir/BackupFiles/$backupName" ]
