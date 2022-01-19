@@ -44,36 +44,38 @@ for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesi
     echo $templatePath
     echo $templateDirectory
     echo $templateName
-    # TODO: we might not want draftCompile when this is in production
-    cd /ExperimentTemplate/gwt-cordova
-    mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.path=$templateDirectory -Dexperiment.configuration.name=$templateName
-    mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/ExperimentTemplate /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    #cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/opus-recorder /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/groups.js /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/stomp-websocket /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/grouptestframes.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/grouptestpage.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/version.json /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/scss /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/$templateName.xml /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/StyleTestPage.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/index.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/sockjs-client /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/static /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/jquery /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/css /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
-    cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/TestingFrame.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+    if [ ! -f /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml ]; then
+        # TODO: we might not want draftCompile when this is in production
+        cd /ExperimentTemplate/gwt-cordova
+        mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.path=$templateDirectory -Dexperiment.configuration.name=$templateName
+        mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/ExperimentTemplate /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        #cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/opus-recorder /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/groups.js /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/stomp-websocket /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/grouptestframes.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/grouptestpage.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/version.json /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/scss /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/$templateName.xml /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/StyleTestPage.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/index.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/sockjs-client /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/static /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/jquery /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/css /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+        cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/TestingFrame.html /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
+    fi
     # TODO: this ls can be silenced later 
     ls -l /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
     # append the file listing all of the successfully compiled templates
     # grep -o "<templateInfo" /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml 
     echo ",\"$templateName\": {" >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
-    attributeValues=$(sed -n 's/.*<templateInfo \([^>]*\)\/.*/\"\1/\"p' /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml)
+    attributeValues=$(sed -n 's/.*<templateInfo \([^>]*\)\/.*/\"\1/p' /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml)
     # echo -n "name: \"" >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
     # echo $attributeValues | 's/.* name=\"\([^\"]*\).*/\1/p' >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
     # echo -n "\"," >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
-    echo $attributeValues | sed -e 's/=\"/\":\"\"/g' | sed -e 's/\" /\", \"/g' >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
+    echo $attributeValues |  sed -e 's/=\"/\": \"/g' | sed -e 's/\" /\", \"/g' | sed -e 's/", "$/"/g' >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
     echo "}" >> /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
 done
 
