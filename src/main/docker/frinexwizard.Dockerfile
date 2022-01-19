@@ -24,7 +24,7 @@ FROM openjdk:11
 
 RUN apt-get update
 RUN apt-get -y upgrade
-RUN apt-get -y install maven
+RUN apt-get -y install maven vim
 
 # clone the Frinex repository including enough depth to give correct build numbers
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
@@ -71,4 +71,5 @@ RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-
 
 #CMD ["java", "-Dlogging.level.org.springframework=TRACE", "-jar", "/frinexwizard.war"]
 #CMD ["java", "-Dlogging.level.org.springframework=DEBUG", "-jar", "/frinexwizard.war"]
+#CMD ["mvn", "spring-boot:run", "-f", "/ExperimentTemplate/ExperimentDesigner/pom.xml"]
 CMD ["java", "-jar", "/frinexwizard.war"]
