@@ -75,6 +75,18 @@ var hasDoneBackup = false;
 
 function startResult() {
     buildHistoryJson.building = true;
+    try {
+        var htmlReadStream = fs.createReadStream("buildlisting.html");
+        htmlReadStream.pipe(fs.createWriteStream(targetDirectory + "/index.html"));
+    } catch (reason) {
+        console.error("copy failed: buildlisting.html :" + reason);
+    }
+    try {
+        var jsReadStream = fs.createReadStream("buildlisting.js");
+        jsReadStream.pipe(fs.createWriteStream(targetDirectory + "/buildlisting.js"));
+    } catch (reason) {
+        console.error("copy failed: buildlisting.js :" + reason);
+    }
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
