@@ -63,7 +63,7 @@ const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 
-const resultsFile = fs.openSync(targetDirectory + "/index.html", "w"); //{ flags: 'w', mode: 0o755 });
+var resultsFile; // this is set once in startResult after the file is populated
 const statsFile = fs.openSync(targetDirectory + "/buildstats.txt", "a"); //{ flags: 'w', mode: 0o755 });
 const listingMap = new Map();
 const currentlyBuilding = new Map();
@@ -75,18 +75,9 @@ var hasDoneBackup = false;
 
 function startResult() {
     buildHistoryJson.building = true;
-    try {
-        var htmlReadStream = fs.createReadStream("buildlisting.html");
-        htmlReadStream.pipe(fs.createWriteStream(targetDirectory + "/index.html"));
-    } catch (reason) {
-        console.error("copy failed: buildlisting.html :" + reason);
-    }
-    try {
-        var jsReadStream = fs.createReadStream("buildlisting.js");
-        jsReadStream.pipe(fs.createWriteStream(targetDirectory + "/buildlisting.js"));
-    } catch (reason) {
-        console.error("copy failed: buildlisting.js :" + reason);
-    }
+    fs.writeFileSync(targetDirectory + "/index.html", fs.readFileSync("buildlisting.html"));
+    fs.writeFileSync(targetDirectory + "/buildlisting.js", fs.readFileSync("buildlisting.js"));
+    resultsFile = fs.openSync(targetDirectory + "/index.html", "a"); //{ flags: 'w', mode: 0o755 });
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
 
