@@ -75,8 +75,8 @@ var hasDoneBackup = false;
 
 function startResult() {
     buildHistoryJson.building = true;
-    fs.writeFileSync(targetDirectory + "/index.html", fs.readFileSync("buildlisting.html"));
-    fs.writeFileSync(targetDirectory + "/buildlisting.js", fs.readFileSync("buildlisting.js"));
+    fs.writeFileSync(targetDirectory + "/index.html", fs.readFileSync("/FrinexBuildService/buildlisting.html"));
+    fs.writeFileSync(targetDirectory + "/buildlisting.js", fs.readFileSync("/FrinexBuildService/buildlisting.js"));
     resultsFile = fs.openSync(targetDirectory + "/index.html", "a"); //{ flags: 'w', mode: 0o755 });
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
 }
