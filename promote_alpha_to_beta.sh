@@ -32,13 +32,13 @@ if ! grep -q $(hostname) config/publish.properties; then
 else
     # tag the old beta
     docker tag frinexbuild:beta frinexbuild:beta_$(date +%F)
-    # tag latest as the new beta
-    docker tag frinexapps:latest frinexapps:beta
+    # tag alpha as the new beta
+    docker tag frinexapps:alpha frinexapps:beta
 
     # make the current XSD available for this beta so that they can be used by frinex builds with frinexVersion
     docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:beta /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/beta.xsd"
     docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:beta /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/beta.html"
     # make the changes file available for this beta so that they can be viewed from the build page
     docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:beta /bin/bash -c "cp /ExperimentTemplate/changes.txt /FrinexBuildService/artifacts/betachanges.txt"
-    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "chown frinex:daemon /FrinexBuildService/artifacts/*.xsd; chown frinex:daemon /FrinexBuildService/artifacts/*.html; chown frinex:daemon /FrinexBuildService/artifacts/*.txt;"
+    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:alpha /bin/bash -c "chown frinex:daemon /FrinexBuildService/artifacts/*.xsd; chown frinex:daemon /FrinexBuildService/artifacts/*.html; chown frinex:daemon /FrinexBuildService/artifacts/*.txt;"
 fi;
