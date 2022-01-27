@@ -42,58 +42,58 @@ echo $HTTP_REFERER >> TargetDirectory/repository_setup.txt
 echo $REMOTE_USER >> TargetDirectory/repository_setup.txt
 
 #echo "Repository Path: "
-tartegRepositoryName=$(echo $REMOTE_USER | sed 's/[^a-zA-Z0-9]/_/g')
-#echo $tartegRepositoryName.git
+targetRepositoryName=$(echo $REMOTE_USER | sed 's/[^a-zA-Z0-9]/_/g')
+#echo $targetRepositoryName.git
 #echo "<br/>"
-echo $tartegRepositoryName >> TargetDirectory/repository_setup.txt
+echo $targetRepositoryName >> TargetDirectory/repository_setup.txt
 
-if [ ${#tartegRepositoryName} -ge 6 ]
+if [ ${#targetRepositoryName} -ge 6 ]
 then
     echo "Your build repository is located at: <b>"
-    echo "BuildServerUrl/git/$tartegRepositoryName.git"
+    echo "BuildServerUrl/git/$targetRepositoryName.git"
     echo "</b>"
-    echo "BuildServerUrl/git/$tartegRepositoryName.git" >> TargetDirectory/repository_setup.txt
+    echo "BuildServerUrl/git/$targetRepositoryName.git" >> TargetDirectory/repository_setup.txt
     echo "<br/>"
-    if [ -d RepositoriesDirectory/$tartegRepositoryName.git ];
+    if [ -d RepositoriesDirectory/$targetRepositoryName.git ];
     then
         #echo "your repository is ready for use";
         echo "target git repository already exists" >> TargetDirectory/repository_setup.txt
     else
-        if [ -d CheckoutDirectory/$tartegRepositoryName ];
+        if [ -d CheckoutDirectory/$targetRepositoryName ];
         then
-            #echo CheckoutDirectory/$tartegRepositoryName
+            #echo CheckoutDirectory/$targetRepositoryName
             echo "Error: target repository checkout already exists.";
             echo "target repository checkout already exists" >> TargetDirectory/repository_setup.txt
         else
             # initialise the repository
             echo "initialising" >> TargetDirectory/repository_setup.txt
-            git init --bare RepositoriesDirectory/$tartegRepositoryName.git >> TargetDirectory/repository_setup.txt
+            git init --bare RepositoriesDirectory/$targetRepositoryName.git >> TargetDirectory/repository_setup.txt
 
             # adding post-receive hook
             echo "add the post-receive hook" >> TargetDirectory/repository_setup.txt
-            sed "s/RepositoryName/$tartegRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$tartegRepositoryName.git/hooks/post-receive
+            sed "s/RepositoryName/$targetRepositoryName/g" ScriptsDirectory/post-receive > RepositoriesDirectory/$targetRepositoryName.git/hooks/post-receive
 
             # set permissions on the hooks
-            chmod -R u+rwx RepositoriesDirectory/$tartegRepositoryName.git >> TargetDirectory/repository_setup.txt
+            chmod -R u+rwx RepositoriesDirectory/$targetRepositoryName.git >> TargetDirectory/repository_setup.txt
 
             # checkout a copy
             cd CheckoutDirectory
-            git clone RepositoriesDirectory/$tartegRepositoryName.git >> TargetDirectory/repository_setup.txt
+            git clone RepositoriesDirectory/$targetRepositoryName.git >> TargetDirectory/repository_setup.txt
 
             # add a readme file, commit and push
             # this initial commit is nice for ease of the end user, while the repository can be cloned without it there can also be issues with the naming of the default branch depending on the client used
-            cd $tartegRepositoryName
+            cd $targetRepositoryName
             git config user.email "frinexbuild@BuildServerUrl" >> TargetDirectory/repository_setup.txt
             git config user.name "FrinexBuildServer" >> TargetDirectory/repository_setup.txt
             git config pull.rebase true >> TargetDirectory/repository_setup.txt
-            date > CheckoutDirectory/$tartegRepositoryName/readme.txt
-            echo "This repository can be used to push experiments to the Frinex build server." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
-            echo "When experiment configuration files are committed and pushed the build process will begin." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
-            echo "The build process can be followed at BuildServerUrl." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
-            echo "When the experiment has stimuli files that should be included, they can be commited into a directory of the same name as the experiment configuration fle." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
-            echo "When a mobile or desktop app is required, an icon.png file should be included in directory of the same name as the experiment configuration fle." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
-            echo "For information on Frinex XML features see BuildServerUrl/frinex.html." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
-            echo "The XML schema file BuildServerUrl/frinex.html should be declaired in the relevant section of your XML files." >> CheckoutDirectory/$tartegRepositoryName/readme.txt
+            date > CheckoutDirectory/$targetRepositoryName/readme.txt
+            echo "This repository can be used to push experiments to the Frinex build server." >> CheckoutDirectory/$targetRepositoryName/readme.txt
+            echo "When experiment configuration files are committed and pushed the build process will begin." >> CheckoutDirectory/$targetRepositoryName/readme.txt
+            echo "The build process can be followed at BuildServerUrl." >> CheckoutDirectory/$targetRepositoryName/readme.txt
+            echo "When the experiment has stimuli files that should be included, they can be commited into a directory of the same name as the experiment configuration fle." >> CheckoutDirectory/$targetRepositoryName/readme.txt
+            echo "When a mobile or desktop app is required, an icon.png file should be included in directory of the same name as the experiment configuration fle." >> CheckoutDirectory/$targetRepositoryName/readme.txt
+            echo "For information on Frinex XML features see BuildServerUrl/frinex.html." >> CheckoutDirectory/$targetRepositoryName/readme.txt
+            echo "The XML schema file BuildServerUrl/frinex.html should be declaired in the relevant section of your XML files." >> CheckoutDirectory/$targetRepositoryName/readme.txt
             git add readme.txt >> TargetDirectory/repository_setup.txt
             # commit and push the readme.txt
             git commit -m "Adding a readme file to initialise this repository." readme.txt  >> TargetDirectory/repository_setup.txt
@@ -106,7 +106,7 @@ then
         fi
     fi
 else
-    # if the tartegRepositoryName length is not at least 6 chars long then it could cause an issue so we abort here
+    # if the targetRepositoryName length is not at least 6 chars long then it could cause an issue so we abort here
     echo "There is an issue determining the build repository for this user (error -5)."
     echo "repository name is too short, aborting" >> TargetDirectory/repository_setup.txt
 fi
