@@ -1440,6 +1440,16 @@ function checkForDuplicates(currentName) {
             }
         }
     }
+    // check the wizard working directory for duplicate files of XML or JSON regardless of case
+    var repositoryEntries = fs.readdirSync("/FrinexBuildService/wizard-experiments");
+    for (var wizardEntry of repositoryEntries) {
+        var lowercaseEntry = wizardEntry.toLowerCase();
+        if (currentName + ".json" === lowercaseEntry || currentName + ".xml" === lowercaseEntry) {
+            experimentConfigCounter++;
+            experimentConfigLocations += wizardEntry + " found in wizard-experiments" + "\n";
+            console.log(wizardEntry + " found in wizard-experiments");
+        }
+    }
     var configErrorPath = path.resolve(targetDirectory + "/" + currentName + "/" + currentName + "_conflict_error.txt");
     if (experimentConfigCounter > 1) {
         //console.log(experimentConfigLocations);
