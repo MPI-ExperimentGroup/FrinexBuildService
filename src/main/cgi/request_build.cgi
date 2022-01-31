@@ -26,8 +26,21 @@ targetDir=TargetDirectory
 # this script checks if there is a running build process and if there is none then the build process will be started
 # the build process will exit when it has processed all the relevant files in incoming
 
-chmod -R a+rw $scriptDir/incoming/commits/*
-chmod -R a+rw $scriptDir/incoming/static/*
+echo "Content-type: text/html"
+echo ''
+
+if [ -z "$(ls -A $scriptDir/incoming/commits/)" ]; then
+   echo "no commits found"
+else
+  chmod -R a+rw $scriptDir/incoming/commits/*
+fi
+
+if [ -z "$(ls -A $scriptDir/incoming/static/)" ]; then
+   echo "no static files"
+else
+  chmod -R a+rw $scriptDir/incoming/static/*
+fi
+
 
 if [ "$(pidof node-default)" ]
 then
