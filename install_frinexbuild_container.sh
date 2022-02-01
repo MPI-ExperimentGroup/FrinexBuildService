@@ -73,7 +73,7 @@ else
       "chmod -R ug+rwx /FrinexBuildService; chown -R frinex:daemon /FrinexBuildService/artifacts; chmod -R ug+rwx /FrinexBuildService/artifacts; chown -R frinex:daemon /FrinexBuildService/git-checkedout; chmod -R ug+rwx /FrinexBuildService/git-checkedout; chown -R frinex:daemon /FrinexBuildService/git-repositories; chmod -R ug+rwx /FrinexBuildService/git-repositories; chown -R frinex:daemon /FrinexBuildService/docs; chmod -R ug+rwx /FrinexBuildService/docs; chown -R frinex:daemon /FrinexBuildService/protected; chmod -R ug+rwx /FrinexBuildService/protected;";
     # move the old logs out of the way, note that this could overwrite old out of the way logs from the same date
     docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinexbuild-moveoldlogs frinexbuild:latest bash -c \
-      "mkdir artifacts/logs-$(date +%F)/; mv artifacts/git-*.txt artifacts/json_to_xml.txt artifacts/update_schema_docs.txt artifacts/logs-$(date +%F)/; echo \"The build process will create an index page and replace this message when the build process starts.\" > /FrinexBuildService/artifacts/readme.txt";
+      "mkdir artifacts/logs-$(date +%F)/; mv artifacts/git-*.txt artifacts/json_to_xml.txt artifacts/update_schema_docs.txt artifacts/logs-$(date +%F)/; echo \"The build process will create an index page and replace this message when the build process starts. <br /><a href=\"cgi/request_build.cgi\">trigger an empty build process</a>\" > /FrinexBuildService/artifacts/index.html";
     # -v $workingDir/BackupFiles:/BackupFiles
     # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
 
