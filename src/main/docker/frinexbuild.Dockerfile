@@ -67,7 +67,7 @@ RUN sed -i "s|^#LoadModule ldap_module modules/mod_ldap.so|LoadModule ldap_modul
 RUN sed -i "s|/usr/local/apache2/htdocs|/FrinexBuildService/artifacts|g" /usr/local/apache2/conf/httpd.conf
 COPY docker/deploy-by-hook.js /FrinexBuildService/
 COPY static/buildlisting.html /FrinexBuildService/
-RUN echo "The build listing will replace this message when the build process starts." > /FrinexBuildService/artifacts/index.html
+# artifacts is a volume so there is no point writing to it here: RUN echo "The build listing will replace this message when the build process starts." > /FrinexBuildService/artifacts/index.html
 COPY static/buildlisting.js /FrinexBuildService/
 COPY docker/package.json /FrinexBuildService/
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/deploy-by-hook.js
