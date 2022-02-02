@@ -105,20 +105,27 @@ COPY config/settings.xml /FrinexBuildService/
 #RUN adduser -S frinex -G docker
 # we do not use the docker group for permissions on the docker.sock instead we use sudo for the frinex user to control containers
 RUN adduser -S frinex
-RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
+# the use of daemon in these permissions failed when using Apache/2.4.52 so daemon has been replaced with www-data in this section
+# RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
-RUN chown -R frinex:daemon /FrinexBuildService
+# RUN chown -R frinex:daemon /FrinexBuildService
+RUN chown -R frinex:www-data /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
-RUN chown -R frinex:daemon /FrinexBuildService/artifacts
+# RUN chown -R frinex:daemon /FrinexBuildService/artifacts
+RUN chown -R frinex:www-data /FrinexBuildService/artifacts
 RUN chmod -R ug+rwx /FrinexBuildService/artifacts
-RUN chown -R frinex:daemon /FrinexBuildService/protected
+# RUN chown -R frinex:daemon /FrinexBuildService/protected
+RUN chown -R frinex:www-data /FrinexBuildService/protected
 RUN chmod -R ug+rwx /FrinexBuildService/protected
-RUN chown -R frinex:daemon /FrinexBuildService/docs
+# RUN chown -R frinex:daemon /FrinexBuildService/docs
+RUN chown -R frinex:www-data /FrinexBuildService/docs
 RUN chmod -R ug+rwx /FrinexBuildService/docs
-RUN chown -R frinex:daemon /FrinexBuildService/cgi
+# RUN chown -R frinex:daemon /FrinexBuildService/cgi
+RUN chown -R frinex:www-data /FrinexBuildService/cgi
 RUN chmod -R ug+rwx /FrinexBuildService/cgi
-RUN chown www-data:daemon /FrinexBuildService/cgi/*.cgi
+# RUN chown www-data:daemon /FrinexBuildService/cgi/*.cgi
 #RUN mkdir /BackupFiles
 #RUN chown -R frinex:daemon /BackupFiles
 #RUN chmod -R ug+rwx /BackupFiles
