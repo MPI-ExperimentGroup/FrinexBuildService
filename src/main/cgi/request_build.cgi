@@ -30,13 +30,13 @@ echo "Content-type: text/html"
 echo ''
 
 if [ -z "$(ls -A $scriptDir/incoming/commits/)" ]; then
-   echo "no commits found"
+   echo "no commits found<br/>"
 else
   chmod -R a+rw $scriptDir/incoming/commits/*
 fi
 
 if [ -z "$(ls -A $scriptDir/incoming/static/)" ]; then
-   echo "no static files"
+   echo "no static files<br/>"
 else
   chmod -R a+rw $scriptDir/incoming/static/*
 fi
@@ -45,13 +45,13 @@ fi
 if [ "$(pidof node-default)" ]
 then
   pidof node-default
-  echo "build in process, exiting";
+  echo "build in process, exiting<br/>";
 elif [ "$(pidof node)" ]
 then
   pidof node
-  echo "build in process, exiting";
+  echo "build in process, exiting<br/>";
 else
-  echo "starting build process";
+  echo "starting build process<br/>";
   nohup nice sudo -u frinex node --use_strict $scriptDir/deploy-by-hook.js >> $targetDir/git-push-out.txt 2>> $targetDir/git-push-err.txt &
   pidof node-default
   pidof node
