@@ -123,7 +123,7 @@ RUN chmod -R ug+rwx /FrinexBuildService/protected
 RUN chown -R frinex:www-data /FrinexBuildService/docs
 RUN chmod -R ug+rwx /FrinexBuildService/docs
 # RUN chown -R frinex:daemon /FrinexBuildService/cgi
-RUN chown -R frinex:www-data /FrinexBuildService/cgi
+RUN chown -R www-data:daemon /FrinexBuildService/cgi
 RUN chmod -R ug+rwx /FrinexBuildService/cgi
 # RUN chown www-data:daemon /FrinexBuildService/cgi/*.cgi
 #RUN mkdir /BackupFiles
