@@ -81,5 +81,7 @@ cd CheckoutDirectory
 git clone RepositoriesDirectory/$1.git
 
 # make sure the new repository is accessable by httpd
-chown -R daemon RepositoriesDirectory/$1.git
-chown -R daemon CheckoutDirectory/$1
+# chown -R daemon RepositoriesDirectory/$1.git
+chown -R www-data RepositoriesDirectory/$1.git
+# chown -R daemon CheckoutDirectory/$1
+chown -R www-data CheckoutDirectory/$1
