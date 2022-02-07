@@ -26,6 +26,4 @@
 
 echo "Content-type: text/json"
 echo ''
-echo "{\n"
-sudo -u frinex docker service ls | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' | awk 'NR>1 {print "  \"" $2 "\":" $6 ",\n"}'
-echo "}\n"
+docker service ls | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' | awk 'NR>1 {print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}'

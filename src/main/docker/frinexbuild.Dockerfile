@@ -108,6 +108,7 @@ RUN adduser -S frinex
 # the use of daemon in these permissions failed when using Apache/2.4.52 so daemon has been replaced with www-data in this section
 # RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
 # RUN chown -R frinex:daemon /FrinexBuildService
