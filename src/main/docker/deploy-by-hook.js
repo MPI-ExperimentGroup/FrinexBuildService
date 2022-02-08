@@ -175,7 +175,7 @@ function unDeploy(currentEntry) {
     // TODO: check if the deploymentType is tomcat vs docker and do the required undeployment process
     var buildContainerName = currentEntry.buildName + '_undeploy';
     var dockerString = 'sudo docker container rm -f ' + buildContainerName
-        + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+        + " 2>&1 > " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
@@ -213,7 +213,7 @@ function unDeploy(currentEntry) {
     // undeploy staging admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt?' + new Date().getTime() + '">undeploying</a>', "staging", "admin", false, true, false);
     var dockerString = 'sudo docker container rm -f ' + buildContainerName
-        + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+        + " 2>&1 > " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
@@ -251,7 +251,7 @@ function unDeploy(currentEntry) {
     // undeploy production gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">undeploying</a>', "production", "web", false, true, false);
     var dockerString = 'sudo docker container rm -f ' + buildContainerName
-        + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+        + " 2>&1 > " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
@@ -293,7 +293,7 @@ function unDeploy(currentEntry) {
     // undeploy production admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">undeploying</a>', "production", "admin", false, true, false);
     var dockerString = 'sudo docker container rm -f ' + buildContainerName
-        + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+        + " 2>&1 > " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + 'sudo docker run'
         + ' --rm '
         + ' --name ' + buildContainerName
@@ -394,7 +394,7 @@ function deployStagingGui(currentEntry) {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_web';
         var dockerString = 'sudo docker container rm -f ' + buildContainerName
-            + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " 2>&1 > " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
@@ -558,7 +558,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
         var dockerString = 'sudo docker container rm -f ' + buildContainerName
-            + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + " 2>&1 > " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
@@ -731,7 +731,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                     //  terminate existing docker containers by name 
                     var buildContainerName = currentEntry.buildName + '_production_web';
                     var dockerString = 'sudo docker container rm -f ' + buildContainerName
-                        + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + " 2>&1 > " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + 'sudo docker run'
                         + ' --rm '
                         + ' --name ' + buildContainerName
@@ -894,7 +894,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_production_admin';
         var dockerString = 'sudo docker container rm -f ' + buildContainerName
-            + " 2>&1 " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + " 2>&1 > " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
             + ' --name ' + buildContainerName
@@ -1018,7 +1018,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
         storeResult(currentEntry.buildName, "building " + resultString, stage, "android", false, true, false);
         // the mvn target directory is not in the docker volume so that the build process does not cause redundant file synchronisation across the docker volume.
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_cordova'
-            + ' 2>&1 ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' 2>&1 > ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_cordova --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
@@ -1089,7 +1089,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
         resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_electron.txt?" + new Date().getTime() + '">log</a>&nbsp;';
         storeResult(currentEntry.buildName, "building " + resultString, stage, "desktop", false, true, false);
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_electron'
-            + ' 2>&1 ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' 2>&1 > ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + 'sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_electron --rm'
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
@@ -1682,7 +1682,7 @@ function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
     var dockerString = 'if [[ $(sudo docker container ls) == *"json_to_xml"* ]]; then'
         + ' sudo docker container rm -f json_to_xml'
-        + ' 2>&1 ' + targetDirectory + '/json_to_xml.txt;'
+        + ' 2>&1 > ' + targetDirectory + '/json_to_xml.txt;'
         + ' fi;'
         + 'sudo docker run --rm'
         //+ ' --user "$(id -u):$(id -g)"'
@@ -1720,7 +1720,7 @@ function convertJsonToXml() {
 function updateDocumentation() {
     // extract the latest versions of frinex.xml frinex.xsd and minimal_example.xml from the frinexapps:latest image that is currently in use
     var dockerString = 'sudo docker container rm -f update_schema_docs'
-        + ' 2>&1 ' + targetDirectory + '/update_schema_docs.txt;'
+        + ' 2>&1 > ' + targetDirectory + '/update_schema_docs.txt;'
         /*
         note: these files are created when the images are generated and therefore do not need to be copied at this point
         + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/stable.xsd"'
