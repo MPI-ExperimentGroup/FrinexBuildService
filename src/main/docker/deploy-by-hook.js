@@ -1258,6 +1258,7 @@ function buildFromListing() {
                         } else {
                             var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
                             var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
+                            console.log('moving: ' + queuedConfigFile);
                             // this move is within the same volume so we can do it this easy way
                             fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
 
