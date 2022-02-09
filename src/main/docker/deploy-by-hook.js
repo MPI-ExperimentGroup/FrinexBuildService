@@ -1475,10 +1475,15 @@ function moveIncomingToQueued() {
         console.log('queued directory created');
         //fs.writeSync(resultsFile, "<div>queued directory created</div>");
     }
-    if (!fs.existsSync(incomingDirectory + "/validating")) {
-        fs.mkdirSync(incomingDirectory + '/validating');
-        console.log('validating directory created');
-        //fs.writeSync(resultsFile, "<div>validating directory created</div>");
+    if (!fs.existsSync(incomingDirectory + "/prevalidation")) {
+        fs.mkdirSync(incomingDirectory + '/prevalidation');
+        console.log('prevalidation directory created');
+        //fs.writeSync(resultsFile, "<div>prevalidation directory created</div>");
+    }
+    if (!fs.existsSync(incomingDirectory + "/postvalidation")) {
+        fs.mkdirSync(incomingDirectory + '/postvalidation');
+        console.log('postvalidation directory created');
+        //fs.writeSync(resultsFile, "<div>postvalidation directory created</div>");
     }
     if (!fs.existsSync(processingDirectory + "/validated")) {
         fs.mkdirSync(processingDirectory + '/validated');
@@ -1686,9 +1691,9 @@ function moveIncomingToQueued() {
 
 function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
-    var dockerString = 'mv /FrinexBuildService/incoming/queued/*.json /FrinexBuildService/incoming/validating/;'
+    var dockerString = 'mv /FrinexBuildService/incoming/queued/*.json /FrinexBuildService/incoming/prevalidation/;'
         // + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
-        + ' mv /FrinexBuildService/incoming/queued/*.xml /FrinexBuildService/incoming/validating/;'
+        + ' mv /FrinexBuildService/incoming/queued/*.xml /FrinexBuildService/incoming/prevalidation/;'
         // + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + ' if [[ $(sudo docker container ls) == *"json_to_xml"* ]]; then'
         // + ' sudo docker container rm -f json_to_xml'
@@ -1709,10 +1714,11 @@ function convertJsonToXml() {
         + ' -Dlog4j2.version=2.17.1'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
-        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/validating /FrinexBuildService/processing/validated /FrinexBuildService/listing ' + targetDirectory /* the schema file is in the target directory, however it might be nicer to use a dedicated directory when we support multiple schema/build versions */ + '\\"'
+        + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/prevalidation /FrinexBuildService/incoming/postvalidation /FrinexBuildService/listing ' + targetDirectory /* the schema file is in the target directory, however it might be nicer to use a dedicated directory when we support multiple schema/build versions */ + '\\"'
         + ' &> ' + targetDirectory + '/json_to_xml.txt;'
         + ' chmod a+rwx -R /FrinexBuildService/processing/validated /FrinexBuildService/listing'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;";'
+        + ' mv /FrinexBuildService/incoming/postvalidation/* /FrinexBuildService/processing/validated/;'
         + ' fi;';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".txt";
     console.log(dockerString);
