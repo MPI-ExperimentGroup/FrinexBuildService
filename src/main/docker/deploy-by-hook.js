@@ -1475,8 +1475,8 @@ function moveIncomingToQueued() {
         console.log('queued directory created');
         //fs.writeSync(resultsFile, "<div>queued directory created</div>");
     }
-    if (!fs.existsSync(processingDirectory + "/validating")) {
-        fs.mkdirSync(processingDirectory + '/validating');
+    if (!fs.existsSync(incomingDirectory + "/validating")) {
+        fs.mkdirSync(incomingDirectory + '/validating');
         console.log('validating directory created');
         //fs.writeSync(resultsFile, "<div>validating directory created</div>");
     }
