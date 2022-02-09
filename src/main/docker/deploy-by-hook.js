@@ -1689,7 +1689,7 @@ function convertJsonToXml() {
     var dockerString = 'mv /FrinexBuildService/incoming/queued/*.json /FrinexBuildService/incoming/validating/'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + ' mv /FrinexBuildService/incoming/queued/*.xml /FrinexBuildService/incoming/validating/'
-        + ' &>> ' + targetDirectory + '/json_to_xml.txt;'        +
+        + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + 'if [[ $(sudo docker container ls) == *"json_to_xml"* ]]; then'
         // + ' sudo docker container rm -f json_to_xml'
         + 'echo "json_to_xml still active"'
