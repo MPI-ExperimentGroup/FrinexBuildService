@@ -1343,17 +1343,16 @@ function copyDeleteFile(incomingFile, targetFile) {
 }
 
 function moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename) {
+    console.log('moving XML from validated to queued: ' + filename);
+    // this move is within the same volume so we can do it this easy way
+    fs.renameSync(incomingFile, configQueuedFile);
     //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
     //copyFileSync(incomingFile, configStoreFile);
     //fs.writeSync(resultsFile, "<div>copied XML from validated to queued: " + filename + "</div>");
-    console.log('copying XML from validated to target: ' + filename);
-    var incomingReadStream = fs.createReadStream(incomingFile)
+    console.log('copying XML from queued to target: ' + filename);
+    var incomingReadStream = fs.createReadStream(configQueuedFile)
     incomingReadStream.on('close', function () {
-        // on vmware instances the following fs.renameSync always resulted in the destination file existing on completion
-        // however when run on dedicated hardware the resulting file does not always exist directly after fs.renameSync has completed
-        console.log('moving XML from validated to queued: ' + filename);
-        // this move is within the same volume so we can do it this easy way
-        fs.renameSync(incomingFile, configQueuedFile);
+        console.log('close: ' + configStoreFile);
     });
     console.log('configStoreFile: ' + configStoreFile);
     // this move is not within the same volume
@@ -1546,7 +1545,7 @@ function moveIncomingToQueued() {
                 if (hasProcessingFiles === true) {
                     console.log('moveIncomingToQueued: hasProcessingFiles');
                     //fs.writeSync(resultsFile, "<div>has more files in processing</div>");
-                    prepareForProcessing();
+                    //prepareForProcessing();
                     setTimeout(moveIncomingToQueued, 3000);
                 } else if (!hasDoneBackup) {
                     // this exit backup process takes too long when a new commit comes in and needs to be built
