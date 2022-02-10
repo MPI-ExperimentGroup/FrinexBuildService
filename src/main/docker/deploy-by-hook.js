@@ -1342,7 +1342,7 @@ function copyDeleteFile(incomingFile, targetFile) {
     }
 }
 
-function moveToQueued(incomingFile, configQueuedFile, configStoreFile) {
+function moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename) {
     //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
     //copyFileSync(incomingFile, configStoreFile);
     //fs.writeSync(resultsFile, "<div>copied XML from validated to queued: " + filename + "</div>");
@@ -1385,7 +1385,7 @@ function prepareForProcessing() {
             // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
             var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             var configQueuedFile = path.resolve(processingDirectory + "/queued", filename);
-            moveToQueued(incomingFile, configQueuedFile, configStoreFile);
+            moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename);
         } else if (path.extname(filename) === ".uml") {
             // preserve the generated UML to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
