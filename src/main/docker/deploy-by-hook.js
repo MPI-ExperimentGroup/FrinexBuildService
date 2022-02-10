@@ -1346,7 +1346,7 @@ function moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename)
     //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
     //copyFileSync(incomingFile, configStoreFile);
     //fs.writeSync(resultsFile, "<div>copied XML from validated to queued: " + filename + "</div>");
-    console.log('copying XML from queued to target: ' + filename);
+    console.log('copying XML from validated to target: ' + filename);
     var incomingReadStream = fs.createReadStream(incomingFile)
     incomingReadStream.on('close', function () {
         // on vmware instances the following fs.renameSync always resulted in the destination file existing on completion
