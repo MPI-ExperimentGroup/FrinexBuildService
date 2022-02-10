@@ -1345,14 +1345,15 @@ function copyDeleteFile(incomingFile, targetFile) {
 function moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename) {
     console.log('moving XML from validated to queued: ' + filename);
     // this move is within the same volume so we can do it this easy way
-    fs.renameSync(incomingFile, configQueuedFile);
+    fs.renameSync(incomingFile, configQueuedFile + ".tmp");
     //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
     //copyFileSync(incomingFile, configStoreFile);
     //fs.writeSync(resultsFile, "<div>copied XML from validated to queued: " + filename + "</div>");
     console.log('copying XML from queued to target: ' + filename);
-    var incomingReadStream = fs.createReadStream(configQueuedFile)
+    var incomingReadStream = fs.createReadStream(configQueuedFile + ".tmp")
     incomingReadStream.on('close', function () {
         console.log('close: ' + configStoreFile);
+        fs.renameSync(configQueuedFile + ".tmp", configQueuedFile);
     });
     console.log('configStoreFile: ' + configStoreFile);
     // this move is not within the same volume
