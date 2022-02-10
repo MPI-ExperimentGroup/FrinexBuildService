@@ -1367,16 +1367,21 @@ function prepareForProcessing() {
             // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
             var configStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             var configQueuedFile = path.resolve(processingDirectory + "/queued", filename);
-            console.log('configStoreFile: ' + configStoreFile);
             //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
             // this move is not within the same volume
             //copyFileSync(incomingFile, configStoreFile);
-            console.log('moving XML from validated to queued: ' + filename);
-            // this move is within the same volume so we can do it this easy way
-            fs.renameSync(incomingFile, configQueuedFile);
             //fs.writeSync(resultsFile, "<div>copied XML from validated to queued: " + filename + "</div>");
             console.log('copying XML from queued to target: ' + filename);
-            fs.createReadStream(configQueuedFile).pipe(fs.createWriteStream(configStoreFile));
+            var incomingReadStream = fs.createReadStream(incomingFile)
+            incomingReadStream.on('close', function () {
+                // on vmware instances the following fs.renameSync always resulted in the destination file existing on completion
+                // however when run on dedicated hardware the resulting file does not always exist directly after fs.renameSync has completed
+                console.log('moving XML from validated to queued: ' + filename);
+                // this move is within the same volume so we can do it this easy way
+                fs.renameSync(incomingFile, configQueuedFile);
+            });
+            console.log('configStoreFile: ' + configStoreFile);
+            incomingReadStream.pipe(fs.createWriteStream(configStoreFile));
         } else if (path.extname(filename) === ".uml") {
             // preserve the generated UML to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
