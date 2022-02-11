@@ -1548,7 +1548,7 @@ function moveIncomingToQueued() {
                 if (hasProcessingFiles === true) {
                     console.log('moveIncomingToQueued: hasProcessingFiles');
                     //fs.writeSync(resultsFile, "<div>has more files in processing</div>");
-                    //prepareForProcessing();
+                    prepareForProcessing();
                     setTimeout(moveIncomingToQueued, 3000);
                 } else if (!hasDoneBackup) {
                     // this exit backup process takes too long when a new commit comes in and needs to be built
