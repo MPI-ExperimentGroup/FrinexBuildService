@@ -1211,6 +1211,8 @@ function buildFromListing() {
                 storeResult(fileNamePart, 'disabled', "validation", "json_xsd", true, false, false);
                 console.log("this script will not build multiparticipant without manual intervention");
                 fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
+            } else if (path.extname(filename) === ".lock") {
+                console.log("skipping locked file: " + filename);
             } else {
                 var validationMessage = "";
                 console.log(filename);
@@ -1345,15 +1347,15 @@ function copyDeleteFile(incomingFile, targetFile) {
 function moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename) {
     console.log('moving XML from validated to queued: ' + filename);
     // this move is within the same volume so we can do it this easy way
-    fs.renameSync(incomingFile, configQueuedFile + ".tmp");
+    fs.renameSync(incomingFile, configQueuedFile + ".lock");
     //fs.writeSync(resultsFile, "<div>copying XML from queued to target: " + filename + "</div>");
     //copyFileSync(incomingFile, configStoreFile);
     //fs.writeSync(resultsFile, "<div>copied XML from validated to queued: " + filename + "</div>");
     console.log('copying XML from queued to target: ' + filename);
-    var incomingReadStream = fs.createReadStream(configQueuedFile + ".tmp")
+    var incomingReadStream = fs.createReadStream(configQueuedFile + ".lock")
     incomingReadStream.on('close', function () {
         console.log('close: ' + configStoreFile);
-        fs.renameSync(configQueuedFile + ".tmp", configQueuedFile);
+        fs.renameSync(configQueuedFile + ".lock", configQueuedFile);
     });
     console.log('configStoreFile: ' + configStoreFile);
     // this move is not within the same volume
