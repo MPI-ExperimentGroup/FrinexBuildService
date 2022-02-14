@@ -32,6 +32,7 @@ COPY config/frinex_db_manager.conf  /FrinexBuildService/
 COPY cgi/frinex_db_manager.cgi  /FrinexBuildService/cgi/
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
+RUN sed -i "s|DatabaseServerUrl|example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 #RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 #RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
