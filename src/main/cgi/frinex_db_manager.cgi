@@ -54,6 +54,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
         echo "appNameInternal: $appNameInternal"
         if [ "$(psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
             echo "Database already exists"
+            psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
         else
             echo "Database being created"
             psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
