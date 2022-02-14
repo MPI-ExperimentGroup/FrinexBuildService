@@ -25,6 +25,8 @@
 # Deploying Frinex experiments to the Docker swarm requires this registry to be running
 #mkdir -p src/main/certs
 #openssl req -newkey rsa:4096 -nodes -sha256 -keyout src/main/certs/example.com.key -addext "subjectAltName = DNS:example.com" -x509 -days 365 -out src/main/certs/example.com.crt
+docker stop registry 
+docker container rm registry 
 docker run -d \
    --restart=always \
    --name registry \
