@@ -28,7 +28,7 @@ echo "Content-type: text/json"
 echo ''
 docker service ls | grep -E "_admin|_web" \
     | grep -E "_production" \
-    | grep -E "->8080/tcp" \
+    | grep -E "8080/tcp" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' \
     | sed 's/_staging_web/ staging/g' \
     | sed 's/_staging_admin/_admin staging/g' \
