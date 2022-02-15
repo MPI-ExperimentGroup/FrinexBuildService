@@ -57,8 +57,10 @@ restore_frinexbuild_backup.sh
 /cgi/experiment_access.cgi
     Extracts and displays the information required to access a given experiment.
 
-/cgi/frinex_locations.cgi
-/cgi/frinex_upstreams.cgi
+/cgi/frinex_staging_locations.cgi
+/cgi/frinex_staging_upstreams.cgi
+/cgi/frinex_production_locations.cgi
+/cgi/frinex_production_upstreams.cgi
     Provides a JSON file of experiments and port numbers for services running in the Docker swarm.
 
 /cgi/repository_setup.cgi

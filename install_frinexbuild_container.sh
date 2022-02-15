@@ -64,6 +64,14 @@ else
     # start the frinex_db_manager in the bridge network
     # docker run --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
 
+    # build the frinex_listing_provider
+    # docker build --rm -f docker/frinex_listing_provider.Dockerfile -t frinex_listing_provider:latest .
+    # remove the old frinex_listing_provider
+    # docker stop frinex_listing_provider 
+    # docker container rm frinex_listing_provider 
+    # start the frinex_listing_provider
+    # docker run --restart unless-stopped --name frinex_listing_provider -d  -p 8010:80 frinex_listing_provider:latest
+
     # remove the old frinexbuild
     docker stop frinexbuild 
     docker container rm frinexbuild 

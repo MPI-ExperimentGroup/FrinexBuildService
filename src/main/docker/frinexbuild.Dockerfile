@@ -53,8 +53,10 @@ COPY uml/DockerSwarmOverview.svg /FrinexBuildService/docs/
 COPY cgi/repository_setup.cgi /FrinexBuildService/cgi/
 COPY cgi/request_build.cgi /FrinexBuildService/cgi/
 COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
-COPY cgi/frinex_locations.cgi /FrinexBuildService/cgi/
-COPY cgi/frinex_upstreams.cgi /FrinexBuildService/cgi/
+COPY cgi/frinex_staging_locations.cgi /FrinexBuildService/cgi/
+COPY cgi/frinex_production_locations.cgi /FrinexBuildService/cgi/
+COPY cgi/frinex_staging_upstreams.cgi /FrinexBuildService/cgi/
+COPY cgi/frinex_production_upstreams.cgi /FrinexBuildService/cgi/
 # apply location specific settings to the various configuration files
 COPY docker/filter_config_files.sh /FrinexBuildService/
 RUN chmod +x /FrinexBuildService/filter_config_files.sh

@@ -26,4 +26,8 @@
 
 echo "Content-type: text/json"
 echo ''
-docker service ls | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' | awk 'NR>1 {print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}'
+docker service ls \
+    | grep -E "_production" \
+    | sed 's/[*:]//g' \
+    | sed 's/->8080\/tcp//g' \
+    | awk 'NR>1 {print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}'
