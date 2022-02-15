@@ -31,7 +31,7 @@ if ! grep -q $(hostname) publish.properties; then
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # terminate experiment admin applications running in the docker swarm 
-    docker service rm $(docker service ls | grep -i "_admin" | awk 'NR>1 {print $2}')
+    docker service rm $(docker service ls | grep -i "_admin" | awk '{print $2}')
     # terminate experiment web applications running in the docker swarm 
-    docker service rm $(docker service ls | grep -i "_web" | awk 'NR>1 {print $2}')
+    docker service rm $(docker service ls | grep -i "_web" | awk '{print $2}')
 fi;
