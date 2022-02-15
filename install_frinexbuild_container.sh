@@ -70,7 +70,7 @@ else
     # docker stop frinex_listing_provider 
     # docker container rm frinex_listing_provider 
     # start the frinex_listing_provider
-    # docker run --restart unless-stopped --name frinex_listing_provider -d  -p 8010:80 frinex_listing_provider:latest
+    # docker run --restart unless-stopped --name frinex_listing_provider -v /var/run/docker.sock:/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
 
     # remove the old frinexbuild
     docker stop frinexbuild 
