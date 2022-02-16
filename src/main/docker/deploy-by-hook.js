@@ -1327,11 +1327,13 @@ function buildFromListing() {
 
 function copyDeleteFile(incomingFile, targetFile) {
     try {
-        var incomingReadStream = fs.createReadStream(incomingFile);
+        console.log('locking: ' + incomingFile);
+        fs.renameSync(incomingFile, incomingFile + ".lock");
+        var incomingReadStream = fs.createReadStream(incomingFile + ".lock");
         incomingReadStream.on('close', function () {
-            if (fs.existsSync(incomingFile)) {
-                fs.unlinkSync(incomingFile);
-                console.log('removed: ' + incomingFile);
+            if (fs.existsSync(incomingFile + ".lock")) {
+                fs.unlinkSync(incomingFile + ".lock");
+                console.log('removed: ' + incomingFile + ".lock");
                 //fs.writeSync(resultsFile, "<div>removed: " + incomingFile + "</div>");
             }
             /*fs.rename(targetFile + '.tmp', targetFile, function (reason) {
@@ -1374,6 +1376,8 @@ function prepareForProcessing() {
         if (filename === "listing.json") {
             console.log('Deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.');
             fs.writeSync(resultsFile, "<div>deprecated listing.json found. Please specify build options in the relevant section of the experiment XML.</div>");
+        } else if (path.extname(filename) === ".lock") {
+            console.log('skipping lock file: ' + incomingFile);
         } else if (path.extname(filename) === ".json") {
             var jsonStoreFile = path.resolve(targetDirectory + "/" + fileNamePart, filename);
             //console.log('incomingFile: ' + incomingFile);
