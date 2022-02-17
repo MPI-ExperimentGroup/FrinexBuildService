@@ -47,6 +47,7 @@ const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
 const dockerRegistry = properties.get('dockerservice.dockerRegistry');
+const proxyUpdateTrigger = properties.get('dockerservice.proxyUpdateTrigger');
 const dockerServiceOptions = properties.get('dockerservice.serviceOptions');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
@@ -363,6 +364,13 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
         // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
+
+        // triger the proxy to reaload the service list by calling the proxyUpdateTrigger URL
+        got.get(proxyUpdateTrigger, { responseType: 'text', timeout: { request: 3000 } }).then(response => {
+            console.log("proxyUpdateTrigger: " + response.statusCode);
+        }).catch(error => {
+            console.log("proxyUpdateTrigger: " + error.message);
+        });
     } catch (error) {
         console.error("deployDockerService " + serviceName + " error:" + error);
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService error</a>', "production", "admin", true, false, true);
