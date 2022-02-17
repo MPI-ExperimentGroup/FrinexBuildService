@@ -26,7 +26,7 @@
 
 echo "Content-type: text/json"
 echo ''
-docker service ls \
+sudo docker service ls \
     | grep -E "_staging" \
     | grep -E "8080/tcp" \
     | sed 's/[*:]//g' \
