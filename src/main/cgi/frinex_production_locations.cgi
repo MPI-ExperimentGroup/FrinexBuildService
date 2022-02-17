@@ -35,4 +35,5 @@ sudo docker service ls \
     | sed 's/_staging_admin/_admin staging/g' \
     | sed 's/_production_web/ production/g' \
     | sed 's/_production_admin/_admin production/g' \
-    | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $3 "/" $2 ";\n}\n"}'
+    | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}'
+    # | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $3 "/" $2 ";\n}\n"}'
