@@ -31,9 +31,9 @@ sudo docker service ls \
     | grep -E "_production" \
     | grep -E "8080/tcp" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' \
-    | sed 's/_staging_web/ staging/g' \
-    | sed 's/_staging_admin/_admin staging/g' \
-    | sed 's/_production_web/ production/g' \
-    | sed 's/_production_admin/_admin production/g' \
+    | sed 's/_staging_web/_staging_web staging/g' \
+    | sed 's/_staging_admin/_staging_admin staging/g' \
+    | sed 's/_production_web/_production_web production/g' \
+    | sed 's/_production_admin/_production_admin production/g' \
     | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}'
     # | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $3 "/" $2 ";\n}\n"}'
