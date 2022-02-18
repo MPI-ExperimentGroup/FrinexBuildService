@@ -366,6 +366,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
 
         // triger the proxy to reaload the service list by calling the proxyUpdateTrigger URL
+        console.log("proxyUpdateTrigger: " + proxyUpdateTrigger);
         got.get(proxyUpdateTrigger, { responseType: 'text', timeout: { request: 3000 } }).then(response => {
             console.log("proxyUpdateTrigger: " + response.statusCode);
         }).catch(error => {
