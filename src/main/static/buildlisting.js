@@ -203,10 +203,17 @@ function doUpdate() {
                 deploymentStages.forEach(function (deploymentStage, index) {
                     if (key.endsWith(deploymentStage)) {
                         const experimentName = key.replace(deploymentStage, "");
-                        if (val.replicas !== "5/5") { // TODO: 5/5 is dependant on the configuration for the builds and should be made less brittle
+                        if (val.replicas.startsWith("0/")) {
                             applicationStatus[experimentName + '_' + deploymentStage] = 'red';
-                            updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
+                        } else {
+                            const replicaParts = val.replicas.split("/");
+                            if (replicaParts[0].equals(replicaParts[1])) {
+                                applicationStatus[experimentName + '_' + deploymentStage] = 'green';
+                            } else {
+                                applicationStatus[experimentName + '_' + deploymentStage] = 'yellow';
+                            }
                         }
+                        updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
                     }
                 });
             });
