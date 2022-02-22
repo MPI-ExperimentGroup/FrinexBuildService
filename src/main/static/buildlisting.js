@@ -31,6 +31,7 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
     }
 }
 function doUpdate() {
+    clearTimeout(updateTimer);
     updateTimer = window.setTimeout(doUpdate, 60000);
     $.getJSON('buildhistory.json?' + new Date().getTime(), function (data) {
         //console.log(data);
@@ -186,8 +187,12 @@ function doUpdate() {
         clearTimeout(updateTimer);
         if (data.building) {
             updateTimer = window.setTimeout(doUpdate, 1000);
+            $("#buildProcessFinished").hide();
+            $("#buildInProgress").show();
         } else {
             updateTimer = window.setTimeout(doUpdate, 10000);
+            $("#buildInProgress").hide();
+            $("#buildProcessFinished").show();
         }
     });
 }
@@ -206,6 +211,16 @@ function doSort() {
         }
     }
 }
+
+function triggerBuild() {
+    $.get("cgi/request_build.cgi", function (data) {
+        consol.log(data);
+        clearTimeout(updateTimer);
+        $('#buildTable').empty();
+        doUpdate();
+    });
+}
+
 $(window).on('hashchange', function (e) {
     doSort();
 });
