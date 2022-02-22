@@ -194,8 +194,8 @@ function doUpdate() {
             $("#buildInProgress").hide();
             $("#buildProcessFinished").show();
         }
-        $.getJSON('services.json?' + new Date().getTime(), function (data) {
-            $.each(data, function (key, val) {
+        $.getJSON('services.json?' + new Date().getTime(), function (servicesData) {
+            $.each(servicesData, function (key, val) {
                 // console.log(key.replace("_staging", "__staging").replace("_production", "__production"));
                 // console.log(val);
                 // $("#" + key.replace("_staging", "__staging").replace("_production", "__production")).text(key);
