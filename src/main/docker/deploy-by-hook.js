@@ -347,7 +347,7 @@ function updateServicesJson() {
     // update the docker service listing JSON which is used to inform the user in the build listing HTML
     console.log("updateServicesJson");
     const servicesJsonFileName = targetDirectory + "/services.json";
-    child_process.execSync("docker service ls | grep -E \"_admin|_web\" | sed 's/->8080\/tcp//g' | sed 's/[*:]//g' | awk 'NR>1{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' >> " + servicesJsonFileName + ";", { stdio: [0, 1, 2] });
+    child_process.execSync("sudo docker service ls | grep -E \"_admin|_web\" | sed 's/->8080\/tcp//g' | sed 's/[*:]//g' | awk 'NR>1{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' >> " + servicesJsonFileName + ";", { stdio: [0, 1, 2] });
 }
 
 function deployDockerService(currentEntry, warFileName, serviceName) {
