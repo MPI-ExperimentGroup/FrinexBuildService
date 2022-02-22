@@ -194,6 +194,23 @@ function doUpdate() {
             $("#buildInProgress").hide();
             $("#buildProcessFinished").show();
         }
+        $.getJSON('services.json?' + new Date().getTime(), function (data) {
+            $.each(data, function (key, val) {
+                // console.log(key.replace("_staging", "__staging").replace("_production", "__production"));
+                // console.log(val);
+                // $("#" + key.replace("_staging", "__staging").replace("_production", "__production")).text(key);
+                const deploymentStages = ["_staging_web", "_staging_admin", "_production_web", "_production_admin"]
+                deploymentStages.forEach(function (deploymentStage, index) {
+                    if (key.endsWith(deploymentStage)) {
+                        const experimentName = key.replace(deploymentStage, "");
+                        if (val.replicas !== "5/5") { // TODO: 5/5 is dependant on the configuration for the builds and should be made less brittle
+                            applicationStatus[experimentName + '_' + deploymentStage] = 'red';
+                            updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
+                        }
+                    }
+                });
+            });
+        });
     });
 }
 var updateTimer = window.setTimeout(doUpdate, 100);
