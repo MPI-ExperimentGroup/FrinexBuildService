@@ -153,6 +153,8 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
             buildHistoryJson.diskFree = info.free;
             buildHistoryJson.diskTotal = info.size;
         });
+        // update the docker service listing JSON (this moment is not so critical since the services will be changing regardless of this process)
+        updateServicesJson();
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
@@ -161,6 +163,8 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
 function stopUpdatingResults() {
     console.log('build process complete');
     fs.writeSync(resultsFile, "<div>build process complete</div>");
+    // update the docker service listing JSON (one last chance to update the service listing)
+    updateServicesJson();
     buildHistoryJson.building = false;
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
@@ -339,6 +343,13 @@ function unDeploy(currentEntry) {
     currentlyBuilding.delete(currentEntry.buildName);
 }
 
+function updateServicesJson() {
+    // update the docker service listing JSON which is used to inform the user in the build listing HTML
+    console.log("updateServicesJson");
+    const servicesJsonFileName = targetDirectory + "/services.json";
+    child_process.execSync("docker service ls | grep -E \"_admin|_web\" | sed 's/->8080\/tcp//g' | sed 's/[*:]//g' | awk 'NR>1{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' >> " + servicesJsonFileName + ";", { stdio: [0, 1, 2] });
+}
+
 function deployDockerService(currentEntry, warFileName, serviceName) {
     //const warFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + warFileName;
     const dockerFilePath = protectedDirectory + "/" + currentEntry.buildName + "/" + serviceName + ".Docker";
@@ -355,12 +366,9 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
-    const servicesJsonFileName = targetDirectory + "/services.json";
-    const createJsonServiceListingString = 'echo "{" > ' + servicesJsonFileName + '; sudo docker service ls | sed \'s/[*:]//g\' | sed \'s/->8080\\/tcp//g\' | awk \'NR>1 {print "  \\"" $2 "\\":" $6 ","}\' >> ' + servicesJsonFileName + '; echo "}" >> ' + servicesJsonFileName + ';';
     try {
         console.log(serviceSetupString);
         child_process.execSync(serviceSetupString, { stdio: [0, 1, 2] });
-        child_process.execSync(createJsonServiceListingString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
         // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
@@ -1877,6 +1885,8 @@ function prepareBuildHistory() {
                 buildHistoryJson.diskFree = info.free;
                 buildHistoryJson.diskTotal = info.size;
             });
+            // update the docker service listing JSON
+            updateServicesJson();
         } catch (error) {
             console.error("faild to read " + buildHistoryJson);
             console.error(error);
