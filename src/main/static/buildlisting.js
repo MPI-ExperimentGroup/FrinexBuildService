@@ -207,7 +207,7 @@ function doUpdate() {
                             applicationStatus[experimentName + '_' + deploymentStage] = 'red';
                         } else {
                             const replicaParts = val.replicas.split("/");
-                            if (replicaParts[0].equals(replicaParts[1])) {
+                            if (replicaParts[0] === replicaParts[1]) {
                                 applicationStatus[experimentName + '_' + deploymentStage] = 'green';
                             } else {
                                 applicationStatus[experimentName + '_' + deploymentStage] = 'yellow';
