@@ -63,7 +63,7 @@ function doUpdate() {
                 // check the spring health here and show http and db status via applicationStatus array
                 // getting the health of the experiment admin and web
                 // the path -admin/health is for spring boot 1.4.1
-                applicationStatusHealth[experimentName + '__staging_admin'] = "{\"status\":\"Unknown\"}";
+                applicationStatusHealth[keyString + '__staging_admin'] = "{\"status\":\"Unknown\"}";
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '__staging_admin'] = data;
