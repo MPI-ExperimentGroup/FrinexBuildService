@@ -27,19 +27,19 @@ var applicationStatusReplicas = {};
 var applicationStatusHealth = {};
 
 function updateDeploymentStatus(keyString, cellString, cellStyle) {
-    var experimentCell = document.getElementById(keyString + '_' + cellString);
+    var experimentCell = document.getElementById(keyString + cellString);
     if (experimentCell) {
-        var statusStyle = (keyString + '_' + cellString in applicationStatus) ? ';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';' : '';
+        var statusStyle = (keyString + cellString in applicationStatus) ? ';border-right: 3px solid ' + applicationStatus[keyString + cellString] + ';' : '';
         experimentCell.style = cellStyle + statusStyle;
     }
-    var statusMessage = document.getElementById(keyString + '_' + cellString + '_status');
+    var statusMessage = document.getElementById(keyString + cellString + '_status');
     if (!statusMessage) {
         statusMessage = document.createElement('span');
-        statusMessage.id = keyString + '_' + cellString + '_status';
+        statusMessage.id = keyString + cellString + '_status';
         statusMessage.className = 'longmessage';
         experimentCell.appendChild(statusMessage);
     }
-    statusMessage.innerHTML = applicationStatusReplicas[keyString + '_' + cellString] + '<br/>' + applicationStatusHealth[keyString + '_' + cellString];
+    statusMessage.innerHTML = applicationStatusReplicas[keyString + cellString] + '<br/>' + applicationStatusHealth[keyString + cellString];
 }
 
 function doUpdate() {
@@ -56,26 +56,27 @@ function doUpdate() {
                 tableRow.id = keyString + '_row';
                 for (var cellString of ['_repository', '_committer', '_experiment', '_date', '_frinex_version', '_validation_json_xsd', '_staging_web', '_staging_android', '_staging_desktop', '_staging_admin', '_production_target', '_production_web', '_production_android', '_production_desktop', '_production_admin']) {
                     var tableCell = document.createElement('td');
-                    tableCell.id = keyString + '_' + cellString;
+                    tableCell.id = keyString + cellString;
                     tableRow.appendChild(tableCell);
                 }
                 document.getElementById('buildTable').appendChild(tableRow);
                 // check the spring health here and show http and db status via applicationStatus array
                 // getting the health of the experiment admin and web
                 // the path -admin/health is for spring boot 1.4.1
-                applicationStatusHealth[keyString + '__staging_web'] = "{\"status\":\"Unknown\"}";
-                applicationStatusHealth[keyString + '__staging_admin'] = "{\"status\":\"Unknown\"}";
-                applicationStatusHealth[keyString + '__production_web'] = "{\"status\":\"Unknown\"}";
-                applicationStatusHealth[keyString + '__production_admin'] = "{\"status\":\"Unknown\"}";
+                applicationStatusHealth[keyString + '_staging_web'] = "status: Unknown";
+                applicationStatusHealth[keyString + '_staging_admin'] = "status: Unknown";
+                applicationStatusHealth[keyString + '_production_web'] = "status: Unknown";
+                applicationStatusHealth[keyString + '_production_admin'] = "status: Unknown";
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
-                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
+                        applicationStatusHealth[experimentName + '_staging_admin'] = '';
                         $.each(data, function (key, val) {
+                            applicationStatusHealth[experimentName + '_staging_admin'] = key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
-                                    applicationStatus[experimentName + '__staging_admin'] = 'yellow';
+                                    applicationStatus[experimentName + '_staging_admin'] = 'yellow';
                                 } else {
-                                    applicationStatus[experimentName + '__staging_admin'] = 'red';
+                                    applicationStatus[experimentName + '_staging_admin'] = 'red';
                                 }
                                 updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);
                             }
@@ -85,13 +86,14 @@ function doUpdate() {
                 // this request is for spring boot 1.4.1 and Frinex only had a single production server at that time, so we only check the default server here
                 $.getJSON(data.productionServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
-                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
+                        applicationStatusHealth[experimentName + '_production_admin'] = '';
                         $.each(data, function (key, val) {
+                            applicationStatusHealth[experimentName + '_production_admin'] = key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
-                                    applicationStatus[experimentName + '__production_admin'] = 'yellow';
+                                    applicationStatus[experimentName + '_production_admin'] = 'yellow';
                                 } else {
-                                    applicationStatus[experimentName + '__production_admin'] = 'red';
+                                    applicationStatus[experimentName + '_production_admin'] = 'red';
                                 }
                                 updateDeploymentStatus(experimentName, '_production_admin', cellStyle);
                             }
@@ -101,13 +103,15 @@ function doUpdate() {
                 // the path -admin/actuator/health is for spring boot 2.3.0
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
-                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
+                        applicationStatusHealth[experimentName + '_staging_admin'] = '';
                         $.each(data, function (key, val) {
+                            applicationStatusHealth[experimentName + '_staging_admin'] = key + ': ' + val + '<br/>';
+                            applicationStatusHealth[experimentName + '_staging_admin'] = key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
-                                    applicationStatus[experimentName + '__staging_admin'] = 'green';
+                                    applicationStatus[experimentName + '_staging_admin'] = 'green';
                                 } else {
-                                    applicationStatus[experimentName + '__staging_admin'] = 'red';
+                                    applicationStatus[experimentName + '_staging_admin'] = 'red';
                                 }
                                 updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);
                             }
@@ -116,13 +120,14 @@ function doUpdate() {
                 }(keyString, data.table[keyString]['_staging_admin'].style)));
                 $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
-                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
+                        applicationStatusHealth[experimentName + '_production_admin'] = '';
                         $.each(data, function (key, val) {
+                            applicationStatusHealth[experimentName + '_production_admin'] = key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
-                                    applicationStatus[experimentName + '__production_admin'] = 'green';
+                                    applicationStatus[experimentName + '_production_admin'] = 'green';
                                 } else {
-                                    applicationStatus[experimentName + '__production_admin'] = 'red';
+                                    applicationStatus[experimentName + '_production_admin'] = 'red';
                                 }
                                 updateDeploymentStatus(experimentName, '_production_admin', cellStyle);
                             }
@@ -132,13 +137,14 @@ function doUpdate() {
                 // get the health of the GUI
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
-                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
+                        applicationStatusHealth[experimentName + '_staging_web'] = '';
                         $.each(data, function (key, val) {
+                            applicationStatusHealth[experimentName + '_staging_web'] = key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
-                                    applicationStatus[experimentName + '__staging'] = 'green';
+                                    applicationStatus[experimentName + '_staging_web'] = 'green';
                                 } else {
-                                    applicationStatus[experimentName + '__staging'] = 'red';
+                                    applicationStatus[experimentName + '_staging_web'] = 'red';
                                 }
                                 updateDeploymentStatus(experimentName, '_staging_web', cellStyle);
                             }
@@ -147,15 +153,16 @@ function doUpdate() {
                 }(keyString, data.table[keyString]['_staging_web'].style)));
                 $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
-                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
+                        applicationStatusHealth[experimentName + '_production_web'] = '';
                         $.each(data, function (key, val) {
+                            applicationStatusHealth[experimentName + '_production_web'] = key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
-                                    applicationStatus[experimentName + '__production'] = 'green';
+                                    applicationStatus[experimentName + '_production_web'] = 'green';
                                 } else {
-                                    applicationStatus[experimentName + '__production'] = 'red';
+                                    applicationStatus[experimentName + '_production_web'] = 'red';
                                 }
-                                updateDeploymentStatus(experimentName, '_production', cellStyle);
+                                updateDeploymentStatus(experimentName, '_production_web', cellStyle);
                             }
                         });
                     };
@@ -166,21 +173,21 @@ function doUpdate() {
                 experimentRow.dataset.lastchange = data.table[keyString]['_date'].value;
                 for (var cellString in data.table[keyString]) {
                     //console.log(cellString);
-                    var experimentCell = document.getElementById(keyString + '_' + cellString);
+                    var experimentCell = document.getElementById(keyString + cellString);
                     if (!experimentCell) {
                         var tableCell = document.createElement('td');
-                        tableCell.id = keyString + '_' + cellString;
+                        tableCell.id = keyString + cellString;
                         document.getElementById(keyString + '_row').appendChild(tableCell);
                     }
                     if (cellString === '_date') {
                         var currentBuildDate = new Date(data.table[keyString][cellString].value);
-                        document.getElementById(keyString + '_' + cellString).innerHTML = currentBuildDate.getFullYear() + '-' + ((currentBuildDate.getMonth() + 1 < 10) ? '0' : '') + (currentBuildDate.getMonth() + 1) + '-' + ((currentBuildDate.getDate() < 10) ? '0' : '') + currentBuildDate.getDate() + 'T' + ((currentBuildDate.getHours() < 10) ? '0' : '') + currentBuildDate.getHours() + ':' + ((currentBuildDate.getMinutes() < 10) ? '0' : '') + currentBuildDate.getMinutes() + ':' + ((currentBuildDate.getSeconds() < 10) ? '0' : '') + currentBuildDate.getSeconds();
+                        document.getElementById(keyString + cellString).innerHTML = currentBuildDate.getFullYear() + '-' + ((currentBuildDate.getMonth() + 1 < 10) ? '0' : '') + (currentBuildDate.getMonth() + 1) + '-' + ((currentBuildDate.getDate() < 10) ? '0' : '') + currentBuildDate.getDate() + 'T' + ((currentBuildDate.getHours() < 10) ? '0' : '') + currentBuildDate.getHours() + ':' + ((currentBuildDate.getMinutes() < 10) ? '0' : '') + currentBuildDate.getMinutes() + ':' + ((currentBuildDate.getSeconds() < 10) ? '0' : '') + currentBuildDate.getSeconds();
                     } else {
                         var buildTimeSting = (typeof data.table[keyString][cellString].ms !== 'undefined' && data.table[keyString][cellString].built) ? '&nbsp;(' + parseInt(data.table[keyString][cellString].ms / 60000) + ':' + parseInt(data.table[keyString][cellString].ms / 1000 % 60) + ')' : '';
-                        document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value + buildTimeSting;
+                        document.getElementById(keyString + cellString).innerHTML = data.table[keyString][cellString].value + buildTimeSting;
                     }
-                    //var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';
-                    if (cellString === '__staging_web' || cellString === '__staging_admin' || cellString === '__production_web' || cellString === '__production_admin') {
+                    //var statusStyle = ($.inArray(keyString + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';
+                    if (cellString === '_staging_web' || cellString === '_staging_admin' || cellString === '_production_web' || cellString === '_production_admin') {
                         updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);
                     }
                 }
@@ -220,22 +227,22 @@ function doUpdate() {
         }
         $.getJSON('services.json?' + new Date().getTime(), function (servicesData) {
             $.each(servicesData, function (key, val) {
-                // console.log(key.replace("_staging", "__staging").replace("_production", "__production"));
+                // console.log(key.replace("_staging", "_staging").replace("_production", "_production"));
                 // console.log(val);
-                // $("#" + key.replace("_staging", "__staging").replace("_production", "__production")).text(key);
+                // $("#" + key.replace("_staging", "_staging").replace("_production", "_production")).text(key);
                 const deploymentStages = ["_staging_web", "_staging_admin", "_production_web", "_production_admin"]
                 deploymentStages.forEach(function (deploymentStage, index) {
                     if (key.endsWith(deploymentStage)) {
                         const experimentName = key.replace(deploymentStage, "");
-                        applicationStatusReplicas[experimentName + '_' + deploymentStage] = val.replicas;
+                        applicationStatusReplicas[experimentName + deploymentStage] = val.replicas;
                         if (val.replicas.startsWith("0/")) {
-                            applicationStatus[experimentName + '_' + deploymentStage] = 'red';
+                            applicationStatus[experimentName + deploymentStage] = 'red';
                         } else {
                             const replicaParts = val.replicas.split("/");
                             if (replicaParts[0] === replicaParts[1]) {
-                                applicationStatus[experimentName + '_' + deploymentStage] = 'green';
+                                applicationStatus[experimentName + deploymentStage] = 'green';
                             } else {
-                                applicationStatus[experimentName + '_' + deploymentStage] = 'yellow';
+                                applicationStatus[experimentName + deploymentStage] = 'yellow';
                             }
                         }
                         updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
