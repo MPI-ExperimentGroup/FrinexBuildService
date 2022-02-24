@@ -36,7 +36,7 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
     if (!statusMessage) {
         statusMessage = document.createElement('span');
         statusMessage.id = keyString + '_' + cellString + '_status';
-        statusMessage.class = 'longmessage';
+        statusMessage.className = 'longmessage';
         experimentCell.appendChild(statusMessage);
     }
     statusMessage.innerHTML = applicationStatusReplicas[keyString + '_' + cellString] + '<br/>' + applicationStatusHealth[keyString + '_' + cellString];
@@ -63,7 +63,10 @@ function doUpdate() {
                 // check the spring health here and show http and db status via applicationStatus array
                 // getting the health of the experiment admin and web
                 // the path -admin/health is for spring boot 1.4.1
+                applicationStatusHealth[keyString + '__staging_web'] = "{\"status\":\"Unknown\"}";
                 applicationStatusHealth[keyString + '__staging_admin'] = "{\"status\":\"Unknown\"}";
+                applicationStatusHealth[keyString + '__production_web'] = "{\"status\":\"Unknown\"}";
+                applicationStatusHealth[keyString + '__production_admin'] = "{\"status\":\"Unknown\"}";
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '__staging_admin'] = data;
@@ -177,7 +180,9 @@ function doUpdate() {
                         document.getElementById(keyString + '_' + cellString).innerHTML = data.table[keyString][cellString].value + buildTimeSting;
                     }
                     //var statusStyle = ($.inArray(keyString + '_' + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';
-                    updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);
+                    if (cellString === '__staging_web' || cellString === '__staging_admin' || cellString === '__production_web' || cellString === '__production_admin') {
+                        updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);
+                    }
                 }
             }
         }
