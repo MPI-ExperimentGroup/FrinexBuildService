@@ -23,13 +23,25 @@
  */
 
 var applicationStatus = {};
+var applicationStatusReplicas = {};
+var applicationStatusHealth = {};
+
 function updateDeploymentStatus(keyString, cellString, cellStyle) {
     var experimentCell = document.getElementById(keyString + '_' + cellString);
     if (experimentCell) {
         var statusStyle = (keyString + '_' + cellString in applicationStatus) ? ';border-right: 3px solid ' + applicationStatus[keyString + '_' + cellString] + ';' : '';
         experimentCell.style = cellStyle + statusStyle;
     }
+    var statusMessage = document.getElementById(keyString + '_' + cellString + '_status');
+    if (!statusMessage) {
+        statusMessage = document.createElement('span');
+        statusMessage.id = keyString + '_' + cellString + '_status';
+        statusMessage.class = 'longmessage';
+        experimentCell.appendChild(statusMessage);
+    }
+    statusMessage.innerHTML = applicationStatusReplicas[keyString + '_' + cellString] + '<br/>' + applicationStatusHealth[keyString + '_' + cellString];
 }
+
 function doUpdate() {
     clearTimeout(updateTimer);
     updateTimer = window.setTimeout(doUpdate, 60000);
@@ -51,8 +63,10 @@ function doUpdate() {
                 // check the spring health here and show http and db status via applicationStatus array
                 // getting the health of the experiment admin and web
                 // the path -admin/health is for spring boot 1.4.1
+                applicationStatusHealth[experimentName + '__staging_admin'] = "{\"status\":\"Unknown\"}";
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
+                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
                         $.each(data, function (key, val) {
                             if (key === 'status') {
                                 if (val === 'UP') {
@@ -68,6 +82,7 @@ function doUpdate() {
                 // this request is for spring boot 1.4.1 and Frinex only had a single production server at that time, so we only check the default server here
                 $.getJSON(data.productionServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
+                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
                         $.each(data, function (key, val) {
                             if (key === 'status') {
                                 if (val === 'UP') {
@@ -83,6 +98,7 @@ function doUpdate() {
                 // the path -admin/actuator/health is for spring boot 2.3.0
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
+                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
                         $.each(data, function (key, val) {
                             if (key === 'status') {
                                 if (val === 'UP') {
@@ -97,6 +113,7 @@ function doUpdate() {
                 }(keyString, data.table[keyString]['_staging_admin'].style)));
                 $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
+                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
                         $.each(data, function (key, val) {
                             if (key === 'status') {
                                 if (val === 'UP') {
@@ -112,6 +129,7 @@ function doUpdate() {
                 // get the health of the GUI
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
+                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
                         $.each(data, function (key, val) {
                             if (key === 'status') {
                                 if (val === 'UP') {
@@ -126,6 +144,7 @@ function doUpdate() {
                 }(keyString, data.table[keyString]['_staging_web'].style)));
                 $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
+                        applicationStatusHealth[experimentName + '__staging_admin'] = data;
                         $.each(data, function (key, val) {
                             if (key === 'status') {
                                 if (val === 'UP') {
@@ -203,6 +222,7 @@ function doUpdate() {
                 deploymentStages.forEach(function (deploymentStage, index) {
                     if (key.endsWith(deploymentStage)) {
                         const experimentName = key.replace(deploymentStage, "");
+                        applicationStatusReplicas[experimentName + '_' + deploymentStage] = val.replicas;
                         if (val.replicas.startsWith("0/")) {
                             applicationStatus[experimentName + '_' + deploymentStage] = 'red';
                         } else {
