@@ -40,7 +40,8 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
             statusMessage.className = 'longmessage';
             experimentCell.appendChild(statusMessage);
         }
-        statusMessage.innerHTML = ((applicationStatusReplicas[keyString + cellString]) ? applicationStatusReplicas[keyString + cellString] + '<br/>' : '') + applicationStatusHealth[keyString + cellString];
+        statusMessage.innerHTML = ((applicationStatusReplicas[keyString + cellString]) ? 'Replicas: ' + applicationStatusReplicas[keyString + cellString] + '<br/>' : '')
+            + ((applicationStatusHealth[keyString + cellString]) ? applicationStatusHealth[keyString + cellString] : "status: Unknown");
     }
 }
 
@@ -65,15 +66,11 @@ function doUpdate() {
                 // check the spring health here and show http and db status via applicationStatus array
                 // getting the health of the experiment admin and web
                 // the path -admin/health is for spring boot 1.4.1
-                applicationStatusHealth[keyString + '_staging_web'] = "status: Unknown";
-                applicationStatusHealth[keyString + '_staging_admin'] = "status: Unknown";
-                applicationStatusHealth[keyString + '_production_web'] = "status: Unknown";
-                applicationStatusHealth[keyString + '_production_admin'] = "status: Unknown";
                 $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_staging_admin'] = '';
                         $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_staging_admin'] = key + ': ' + val + '<br/>';
+                            applicationStatusHealth[experimentName + '_staging_admin'] += key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
                                     applicationStatus[experimentName + '_staging_admin'] = 'yellow';
@@ -90,7 +87,7 @@ function doUpdate() {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_production_admin'] = '';
                         $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_production_admin'] = key + ': ' + val + '<br/>';
+                            applicationStatusHealth[experimentName + '_production_admin'] += key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
                                     applicationStatus[experimentName + '_production_admin'] = 'yellow';
@@ -107,8 +104,7 @@ function doUpdate() {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_staging_admin'] = '';
                         $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_staging_admin'] = key + ': ' + val + '<br/>';
-                            applicationStatusHealth[experimentName + '_staging_admin'] = key + ': ' + val + '<br/>';
+                            applicationStatusHealth[experimentName + '_staging_admin'] += key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
                                     applicationStatus[experimentName + '_staging_admin'] = 'green';
@@ -124,7 +120,7 @@ function doUpdate() {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_production_admin'] = '';
                         $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_production_admin'] = key + ': ' + val + '<br/>';
+                            applicationStatusHealth[experimentName + '_production_admin'] += key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
                                     applicationStatus[experimentName + '_production_admin'] = 'green';
@@ -141,7 +137,7 @@ function doUpdate() {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_staging_web'] = '';
                         $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_staging_web'] = key + ': ' + val + '<br/>';
+                            applicationStatusHealth[experimentName + '_staging_web'] += key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
                                     applicationStatus[experimentName + '_staging_web'] = 'green';
@@ -157,7 +153,7 @@ function doUpdate() {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_production_web'] = '';
                         $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_production_web'] = key + ': ' + val + '<br/>';
+                            applicationStatusHealth[experimentName + '_production_web'] += key + ': ' + val + '<br/>';
                             if (key === 'status') {
                                 if (val === 'UP') {
                                     applicationStatus[experimentName + '_production_web'] = 'green';
