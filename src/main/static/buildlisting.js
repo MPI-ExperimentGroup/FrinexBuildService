@@ -40,8 +40,8 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
             statusMessage.className = 'longmessage';
             experimentCell.appendChild(statusMessage);
         }
-        statusMessage.innerHTML = ((applicationStatusReplicas[keyString + cellString]) ? 'Replicas: ' + applicationStatusReplicas[keyString + cellString] + '<br/>' : '')
-            + ((applicationStatusHealth[keyString + cellString]) ? applicationStatusHealth[keyString + cellString] : "status: Unknown");
+        statusMessage.innerHTML = ((applicationStatusReplicas[keyString + cellString]) ? 'replicas: ' + applicationStatusReplicas[keyString + cellString] + '<br/>' : '')
+            + ((applicationStatusHealth[keyString + cellString]) ? applicationStatusHealth[keyString + cellString] : "status: unknown");
     }
 }
 
