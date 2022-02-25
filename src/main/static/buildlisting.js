@@ -268,7 +268,7 @@ function doSort() {
 
 function triggerBuild() {
     $.get("cgi/request_build.cgi", function (data) {
-        consol.log(data);
+        console.log(data);
         clearTimeout(updateTimer);
         $('#buildTable').empty();
         doUpdate();
