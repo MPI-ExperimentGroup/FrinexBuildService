@@ -32,14 +32,16 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
         var statusStyle = (keyString + cellString in applicationStatus) ? ';border-right: 3px solid ' + applicationStatus[keyString + cellString] + ';' : '';
         experimentCell.style = cellStyle + statusStyle;
     }
-    var statusMessage = document.getElementById(keyString + cellString + '_status');
-    if (!statusMessage) {
-        statusMessage = document.createElement('span');
-        statusMessage.id = keyString + cellString + '_status';
-        statusMessage.className = 'longmessage';
-        experimentCell.appendChild(statusMessage);
+    if (applicationStatusReplicas[keyString + cellString] || applicationStatusHealth[keyString + cellString]) {
+        var statusMessage = document.getElementById(keyString + cellString + '_status');
+        if (!statusMessage) {
+            statusMessage = document.createElement('span');
+            statusMessage.id = keyString + cellString + '_status';
+            statusMessage.className = 'longmessage';
+            experimentCell.appendChild(statusMessage);
+        }
+        statusMessage.innerHTML = ((applicationStatusReplicas[keyString + cellString]) ? applicationStatusReplicas[keyString + cellString] + '<br/>' : '') + applicationStatusHealth[keyString + cellString];
     }
-    statusMessage.innerHTML = applicationStatusReplicas[keyString + cellString] + '<br/>' + applicationStatusHealth[keyString + cellString];
 }
 
 function doUpdate() {
