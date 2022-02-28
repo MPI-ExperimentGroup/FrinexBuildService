@@ -66,7 +66,7 @@ function doUpdate() {
                 // check the spring health here and show http and db status via applicationStatus array
                 // getting the health of the experiment admin and web
                 // the path -admin/health is for spring boot 1.4.1
-                $.getJSON(data.stagingServerUrl + keyString + '-admin/health', (function (experimentName, cellStyle) {
+                $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_staging_admin'] = '';
                         $.each(data, function (key, val) {
@@ -83,7 +83,7 @@ function doUpdate() {
                     };
                 }(keyString, data.table[keyString]['_staging_admin'].style)));
                 // this request is for spring boot 1.4.1 and Frinex only had a single production server at that time, so we only check the default server here
-                $.getJSON(data.productionServerUrl + keyString + '-admin/health', (function (experimentName, cellStyle) {
+                $.getJSON(data.productionServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_production_admin'] = '';
                         $.each(data, function (key, val) {
@@ -100,7 +100,7 @@ function doUpdate() {
                     };
                 }(keyString, data.table[keyString]['_production_admin'].style)));
                 // the path -admin/actuator/health is for spring boot 2.3.0
-                $.getJSON(data.stagingServerUrl + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
+                $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_staging_admin'] = '';
                         $.each(data, function (key, val) {
@@ -116,7 +116,7 @@ function doUpdate() {
                         });
                     };
                 }(keyString, data.table[keyString]['_staging_admin'].style)));
-                $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value + '/' : data.productionServerUrl) + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
+                $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_production_admin'] = '';
                         $.each(data, function (key, val) {
@@ -133,7 +133,7 @@ function doUpdate() {
                     };
                 }(keyString, data.table[keyString]['_production_admin'].style)));
                 // get the health of the GUI
-                $.getJSON(data.stagingServerUrl + keyString + '/actuator/health', (function (experimentName, cellStyle) {
+                $.getJSON(data.stagingServerUrl + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_staging_web'] = '';
                         $.each(data, function (key, val) {
@@ -149,7 +149,7 @@ function doUpdate() {
                         });
                     };
                 }(keyString, data.table[keyString]['_staging_web'].style)));
-                $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value + '/' : data.productionServerUrl) + keyString + '/actuator/health', (function (experimentName, cellStyle) {
+                $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
                     return function (data) {
                         applicationStatusHealth[experimentName + '_production_web'] = '';
                         $.each(data, function (key, val) {
