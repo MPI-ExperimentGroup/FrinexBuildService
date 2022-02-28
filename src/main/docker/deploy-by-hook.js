@@ -344,12 +344,14 @@ function unDeploy(currentEntry) {
 }
 
 function updateServicesJson() {
-    // update the docker service listing JSON which is used to inform the user in the build listing HTML
-    console.log("updateServicesJson");
-    const servicesJsonFileName = targetDirectory + "/services.json";
-    const servicesDockerString = "sudo docker service ls | grep -E \"_admin|_web\" | sed 's/->8080\\/tcp//g' | sed 's/[*:]//g' | awk '{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \\\"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' > " + servicesJsonFileName + ";";
-    console.log(servicesDockerString);
-    child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
+    if (deploymentType === 'docker') {
+        // update the docker service listing JSON which is used to inform the user in the build listing HTML
+        console.log("updateServicesJson");
+        const servicesJsonFileName = targetDirectory + "/services.json";
+        const servicesDockerString = "sudo docker service ls | grep -E \"_admin|_web\" | sed 's/->8080\\/tcp//g' | sed 's/[*:]//g' | awk '{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \\\"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' > " + servicesJsonFileName + ";";
+        console.log(servicesDockerString);
+        child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
+    }
 }
 
 function deployDockerService(currentEntry, warFileName, serviceName) {
