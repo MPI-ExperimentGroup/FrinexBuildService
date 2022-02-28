@@ -176,6 +176,10 @@ function doUpdate() {
                         var tableCell = document.createElement('td');
                         tableCell.id = keyString + cellString;
                         document.getElementById(keyString + '_row').appendChild(tableCell);
+                        if (!applicationStatusHealth[keyString + cellString]) {
+                            // if the health status has not been set then set the provided style
+                            tableCell.style = data.table[keyString][cellString].style;
+                        }
                     }
                     if (cellString === '_date') {
                         var currentBuildDate = new Date(data.table[keyString][cellString].value);
