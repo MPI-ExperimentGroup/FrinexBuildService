@@ -176,10 +176,6 @@ function doUpdate() {
                         var tableCell = document.createElement('td');
                         tableCell.id = keyString + cellString;
                         document.getElementById(keyString + '_row').appendChild(tableCell);
-                        if (!applicationStatusHealth[keyString + cellString]) {
-                            // if the health status has not been set then set the provided style
-                            tableCell.style = data.table[keyString][cellString].style;
-                        }
                     }
                     if (cellString === '_date') {
                         var currentBuildDate = new Date(data.table[keyString][cellString].value);
@@ -191,6 +187,9 @@ function doUpdate() {
                     //var statusStyle = ($.inArray(keyString + cellString, applicationStatus ) >= 0)?';border-right: 5px solid green;':';border-right: 5px solid grey;';
                     if (cellString === '_staging_web' || cellString === '_staging_admin' || cellString === '_production_web' || cellString === '_production_admin') {
                         updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);
+                    } else if (!applicationStatusHealth[keyString + cellString]) {
+                        // if the health status has not been set then set the provided style
+                        tableCell.style = data.table[keyString][cellString].style;
                     }
                 }
             }
