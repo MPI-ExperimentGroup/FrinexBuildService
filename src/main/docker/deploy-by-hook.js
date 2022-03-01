@@ -49,6 +49,7 @@ const deploymentType = properties.get('settings.deploymentType');
 const dockerRegistry = properties.get('dockerservice.dockerRegistry');
 const proxyUpdateTrigger = properties.get('dockerservice.proxyUpdateTrigger');
 const dockerServiceOptions = properties.get('dockerservice.serviceOptions');
+const dockerServiceMemory = properties.get('dockerservice.serviceMemory');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
@@ -360,7 +361,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
     fs.writeFileSync(dockerFilePath,
         "FROM openjdk:11\n"
         + "COPY " + warFileName + " /" + warFileName + "\n"
-        + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + serviceName + "\"]\n"
+        + "CMD [\"java\", \"-jar\", \"-Xms" + dockerServiceMemory + "\", \"-Xmx" + dockerServiceMemory + "\", \"-XX:MaxPermSize" + dockerServiceMemory + "\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + serviceName + "\"]\n"
         // TODO: it should not be necessary to do a service start, but this needs to be tested 
         // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
         , { mode: 0o755 });
