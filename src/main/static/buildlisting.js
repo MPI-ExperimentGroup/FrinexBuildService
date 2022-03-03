@@ -273,7 +273,7 @@ function triggerBuild() {
     $.get("cgi/request_build.cgi", function (data) {
         console.log(data);
         clearTimeout(updateTimer);
-        $('#buildTable').empty();
+        $('#buildTable tr:gt(1)').remove();
         doUpdate();
     });
 }
