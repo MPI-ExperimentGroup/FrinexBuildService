@@ -31,7 +31,7 @@ sudo docker service ls \
     | grep -E "_staging" \
     | grep -E "8080/tcp" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' \
-    | awk '{print "location /staging_" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
+    | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
     | sed 's/_staging_web {/ {/g' \
     | sed 's/_staging_admin {/-admin {/g'
     # | sed 's/_staging_web/_staging_web staging/g' \
