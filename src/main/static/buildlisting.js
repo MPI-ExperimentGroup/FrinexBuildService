@@ -189,7 +189,7 @@ function doUpdate() {
                         updateDeploymentStatus(keyString, cellString, data.table[keyString][cellString].style);
                     } else if (!applicationStatusHealth[keyString + cellString]) {
                         // if the health status has not been set then set the provided style
-                        tableCell.style = data.table[keyString][cellString].style;
+                        document.getElementById(keyString + cellString).style = data.table[keyString][cellString].style;
                     }
                 }
             }
