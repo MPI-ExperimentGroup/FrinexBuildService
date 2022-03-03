@@ -260,10 +260,10 @@ function doSort() {
     var sortDirection = (sortData) ? sortData.split('_')[1] : 'd';
     if ($.isNumeric(sortItem)) {
         if (sortDirection === 'd') {
-            $('#buildTable tr:gt(1)').each(function () { }).sort(function (b, a) { return $('td:nth-of-type(' + sortItem + ')', a).text().localeCompare($('td:nth-of-type(' + sortItem + ')', b).text()); }).appendTo('#buildTable tbody');
+            $('#buildTable tr:gt(0)').each(function () { }).sort(function (b, a) { return $('td:nth-of-type(' + sortItem + ')', a).text().localeCompare($('td:nth-of-type(' + sortItem + ')', b).text()); }).appendTo('#buildTable tbody');
             $('#buildTable tr:first').children('td').children('a').each(function (index) { $(this).attr('href', '#' + (index + 1) + '_a') });
         } else {
-            $('#buildTable tr:gt(1)').each(function () { }).sort(function (a, b) { return $('td:nth-of-type(' + sortItem + ')', a).text().localeCompare($('td:nth-of-type(' + sortItem + ')', b).text()); }).appendTo('#buildTable tbody');
+            $('#buildTable tr:gt(0)').each(function () { }).sort(function (a, b) { return $('td:nth-of-type(' + sortItem + ')', a).text().localeCompare($('td:nth-of-type(' + sortItem + ')', b).text()); }).appendTo('#buildTable tbody');
             $('#buildTable tr:first').children('td').children('a').each(function (index) { $(this).attr('href', '#' + (index + 1) + '_d') });
         }
     }
@@ -273,7 +273,7 @@ function triggerBuild() {
     $.get("cgi/request_build.cgi", function (data) {
         console.log(data);
         clearTimeout(updateTimer);
-        $('#buildTable tr:gt(1)').remove();
+        $('#buildTable tr:gt(0)').remove();
         doUpdate();
     });
 }
