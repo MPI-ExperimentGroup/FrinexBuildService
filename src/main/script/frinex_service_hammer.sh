@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # do not run this on a machine that is in use, this script is designed to cause load on the server
-# bash frinex_service_hammer.sh > artifacts/frinex_service_hammer_$(date +%F_%T).html
 testUrls=$(sudo docker service ls \
     | grep -E "_staging" \
     | grep -E "_admin" \
