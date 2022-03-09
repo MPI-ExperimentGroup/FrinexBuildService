@@ -59,6 +59,7 @@ COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
 #COPY cgi/frinex_production_upstreams.cgi /FrinexBuildService/cgi/
 # apply location specific settings to the various configuration files
 COPY script/frinex_service_hammer.sh /FrinexBuildService/
+COPY script/check_service_status.sh /FrinexBuildService/
 COPY docker/filter_config_files.sh /FrinexBuildService/
 RUN chmod +x /FrinexBuildService/filter_config_files.sh
 RUN /FrinexBuildService/filter_config_files.sh
