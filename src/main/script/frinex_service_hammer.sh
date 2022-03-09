@@ -8,8 +8,8 @@ testUrls=$(sudo docker service ls \
     | grep -E "8080/tcp" \
     | sed 's/[*:]//g' \
     | sed 's/->8080\/tcp//g' \
-    | awk '{print "swarmNode1Url:" $6 "\nswarmNode2Url:" $6 "\nswarmNode3Url:" $6 "\nnginxProxiedUrl/" $2 "\n"}' \
-    | sed 's/_staging_admin/-admin/g')
+    | awk '{print "swarmNode1Url:" $6 "/" $2 "\nswarmNode2Url:" $6 "/" $2  "\nswarmNode3Url:" $6 "/" $2  "\nnginxProxiedUrl/" $2 "-admin\n"}' \
+    | sed 's/_staging_admin-admin/-admin/g')
 
 echo $testUrls
 
