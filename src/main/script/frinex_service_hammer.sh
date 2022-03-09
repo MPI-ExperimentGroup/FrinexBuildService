@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # do not run this on a machine that is in use, this script is designed to cause load on the server
-
+# bash frinex_service_hammer.sh > artifacts/frinex_service_hammer.html
 testUrls=$(sudo docker service ls \
     | grep -E "_staging" \
     | grep -E "_admin" \
@@ -11,7 +11,7 @@ testUrls=$(sudo docker service ls \
     | awk '{print "swarmNode1Url:" $6 "/" $2 "\nswarmNode2Url:" $6 "/" $2  "\nswarmNode3Url:" $6 "/" $2  "\nnginxProxiedUrl/" $2 "-admin\n"}' \
     | sed 's/_staging_admin-admin/-admin/g')
 
-echo $testUrls
+# echo $testUrls
 echo "<table>"
 for currentUrl in $testUrls
 do
