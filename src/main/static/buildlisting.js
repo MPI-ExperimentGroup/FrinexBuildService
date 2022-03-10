@@ -42,8 +42,8 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
             experimentCell.appendChild(statusMessage);
         }
         statusMessage.innerHTML = ((applicationStatusReplicas[keyString + cellString]) ? 'replicas: ' + applicationStatusReplicas[keyString + cellString] + '<br/>' : '')
-            + "service<br/>" + ((serviceStatusHealth[keyString + cellString]) ? serviceStatusHealth[keyString + cellString] : "service: unknown")
-            + "proxy<br/>" + ((applicationStatusHealth[keyString + cellString]) ? applicationStatusHealth[keyString + cellString] : "proxy: unknown");
+            + ((serviceStatusHealth[keyString + cellString]) ? "service<br/>" + serviceStatusHealth[keyString + cellString] : "service: unknown<br/>")
+            + ((applicationStatusHealth[keyString + cellString]) ? "proxy<br/>" + applicationStatusHealth[keyString + cellString] : "proxy: unknown");
     }
 }
 
