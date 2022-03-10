@@ -56,3 +56,4 @@ else
   pidof node-default
   pidof node
 fi
+echo "<a href=\"/\">reload listing</a><br/>";
