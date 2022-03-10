@@ -24,6 +24,7 @@
 
 var applicationStatus = {};
 var applicationStatusReplicas = {};
+var serviceStatusHealth = {};
 var applicationStatusHealth = {};
 
 function updateDeploymentStatus(keyString, cellString, cellStyle) {
@@ -41,7 +42,8 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
             experimentCell.appendChild(statusMessage);
         }
         statusMessage.innerHTML = ((applicationStatusReplicas[keyString + cellString]) ? 'replicas: ' + applicationStatusReplicas[keyString + cellString] + '<br/>' : '')
-            + ((applicationStatusHealth[keyString + cellString]) ? applicationStatusHealth[keyString + cellString] : "status: unknown");
+            + "service<br/>" + ((serviceStatusHealth[keyString + cellString]) ? serviceStatusHealth[keyString + cellString] : "service: unknown")
+            + "proxy<br/>" + ((applicationStatusHealth[keyString + cellString]) ? applicationStatusHealth[keyString + cellString] : "proxy: unknown");
     }
 }
 
@@ -247,6 +249,23 @@ function doUpdate() {
                             }
                         }
                         updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
+                        // the path -admin/actuator/health is for spring boot 2.3.0
+                        $.getJSON(data.buildHost + ':' + val.port + '/' + key + + '/actuator/health', (function (experimentName, cellStyle) {
+                            return function (data) {
+                                serviceStatusHealth[experimentName + '_staging_admin'] = '';
+                                $.each(data, function (key, val) {
+                                    serviceStatusHealth[experimentName + '_staging_admin'] += key + ': ' + val + '<br/>';
+                                    if (key === 'status') {
+                                        if (val === 'UP') {
+                                            applicationStatus[experimentName + '_staging_admin'] = 'green';
+                                        } else {
+                                            applicationStatus[experimentName + '_staging_admin'] = 'red';
+                                        }
+                                        updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);
+                                    }
+                                });
+                            };
+                        }(keyString, data.table[keyString]['_staging_admin'].style)));
                     }
                 });
             });
