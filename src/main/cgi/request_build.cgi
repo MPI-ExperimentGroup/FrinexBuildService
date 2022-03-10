@@ -44,12 +44,14 @@ fi
 
 if [ "$(pidof node-default)" ]
 then
+  echo "PID: ";
   pidof node-default
-  echo "build in process, exiting<br/>";
+  echo "<br/>build in process<br/>";
 elif [ "$(pidof node)" ]
 then
+  echo "PID: ";
   pidof node
-  echo "build in process, exiting<br/>";
+  echo "<br/>build in process<br/>";
 else
   echo "starting build process<br/>";
   nohup nice sudo -u frinex node --use_strict $scriptDir/deploy-by-hook.js >> $targetDir/git-push-out.txt 2>> $targetDir/git-push-err.txt &
