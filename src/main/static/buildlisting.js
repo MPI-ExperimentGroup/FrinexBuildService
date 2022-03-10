@@ -237,35 +237,35 @@ function doUpdate() {
                 deploymentStages.forEach(function (deploymentStage, index) {
                     if (key.endsWith(deploymentStage)) {
                         const experimentName = key.replace(deploymentStage, "");
-                        applicationStatusReplicas[experimentName + deploymentStage] = val.replicas;
+                        applicationStatusReplicas[key] = val.replicas;
                         if (val.replicas.startsWith("0/")) {
-                            applicationStatus[experimentName + deploymentStage] = 'red';
+                            applicationStatus[key] = 'red';
                         } else {
                             const replicaParts = val.replicas.split("/");
                             if (replicaParts[0] === replicaParts[1]) {
-                                applicationStatus[experimentName + deploymentStage] = 'green';
+                                applicationStatus[key] = 'green';
                             } else {
-                                applicationStatus[experimentName + deploymentStage] = 'yellow';
+                                applicationStatus[key] = 'yellow';
                             }
                         }
                         updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
                         // the path -admin/actuator/health is for spring boot 2.3.0
                         $.getJSON(window.location.protocol + '//' + window.location.hostname + ':' + val.port + '/' + key + '/actuator/health', (function (experimentName, cellStyle) {
                             return function (data) {
-                                serviceStatusHealth[experimentName + '_staging_admin'] = '';
+                                serviceStatusHealth[experimentName + deploymentStage] = '';
                                 $.each(data, function (key, val) {
-                                    serviceStatusHealth[experimentName + '_staging_admin'] += key + ': ' + val + '<br/>';
+                                    serviceStatusHealth[experimentName + deploymentStage] += key + ': ' + val + '<br/>';
                                     if (key === 'status') {
                                         if (val === 'UP') {
-                                            applicationStatus[experimentName + '_staging_admin'] = 'green';
+                                            applicationStatus[experimentName + deploymentStage] = 'green';
                                         } else {
-                                            applicationStatus[experimentName + '_staging_admin'] = 'red';
+                                            applicationStatus[experimentName + deploymentStage] = 'red';
                                         }
-                                        updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);
+                                        updateDeploymentStatus(experimentName, deploymentStage, cellStyle);
                                     }
                                 });
                             };
-                        }(keyString, data.table[keyString]['_staging_admin'].style)));
+                        }(experimentName, data.table[experimentName][deploymentStage].style)));
                     }
                 });
             });
