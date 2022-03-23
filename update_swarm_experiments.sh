@@ -30,9 +30,10 @@ cd $(dirname "$0")/src/main/config
 if ! grep -q $(hostname) publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
-for currentService in $(sudo docker service ls | grep -E "_staging" | grep -E "_admin")
-do
-    echo $currentService
-    # update the web and admin services with the provided parameters
-    sudo docker service update $currentService --limit-cpu=".5" --limit-memory=256m
+    for currentService in $(sudo docker service ls | grep -E "_staging" | grep -E "_admin" | awk '{print $2}')
+    do
+        echo $currentService
+        # update each web and admin service with the following parameters
+        sudo docker service update --limit-cpu=".5" --limit-memory=256m $currentService
+    done
 fi;
