@@ -45,18 +45,18 @@ output_config() {
 }
 
 output_values() {
-    printf "stagingTotal.label %d\n" $(number_of_services "_staging_web")
-    printf "stagingHealthy.label %d\n" $(health_of_services "_staging_web")
-    printf "stagingProxy.label %d\n" $(health_of_proxy "_staging_web")
-    printf "stagingAdminTotal.label %d\n" $(number_of_services "_staging_admin")
-    printf "stagingAdminHealthy.label %d\n" $(health_of_services "_staging_admin")
-    printf "stagingAdminProxy.label %d\n" $(health_of_proxy "_staging_admin")
-    printf "productionTotal.label %d\n" $(number_of_services "_production_web")
-    printf "productionHealthy.label %d\n" $(health_of_services "_production_web")
-    printf "productionProxy.label %d\n" $(health_of_proxy "_production_web")
-    printf "productionAdminTotal.label %d\n" $(number_of_services "_production_admin")
-    printf "productionAdminHealthy.label %d\n" $(health_of_services "_production_admin")
-    printf "productionAdminProxy.label %d\n" $(health_of_proxy "_production_admin")
+    printf "stagingTotal.value %d\n" $(number_of_services "_staging_web")
+    printf "stagingHealthy.value %d\n" $(health_of_services "_staging_web")
+    printf "stagingProxy.value %d\n" $(health_of_proxy "_staging_web")
+    printf "stagingAdminTotal.value %d\n" $(number_of_services "_staging_admin")
+    printf "stagingAdminHealthy.value %d\n" $(health_of_services "_staging_admin")
+    printf "stagingAdminProxy.value %d\n" $(health_of_proxy "_staging_admin")
+    printf "productionTotal.value %d\n" $(number_of_services "_production_web")
+    printf "productionHealthy.value %d\n" $(health_of_services "_production_web")
+    printf "productionProxy.value %d\n" $(health_of_proxy "_production_web")
+    printf "productionAdminTotal.value %d\n" $(number_of_services "_production_admin")
+    printf "productionAdminHealthy.value %d\n" $(health_of_services "_production_admin")
+    printf "productionAdminProxy.value %d\n" $(health_of_proxy "_production_admin")
 }
 
 number_of_services() {
@@ -64,7 +64,21 @@ number_of_services() {
 }
 
 health_of_services() {
-    #TODO: health_of_services
+    healthCount=0;
+    hoststring=$(hostname -f)
+    for currentUrl in $(docker service ls \
+    | grep -E "$1" \
+    | grep -E "8080/tcp" \
+    | sed 's/[*:]//g' \
+    | sed 's/->8080\/tcp//g' \
+    | awk '{print ":" $6 "/" $2 "\n"}')
+    do
+        healthResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
+        if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
+            healthCount=$[$healthCount +1]
+        fi   
+    done
+    echo $healthCount
 }
 
 health_of_proxy() {
