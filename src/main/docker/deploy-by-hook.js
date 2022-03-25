@@ -456,6 +456,8 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
+            + ' -Dexperiment.configuration.defaultLocale=' + currentEntry.defaultLocale
+            + ' -Dexperiment.configuration.availableLocales=' + currentEntry.availableLocales
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             //+ ' free -h &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;'
@@ -784,6 +786,8 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
                         + ' -DversionCheck.allowSnapshots=' + 'false'
                         + ' -DversionCheck.buildType=' + 'stable'
+                        + ' -Dexperiment.configuration.defaultLocale=' + currentEntry.defaultLocale
+                        + ' -Dexperiment.configuration.availableLocales=' + currentEntry.availableLocales
                         + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
                             ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                             + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
