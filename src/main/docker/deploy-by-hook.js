@@ -49,7 +49,8 @@ const deploymentType = properties.get('settings.deploymentType');
 const dockerRegistry = properties.get('dockerservice.dockerRegistry');
 const proxyUpdateTrigger = properties.get('dockerservice.proxyUpdateTrigger');
 const dockerServiceOptions = properties.get('dockerservice.serviceOptions');
-const dockerServiceMemory = properties.get('dockerservice.serviceMemory');
+const buildContainerOptions = properties.get('settings.buildContainerOptions');
+const taskContainerOptions = properties.get('settings.taskContainerOptions');
 const listingDirectory = properties.get('settings.listingDirectory');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
@@ -184,6 +185,7 @@ function unDeploy(currentEntry) {
         + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
         + 'sudo docker run'
         + ' --rm '
+        + taskContainerOptions
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
@@ -222,6 +224,7 @@ function unDeploy(currentEntry) {
         + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
         + 'sudo docker run'
         + ' --rm '
+        + taskContainerOptions
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
@@ -260,6 +263,7 @@ function unDeploy(currentEntry) {
         + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
         + 'sudo docker run'
         + ' --rm '
+        + taskContainerOptions
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
@@ -302,6 +306,7 @@ function unDeploy(currentEntry) {
         + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
         + 'sudo docker run'
         + ' --rm '
+        + taskContainerOptions
         + ' --name ' + buildContainerName
         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
         + ' -v processingDirectory:/FrinexBuildService/processing'
@@ -361,7 +366,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
     fs.writeFileSync(dockerFilePath,
         "FROM openjdk:11\n"
         + "COPY " + warFileName + " /" + warFileName + "\n"
-        + "CMD [\"java\", \"-jar\", \"-Xms" + dockerServiceMemory + "M\", \"-Xmx" + dockerServiceMemory + "M\", \"-XX:MaxPermSize=" + dockerServiceMemory + "\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + serviceName + "\"]\n"
+        + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + serviceName + "\"]\n"
         // TODO: it should not be necessary to do a service start, but this needs to be tested 
         // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
         , { mode: 0o755 });
@@ -419,6 +424,7 @@ function deployStagingGui(currentEntry) {
             + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + 'sudo docker run'
             + ' --rm '
+            + buildContainerOptions
             + ' --name ' + buildContainerName
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
@@ -431,7 +437,7 @@ function deployStagingGui(currentEntry) {
             + ' -w /ExperimentTemplate frinexapps:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
-            //+ " sed -i 's/-Xmx1g/-Xmx2g/g' pom.xml;"
+            //+ " sed -i 's/-Xmx1g/-Xmx4g/g' pom.xml;"
             + ((currentEntry.state === "draft") ? " sed -i 's|<extraJvmArgs>|<draftCompile>true</draftCompile><extraJvmArgs>|g' pom.xml;" : '')
             + ((currentEntry.state === "draft") ? " sed -i 's|<source|<collapse-all-properties /><source|g' src/main/resources/nl/mpi/tg/eg/ExperimentTemplate.gwt.xml;" : '')
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
@@ -585,6 +591,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
+            + buildContainerOptions
             + ' --name ' + buildContainerName
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
@@ -758,6 +765,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + 'sudo docker run'
                         + ' --rm '
+                        + buildContainerOptions
                         + ' --name ' + buildContainerName
                         /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
                         // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
@@ -923,6 +931,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
+            + buildContainerOptions
             + ' --name ' + buildContainerName
             /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
@@ -1045,7 +1054,8 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
         // the mvn target directory is not in the docker volume so that the build process does not cause redundant file synchronisation across the docker volume.
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_cordova'
             + ' &> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
-            + ' sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_cordova --rm'
+            + ' sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_cordova --rm '
+            + buildContainerOptions
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
             + ' frinexapps:'
@@ -1116,7 +1126,8 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
         storeResult(currentEntry.buildName, "building " + resultString, stage, "desktop", false, true, false);
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_electron'
             + ' &> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
-            + 'sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_electron --rm'
+            + 'sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_electron --rm '
+            + buildContainerOptions
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
             + ' frinexapps:'
@@ -1741,7 +1752,8 @@ function convertJsonToXml() {
         + ' echo "json_to_xml still active";'
         // + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + ' else'
-        + ' sudo docker run --rm'
+        + ' sudo docker run --rm '
+        + taskContainerOptions
         //+ ' --user "$(id -u):$(id -g)"'
         + ' --name json_to_xml'
         + ' -v incomingDirectory:/FrinexBuildService/incoming'
@@ -1795,7 +1807,8 @@ function updateDocumentation() {
         + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:latest /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/latest.html"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
         */
-        + 'sudo docker run --rm'
+        + 'sudo docker run --rm '
+        + taskContainerOptions
         + ' --name update_schema_docs'
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
