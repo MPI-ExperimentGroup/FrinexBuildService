@@ -29,7 +29,7 @@ scriptDir=$(pwd -P)
 #echo $scriptDir
 
 output_config() {
-    echo "Frinex Service Health"
+    echo "graph_title Frinex Service Health"
     echo "stagingTotal.label Total Staging"
     echo "stagingHealthy.label Healthy Staging"
     echo "stagingProxy.label Proxy Staging"
