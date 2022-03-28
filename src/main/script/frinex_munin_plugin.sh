@@ -82,7 +82,22 @@ health_of_services() {
 }
 
 health_of_proxy() {
-    #TODO: health_of_proxy
+    healthCount=0;
+    nginxProxiedUrl=proxied.example.com
+    for currentUrl in $(docker service ls \
+    | grep -E "$1" \
+    | grep -E "8080/tcp" \
+    | sed 's/[*:]//g' \
+    | sed 's/->8080\/tcp//g' \
+    | awk '{print "/" $2 "-admin\n"}' \
+    | sed 's/_staging_admin-admin/-admin/g')
+    do
+        healthResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$nginxProxiedUrl$currentUrl/actuator/health)
+        if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
+            healthCount=$[$healthCount +1]
+        fi   
+    done
+    echo $healthCount
 }
 
 output_usage() {
