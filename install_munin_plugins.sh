@@ -33,6 +33,7 @@ else
     # get the latest version of this repository
     git pull
 
-    sudo cp src/main/script/frinex_munin_plugin.sh /usr/lib/munin/plugins/frinex_munin_plugin.sh
-    ln -s /usr/lib/munin/plugins/frinex_munin_plugin.sh /etc/munin/plugins/frinex_munin_plugin.sh
+    # copy the plugin to the munin plugins directory
+    sudo cp src/main/script/frinex_munin_plugin.sh /usr/lib/munin/plugins/frinex_service_health
+    sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
 fi;
