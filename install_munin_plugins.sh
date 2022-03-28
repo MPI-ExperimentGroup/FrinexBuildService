@@ -36,8 +36,9 @@ else
     # copy the plugin to the munin plugins directory
     cp script/frinex_munin_plugin.sh /tmp/frinex_munin_plugin.sh
     chmod 777 /tmp/frinex_munin_plugin.sh
+    sudo rm /usr/lib/munin/plugins/frinex_service_health
     sudo mv /tmp/frinex_munin_plugin.sh /usr/lib/munin/plugins/frinex_service_health
-    chmod 775 /usr/lib/munin/plugins/frinex_service_health
-    chown root:root /usr/lib/munin/plugins/frinex_service_health
+    sudo chmod 775 /usr/lib/munin/plugins/frinex_service_health
+    sudo chown root:root /usr/lib/munin/plugins/frinex_service_health
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
 fi;
