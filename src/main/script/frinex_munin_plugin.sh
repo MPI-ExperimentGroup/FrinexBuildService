@@ -101,8 +101,8 @@ health_of_proxy() {
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
-    | sed 's/_staging_admin/-admin frinexstagingtest.mpi.nl/g' \
-    | sed 's/_staging_web/ frinexstagingtest.mpi.nl/g' \
+    | sed 's/_staging_admin/-admin staging.example.com/g' \
+    | sed 's/_staging_web/ staging.example.com/g' \
     | sed 's/_production_admin/-admin production.example.com/g' \
     | sed 's/_production_web/ production.example.com/g' \
     | awk '{print $2 "/" $1}')
