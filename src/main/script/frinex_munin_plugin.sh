@@ -30,6 +30,7 @@ scriptDir=$(pwd -P)
 
 output_config() {
     echo "graph_title Frinex Service Health"
+    echo "graph_category frinex"
     echo "stagingTotal.label Total Staging"
     echo "stagingHealthy.label Healthy Staging"
     echo "stagingProxy.label Proxy Staging"
