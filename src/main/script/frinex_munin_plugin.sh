@@ -66,12 +66,17 @@ number_of_services() {
 health_of_services() {
     healthCount=0;
     hoststring=$(hostname -f)
-    for currentUrl in $(docker service ls \
+    # for currentUrl in $(docker service ls \
+    # | grep -E "$1" \
+    # | grep -E "8080/tcp" \
+    # | sed 's/[*:]//g' \
+    # | sed 's/->8080\/tcp//g' \
+    # | awk '{print ":" $6 "/" $2 "\n"}')
+    for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1" \
-    | grep -E "8080/tcp" \
-    | sed 's/[*:]//g' \
-    | sed 's/->8080\/tcp//g' \
-    | awk '{print ":" $6 "/" $2 "\n"}')
+    | sed 's/"port":"//g' \
+    | sed 's/["\{\}:,]//g' \
+    | awk '{print ":" $4 "/" $1}')
     do
         healthResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
@@ -83,16 +88,26 @@ health_of_services() {
 
 health_of_proxy() {
     healthCount=0;
-    nginxProxiedUrl=proxied.example.com
-    for currentUrl in $(docker service ls \
+    stagingProxiedUrl=https://production.example.com
+    productionProxiedUrl=https://staging.example.com
+    # for currentUrl in $(docker service ls \
+    # | grep -E "$1" \
+    # | grep -E "8080/tcp" \
+    # | sed 's/[*:]//g' \
+    # | sed 's/->8080\/tcp//g' \
+    # | awk '{print "/" $2 "-admin\n"}' \
+    # | sed 's/_staging_admin-admin/-admin/g')
+    for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1" \
-    | grep -E "8080/tcp" \
-    | sed 's/[*:]//g' \
-    | sed 's/->8080\/tcp//g' \
-    | awk '{print "/" $2 "-admin\n"}' \
-    | sed 's/_staging_admin-admin/-admin/g')
+    | sed 's/"port":"//g' \
+    | sed 's/["\{\}:,]//g' \
+    | sed 's/_staging_admin/-admin staging.example.com/g' \
+    | sed 's/_staging_web/ staging.example.com/g' \
+    | sed 's/_production_admin/-admin production.example.com/g' \
+    | sed 's/_production_web/ production.example.com/g' \
+    | awk '{print $2 "/" $1}')
     do
-        healthResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$nginxProxiedUrl$currentUrl/actuator/health)
+        healthResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
         fi   
