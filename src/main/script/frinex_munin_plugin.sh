@@ -60,7 +60,9 @@ output_values() {
 }
 
 number_of_services() {
-    docker service ls | grep -E $1 | wc -l
+    #docker service ls | grep -E $1 | wc -l
+    hoststring=$(hostname -f)
+    curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json | grep -E $1 | wc -l
 }
 
 health_of_services() {
@@ -88,8 +90,6 @@ health_of_services() {
 
 health_of_proxy() {
     healthCount=0;
-    stagingProxiedUrl=https://production.example.com
-    productionProxiedUrl=https://staging.example.com
     # for currentUrl in $(docker service ls \
     # | grep -E "$1" \
     # | grep -E "8080/tcp" \
@@ -101,8 +101,8 @@ health_of_proxy() {
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
-    | sed 's/_staging_admin/-admin staging.example.com/g' \
-    | sed 's/_staging_web/ staging.example.com/g' \
+    | sed 's/_staging_admin/-admin frinexstagingtest.mpi.nl/g' \
+    | sed 's/_staging_web/ frinexstagingtest.mpi.nl/g' \
     | sed 's/_production_admin/-admin production.example.com/g' \
     | sed 's/_production_web/ production.example.com/g' \
     | awk '{print $2 "/" $1}')
