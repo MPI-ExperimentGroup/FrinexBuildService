@@ -43,6 +43,6 @@ else
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
 
     # please note that the following needs to be added to /etc/munin/plugin-conf.d/munin-node
-    #   [docker_*]
+    #   [frinex_*]
     #   group docker
 fi;
