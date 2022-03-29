@@ -91,6 +91,7 @@ health_of_services() {
 
 health_of_proxy() {
     healthCount=0;
+    hoststring=$(hostname -f)
     # for currentUrl in $(docker service ls \
     # | grep -E "$1" \
     # | grep -E "8080/tcp" \
