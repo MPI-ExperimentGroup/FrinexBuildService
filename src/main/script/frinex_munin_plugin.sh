@@ -99,7 +99,7 @@ health_of_proxy() {
     # | sed 's/->8080\/tcp//g' \
     # | awk '{print "/" $2 "-admin\n"}' \
     # | sed 's/_staging_admin-admin/-admin/g')
-    for currentUrl in $(curl --silent -k -H 'Content-Type: application/json' http://$hoststring/services.json \
+    for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
@@ -109,7 +109,7 @@ health_of_proxy() {
     | sed 's/_production_web/ production.example.com/g' \
     | awk '{print $2 "/" $1}')
     do
-        healthResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
+        healthResult=$(curl --connect-timeout 1 -k --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
         fi   
