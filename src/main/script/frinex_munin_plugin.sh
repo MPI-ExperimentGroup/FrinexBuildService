@@ -99,7 +99,7 @@ health_of_proxy() {
     # | sed 's/->8080\/tcp//g' \
     # | awk '{print "/" $2 "-admin\n"}' \
     # | sed 's/_staging_admin-admin/-admin/g')
-    for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
+    for currentUrl in $(curl --silent -k -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
