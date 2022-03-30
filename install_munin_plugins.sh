@@ -42,6 +42,8 @@ else
     sudo chown root:root /usr/lib/munin/plugins/frinex_service_health
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
 
+    #TODO: instal the experiment stats plugin and its sub graphs
+
     # please note that the following needs to be added to /etc/munin/plugin-conf.d/munin-node
     #   [frinex_*]
     #   group docker
