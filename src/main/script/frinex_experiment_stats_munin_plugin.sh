@@ -55,7 +55,8 @@ output_config() {
         echo "graph_title Frinex Experiments $graphType"
         echo "graph_category frinex"
         for filename in $dataDirectory; do
-        echo "$filename.label $filename"
+            echo "$filename.label $filename"
+        done
     done
 }
 
