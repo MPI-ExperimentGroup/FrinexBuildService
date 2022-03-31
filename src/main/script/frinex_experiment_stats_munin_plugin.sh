@@ -62,7 +62,14 @@ output_config() {
 
 output_values() {
     # TODO: cat and grep the values for the current grap from the temp files
-    echo "with_stimulus_example_production_admin.value 0"
+    # TODO: If the plugin - for any reason - has no value to report, then it may send the value U for undefined. 
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    do
+        echo "multigraph $graphType"
+        for filename in $dataDirectory; do
+            echo "$filename.value 0"
+        done
+    done
 }
 
 output_usage() {
