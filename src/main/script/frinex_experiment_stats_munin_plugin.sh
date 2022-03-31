@@ -27,7 +27,7 @@
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
-dataDirectory=/srv/frinex_munin_data/
+dataDirectory=/srv/frinex_munin_data
 
 output_config() {
     hoststring=$(hostname -f)
@@ -54,9 +54,9 @@ output_config() {
         echo "multigraph $graphType"
         echo "graph_title Frinex Experiments $graphType"
         echo "graph_category frinex"
-        for filePath in $dataDirectory; do
-            fileName=$(echo "$filePath" | sed -r "s/.+\/(.+)/\1/")
-            echo "$filename.label $fileName"
+        for filePath in $dataDirectory/*; do
+            fileName=${filePath#"$dataDirectory/"}
+            echo "$fileName.label $fileName"
         done
     done
 }
@@ -67,8 +67,8 @@ output_values() {
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
         echo "multigraph $graphType"
-        for filePath in $dataDirectory; do
-            fileName=$(echo "$filePath" | sed -r "s/.+\/(.+)/\1/")
+        for filePath in $dataDirectory/*; do
+            fileName=${filePath#"$dataDirectory/"}
             echo "$fileName.value 0"
         done
     done
