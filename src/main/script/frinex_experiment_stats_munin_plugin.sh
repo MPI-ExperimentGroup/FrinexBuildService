@@ -39,11 +39,13 @@ output_config() {
     | sed 's/["\{\}:,]//g' \
     | awk '{print ":" $4 "/" $1}')
     do
-        usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats))
-        if [[ $healthResult == *"\"totalPageLoads\""* ]]; then
-            echo $healthResult > "/srv/frinex_munin_data/$(cut -d'/' -f2 <<< $currentUrl)"
+        experimentAdminName=$(cut -d'/' -f2 <<< $currentUrl)
+        echo $experimentAdminName
+        usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
+        if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
+            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' > /srv/frinex_munin_data/$experimentAdminName
+            cat /srv/frinex_munin_data/$experimentAdminName
         fi
-        echo $usageStatsResult
             echo "totalParticipantsSeen.label Participants Seen"
             echo "totalDeploymentsAccessed.label Deployments Accessed"
             echo "totalStimulusResponses.label Stimulus Responses"
