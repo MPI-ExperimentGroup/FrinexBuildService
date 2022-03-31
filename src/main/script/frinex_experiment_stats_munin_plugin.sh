@@ -27,6 +27,7 @@
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
+dataDirectory=/srv/frinex_munin_data
 
 output_config() {
     echo "graph_title Frinex Experiment Statistics"
@@ -43,8 +44,8 @@ output_config() {
         #echo $experimentAdminName
         usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
-            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' > /srv/frinex_munin_data/$experimentAdminName
-            # cat /srv/frinex_munin_data/$experimentAdminName
+            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' > $dataDirectory/$experimentAdminName
+            # cat $dataDirectory/$experimentAdminName
         fi
             # echo "totalParticipantsSeen.label Participants Seen"
             # echo "totalDeploymentsAccessed.label Deployments Accessed"
