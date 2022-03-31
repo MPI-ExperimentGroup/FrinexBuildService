@@ -46,12 +46,12 @@ output_config() {
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' > /srv/frinex_munin_data/$experimentAdminName
             cat /srv/frinex_munin_data/$experimentAdminName
         fi
-        echo "with_stimulus_example_production_admin.label with_stimulus_example_production_admin"
             # echo "totalParticipantsSeen.label Participants Seen"
             # echo "totalDeploymentsAccessed.label Deployments Accessed"
             # echo "totalStimulusResponses.label Stimulus Responses"
             # echo "totalMediaResponses.label Media Responses"
     done
+    echo "with_stimulus_example_production_admin.label with_stimulus_example_production_admin"
 }
 
 output_values() {

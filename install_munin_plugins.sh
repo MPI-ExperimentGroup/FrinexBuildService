@@ -43,7 +43,7 @@ else
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
 
     # instal the experiment stats plugin and working directory
-    mkdir -p /srv/frinex_munin_data
+    sudo mkdir -p /srv/frinex_munin_data
     cp script/frinex_experiment_stats_munin_plugin.sh /tmp/frinex_experiment_stats_munin_plugin.sh
     chmod 777 /tmp/frinex_experiment_stats_munin_plugin.sh
     sudo rm /usr/lib/munin/plugins/frinex_experiment_stats
