@@ -55,7 +55,7 @@ output_config() {
         echo "graph_title Frinex Experiments $graphType"
         echo "graph_category frinex"
         for filePath in $dataDirectory; do
-            fileName=$(sed -r "s/.+\/(.+)/\1/" $filePath)
+            fileName=$(echo "$filePath" | sed -r "s/.+\/(.+)/\1/")
             echo "$filename.label $fileName"
         done
     done
@@ -68,7 +68,7 @@ output_values() {
     do
         echo "multigraph $graphType"
         for filePath in $dataDirectory; do
-            fileName=$(sed -r "s/.+\/(.+)/\1/" $filePath)
+            fileName=$(echo "$filePath" | sed -r "s/.+\/(.+)/\1/")
             echo "$fileName.value 0"
         done
     done
