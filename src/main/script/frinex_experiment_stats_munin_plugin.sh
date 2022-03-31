@@ -34,15 +34,13 @@ output_config() {
 
     hoststring=$(hostname -f)
     for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
-    | grep -E "_$1_admin" \
+    | grep -E "$1_admin" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
-    | sed 's/_staging_admin/-admin frinexstagingtest.mpi.nl/g' \
-    | sed 's/_staging_web/ frinexstagingtest.mpi.nl/g' \
-    | sed 's/_production_admin/-admin frinexproductiontest.mpi.nl/g' \
-    | sed 's/_production_web/ frinexproductiontest.mpi.nl/g' \
-    | awk '{print $2 "/" $1}')
+    | awk '{print ":" $4 "/" $1}')
     do
+        usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
+        echo $usageStatsResult
             echo "totalParticipantsSeen.label Participants Seen"
             echo "totalDeploymentsAccessed.label Deployments Accessed"
             echo "totalStimulusResponses.label Stimulus Responses"
