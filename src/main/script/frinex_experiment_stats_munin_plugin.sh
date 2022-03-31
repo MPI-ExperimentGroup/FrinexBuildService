@@ -30,9 +30,6 @@ scriptDir=$(pwd -P)
 dataDirectory=/srv/frinex_munin_data
 
 output_config() {
-    echo "graph_title Frinex Experiment Statistics"
-    echo "graph_category frinex"
-
     hoststring=$(hostname -f)
     for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1_admin" \
@@ -52,7 +49,14 @@ output_config() {
             # echo "totalStimulusResponses.label Stimulus Responses"
             # echo "totalMediaResponses.label Media Responses"
     done
-    echo "with_stimulus_example_production_admin.label with_stimulus_example_production_admin"
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    do
+        echo "multigraph $graphType"
+        echo "graph_title Frinex Experiments $graphType"
+        echo "graph_category frinex"
+        for filename in $dataDirectory; do
+        echo "$filename.label $filename"
+    done
 }
 
 output_values() {
