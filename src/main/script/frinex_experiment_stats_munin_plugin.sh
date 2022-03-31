@@ -44,7 +44,7 @@ output_config() {
         usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' > /srv/frinex_munin_data/$experimentAdminName
-            cat /srv/frinex_munin_data/$experimentAdminName
+            # cat /srv/frinex_munin_data/$experimentAdminName
         fi
             # echo "totalParticipantsSeen.label Participants Seen"
             # echo "totalDeploymentsAccessed.label Deployments Accessed"
