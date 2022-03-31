@@ -55,6 +55,7 @@ output_config() {
 
 output_values() {
     # TODO: cat and grep the values for the current grap from the temp files
+    echo 1
 }
 
 usage_stats_services() {
