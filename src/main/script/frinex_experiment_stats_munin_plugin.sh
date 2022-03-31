@@ -60,27 +60,6 @@ output_values() {
     echo "with_stimulus_example_production_admin.value 0"
 }
 
-usage_stats_services() {
-    healthCount=0;
-    hoststring=$(hostname -f)
-    # for currentUrl in $(docker service ls \
-    # | grep -E "$1" \
-    # | grep -E "8080/tcp" \
-    # | sed 's/[*:]//g' \
-    # | sed 's/->8080\/tcp//g' \
-    # | awk '{print ":" $6 "/" $2 "\n"}')
-    for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
-    | grep -E "$1" \
-    | sed 's/"port":"//g' \
-    | sed 's/["\{\}:,]//g' \
-    | awk '{print ":" $4 "/" $1}')
-    do
-        usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_usage_stats)
-        # TODO echo the values into temp files
-    done
-    echo $healthCount
-}
-
 output_usage() {
     printf >&2 "%s - munin plugin to show the usage statistics of Frinex experiments\n" ${0##*/}
     printf >&2 "Usage: %s [config]\n" ${0##*/}
