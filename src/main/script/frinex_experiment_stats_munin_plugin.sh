@@ -39,7 +39,10 @@ output_config() {
     | sed 's/["\{\}:,]//g' \
     | awk '{print ":" $4 "/" $1}')
     do
-        usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
+        usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats))
+        if [[ $healthResult == *"\"totalPageLoads\""* ]]; then
+            echo $healthResult > "/srv/frinex_munin_data/$(cut -d'/' -f2 <<< $currentUrl)"
+        fi
         echo $usageStatsResult
             echo "totalParticipantsSeen.label Participants Seen"
             echo "totalDeploymentsAccessed.label Deployments Accessed"
