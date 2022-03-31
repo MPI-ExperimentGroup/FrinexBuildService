@@ -33,7 +33,7 @@ else
     # get the latest version of this repository
     git pull
 
-    # copy the plugin to the munin plugins directory
+    # copy the service health plugin to the munin plugins directory
     cp script/frinex_munin_plugin.sh /tmp/frinex_munin_plugin.sh
     chmod 777 /tmp/frinex_munin_plugin.sh
     sudo rm /usr/lib/munin/plugins/frinex_service_health
@@ -42,7 +42,15 @@ else
     sudo chown root:root /usr/lib/munin/plugins/frinex_service_health
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
 
-    #TODO: instal the experiment stats plugin and its sub graphs
+    # instal the experiment stats plugin and working directory
+    mkdir -p /srv/frinex_munin_data
+    cp script/frinex_experiment_stats_munin_plugin.sh /tmp/frinex_experiment_stats_munin_plugin.sh
+    chmod 777 /tmp/frinex_experiment_stats_munin_plugin.sh
+    sudo rm /usr/lib/munin/plugins/frinex_experiment_stats
+    sudo mv /tmp/frinex_experiment_stats_munin_plugin.sh /usr/lib/munin/plugins/frinex_experiment_stats
+    sudo chmod 775 /usr/lib/munin/plugins/frinex_experiment_stats
+    sudo chown root:root /usr/lib/munin/plugins/frinex_experiment_stats
+    sudo ln -s /usr/lib/munin/plugins/frinex_experiment_stats /etc/munin/plugins/frinex_experiment_stats
 
     # please note that the following needs to be added to /etc/munin/plugin-conf.d/munin-node
     #   [frinex_*]

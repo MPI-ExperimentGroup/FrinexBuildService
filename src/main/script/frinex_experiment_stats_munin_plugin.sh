@@ -40,22 +40,23 @@ output_config() {
     | awk '{print ":" $4 "/" $1}')
     do
         experimentAdminName=$(cut -d'/' -f2 <<< $currentUrl)
-        echo $experimentAdminName
+        #echo $experimentAdminName
         usageStatsResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' > /srv/frinex_munin_data/$experimentAdminName
             cat /srv/frinex_munin_data/$experimentAdminName
         fi
-            echo "totalParticipantsSeen.label Participants Seen"
-            echo "totalDeploymentsAccessed.label Deployments Accessed"
-            echo "totalStimulusResponses.label Stimulus Responses"
-            echo "totalMediaResponses.label Media Responses"
+        echo "with_stimulus_example_production_admin.label with_stimulus_example_production_admin"
+            # echo "totalParticipantsSeen.label Participants Seen"
+            # echo "totalDeploymentsAccessed.label Deployments Accessed"
+            # echo "totalStimulusResponses.label Stimulus Responses"
+            # echo "totalMediaResponses.label Media Responses"
     done
 }
 
 output_values() {
     # TODO: cat and grep the values for the current grap from the temp files
-    echo 1
+    echo "with_stimulus_example_production_admin.value 0"
 }
 
 usage_stats_services() {
@@ -91,8 +92,7 @@ case $# in
     1)
         case $1 in
             config)
-                output_config "staging"
-                output_config "production"
+                output_config 
                 ;;
             *)
                 output_usage
