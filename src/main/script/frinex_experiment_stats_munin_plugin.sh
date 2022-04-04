@@ -69,7 +69,7 @@ output_values() {
         echo "multigraph $graphType"
         for filePath in $dataDirectory/*; do
             fileName=${filePath#"$dataDirectory/"}
-            echo "$fileName.value 0"
+            grep $graphType $filePath | sed "s/$graphType/$fileName/g"
         done
     done
 }
