@@ -970,9 +970,11 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
                 + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer.replace(/^https?:\/\//, '')
+                + ' -Dexperiment.productionCheckString=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 : ' -Dexperiment.destinationServer=' + productionServer
                 + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                 + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
+                + ' -Dexperiment.productionCheckString=' + productionServerUrl.replace(/^https?:\/\//, '')
             )
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
