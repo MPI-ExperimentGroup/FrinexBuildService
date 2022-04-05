@@ -28,6 +28,7 @@ RUN apk add --no-cache \
   sudo
 RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/cgi
+COPY cgi/frinex_locations_update.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_staging_upstreams.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_staging_locations.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_production_upstreams.cgi  /FrinexBuildService/cgi/
