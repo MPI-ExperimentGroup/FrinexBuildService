@@ -6,3 +6,5 @@ for i in {1..100}; do
     /FrinexBuildService/log_service_hammer.sh&
     sleep 1
 done
+
+pidof curl | wc -w
