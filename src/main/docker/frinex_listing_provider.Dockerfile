@@ -39,5 +39,6 @@ RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_mod
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
 RUN chown -R www-data:daemon /FrinexBuildService
+RUN chown -R www-data:daemon /usr/local/apache2/htdocs/
 RUN chmod -R ug+rwx /FrinexBuildService
 WORKDIR /FrinexBuildService
