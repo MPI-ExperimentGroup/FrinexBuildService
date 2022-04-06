@@ -7,4 +7,4 @@ for i in {1..100}; do
     sleep 1
 done
 
-pidof curl | wc -w
+pidof log_service_hammer.sh | wc -w
