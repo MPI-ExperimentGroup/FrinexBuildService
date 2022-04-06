@@ -63,7 +63,7 @@ output_values() {
 number_of_services() {
     #docker service ls | grep -E $1 | wc -l
     hoststring=$(hostname -f)
-    curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring/services.json | grep -E $1 | wc -l
+    curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring/services.json | grep -E $1 | wc -l
 }
 
 health_of_services() {
@@ -75,13 +75,13 @@ health_of_services() {
     # | sed 's/[*:]//g' \
     # | sed 's/->8080\/tcp//g' \
     # | awk '{print ":" $6 "/" $2 "\n"}')
-    for currentUrl in $(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
+    for currentUrl in $(curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
     | awk '{print ":" $4 "/" $1}')
     do
-        healthResult=$(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
+        healthResult=$(curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
         fi   
@@ -99,7 +99,7 @@ health_of_proxy() {
     # | sed 's/->8080\/tcp//g' \
     # | awk '{print "/" $2 "-admin\n"}' \
     # | sed 's/_staging_admin-admin/-admin/g')
-    for currentUrl in $(curl --connect-timeout 1 --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
+    for currentUrl in $(curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
@@ -109,7 +109,7 @@ health_of_proxy() {
     | sed 's/_production_web/ production.example.com/g' \
     | awk '{print $2 "/" $1}')
     do
-        healthResult=$(curl --connect-timeout 1 -k --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
+        healthResult=$(curl --connect-timeout 1 --max-time 2 -k --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
         fi   
