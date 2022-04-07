@@ -28,36 +28,108 @@ cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
 
-output_config() {
-    echo "graph_title Frinex Service Health"
-    echo "graph_category frinex"
+staging_web_config() {
     echo "stagingTotal.label Total Staging"
     echo "stagingHealthy.label Healthy Staging"
     echo "stagingProxy.label Proxy Staging"
+}
+
+staging_admin_config() {
     echo "stagingAdminTotal.label Total Admin Staging"
     echo "stagingAdminHealthy.label Healthy Admin Staging"
     echo "stagingAdminProxy.label Proxy Admin Staging"
+}
+
+production_web_config() {
     echo "productionTotal.label Total Production"
     echo "productionHealthy.label Healthy Production"
     echo "productionProxy.label Proxy Production"
+}
+
+production_admin_config() {
     echo "productionAdminTotal.label Total Admin Production"
     echo "productionAdminHealthy.label Healthy Admin Production"
     echo "productionAdminProxy.label Proxy Admin Production"
 }
 
-output_values() {
+output_config() {
+    case $1 in
+        staging_web)
+            echo "graph_title Frinex Staging Web"
+            echo "graph_category frinex"
+            staging_web_config
+            ;;
+        staging_admin)
+            echo "graph_title Frinex Staging Admin"
+            echo "graph_category frinex"
+            staging_admin_config
+            ;;
+        production_web)
+            echo "graph_title Frinex Production Web"
+            echo "graph_category frinex"
+            production_web_config
+            ;;
+        production_admin)
+            echo "graph_title Frinex Production Admin"
+            echo "graph_category frinex"
+            production_admin_config
+            ;;
+        *)
+            echo "graph_title Frinex Service Health"
+            echo "graph_category frinex"
+            staging_web_config
+            staging_admin_config
+            production_web_config
+            production_admin_config
+            ;;
+    esac
+}
+
+staging_web_values() {
     printf "stagingTotal.value %d\n" $(number_of_services "_staging_web")
     printf "stagingHealthy.value %d\n" $(health_of_services "_staging_web")
     printf "stagingProxy.value %d\n" $(health_of_proxy "_staging_web")
+}
+
+staging_admin_values() {
     printf "stagingAdminTotal.value %d\n" $(number_of_services "_staging_admin")
     printf "stagingAdminHealthy.value %d\n" $(health_of_services "_staging_admin")
     printf "stagingAdminProxy.value %d\n" $(health_of_proxy "_staging_admin")
+}
+
+production_web_values() {
     printf "productionTotal.value %d\n" $(number_of_services "_production_web")
     printf "productionHealthy.value %d\n" $(health_of_services "_production_web")
     printf "productionProxy.value %d\n" $(health_of_proxy "_production_web")
+}
+
+production_admin_values() {
     printf "productionAdminTotal.value %d\n" $(number_of_services "_production_admin")
     printf "productionAdminHealthy.value %d\n" $(health_of_services "_production_admin")
     printf "productionAdminProxy.value %d\n" $(health_of_proxy "_production_admin")
+}
+
+output_values() {
+    case $1 in
+        staging_web)
+            staging_web_values
+            ;;
+        staging_admin)
+            staging_admin_values
+            ;;
+        production_web)
+            production_web_values
+            ;;
+        production_admin)
+            production_admin_values
+            ;;
+        *)
+            staging_web_values
+            staging_admin_values
+            production_web_values
+            production_admin_values
+            ;;
+    esac
 }
 
 number_of_services() {
@@ -103,10 +175,10 @@ health_of_proxy() {
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
-    | sed 's/_staging_admin/-admin staging.example.com/g' \
-    | sed 's/_staging_web/ staging.example.com/g' \
-    | sed 's/_production_admin/-admin production.example.com/g' \
-    | sed 's/_production_web/ production.example.com/g' \
+    | sed 's/_staging_admin/-admin frinexstagingtest.mpi.nl/g' \
+    | sed 's/_staging_web/ frinexstagingtest.mpi.nl/g' \
+    | sed 's/_production_admin/-admin frinexproductiontest.mpi.nl/g' \
+    | sed 's/_production_web/ frinexproductiontest.mpi.nl/g' \
     | awk '{print $2 "/" $1}')
     do
         healthResult=$(curl --connect-timeout 1 --max-time 2 -k --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
@@ -124,13 +196,21 @@ output_usage() {
 
 case $# in
     0)
-        output_values
+        output_values "all"
         ;;
     1)
         case $1 in
             config)
-                output_config
+                output_config "all"
+            *)
+                output_values $1
                 ;;
+        esac
+        ;;
+    2)
+        case $2 in
+            config)
+                output_config $1
             *)
                 output_usage
                 exit 1
