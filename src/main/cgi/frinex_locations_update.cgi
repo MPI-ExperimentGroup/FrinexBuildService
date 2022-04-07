@@ -26,11 +26,12 @@
 
 echo "Content-type: text/json"
 echo ''
-serviceList=$(sudo docker service ls \
-    | grep -E "8080/tcp" \
-    | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')
 
-echo $serviceList \
+serviceList="$(sudo docker service ls \
+    | grep -E "8080/tcp" \
+    | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
+
+echo "$serviceList" \
     | grep -E "_admin|_web" \
     | grep -E "_production" \
     | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
@@ -38,12 +39,12 @@ echo $serviceList \
     | sed 's/_production_admin {/-admin {/g' \
     > /usr/local/apache2/htdocs/frinex_production_locations.txt
 
-echo $serviceList \
+echo "$serviceList" \
     | grep -E "_production" \
     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     > /usr/local/apache2/htdocs/frinex_production_upstreams.txt
 
-echo $serviceList \
+echo "$serviceList" \
     | grep -E "_admin|_web" \
     | grep -E "_staging" \
     | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
@@ -51,7 +52,7 @@ echo $serviceList \
     | sed 's/_staging_admin {/-admin {/g' \
     > /usr/local/apache2/htdocs/frinex_staging_locations.txt
 
-echo $serviceList \
+echo "$serviceList" \
     | grep -E "_staging" \
     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
