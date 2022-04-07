@@ -202,6 +202,7 @@ case $# in
         case $1 in
             config)
                 output_config "all"
+                ;;
             *)
                 output_values $1
                 ;;
@@ -211,6 +212,7 @@ case $# in
         case $2 in
             config)
                 output_config $1
+                ;;
             *)
                 output_usage
                 exit 1
