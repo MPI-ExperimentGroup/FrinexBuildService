@@ -1,4 +1,4 @@
-
+Added support for separate staging and production Postgres instances.
 Updated the experiment health status to incude the GUI and different production deployment targets.
 Updated to the second patched version of log4j, note that this property will not be needed when all the current build images are replaced with newer images.
 Added ldap/activedirectory for the frinex wizard.

@@ -52,14 +52,25 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
     appNameInternal=${appNameInternal%"_db"}
     if [[ ${#appNameInternal} -gt 2 ]] ; then
         echo "appNameInternal: $appNameInternal"
-        if [ "$(psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
+        # create the experiment DB on staging
+        if [ "$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_db_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
             echo "Database already exists"
-            psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
+            psql -h DatabaseStagingUrl -p 5432 -U frinex_db_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
         else
             echo "Database being created"
-            psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
-            psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;"
-            psql -h DatabaseServerUrl -p 5432 -U frinex_db_user -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;"
+            psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_db_user -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
+            psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_db_user -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;"
+            psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_db_user -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;"
+        fi
+        # create the experiment DB on production
+        if [ "$(psql -h DatabaseProductionUrl -p DatabaseStagingPort -U frinex_db_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
+            echo "Database already exists"
+            psql -h DatabaseProductionUrl -p 5432 -U frinex_db_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
+        else
+            echo "Database being created"
+            psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_db_user -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
+            psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_db_user -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;"
+            psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_db_user -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;"
         fi
         echo "OK: $QUERY_STRING"
     else

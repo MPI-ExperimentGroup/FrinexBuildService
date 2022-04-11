@@ -32,13 +32,17 @@ COPY config/frinex_db_manager.conf  /FrinexBuildService/
 COPY cgi/frinex_db_manager.cgi  /FrinexBuildService/cgi/
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
-RUN sed -i "s|DatabaseServerUrl|example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseStagingUrl|staging.example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseStagingPort|5432|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseProductionPort|5432|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 #RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 #RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
 RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/psql' >> /etc/sudoers
 # provide an authentication menthod for the CGI script
-RUN echo "example.com:5432:postgres:frinex_db_user:examplepassword" > /FrinexBuildService/frinex_db_user_authentication
+RUN echo "staging.example.com:5432:postgres:frinex_db_user:examplepassword" > /FrinexBuildService/frinex_db_user_authentication
+RUN echo "production.example.com:5432:postgres:frinex_db_user:examplepassword" >> /FrinexBuildService/frinex_db_user_authentication
 RUN chown -R www-data:daemon /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 RUN chown -R www-data:daemon /FrinexBuildService/cgi

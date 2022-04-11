@@ -62,9 +62,11 @@ const configServer = properties.get('webservice.configServer');
 const stagingServer = properties.get('staging.serverName');
 const stagingServerUrl = properties.get('staging.serverUrl');
 const stagingGroupsSocketUrl = properties.get('staging.groupsSocketUrl');
+const stagingDbHost = properties.get('staging.dbHost');
 const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
+const productionDbHost = properties.get('production.dbHost');
 
 var resultsFile; // this is set once in startResult after the file is populated
 const statsFile = fs.openSync(targetDirectory + "/buildstats.txt", "a"); //{ flags: 'w', mode: 0o755 });
@@ -625,6 +627,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
+            + ' -Dexperiment.configuration.db.host=' + stagingDbHost
             // admin login is not needed for staging + ' -Dexperiment.configuration.admin.password=' + getExperimentToken(currentEntry.buildName)
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
@@ -975,6 +978,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                 + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
                 + ' -Dexperiment.productionCheckString=' + productionServerUrl.replace(/^https?:\/\//, '')
+                + ' -Dexperiment.configuration.db.host=' + productionDbHost
             )
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
