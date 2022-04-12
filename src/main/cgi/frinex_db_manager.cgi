@@ -63,7 +63,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
             psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;"
         fi
         # create the experiment DB on production
-        if [ "$(psql -h DatabaseProductionUrl -p DatabaseStagingPort -U frinex_production_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
+        if [ "$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
             echo "Database already exists"
             psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
         else
