@@ -199,12 +199,44 @@ output_usage() {
 
 case $# in
     0)
-        output_values "all"
+        case $(basename $0) in
+            frinex_staging_web)
+                output_values "staging_web"
+                ;;
+            frinex_staging_admin)
+                output_values "staging_admin"
+                ;;
+            frinex_production_web)
+                output_values "production_web"
+                ;;
+            frinex_production_admin)
+                output_values "production_admin"
+                ;;
+            *)
+                output_values "all"
+                ;;
+        esac
         ;;
     1)
         case $1 in
             config)
-                output_config "all"
+                case $(basename $0) in
+                    frinex_staging_web)
+                        output_config "staging_web"
+                        ;;
+                    frinex_staging_admin)
+                        output_config "staging_admin"
+                        ;;
+                    frinex_production_web)
+                        output_config "production_web"
+                        ;;
+                    frinex_production_admin)
+                        output_config "production_admin"
+                        ;;
+                    *)
+                        output_config "all"
+                        ;;
+                esac
                 ;;
             *)
                 output_values $1
