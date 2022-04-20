@@ -27,6 +27,7 @@
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
+dataDirectory=/srv/frinex_munin_data
 
 staging_web_config() {
     echo "stagingTotal.label Total Staging"
@@ -112,22 +113,29 @@ production_admin_values() {
 output_values() {
     case $1 in
         staging_web)
-            staging_web_values
+            cat $dataDirectory/staging_web_values
+            staging_web_values > $dataDirectory/staging_web_values&
             ;;
         staging_admin)
-            staging_admin_values
+            cat $dataDirectory/staging_admin_values
+            staging_admin_values > $dataDirectory/staging_admin_values&
             ;;
         production_web)
-            production_web_values
+            cat $dataDirectory/production_web_values
+            production_web_values > $dataDirectory/production_web_values&
             ;;
         production_admin)
-            production_admin_values
+            cat $dataDirectory/production_admin_values
+            production_admin_values > $dataDirectory/production_admin_values&
             ;;
         *)
-            staging_web_values
-            staging_admin_values
-            production_web_values
-            production_admin_values
+            cat $dataDirectory/frinex_munin_all
+            {
+                staging_web_values > $dataDirectory/frinex_munin_all
+                staging_admin_values >> $dataDirectory/frinex_munin_all
+                production_web_values >> $dataDirectory/frinex_munin_all
+                production_admin_values >> $dataDirectory/frinex_munin_all
+            }&
             ;;
     esac
 }
@@ -135,7 +143,7 @@ output_values() {
 number_of_services() {
     #docker service ls | grep -E $1 | wc -l
     hoststring=$(hostname -f)
-    curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring/services.json | grep -E $1 | wc -l
+    curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/services.json | grep -E $1 | wc -l
 }
 
 health_of_services() {
@@ -147,13 +155,13 @@ health_of_services() {
     # | sed 's/[*:]//g' \
     # | sed 's/->8080\/tcp//g' \
     # | awk '{print ":" $6 "/" $2 "\n"}')
-    for currentUrl in $(curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
+    for currentUrl in $(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
     | awk '{print ":" $4 "/" $1}')
     do
-        healthResult=$(curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
+        healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
         fi   
@@ -171,7 +179,7 @@ health_of_proxy() {
     # | sed 's/->8080\/tcp//g' \
     # | awk '{print "/" $2 "-admin\n"}' \
     # | sed 's/_staging_admin-admin/-admin/g')
-    for currentUrl in $(curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
+    for currentUrl in $(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
@@ -181,7 +189,7 @@ health_of_proxy() {
     | sed 's/_production_web/ production.example.com/g' \
     | awk '{print $2 "/" $1}')
     do
-        healthResult=$(curl --connect-timeout 1 --max-time 2 -k --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
+        healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early -k --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
         fi   
