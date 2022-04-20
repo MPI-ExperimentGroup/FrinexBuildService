@@ -57,6 +57,19 @@ else
     sudo chown root:root /usr/lib/munin/plugins/frinex_experiment_stats
     sudo ln -s /usr/lib/munin/plugins/frinex_experiment_stats /etc/munin/plugins/frinex_experiment_stats
 
+    # instal the experiment tomcat plugin and working directory
+    sudo mkdir -p /srv/frinex_munin_data/tomcat
+    cp script/frinex_munin_tomcat_plugin.sh /tmp/frinex_munin_tomcat_plugin.sh
+    chmod 777 /tmp/frinex_munin_tomcat_plugin.sh
+    sudo rm /usr/lib/munin/plugins/frinex_tomcat_stats
+    sudo mv /tmp/frinex_munin_tomcat_plugin.sh /usr/lib/munin/plugins/frinex_tomcat_stats
+    sudo chmod 775 /usr/lib/munin/plugins/frinex_tomcat_stats
+    sudo chown root:root /usr/lib/munin/plugins/frinex_tomcat_stats
+    sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_staging_web
+    sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_staging_admin
+    sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_production_web
+    sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_production_admin
+
     # please note that the following needs to be added to /etc/munin/plugin-conf.d/munin-node
     #   [frinex_*]
     #   group docker
