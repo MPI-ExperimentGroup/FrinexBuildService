@@ -29,7 +29,7 @@ scriptDir=$(pwd -P)
 #echo $scriptDir
 dataDirectory=/srv/frinex_munin_data/stats
 
-output_config() {
+update_stats() {
     hoststring=$(hostname -f)
     for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1_admin" \
@@ -39,7 +39,7 @@ output_config() {
     do
         experimentAdminName=$(cut -d'/' -f2 <<< $currentUrl)
         #echo $experimentAdminName
-        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
+        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' > $dataDirectory/$experimentAdminName
             # cat $dataDirectory/$experimentAdminName
@@ -49,6 +49,9 @@ output_config() {
             # echo "totalStimulusResponses.label Stimulus Responses"
             # echo "totalMediaResponses.label Media Responses"
     done
+}
+
+output_config() {
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
         echo "multigraph $graphType"
@@ -82,6 +85,7 @@ output_usage() {
 case $# in
     0)
         output_values
+        update_stats&
         ;;
     1)
         case $1 in
