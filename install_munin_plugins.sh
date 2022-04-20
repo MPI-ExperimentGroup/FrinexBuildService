@@ -42,6 +42,10 @@ else
     sudo chmod 775 /usr/lib/munin/plugins/frinex_service_health
     sudo chown root:root /usr/lib/munin/plugins/frinex_service_health
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
+    sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_staging_web
+    sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_staging_admin
+    sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_production_web
+    sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_production_admin
 
     # instal the experiment stats plugin and working directory
     sudo mkdir -p /srv/frinex_munin_data/stats
