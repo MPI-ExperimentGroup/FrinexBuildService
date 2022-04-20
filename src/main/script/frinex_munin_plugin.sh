@@ -130,12 +130,7 @@ output_values() {
             ;;
         *)
             cat $dataDirectory/frinex_munin_all
-            {
-                staging_web_values > $dataDirectory/frinex_munin_all
-                staging_admin_values >> $dataDirectory/frinex_munin_all
-                production_web_values >> $dataDirectory/frinex_munin_all
-                production_admin_values >> $dataDirectory/frinex_munin_all
-            }&
+            { staging_web_values & staging_admin_values & production_web_values & production_admin_values; } > $dataDirectory/frinex_munin_all&
             ;;
     esac
 }
