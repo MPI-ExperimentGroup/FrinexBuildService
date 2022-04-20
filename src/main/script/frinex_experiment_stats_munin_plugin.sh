@@ -27,7 +27,7 @@
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
-dataDirectory=/srv/frinex_munin_data
+dataDirectory=/srv/frinex_munin_data/stats
 
 output_config() {
     hoststring=$(hostname -f)

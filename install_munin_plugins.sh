@@ -34,6 +34,7 @@ else
     git pull
 
     # copy the service health plugin to the munin plugins directory
+    sudo mkdir -p /srv/frinex_munin_data/health
     cp script/frinex_munin_plugin.sh /tmp/frinex_munin_plugin.sh
     chmod 777 /tmp/frinex_munin_plugin.sh
     sudo rm /usr/lib/munin/plugins/frinex_service_health
@@ -43,7 +44,7 @@ else
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
 
     # instal the experiment stats plugin and working directory
-    sudo mkdir -p /srv/frinex_munin_data
+    sudo mkdir -p /srv/frinex_munin_data/stats
     cp script/frinex_experiment_stats_munin_plugin.sh /tmp/frinex_experiment_stats_munin_plugin.sh
     chmod 777 /tmp/frinex_experiment_stats_munin_plugin.sh
     sudo rm /usr/lib/munin/plugins/frinex_experiment_stats

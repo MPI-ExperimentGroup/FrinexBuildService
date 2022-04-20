@@ -27,7 +27,7 @@
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
-dataDirectory=/srv/frinex_munin_data
+dataDirectory=/srv/frinex_munin_data/health
 
 staging_web_config() {
     echo "stagingTotal.label Total Staging"
