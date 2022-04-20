@@ -29,6 +29,12 @@ scriptDir=$(pwd -P)
 #echo $scriptDir
 dataDirectory=/srv/frinex_munin_data/stats
 
+invalidate_stats() {
+    for filePath in $dataDirectory/*_admin; do
+        echo -en "totalParticipantsSeen.value U\ntotalDeploymentsAccessed.value U\ntotalPageLoads.value U\ntotalStimulusResponses.value U\ntotalMediaResponses.value U\n" > $filePath
+    done
+}
+
 update_stats() {
     hoststring=$(hostname -f)
     for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
@@ -41,7 +47,7 @@ update_stats() {
         #echo $experimentAdminName
         usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
-            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' > $dataDirectory/$experimentAdminName
+            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentAdminName
             # cat $dataDirectory/$experimentAdminName
         fi
             # echo "totalParticipantsSeen.label Participants Seen"
@@ -57,7 +63,7 @@ output_config() {
         echo "multigraph $graphType"
         echo "graph_title Frinex Experiments $graphType"
         echo "graph_category frinex"
-        for filePath in $dataDirectory/*; do
+        for filePath in $dataDirectory/*_admin; do
             fileName=${filePath#"$dataDirectory/"}
             echo "$fileName.label $fileName"
         done
@@ -70,7 +76,7 @@ output_values() {
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
         echo "multigraph $graphType"
-        for filePath in $dataDirectory/*; do
+        for filePath in $dataDirectory/*_admin; do
             fileName=${filePath#"$dataDirectory/"}
             grep $graphType $filePath | sed "s/$graphType/$fileName/g"
         done
@@ -85,6 +91,7 @@ output_usage() {
 case $# in
     0)
         output_values
+        invalidate_stats
         update_stats&
         ;;
     1)
