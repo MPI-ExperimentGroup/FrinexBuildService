@@ -61,6 +61,8 @@ COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
 COPY script/frinex_service_hammer.sh /FrinexBuildService/
 COPY script/log_service_hammer.sh /FrinexBuildService/
 COPY script/hammer_services.sh /FrinexBuildService/
+RUN mkdir /FrinexBuildService/test_data
+COPY static/test_data/100ms_v.mp4 /FrinexBuildService/test_data
 COPY docker/filter_config_files.sh /FrinexBuildService/
 RUN chmod +x /FrinexBuildService/filter_config_files.sh
 RUN /FrinexBuildService/filter_config_files.sh
