@@ -97,27 +97,27 @@ output_config() {
 }
 
 staging_web_values() {
-    printf "stagingTotal.value %d\n" $(number_of_services "_staging_web")
-    printf "stagingHealthy.value %d\n" $(health_of_services "_staging_web")
-    printf "stagingSleeping.value %d\n" $(number_of_sleeping "_staging_web")
+    printf "stagingTotal.value %d\n" $(number_of_services "$stagingUrl")
+    printf "stagingHealthy.value %d\n" $(health_of_services "$stagingUrl" "_staging_web")
+    printf "stagingSleeping.value %d\n" $(number_of_sleeping "$stagingUrl")
 }
 
 staging_admin_values() {
-    printf "stagingAdminTotal.value %d\n" $(number_of_services "_staging_admin")
-    printf "stagingAdminHealthy.value %d\n" $(health_of_services "_staging_admin")
-    printf "stagingAdminSleeping.value %d\n" $(number_of_sleeping "_staging_admin")
+    printf "stagingAdminTotal.value %d\n" $(number_of_services "$stagingUrl")
+    printf "stagingAdminHealthy.value %d\n" $(health_of_services "$stagingUrl" "_staging_admin")
+    printf "stagingAdminSleeping.value %d\n" $(number_of_sleeping "$stagingUrl")
 }
 
 production_web_values() {
-    printf "productionTotal.value %d\n" $(number_of_services "_production_web")
-    printf "productionHealthy.value %d\n" $(health_of_services "_production_web")
-    printf "productionSleeping.value %d\n" $(number_of_sleeping "_production_web")
+    printf "productionTotal.value %d\n" $(number_of_services "$productionUrl")
+    printf "productionHealthy.value %d\n" $(health_of_services "$productionUrl" "_production_web")
+    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionUrl)
 }
 
 production_admin_values() {
-    printf "productionAdminTotal.value %d\n" $(number_of_services "_production_admin")
-    printf "productionAdminHealthy.value %d\n" $(health_of_services "_production_admin")
-    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "_production_admin")
+    printf "productionAdminTotal.value %d\n" $(number_of_services "$productionUrl")
+    printf "productionAdminHealthy.value %d\n" $(health_of_services "$productionUrl" "_production_admin")
+    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionUrl")
 }
 
 output_values() {
@@ -146,13 +146,11 @@ output_values() {
 }
 
 number_of_sleeping() {
-
+    curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/known_sleepers.json | grep -v '}' | grep -v '{' | wc -l
 }
 
 number_of_services() {
-    #docker service ls | grep -E $1 | wc -l
-    hoststring=$(hostname -f)
-    curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/services.json | grep -E $1 | wc -l
+    curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/running_experiments.json | grep -v '}' | grep -v '{' | wc -l
 }
 
 health_of_services() {
