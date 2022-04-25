@@ -106,7 +106,7 @@ staging_web_values() {
 }
 
 staging_admin_values() {
-    echo "$(health_of_services "$stagingUrl" "_admin" "stagingAdmin")"
+    echo "$(health_of_services "$stagingUrl" "-admin" "stagingAdmin")"
     printf "stagingAdminSleeping.value %d\n" $(number_of_sleeping "$stagingUrl")
 }
 
@@ -116,7 +116,7 @@ production_web_values() {
 }
 
 production_admin_values() {
-    echo "$(health_of_services "$productionUrl" "_admin" "productionAdmin")"
+    echo "$(health_of_services "$productionUrl" "-admin" "productionAdmin")"
     printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionUrl")
 }
 
