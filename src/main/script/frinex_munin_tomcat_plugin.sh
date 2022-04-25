@@ -35,6 +35,7 @@ staging_web_config() {
     echo "stagingUnknown.label Unknown Staging"
     echo "stagingHealthy.label Healthy Staging"
     echo "stagingSleeping.label Sleeping Staging"
+    echo "stagingUnknown.stack"
     echo "stagingHealthy.stack"
     echo "stagingSleeping.stack"
 }
@@ -43,6 +44,7 @@ staging_admin_config() {
     echo "stagingAdminUnknown.label Unknown Admin Staging"
     echo "stagingAdminHealthy.label Healthy Admin Staging"
     echo "stagingAdminSleeping.label Sleeping Admin Staging"
+    echo "stagingAdminUnknown.stack"
     echo "stagingAdminHealthy.stack"
     echo "stagingAdminSleeping.stack"
 }
@@ -51,6 +53,7 @@ production_web_config() {
     echo "productionUnknown.label Unknown Production"
     echo "productionHealthy.label Healthy Production"
     echo "productionSleeping.label Sleeping Production"
+    echo "productionUnknown.stack"
     echo "productionHealthy.stack"
     echo "productionSleeping.stack"
 }
@@ -59,6 +62,7 @@ production_admin_config() {
     echo "productionAdminUnknown.label Unknown Admin Production"
     echo "productionAdminHealthy.label Healthy Admin Production"
     echo "productionAdminSleeping.label Sleeping Admin Production"
+    echo "productionAdminUnknown.stack"
     echo "productionAdminHealthy.stack"
     echo "productionAdminSleeping.stack"
 }
