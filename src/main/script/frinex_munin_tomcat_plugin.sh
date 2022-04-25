@@ -32,7 +32,7 @@ stagingUrl="https://staging.example.com"
 productionUrl="https://production.example.com"
 
 staging_web_config() {
-    echo "stagingTotal.label Total Staging"
+    echo "stagingUnknown.label Unknown Staging"
     echo "stagingHealthy.label Healthy Staging"
     echo "stagingSleeping.label Sleeping Staging"
     echo "stagingHealthy.stack"
@@ -40,7 +40,7 @@ staging_web_config() {
 }
 
 staging_admin_config() {
-    echo "stagingAdminTotal.label Total Admin Staging"
+    echo "stagingAdminUnknown.label Unknown Admin Staging"
     echo "stagingAdminHealthy.label Healthy Admin Staging"
     echo "stagingAdminSleeping.label Sleeping Admin Staging"
     echo "stagingAdminHealthy.stack"
@@ -48,7 +48,7 @@ staging_admin_config() {
 }
 
 production_web_config() {
-    echo "productionTotal.label Total Production"
+    echo "productionUnknown.label Unknown Production"
     echo "productionHealthy.label Healthy Production"
     echo "productionSleeping.label Sleeping Production"
     echo "productionHealthy.stack"
@@ -56,7 +56,7 @@ production_web_config() {
 }
 
 production_admin_config() {
-    echo "productionAdminTotal.label Total Admin Production"
+    echo "productionAdminUnknown.label Unknown Admin Production"
     echo "productionAdminHealthy.label Healthy Admin Production"
     echo "productionAdminSleeping.label Sleeping Admin Production"
     echo "productionAdminHealthy.stack"
@@ -97,26 +97,22 @@ output_config() {
 }
 
 staging_web_values() {
-    printf "stagingTotal.value %d\n" $(number_of_services "$stagingUrl")
-    printf "stagingHealthy.value %d\n" $(health_of_services "$stagingUrl" "_staging_web")
+    echo "$(health_of_services "$stagingUrl" "" "staging")"
     printf "stagingSleeping.value %d\n" $(number_of_sleeping "$stagingUrl")
 }
 
 staging_admin_values() {
-    printf "stagingAdminTotal.value %d\n" $(number_of_services "$stagingUrl")
-    printf "stagingAdminHealthy.value %d\n" $(health_of_services "$stagingUrl" "_staging_admin")
+    echo "$(health_of_services "$stagingUrl" "_admin" "stagingAdmin")"
     printf "stagingAdminSleeping.value %d\n" $(number_of_sleeping "$stagingUrl")
 }
 
 production_web_values() {
-    printf "productionTotal.value %d\n" $(number_of_services "$productionUrl")
-    printf "productionHealthy.value %d\n" $(health_of_services "$productionUrl" "_production_web")
-    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionUrl)
+    echo "$(health_of_services "$productionUrl" "" "production")"
+    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionUrl")
 }
 
 production_admin_values() {
-    printf "productionAdminTotal.value %d\n" $(number_of_services "$productionUrl")
-    printf "productionAdminHealthy.value %d\n" $(health_of_services "$productionUrl" "_production_admin")
+    echo "$(health_of_services "$productionUrl" "_admin" "productionAdmin")"
     printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionUrl")
 }
 
@@ -149,31 +145,21 @@ number_of_sleeping() {
     curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/known_sleepers.json | grep -v '}' | grep -v '{' | wc -l
 }
 
-number_of_services() {
-    curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/running_experiments.json | grep -v '}' | grep -v '{' | wc -l
-}
 
 health_of_services() {
     healthCount=0;
-    hoststring=$(hostname -f)
-    # for currentUrl in $(docker service ls \
-    # | grep -E "$1" \
-    # | grep -E "8080/tcp" \
-    # | sed 's/[*:]//g' \
-    # | sed 's/->8080\/tcp//g' \
-    # | awk '{print ":" $6 "/" $2 "\n"}')
-    for currentUrl in $(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
-    | grep -E "$1" \
-    | sed 's/"port":"//g' \
-    | sed 's/["\{\}:,]//g' \
-    | awk '{print ":" $4 "/" $1}')
+    unknownCount=0;
+    for serviceUrl in $(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
     do
-        healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
+        healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/$serviceUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
+        else
+            unknownCount=$[$unknownCount +1]
         fi   
     done
-    echo $healthCount
+    echo "$3Healthy.value $healthCount"
+    echo "$3Unknown.value $unknownCount"
 }
 
 output_usage() {
