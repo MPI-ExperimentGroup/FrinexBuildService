@@ -387,7 +387,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
 
         // triger the proxy to reaload the service list by calling the proxyUpdateTrigger URL
         console.log("proxyUpdateTrigger (" + new Date().toISOString() + "): " + proxyUpdateTrigger);
-        got.get(proxyUpdateTrigger, { responseType: 'text/html', timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => {
+        got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
             console.log("proxyUpdateTrigger (response): " + response.statusCode);
         }).catch(error => {
             console.log("proxyUpdateTrigger (error): " + error.message);
