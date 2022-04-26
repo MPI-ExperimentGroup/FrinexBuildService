@@ -93,12 +93,12 @@ output_config() {
         productionb_web)
             echo "graph_title Frinex Tomcat ProductionB Web"
             echo "graph_category frinex"
-            productionb_web_config
+            production_web_config
             ;;
         productionb_admin)
             echo "graph_title Frinex Tomcat ProductionB Admin"
             echo "graph_category frinex"
-            productionb_admin_config
+            production_admin_config
             ;;
         *)
             echo "graph_title Frinex Tomcat Service Health"
