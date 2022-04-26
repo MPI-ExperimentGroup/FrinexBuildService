@@ -69,6 +69,8 @@ else
     sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_staging_admin
     sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_production_web
     sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_production_admin
+    sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_productionb_web
+    sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_productionb_admin
 
     # please note that the following needs to be added to /etc/munin/plugin-conf.d/munin-node
     #   [frinex_*]
