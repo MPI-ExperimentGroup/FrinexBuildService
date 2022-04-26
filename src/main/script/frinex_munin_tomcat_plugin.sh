@@ -36,36 +36,36 @@ staging_web_config() {
     echo "stagingUnknown.label Unknown Staging"
     echo "stagingHealthy.label Healthy Staging"
     echo "stagingSleeping.label Sleeping Staging"
-    echo "stagingUnknown AREASTACK"
-    echo "stagingHealthy AREASTACK"
-    echo "stagingSleeping AREASTACK"
+    echo "stagingUnknown.draw AREASTACK"
+    echo "stagingHealthy.draw AREASTACK"
+    echo "stagingSleeping.draw AREASTACK"
 }
 
 staging_admin_config() {
     echo "stagingAdminUnknown.label Unknown Admin Staging"
     echo "stagingAdminHealthy.label Healthy Admin Staging"
     echo "stagingAdminSleeping.label Sleeping Admin Staging"
-    echo "stagingAdminUnknown AREASTACK"
-    echo "stagingAdminHealthy AREASTACK"
-    echo "stagingAdminSleeping AREASTACK"
+    echo "stagingAdminUnknown.draw AREASTACK"
+    echo "stagingAdminHealthy.draw AREASTACK"
+    echo "stagingAdminSleeping.draw AREASTACK"
 }
 
 production_web_config() {
     echo "productionUnknown.label Unknown Production"
     echo "productionHealthy.label Healthy Production"
     echo "productionSleeping.label Sleeping Production"
-    echo "productionUnknown AREASTACK"
-    echo "productionHealthy AREASTACK"
-    echo "productionSleeping AREASTACK"
+    echo "productionUnknown.draw AREASTACK"
+    echo "productionHealthy.draw AREASTACK"
+    echo "productionSleeping.draw AREASTACK"
 }
 
 production_admin_config() {
     echo "productionAdminUnknown.label Unknown Admin Production"
     echo "productionAdminHealthy.label Healthy Admin Production"
     echo "productionAdminSleeping.label Sleeping Admin Production"
-    echo "productionAdminUnknown AREASTACK"
-    echo "productionAdminHealthy AREASTACK"
-    echo "productionAdminSleeping AREASTACK"
+    echo "productionAdminUnknown.draw AREASTACK"
+    echo "productionAdminHealthy.draw AREASTACK"
+    echo "productionAdminSleeping.draw AREASTACK"
 }
 
 output_config() {
