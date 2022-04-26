@@ -30,41 +30,42 @@ scriptDir=$(pwd -P)
 dataDirectory=/srv/frinex_munin_data/tomcat
 stagingUrl="https://staging.example.com"
 productionUrl="https://production.example.com"
+productionbUrl="https://productionb.example.com"
 
 staging_web_config() {
     echo "stagingUnknown.label Unknown Staging"
     echo "stagingHealthy.label Healthy Staging"
     echo "stagingSleeping.label Sleeping Staging"
-    echo "stagingUnknown.stack"
-    echo "stagingHealthy.stack"
-    echo "stagingSleeping.stack"
+    echo "stagingUnknown AREASTACK"
+    echo "stagingHealthy AREASTACK"
+    echo "stagingSleeping AREASTACK"
 }
 
 staging_admin_config() {
     echo "stagingAdminUnknown.label Unknown Admin Staging"
     echo "stagingAdminHealthy.label Healthy Admin Staging"
     echo "stagingAdminSleeping.label Sleeping Admin Staging"
-    echo "stagingAdminUnknown.stack"
-    echo "stagingAdminHealthy.stack"
-    echo "stagingAdminSleeping.stack"
+    echo "stagingAdminUnknown AREASTACK"
+    echo "stagingAdminHealthy AREASTACK"
+    echo "stagingAdminSleeping AREASTACK"
 }
 
 production_web_config() {
     echo "productionUnknown.label Unknown Production"
     echo "productionHealthy.label Healthy Production"
     echo "productionSleeping.label Sleeping Production"
-    echo "productionUnknown.stack"
-    echo "productionHealthy.stack"
-    echo "productionSleeping.stack"
+    echo "productionUnknown AREASTACK"
+    echo "productionHealthy AREASTACK"
+    echo "productionSleeping AREASTACK"
 }
 
 production_admin_config() {
     echo "productionAdminUnknown.label Unknown Admin Production"
     echo "productionAdminHealthy.label Healthy Admin Production"
     echo "productionAdminSleeping.label Sleeping Admin Production"
-    echo "productionAdminUnknown.stack"
-    echo "productionAdminHealthy.stack"
-    echo "productionAdminSleeping.stack"
+    echo "productionAdminUnknown AREASTACK"
+    echo "productionAdminHealthy AREASTACK"
+    echo "productionAdminSleeping AREASTACK"
 }
 
 output_config() {
@@ -88,6 +89,16 @@ output_config() {
             echo "graph_title Frinex Tomcat Production Admin"
             echo "graph_category frinex"
             production_admin_config
+            ;;
+        productionb_web)
+            echo "graph_title Frinex Tomcat ProductionB Web"
+            echo "graph_category frinex"
+            productionb_web_config
+            ;;
+        productionb_admin)
+            echo "graph_title Frinex Tomcat ProductionB Admin"
+            echo "graph_category frinex"
+            productionb_admin_config
             ;;
         *)
             echo "graph_title Frinex Tomcat Service Health"
@@ -120,6 +131,16 @@ production_admin_values() {
     printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionUrl")
 }
 
+productionb_web_values() {
+    echo "$(health_of_services "$productionbUrl" "" "production")"
+    printf "productionbSleeping.value %d\n" $(number_of_sleeping "$productionbUrl")
+}
+
+productionb_admin_values() {
+    echo "$(health_of_services "$productionbUrl" "-admin" "productionAdmin")"
+    printf "productionbAdminSleeping.value %d\n" $(number_of_sleeping "$productionbUrl")
+}
+
 output_values() {
     case $1 in
         staging_web)
@@ -137,6 +158,14 @@ output_values() {
         production_admin)
             cat $dataDirectory/production_admin_values
             production_admin_values > $dataDirectory/production_admin_values&
+            ;;
+        productionb_web)
+            cat $dataDirectory/productionb_web_values
+            productionb_web_values > $dataDirectory/productionb_web_values&
+            ;;
+        productionb_admin)
+            cat $dataDirectory/productionb_admin_values
+            productionb_admin_values > $dataDirectory/productionb_admin_values&
             ;;
         *)
             cat $dataDirectory/frinex_munin_all
@@ -186,6 +215,12 @@ case $# in
             frinex_tomcat_production_admin)
                 output_values "production_admin"
                 ;;
+            frinex_tomcat_productionb_web)
+                output_values "productionb_web"
+                ;;
+            frinex_tomcat_productionb_admin)
+                output_values "productionb_admin"
+                ;;
             *)
                 output_values "all"
                 ;;
@@ -206,6 +241,12 @@ case $# in
                         ;;
                     frinex_tomcat_production_admin)
                         output_config "production_admin"
+                        ;;
+                    frinex_tomcat_productionb_web)
+                        output_config "productionb_web"
+                        ;;
+                    frinex_tomcat_productionb_admin)
+                        output_config "productionb_admin"
                         ;;
                     *)
                         output_config "all"
