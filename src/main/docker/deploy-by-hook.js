@@ -76,6 +76,8 @@ const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
 const experimentTokensFileName = protectedDirectory + "/tokens.json";
 var experimentTokensJson = {};
+const buildStatisticsFileName = targetDirectory + "/buildstats.json";
+var buildStatisticsJson = {};
 var hasDoneBackup = false;
 
 function startResult() {
@@ -157,6 +159,9 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
             buildHistoryJson.diskFree = info.free;
             buildHistoryJson.diskTotal = info.size;
         });
+        // update the last build stats
+        buildStatisticsJson[stage + "_" + type] = (stageBuildTime);
+        fs.writeFileSync(buildStatisticsFileName, JSON.stringify(buildStatisticsJson, null, 4), { mode: 0o755 });
         // update the docker service listing JSON (this moment is not so critical since the services will be changing regardless of this process)
         updateServicesJson();
     }
@@ -1896,6 +1901,14 @@ function prepareBuildHistory() {
                 console.error("faild to read " + experimentTokensFileName + ".temp");
                 console.error(error);
             }
+        }
+    }
+    if (fs.existsSync(buildStatisticsFileName)) {
+        try {
+            buildStatisticsJson = JSON.parse(fs.readFileSync(buildStatisticsFileName, 'utf8'));
+        } catch (error) {
+            console.error("faild to read " + buildStatisticsFileName);
+            console.error(error);
         }
     }
     if (fs.existsSync(buildHistoryFileName)) {
