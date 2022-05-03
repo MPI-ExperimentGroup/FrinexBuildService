@@ -184,6 +184,7 @@ function unDeploy(currentEntry) {
     // check if the deploymentType is tomcat vs docker and do the required undeployment process
     var dockerString = "";
     if (deploymentType.includes('docker')) {
+        dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_web && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + "\n"
     }
     if (deploymentType.includes('tomcat')) {
@@ -230,6 +231,7 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt?' + new Date().getTime() + '">undeploying</a>', "staging", "admin", false, true, false);
     var dockerString = "";
     if (deploymentType.includes('docker')) {
+        dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_admin && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_admin' + "\n"
     }
     if (deploymentType.includes('tomcat')) {
@@ -275,6 +277,7 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">undeploying</a>', "production", "web", false, true, false);
     var dockerString = "";
     if (deploymentType.includes('docker')) {
+        dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_web && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_web' + "\n"
     }
     if (deploymentType.includes('tomcat')) {
@@ -324,6 +327,7 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">undeploying</a>', "production", "admin", false, true, false);
     var dockerString = "";
     if (deploymentType.includes('docker')) {
+        dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_admin && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_admin' + "\n"
     }
     if (deploymentType.includes('tomcat')) {
