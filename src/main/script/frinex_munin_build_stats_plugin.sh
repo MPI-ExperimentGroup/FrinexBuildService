@@ -39,6 +39,7 @@ output_config() {
     echo "production_admin_$1.label production_admin_$1"
     echo "production_desktop_$1.label production_desktop_$1"
     echo "staging_android_$1.label staging_android_$1"
+    echo "production_android_$1.label production_android_$1"
 }
 
 
