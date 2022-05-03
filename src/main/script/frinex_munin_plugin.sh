@@ -159,6 +159,8 @@ health_of_services() {
         healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
+        else
+            echo "http://$hoststring$currentUrl/actuator/health" >> $dataDirectory/failing_$(date +%F).log
         fi   
     done
     echo $healthCount
