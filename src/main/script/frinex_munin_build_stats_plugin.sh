@@ -48,7 +48,7 @@ output_values() {
 }
 
 load_build_stats() {
-    echo $(curl --connect-timeout 10 --max-time 10 --fail-early --silent -H 'Content-Type: application/json' http://$1/buildstats.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g' | sed 's/ //g' | sed 's/:/_$1.value /g')
+    curl --connect-timeout 10 --max-time 10 --fail-early --silent -H 'Content-Type: application/json' http://$1/buildstats.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g' | sed 's/ //g' | sed "s/:/_$1.value /g"
 }
 
 output_usage() {
