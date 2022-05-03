@@ -44,11 +44,11 @@ output_config() {
 
 output_values() {
         cat $dataDirectory/build_stats_$1
-        load_build_stats > $dataDirectory/build_stats_$1&
+        load_build_stats $1 > $dataDirectory/build_stats_$1&
 }
 
 load_build_stats() {
-    echo $(curl --connect-timeout 10 --max-time 10 --fail-early --silent -H 'Content-Type: application/json' $1/buildstats.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g' | sed 's/ //g' | sed 's/:/_$1.value /g')
+    echo $(curl --connect-timeout 10 --max-time 10 --fail-early --silent -H 'Content-Type: application/json' http://$1/buildstats.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g' | sed 's/ //g' | sed 's/:/_$1.value /g')
 }
 
 output_usage() {
@@ -56,14 +56,15 @@ output_usage() {
     printf >&2 "Usage: %s [config]\n" ${0##*/}
 }
 
+linkName=$(basename $0)
 case $# in
     0)
-        output_values ${$(basename $0)#"frinex_build_"}
+        output_values ${linkName#"frinex_build_"}
         ;;
     1)
         case $1 in
             config)
-                output_config ${$(basename $0)#"frinex_build_"}
+                output_config ${linkName#"frinex_build_"}
                 ;;
             *)
                 output_values $1
