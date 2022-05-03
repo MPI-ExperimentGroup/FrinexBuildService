@@ -58,12 +58,12 @@ output_usage() {
 
 case $# in
     0)
-        output_values $(basename $0)
+        output_values ${$(basename $0)#"frinex_build_"}
         ;;
     1)
         case $1 in
             config)
-                output_config $(basename $0)
+                output_config ${$(basename $0)#"frinex_build_"}
                 ;;
             *)
                 output_values $1
