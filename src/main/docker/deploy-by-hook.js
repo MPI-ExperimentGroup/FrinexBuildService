@@ -160,7 +160,12 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
             buildHistoryJson.diskTotal = info.size;
         });
         // update the last build stats
-        buildStatisticsJson[stage + "_" + type] = (stageBuildTime);
+        if (stage + "_" + type in buildStatisticsJson) {
+            var n = 10;
+            buildStatisticsJson[stage + "_" + type] = buildStatisticsJson[stage + "_" + type] * (n - 1) / n + stageBuildTime / n;
+        } else {
+            buildStatisticsJson[stage + "_" + type] = (stageBuildTime);
+        }
         fs.writeFileSync(buildStatisticsFileName, JSON.stringify(buildStatisticsJson, null, 4), { mode: 0o755 });
         // update the docker service listing JSON (this moment is not so critical since the services will be changing regardless of this process)
         updateServicesJson();
