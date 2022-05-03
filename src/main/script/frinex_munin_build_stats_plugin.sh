@@ -27,7 +27,7 @@
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
-dataDirectory=/Users/petwit/Documents/FrinexBuildService/frinex_munin_data/builds
+dataDirectory=/srv/frinex_munin_data/builds
 
 output_config() {
     echo "graph_title Frinex $1 Build Stats"
