@@ -181,36 +181,42 @@ function unDeploy(currentEntry) {
     // undeploy staging gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt?' + new Date().getTime() + '">undeploying</a>', "staging", "web", false, true, false);
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
-    // TODO: check if the deploymentType is tomcat vs docker and do the required undeployment process
-    var buildContainerName = currentEntry.buildName + '_undeploy';
-    var dockerString = 'sudo docker container rm -f ' + buildContainerName
-        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + 'sudo docker run'
-        + ' --rm '
-        + taskContainerOptions
-        + ' --name ' + buildContainerName
-        // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
-        + ' -v processingDirectory:/FrinexBuildService/processing'
-        //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-        + ' -v buildServerTarget:' + targetDirectory
-        + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
-        + ' mvn tomcat7:undeploy '
-        + ' -gs /maven/.m2/settings.xml'
-        + ' -DskipTests'
-        + ' -Dlog4j2.version=2.17.1'
-        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
-        + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
-        + ' -Dexperiment.webservice=' + configServer
-        //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
-        + ' -DversionCheck.allowSnapshots=' + 'false'
-        + ' -DversionCheck.buildType=' + 'stable'
-        + ' -Dexperiment.destinationServer=' + stagingServer
-        + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
-        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
-        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-        + '"';
+    // check if the deploymentType is tomcat vs docker and do the required undeployment process
+    var dockerString = "";
+    if (deploymentType.includes('docker')) {
+        dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + "\n"
+    }
+    if (deploymentType.includes('tomcat')) {
+        var buildContainerName = currentEntry.buildName + '_undeploy';
+        dockerString += 'sudo docker container rm -f ' + buildContainerName
+            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + 'sudo docker run'
+            + ' --rm '
+            + taskContainerOptions
+            + ' --name ' + buildContainerName
+            // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+            + ' -v buildServerTarget:' + targetDirectory
+            + ' -v m2Directory:/maven/.m2/'
+            + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+            + ' mvn tomcat7:undeploy '
+            + ' -gs /maven/.m2/settings.xml'
+            + ' -DskipTests'
+            + ' -Dlog4j2.version=2.17.1'
+            + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+            + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
+            + ' -Dexperiment.webservice=' + configServer
+            //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
+            + ' -DversionCheck.allowSnapshots=' + 'false'
+            + ' -DversionCheck.buildType=' + 'stable'
+            + ' -Dexperiment.destinationServer=' + stagingServer
+            + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + '"';
+    }
     console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
@@ -222,34 +228,40 @@ function unDeploy(currentEntry) {
     }
     // undeploy staging admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt?' + new Date().getTime() + '">undeploying</a>', "staging", "admin", false, true, false);
-    var dockerString = 'sudo docker container rm -f ' + buildContainerName
-        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-        + 'sudo docker run'
-        + ' --rm '
-        + taskContainerOptions
-        + ' --name ' + buildContainerName
-        // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
-        + ' -v processingDirectory:/FrinexBuildService/processing'
-        //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-        + ' -v buildServerTarget:' + targetDirectory
-        + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
-        + ' mvn tomcat7:undeploy '
-        + ' -gs /maven/.m2/settings.xml'
-        + ' -DskipTests'
-        + ' -Dlog4j2.version=2.17.1'
-        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
-        + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
-        + ' -Dexperiment.webservice=' + configServer
-        //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
-        + ' -DversionCheck.allowSnapshots=' + 'false'
-        + ' -DversionCheck.buildType=' + 'stable'
-        + ' -Dexperiment.destinationServer=' + stagingServer
-        + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
-        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-        //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
-        //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-        + '"';
+    var dockerString = "";
+    if (deploymentType.includes('docker')) {
+        dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_admin' + "\n"
+    }
+    if (deploymentType.includes('tomcat')) {
+        dockerString += 'sudo docker container rm -f ' + buildContainerName
+            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + 'sudo docker run'
+            + ' --rm '
+            + taskContainerOptions
+            + ' --name ' + buildContainerName
+            // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+            + ' -v buildServerTarget:' + targetDirectory
+            + ' -v m2Directory:/maven/.m2/'
+            + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
+            + ' mvn tomcat7:undeploy '
+            + ' -gs /maven/.m2/settings.xml'
+            + ' -DskipTests'
+            + ' -Dlog4j2.version=2.17.1'
+            + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+            + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
+            + ' -Dexperiment.webservice=' + configServer
+            //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
+            + ' -DversionCheck.allowSnapshots=' + 'false'
+            + ' -DversionCheck.buildType=' + 'stable'
+            + ' -Dexperiment.destinationServer=' + stagingServer
+            + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
+            //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + '"';
+    }
     console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
@@ -261,38 +273,44 @@ function unDeploy(currentEntry) {
     }
     // undeploy production gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">undeploying</a>', "production", "web", false, true, false);
-    var dockerString = 'sudo docker container rm -f ' + buildContainerName
-        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-        + 'sudo docker run'
-        + ' --rm '
-        + taskContainerOptions
-        + ' --name ' + buildContainerName
-        // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
-        + ' -v processingDirectory:/FrinexBuildService/processing'
-        //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-        + ' -v buildServerTarget:' + targetDirectory
-        + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
-        + ' mvn tomcat7:undeploy '
-        + ' -gs /maven/.m2/settings.xml'
-        + ' -DskipTests'
-        + ' -Dlog4j2.version=2.17.1'
-        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
-        + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
-        + ' -Dexperiment.webservice=' + configServer
-        //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
-        + ' -DversionCheck.allowSnapshots=' + 'false'
-        + ' -DversionCheck.buildType=' + 'stable'
-        + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
-            + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
-            : ' -Dexperiment.destinationServer=' + productionServer
-            + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
-        )
-        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-        //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
-        //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-        + '"';
+    var dockerString = "";
+    if (deploymentType.includes('docker')) {
+        dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_web' + "\n"
+    }
+    if (deploymentType.includes('tomcat')) {
+        dockerString += 'sudo docker container rm -f ' + buildContainerName
+            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+            + 'sudo docker run'
+            + ' --rm '
+            + taskContainerOptions
+            + ' --name ' + buildContainerName
+            // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+            + ' -v buildServerTarget:' + targetDirectory
+            + ' -v m2Directory:/maven/.m2/'
+            + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+            + ' mvn tomcat7:undeploy '
+            + ' -gs /maven/.m2/settings.xml'
+            + ' -DskipTests'
+            + ' -Dlog4j2.version=2.17.1'
+            + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+            + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
+            + ' -Dexperiment.webservice=' + configServer
+            //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
+            + ' -DversionCheck.allowSnapshots=' + 'false'
+            + ' -DversionCheck.buildType=' + 'stable'
+            + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
+                ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
+                + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
+                : ' -Dexperiment.destinationServer=' + productionServer
+                + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+            )
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+            //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_web.war'
+            //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+            + '"';
+    }
     console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
@@ -304,38 +322,44 @@ function unDeploy(currentEntry) {
     }
     // undeploy production admin
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">undeploying</a>', "production", "admin", false, true, false);
-    var dockerString = 'sudo docker container rm -f ' + buildContainerName
-        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-        + 'sudo docker run'
-        + ' --rm '
-        + taskContainerOptions
-        + ' --name ' + buildContainerName
-        // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
-        + ' -v processingDirectory:/FrinexBuildService/processing'
-        //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
-        + ' -v buildServerTarget:' + targetDirectory
-        + ' -v m2Directory:/maven/.m2/'
-        + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
-        + ' mvn tomcat7:undeploy '
-        + ' -gs /maven/.m2/settings.xml'
-        + ' -DskipTests'
-        + ' -Dlog4j2.version=2.17.1'
-        + ' -Dexperiment.configuration.name=' + currentEntry.buildName
-        + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
-        + ' -Dexperiment.webservice=' + configServer
-        //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
-        + ' -DversionCheck.allowSnapshots=' + 'false'
-        + ' -DversionCheck.buildType=' + 'stable'
-        + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
-            ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
-            + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
-            : ' -Dexperiment.destinationServer=' + productionServer
-            + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
-        )
-        + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-        //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
-        //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-        + '"';
+    var dockerString = "";
+    if (deploymentType.includes('docker')) {
+        dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_admin' + "\n"
+    }
+    if (deploymentType.includes('tomcat')) {
+        dockerString += 'sudo docker container rm -f ' + buildContainerName
+            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + 'sudo docker run'
+            + ' --rm '
+            + taskContainerOptions
+            + ' --name ' + buildContainerName
+            // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
+            + ' -v processingDirectory:/FrinexBuildService/processing'
+            //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
+            + ' -v buildServerTarget:' + targetDirectory
+            + ' -v m2Directory:/maven/.m2/'
+            + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
+            + ' mvn tomcat7:undeploy '
+            + ' -gs /maven/.m2/settings.xml'
+            + ' -DskipTests'
+            + ' -Dlog4j2.version=2.17.1'
+            + ' -Dexperiment.configuration.name=' + currentEntry.buildName
+            + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
+            + ' -Dexperiment.webservice=' + configServer
+            //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
+            + ' -DversionCheck.allowSnapshots=' + 'false'
+            + ' -DversionCheck.buildType=' + 'stable'
+            + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
+                ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
+                + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
+                : ' -Dexperiment.destinationServer=' + productionServer
+                + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
+            )
+            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
+            //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + '"';
+    }
     console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
