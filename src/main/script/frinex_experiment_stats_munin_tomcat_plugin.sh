@@ -88,7 +88,7 @@ output_usage() {
 
 case $# in
     0)
-        output_values ${linkName#"frinex_experiment_stats_"}&
+        output_values ${linkName#"frinex_experiment_stats_"}
         invalidate_stats
         update_stats ${linkName#"frinex_experiment_stats_"}&
         ;;
