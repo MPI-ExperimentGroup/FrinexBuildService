@@ -66,6 +66,7 @@ output_config() {
         for filePath in $dataDirectory/*_admin; do
             fileName=${filePath#"$dataDirectory/"}
             echo "$fileName.label $fileName"
+            echo "$fileName.draw AREASTACK"
         done
     done
 }
