@@ -31,7 +31,7 @@ linkName=$(basename $0)
 dataDirectory=/srv/frinex_munin_data/stats_tomcat_${linkName#"frinex_experiment_stats_"}
 
 invalidate_stats() {
-    for filePath in $dataDirectory/*_admin; do
+    for filePath in $dataDirectory/*-admin; do
         echo -en "totalParticipantsSeen.value U\ntotalDeploymentsAccessed.value U\ntotalPageLoads.value U\ntotalStimulusResponses.value U\ntotalMediaResponses.value U\n" > $filePath
     done
 }
@@ -42,7 +42,7 @@ update_stats() {
     do
         usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/$experimentName-admin/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
-            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName_admin
+            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName-admin
         fi
     done
 }
@@ -53,7 +53,7 @@ output_config() {
         echo "multigraph $1_$graphType"
         echo "graph_title Frinex Experiments $1 $graphType"
         echo "graph_category frinex"
-        for filePath in $dataDirectory/*_admin; do
+        for filePath in $dataDirectory/*-admin; do
             fileName=${filePath#"$dataDirectory/"}
             echo "$fileName.label $fileName"
             echo "$fileName.draw AREASTACK"
@@ -67,7 +67,7 @@ output_values() {
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
         echo "multigraph $1_$graphType"
-        for filePath in $dataDirectory/*_admin; do
+        for filePath in $dataDirectory/*-admin; do
             fileName=${filePath#"$dataDirectory/"}
             grep $graphType $filePath | sed "s/$graphType/$fileName/g"
         done
