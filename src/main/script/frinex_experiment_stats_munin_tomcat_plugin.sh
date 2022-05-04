@@ -38,19 +38,12 @@ invalidate_stats() {
 
 update_stats() {
     hoststring=$1
-    for serviceUrl in $(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
+    for experimentName in $(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
     do
-        experimentAdminName=$(cut -d'/' -f2 <<< $currentUrl)
-        #echo $experimentAdminName
-        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
+        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/$experimentName/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
-            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentAdminName
-            # cat $dataDirectory/$experimentAdminName
+            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName
         fi
-            # echo "totalParticipantsSeen.label Participants Seen"
-            # echo "totalDeploymentsAccessed.label Deployments Accessed"
-            # echo "totalStimulusResponses.label Stimulus Responses"
-            # echo "totalMediaResponses.label Media Responses"
     done
 }
 
