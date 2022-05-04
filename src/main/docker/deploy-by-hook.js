@@ -1039,7 +1039,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             // after the log has been written replace the token with the admin password
             child_process.execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
-                if (deploymentType.includes('docker')) {
+                if (deploymentType.includes('docker') && (currentEntry.productionServer == null || currentEntry.productionServer.length == 0)) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war', currentEntry.buildName + '_production_admin');
                 }
                 console.log("frinex-admin finished");
