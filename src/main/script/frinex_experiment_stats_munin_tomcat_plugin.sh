@@ -57,7 +57,7 @@ update_stats() {
 output_config() {
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
-        echo "multigraph $graphType"
+        echo "multigraph $1_$graphType"
         echo "graph_title Frinex Experiments $1 $graphType"
         echo "graph_category frinex"
         for filePath in $dataDirectory/*_admin; do
@@ -73,7 +73,7 @@ output_values() {
     # TODO: If the plugin - for any reason - has no value to report, then it may send the value U for undefined. 
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
-        echo "multigraph $graphType"
+        echo "multigraph $1_$graphType"
         for filePath in $dataDirectory/*_admin; do
             fileName=${filePath#"$dataDirectory/"}
             grep $graphType $filePath | sed "s/$graphType/$fileName/g"
@@ -88,7 +88,7 @@ output_usage() {
 
 case $# in
     0)
-        output_values
+        output_values ${linkName#"frinex_experiment_stats_"}&
         invalidate_stats
         update_stats ${linkName#"frinex_experiment_stats_"}&
         ;;
