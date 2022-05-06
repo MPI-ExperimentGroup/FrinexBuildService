@@ -17,7 +17,7 @@ do
     echo "<tr><td>$currentUrl</td><td>"
     currentUserId="hammer_$(date +"%Y%m%d")"
     # --connect-timeout 1 --max-time 2 
-    curl --write-out %{http_code} --silent --output /dev/null -k -d '[{"userId": "'$currentUserId'"}]' -H 'Content-Type: application/json' $currentUrl/metadata
+    curl --write-out %{http_code} --silent --output /dev/null -k -H 'Accept-Language: es' -d '[{"userId": "'$currentUserId'"}]' -H 'Content-Type: application/json' $currentUrl/metadata
     echo "</td><td>"
     curl --write-out %{http_code} --silent --output /dev/null -k -d '[{"viewDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server"},{"viewDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "with_hammer_server_example","userId": "'$currentUserId'","screenName": "hammer_server"}]' -H 'Content-Type: application/json' $currentUrl/screenChange
     echo "</td><td>"
@@ -29,7 +29,7 @@ do
     echo "</td><td>"
     curl --write-out %{http_code} --silent --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "3001"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "6000"}]' -H 'Content-Type: application/json' $currentUrl/stimulusResponse
     echo "</td><td>"
-    curl --write-out %{http_code} --silent --output /dev/null -k --request POST -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server" --form "audioType=ogg" --form "downloadPermittedWindowMs=1000" --form "dataBlob=@/FrinexBuildService/test_data/100ms_a.ogg"  $currentUrl/audioBlob
+    curl --write-out %{http_code} --silent --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server" --form "audioType=ogg" --form "downloadPermittedWindowMs=1000" --form "dataBlob=@/FrinexBuildService/test_data/100ms_a.ogg"  $currentUrl/audioBlob
     echo "</td></tr>"
 done
 echo "</table>"
