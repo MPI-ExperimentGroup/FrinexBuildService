@@ -46,6 +46,7 @@ update_stats() {
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName-admin
         fi
     done
+    output_values $hoststring > $dataDirectory/$hoststring.values
 }
 
 output_config() {
@@ -82,13 +83,14 @@ output_usage() {
 
 case $# in
     0)
-        output_values ${linkName#"frinex_experiment_stats_"}
+        cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
         update_stats ${linkName#"frinex_experiment_stats_"}&
         ;;
     1)
         case $1 in
             config)
-                output_config ${linkName#"frinex_experiment_stats_"}
+                cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.config
+                output_config ${linkName#"frinex_experiment_stats_"} > $dataDirectory/${linkName#"frinex_experiment_stats_"}.config&
                 ;;
             *)
                 output_usage
