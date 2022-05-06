@@ -5,6 +5,5 @@ for i in {1..100}; do
     echo $i
     /FrinexBuildService/log_service_hammer.sh&
     sleep 1
+    pidof log_service_hammer.sh | wc -w
 done
-
-pidof log_service_hammer.sh | wc -w
