@@ -58,6 +58,7 @@ update_stats() {
             # echo "totalStimulusResponses.label Stimulus Responses"
             # echo "totalMediaResponses.label Media Responses"
     done
+    output_values > $dataDirectory/output.values
 }
 
 output_config() {
@@ -94,13 +95,14 @@ output_usage() {
 
 case $# in
     0)
-        output_values
+        cat $dataDirectory/output.values
         update_stats&
         ;;
     1)
         case $1 in
             config)
-                output_config 
+                cat $dataDirectory/output.config
+                output_config > $dataDirectory/output.config&
                 ;;
             *)
                 output_usage
