@@ -71,37 +71,37 @@ production_admin_config() {
 output_config() {
     case $1 in
         staging_web)
-            echo "graph_title Frinex Tomcat Staging Web"
+            echo "graph_title Frinex Tomcat Health Staging Web"
             echo "graph_category frinex"
             staging_web_config
             ;;
         staging_admin)
-            echo "graph_title Frinex Tomcat Staging Admin"
+            echo "graph_title Frinex Tomcat Health Staging Admin"
             echo "graph_category frinex"
             staging_admin_config
             ;;
         production_web)
-            echo "graph_title Frinex Tomcat Production Web"
+            echo "graph_title Frinex Tomcat Health Production Web"
             echo "graph_category frinex"
             production_web_config
             ;;
         production_admin)
-            echo "graph_title Frinex Tomcat Production Admin"
+            echo "graph_title Frinex Tomcat Health Production Admin"
             echo "graph_category frinex"
             production_admin_config
             ;;
         productionb_web)
-            echo "graph_title Frinex Tomcat ProductionB Web"
+            echo "graph_title Frinex Tomcat Health ProductionB Web"
             echo "graph_category frinex"
             production_web_config
             ;;
         productionb_admin)
-            echo "graph_title Frinex Tomcat ProductionB Admin"
+            echo "graph_title Frinex Tomcat Health ProductionB Admin"
             echo "graph_category frinex"
             production_admin_config
             ;;
         *)
-            echo "graph_title Frinex Tomcat Service Health"
+            echo "graph_title Frinex Tomcat Deployments Health"
             echo "graph_category frinex"
             staging_web_config
             staging_admin_config
