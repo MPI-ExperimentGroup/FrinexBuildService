@@ -49,6 +49,8 @@ update_stats() {
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentAdminName
             # cat $dataDirectory/$experimentAdminName
+        else
+            echo "http://$hoststring$currentUrl/public_quick_stats" >> $dataDirectory/failing_$(date +%F).log
         fi
             # echo "totalParticipantsSeen.label Participants Seen"
             # echo "totalDeploymentsAccessed.label Deployments Accessed"
