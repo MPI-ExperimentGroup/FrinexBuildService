@@ -47,6 +47,7 @@ update_stats() {
         fi
     done
     output_values $hoststring > $dataDirectory/$hoststring.values
+    output_config $hoststring > $dataDirectory/$hoststring.config
 }
 
 output_config() {
@@ -90,7 +91,6 @@ case $# in
         case $1 in
             config)
                 cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.config
-                output_config ${linkName#"frinex_experiment_stats_"} > $dataDirectory/${linkName#"frinex_experiment_stats_"}.config&
                 ;;
             *)
                 output_usage

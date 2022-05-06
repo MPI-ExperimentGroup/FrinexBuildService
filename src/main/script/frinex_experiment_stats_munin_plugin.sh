@@ -59,6 +59,7 @@ update_stats() {
             # echo "totalMediaResponses.label Media Responses"
     done
     output_values > $dataDirectory/output.values
+    output_config > $dataDirectory/output.config
 }
 
 output_config() {
@@ -102,7 +103,6 @@ case $# in
         case $1 in
             config)
                 cat $dataDirectory/output.config
-                output_config > $dataDirectory/output.config&
                 ;;
             *)
                 output_usage
