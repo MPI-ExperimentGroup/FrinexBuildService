@@ -96,12 +96,14 @@ output_usage() {
 
 case $# in
     0)
+        touch $dataDirectory/output.values
         cat $dataDirectory/output.values
         update_stats&
         ;;
     1)
         case $1 in
             config)
+                touch $dataDirectory/output.config
                 cat $dataDirectory/output.config
                 ;;
             *)
