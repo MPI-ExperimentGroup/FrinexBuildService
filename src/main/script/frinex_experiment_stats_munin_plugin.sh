@@ -63,7 +63,7 @@ output_config() {
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
         echo "multigraph $graphType"
-        echo "graph_title Frinex Experiments $graphType"
+        echo "graph_title Frinex Docker $graphType"
         echo "graph_category frinex"
         for filePath in $dataDirectory/*_admin; do
             fileName=${filePath#"$dataDirectory/"}

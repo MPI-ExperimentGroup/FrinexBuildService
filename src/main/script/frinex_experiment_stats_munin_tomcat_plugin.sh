@@ -51,7 +51,7 @@ output_config() {
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
         echo "multigraph $1_$graphType"
-        echo "graph_title Frinex Experiments $1 $graphType"
+        echo "graph_title Frinex Tomcat $1 $graphType"
         echo "graph_category frinex"
         for filePath in $dataDirectory/*-admin; do
             fileName=${filePath#"$dataDirectory/"}
