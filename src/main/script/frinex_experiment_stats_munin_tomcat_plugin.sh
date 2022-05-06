@@ -37,6 +37,7 @@ invalidate_stats() {
 }
 
 update_stats() {
+    invalidate_stats;
     hoststring=$1
     for experimentName in $(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
     do
@@ -82,7 +83,6 @@ output_usage() {
 case $# in
     0)
         output_values ${linkName#"frinex_experiment_stats_"}
-        invalidate_stats
         update_stats ${linkName#"frinex_experiment_stats_"}&
         ;;
     1)
