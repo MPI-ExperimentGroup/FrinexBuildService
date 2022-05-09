@@ -45,7 +45,7 @@ output_config() {
 
 output_values() {
         cat $dataDirectory/build_stats_$1
-        nohup load_build_stats $1 > $dataDirectory/build_stats_$1 &
+        load_build_stats $1 > $dataDirectory/build_stats_$1&
 }
 
 load_build_stats() {
