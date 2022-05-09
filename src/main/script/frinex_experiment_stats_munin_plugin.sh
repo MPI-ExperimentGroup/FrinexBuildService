@@ -98,7 +98,7 @@ case $# in
     0)
         touch $dataDirectory/output.values
         cat $dataDirectory/output.values
-        update_stats&
+        nohup update_stats &
         ;;
     1)
         case $1 in

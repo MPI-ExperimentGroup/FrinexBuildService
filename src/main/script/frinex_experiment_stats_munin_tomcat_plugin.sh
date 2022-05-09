@@ -86,7 +86,7 @@ case $# in
     0)
         touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
         cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
-        update_stats ${linkName#"frinex_experiment_stats_"}&
+        nohup update_stats ${linkName#"frinex_experiment_stats_"} &
         ;;
     1)
         case $1 in
