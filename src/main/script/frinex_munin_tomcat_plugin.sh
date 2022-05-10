@@ -182,7 +182,7 @@ number_of_sleeping() {
 health_of_services() {
     healthCount=0;
     unknownCount=0;
-    for serviceUrl in $(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
+    for serviceUrl in $(curl --silent -H 'Content-Type: application/json' $1/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
     do
         healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/$serviceUrl$2/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
