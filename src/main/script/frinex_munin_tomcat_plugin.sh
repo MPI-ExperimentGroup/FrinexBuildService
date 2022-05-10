@@ -175,7 +175,7 @@ output_values() {
 }
 
 number_of_sleeping() {
-    curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/known_sleepers.json | grep -v '}' | grep -v '{' | wc -l
+    curl --silent -H 'Content-Type: application/json' $1/known_sleepers.json | grep -v '}' | grep -v '{' | wc -l
 }
 
 
