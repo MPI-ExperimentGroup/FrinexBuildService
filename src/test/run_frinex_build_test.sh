@@ -30,4 +30,4 @@ scriptDir=$(pwd -P)
 
 docker build --no-cache -f frinex_stress_test.Dockerfile -t frinex_stress_test:latest .
 
-docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinex_stress_test frinex_stress_test:latest bash /FrinexBuildService/frinex_build_test.sh
+docker run  -v /var/run/docker.sock:/var/run/docker.sock -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinex_stress_test frinex_stress_test:latest bash /FrinexBuildService/frinex_build_test.sh
