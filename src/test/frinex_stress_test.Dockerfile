@@ -25,7 +25,7 @@ COPY frinex_stress_test/frinex_service_hammer.sh /FrinexBuildService/
 COPY frinex_stress_test/log_service_hammer.sh /FrinexBuildService/
 COPY frinex_stress_test/hammer_services.sh /FrinexBuildService/
 RUN mkdir /FrinexBuildService/test_data
-COPY static/test_data/100ms_v.mp4 /FrinexBuildService/test_data
-COPY static/test_data/100ms_a.ogg /FrinexBuildService/test_data
+COPY frinex_stress_test/test_data/100ms_v.mp4 /FrinexBuildService/test_data
+COPY frinex_stress_test/test_data/100ms_a.ogg /FrinexBuildService/test_data
 
 COPY frinex_stress_test/frinex_build_test.sh /FrinexBuildService/
