@@ -38,12 +38,12 @@ do
     for settingRAM in 1g 2g 4g 6g 8g
     do
         echo "<td>" >> $outputHtmlFile
-        time ( (
+        time (
         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU_$settingRAM \
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPU \
-        " ) &>> $outputLogFile ) >> $outputHtmlFile
+        "  >>$outputLogFile 2>>$outputLogFile ) >> $outputHtmlFile
         echo "</td>" >> $outputHtmlFile
     done
     echo "</tr" >> $outputHtmlFile
