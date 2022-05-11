@@ -29,7 +29,8 @@ scriptDir=$(pwd -P)
 #echo $scriptDir
 
 outputHtmlFile=/FrinexBuildService/artifacts/frinex_build_test_$(date +%F_%T).html
-echo "<table>" > $outputHtmlFile
+outputLogFile=/FrinexBuildService/artifacts/frinex_build_test_$(date +%F_%T).txt
+echo "<table border=1>" > $outputHtmlFile
 echo "<tr><td></td><td>1g</td><td>2g</td><td>4g</td><td>6g</td><td>8g</td><td>" >> $outputHtmlFile
 for settingCPU in 1 2 4 6 8 10 12
 do
@@ -42,7 +43,7 @@ do
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPU \
-        ") >> $outputHtmlFile
+        " >> $outputLogFile ) >> $outputHtmlFile
         echo "</td>" >> $outputHtmlFile
     done
     echo "</tr" >> $outputHtmlFile
