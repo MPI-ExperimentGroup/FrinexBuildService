@@ -34,7 +34,7 @@ echo "<table border=1>" > $outputHtmlFile
 echo "<tr><td></td><td>1g</td><td>2g</td><td>4g</td><td>6g</td><td>8g</td></tr>" >> $outputHtmlFile
 for settingCPU in 1 2 4 6 8 10 12
 do
-    echo "<tr><td>$settingCPU</td>" >> $outputHtmlFile
+    echo "<tr><td>$settingCPU CPU</td>" >> $outputHtmlFile
     for settingRAM in 1g 2g 4g 6g 8g
     do
         echo "<td>" >> $outputHtmlFile
