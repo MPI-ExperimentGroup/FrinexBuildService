@@ -43,7 +43,7 @@ do
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPU \
-        " ) >> $outputLogFile ) >> $outputHtmlFile
+        " ) &>> $outputLogFile ) >> $outputHtmlFile
         echo "</td>" >> $outputHtmlFile
     done
     echo "</tr" >> $outputHtmlFile
