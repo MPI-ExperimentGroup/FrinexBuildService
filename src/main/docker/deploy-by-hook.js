@@ -79,7 +79,7 @@ var experimentTokensJson = {};
 const buildStatisticsFileName = targetDirectory + "/buildstats.json";
 var buildStatisticsJson = {};
 var hasDoneBackup = false;
-var gtwBuildingCount = 0; // gtwBuildingCount is used to limit the GWT builds to about one at a time, while the rest of the build stages can be in parallel
+// var gtwBuildingCount = 0; // gtwBuildingCount is used to limit the GWT builds to about one at a time, while the rest of the build stages can be in parallel
 
 function startResult() {
     buildHistoryJson.building = true;
@@ -439,7 +439,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
 
 function deployStagingGui(currentEntry) {
     console.log("deployStagingGui");
-    gtwBuildingCount++;
+    // gtwBuildingCount++;
     var stageStartTime = new Date().getTime();
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt")) {
         fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt");
@@ -452,7 +452,7 @@ function deployStagingGui(currentEntry) {
         console.log("deployStagingGui missing: " + queuedConfigFile);
         storeResult(currentEntry.buildName, 'failed', "staging", "web", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
-        gtwBuildingCount--;
+        // gtwBuildingCount--;
     } else {
         if (fs.existsSync(stagingConfigFile)) {
             console.log("deployStagingGui found: " + stagingConfigFile);
@@ -542,7 +542,7 @@ function deployStagingGui(currentEntry) {
             + '"';
         console.log(dockerString);
         child_process.exec(dockerString, (error, stdout, stderr) => {
-            gtwBuildingCount--;
+            // gtwBuildingCount--;
             if (error) {
                 console.error(`deployStagingGui error: ${error}`);
             }
@@ -744,7 +744,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
 
 function deployProductionGui(currentEntry, retryCounter) {
     var stageStartTime = new Date().getTime();
-    gtwBuildingCount++
+    // gtwBuildingCount++;
     console.log("deployProductionGui started: " + currentEntry.buildName);
     console.log("retryCounter: " + retryCounter);
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt")) {
@@ -758,7 +758,7 @@ function deployProductionGui(currentEntry, retryCounter) {
         console.log("deployProductionGui missing: " + productionQueuedFile);
         storeResult(currentEntry.buildName, 'failed', "production", "web", true, false, false);
         currentlyBuilding.delete(currentEntry.buildName);
-        gtwBuildingCount--;
+        // gtwBuildingCount--;
     } else {
         var existingDeploymentUrl = ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer : productionServerUrl) + "/" + currentEntry.buildName;
         const buildArtifactsFileName = processingDirectory + '/production-building/' + currentEntry.buildName + '_production_artifacts.json';
@@ -772,7 +772,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                     fs.unlinkSync(productionQueuedFile);
                 }
                 currentlyBuilding.delete(currentEntry.buildName);
-                gtwBuildingCount--;
+                // gtwBuildingCount--;
             }).catch(error => {
                 console.log(error.message);
                 if (typeof error.response !== 'undefined' && error.response.statusCode !== 404) {
@@ -786,7 +786,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                             storeResult(currentEntry.buildName, "network error", "production", "web", true, false, false);
                             fs.unlinkSync(productionQueuedFile);
                             currentlyBuilding.delete(currentEntry.buildName);
-                            gtwBuildingCount--;
+                            // gtwBuildingCount--;
                         }
                     } else {
                         storeResult(currentEntry.buildName, "existing production unknown, aborting build!", "production", "web", true, false, false);
@@ -797,7 +797,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                             fs.unlinkSync(buildArtifactsFileName);
                         }*/
                         currentlyBuilding.delete(currentEntry.buildName);
-                        gtwBuildingCount--;
+                        // gtwBuildingCount--;
                     }
                 } else {
                     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">building</a>', "production", "web", false, true, false);
@@ -889,7 +889,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + '"';
                     console.log(dockerString);
                     child_process.exec(dockerString, (error, stdout, stderr) => {
-                        gtwBuildingCount--;
+                        // gtwBuildingCount--;
                         if (error) {
                             console.error(`deployProductionGui error: ${error}`);
                         }
@@ -960,7 +960,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                 fs.unlinkSync(buildArtifactsFileName);
             }
             currentlyBuilding.delete(currentEntry.buildName);
-            gtwBuildingCount--;
+            // gtwBuildingCount--;
         }
     }
 }
@@ -1272,10 +1272,10 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
 }
 
 function buildNextExperiment() {
-    while (listingMap.size > 0 && currentlyBuilding.size < concurrentBuildCount && gtwBuildingCount < 1) {
+    while (listingMap.size > 0 && currentlyBuilding.size < concurrentBuildCount /*  && gtwBuildingCount < 1 */) {
         const currentKey = listingMap.keys().next().value;
         console.log('buildNextExperiment: ' + currentKey);
-        console.log('gtwBuildingCount: ' + gtwBuildingCount);
+        // console.log('gtwBuildingCount: ' + gtwBuildingCount);
         //fs.writeSync(resultsFile, "buildNextExperiment: " + currentKey + "</div>");
         const currentEntry = listingMap.get(currentKey);
         if (currentlyBuilding.has(currentEntry.buildName)) {
