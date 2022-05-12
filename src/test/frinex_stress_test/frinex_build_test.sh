@@ -35,14 +35,17 @@ echo "<tr><td></td><td>1g</td><td>2g</td><td>4g</td><td>6g</td><td>8g</td></tr>"
 for settingCPU in 1 2 4 6 8 10 12
 do
     echo "<tr><td>$settingCPU CPU</td>" >> $outputHtmlFile
+    settingCPUinner=$settingCPU
     for settingRAM in 1g 2g 4g 6g 8g
     do
         echo "<td>" >> $outputHtmlFile
+        docker stop frinex_build_test_$settingCPUinner_$settingRAM
+        docker rm frinex_build_test_$settingCPUinner_$settingRAM
         time (
-        sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU_$settingRAM \
+        sudo docker run --rm --cpus=$settingCPUinner --memory=$settingRAM --name frinex_build_test_$settingCPUinner_$settingRAM \
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
-        -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPU \
+        -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPUinner \
         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
         echo "</td>" >> $outputHtmlFile
     done
