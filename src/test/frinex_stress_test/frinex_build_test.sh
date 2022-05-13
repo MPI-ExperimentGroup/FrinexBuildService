@@ -30,18 +30,39 @@ scriptDir=$(pwd -P)
 
 outputHtmlFile=/FrinexBuildService/artifacts/frinex_build_test_$(date +%F_%T).html
 outputLogFile=/FrinexBuildService/artifacts/frinex_build_test_$(date +%F_%T).txt
+# echo "<table border=1>" > $outputHtmlFile
+# echo "<tr><td></td><td>1g</td><td>2g</td><td>4g</td><td>6g</td><td>8g</td></tr>" >> $outputHtmlFile
+# for settingCPU in 1 2 4 6 8 10 12
+# do
+#     echo "<tr><td>$settingCPU CPU</td>" >> $outputHtmlFile
+#     for settingRAM in 1g 2g 4g 6g 8g
+#     do
+#         echo "<td>" >> $outputHtmlFile
+#         docker stop frinex_build_test_$settingCPU-$settingRAM
+#         docker rm frinex_build_test_$settingCPU-$settingRAM
+#         time (
+#         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM \
+#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+#         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
+#         -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPU \
+#         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
+#         echo "</td>" >> $outputHtmlFile
+#     done
+#     echo "</tr" >> $outputHtmlFile
+# done
+# echo "</table>"
 echo "<table border=1>" > $outputHtmlFile
-echo "<tr><td></td><td>1g</td><td>2g</td><td>4g</td><td>6g</td><td>8g</td></tr>" >> $outputHtmlFile
+echo "<tr><td></td><td>8g Xmx1g</td><td>8g Xmx2g</td><td>8g Xmx4g</td><td>8g Xmx6g</td><td>8g Xmx8g</td></tr>" >> $outputHtmlFile
 for settingCPU in 1 2 4 6 8 10 12
 do
-    echo "<tr><td>$settingCPU CPU</td>" >> $outputHtmlFile
+    echo "<tr><td>12 CPU localWorkers=$settingCPU</td>" >> $outputHtmlFile
     for settingRAM in 1g 2g 4g 6g 8g
     do
         echo "<td>" >> $outputHtmlFile
         docker stop frinex_build_test_$settingCPU-$settingRAM
         docker rm frinex_build_test_$settingCPU-$settingRAM
         time (
-        sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM \
+        sudo docker run --rm --cpus=12 --memory=8g --name frinex_build_test_$settingCPU-$settingRAM \
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPU \
