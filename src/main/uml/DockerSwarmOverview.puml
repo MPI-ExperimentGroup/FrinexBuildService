@@ -25,11 +25,34 @@ package "DatabaseHost" {
 package "DockerSwarm" {
 
   package "SwarmManager1" {
-    GIT -- [BuildProcess]
-    [BuildProcess] -- BuildListing
-    [BuildProcess] -> [DatabaseManager]
+    [BuildProcess] -- GIT
+    [BuildProcess] -right- BuildListing
+    [BuildProcess] -right-> [DatabaseManager]
     [DatabaseManager] ==> DatabaseHost
     [Registry]
+    [BuildProcess] -left-> [ServiceListing]
+    [ServiceListing] ==> NginxProxy
+  }
+  package "SwarmManagerN" {
+    card StagingN1 [
+      S_ExperimentA
+      ----
+      S_ExperimentB
+      ----
+      S_ExperimentC
+    ]
+    StagingN1 --> S_Postgres
+    card ProductionN1 [
+      P_ExperimentA
+      ----
+      P_ExperimentB
+      ----
+      P_ExperimentC
+    ]
+    ProductionN1 --> P_Postgres
+  }
+
+  package "SwarmWorker1" {
     card Staging1 [
       S_ExperimentA
       ----
@@ -47,7 +70,7 @@ package "DockerSwarm" {
     ]
     Production1 --> P_Postgres
   }
-
+  
   package "SwarmWorker2" {
     card Staging2 [
       S_ExperimentA
@@ -67,54 +90,70 @@ package "DockerSwarm" {
     Production2 --> P_Postgres
   }
 
-  package "SwarmWorker3" {
-    card Staging3 [
+  package "SwarmWorkerN" {
+    card StagingN [
       S_ExperimentA
       ----
       S_ExperimentB
       ----
       S_ExperimentC
     ]
-    Staging3 --> S_Postgres
-    card Production3 [
+    StagingN --> S_Postgres
+    card ProductionN [
       P_ExperimentA
       ----
       P_ExperimentB
       ----
       P_ExperimentC
     ]
-    Production3 --> P_Postgres
+    ProductionN --> P_Postgres
   }
 }
 
-XML --> GIT
-JSON --> GIT
+' cloud EndUser {
+XML -ri-> GIT
+JSON -ri-> GIT
+' }
 
-BuildProcess -ri-> ElectronApps
-BuildProcess -ri-> MobileApps
+BuildListing -ri-> ElectronApps
+BuildListing -ri-> MobileApps
 
 BuildProcess --> Registry
 
-cloud WebAccess {
+package NginxProxy {
 S_ExperimentA_http_host_30001 --> Staging1
+S_ExperimentA_http_host_30001 --> StagingN1
 S_ExperimentA_http_host_30001 --> Staging2
-S_ExperimentA_http_host_30001 --> Staging3
+S_ExperimentA_http_host_30001 --> StagingN
 S_ExperimentB_http_host_30002 --> Staging1
+S_ExperimentB_http_host_30002 --> StagingN1
 S_ExperimentB_http_host_30002 --> Staging2
-S_ExperimentB_http_host_30002 --> Staging3
+S_ExperimentB_http_host_30002 --> StagingN
 S_ExperimentC_http_host_30003 --> Staging1
+S_ExperimentC_http_host_30003 --> StagingN1
 S_ExperimentC_http_host_30003 --> Staging2
-S_ExperimentC_http_host_30003 --> Staging3
+S_ExperimentC_http_host_30003 --> StagingN
 
 P_ExperimentA_http_host_30004 --> Production1
 P_ExperimentA_http_host_30004 --> Production2
-P_ExperimentA_http_host_30004 --> Production3
+P_ExperimentA_http_host_30004 --> ProductionN
+P_ExperimentA_http_host_30004 --> ProductionN1
 P_ExperimentB_http_host_30005 --> Production1
 P_ExperimentB_http_host_30005 --> Production2
-P_ExperimentB_http_host_30005 --> Production3
+P_ExperimentB_http_host_30005 --> ProductionN
 P_ExperimentC_http_host_30006 --> Production1
+P_ExperimentC_http_host_30006 --> ProductionN1
 P_ExperimentC_http_host_30006 --> Production2
-P_ExperimentC_http_host_30006 --> Production3
+P_ExperimentC_http_host_30006 --> ProductionN
+P_ExperimentC_http_host_30006 --> ProductionN1
 }
 
+cloud WebAccess {
+  http_host_80_S_ExperimentA --> S_ExperimentA_http_host_30001
+  http_host_80_S_ExperimentB --> S_ExperimentB_http_host_30002
+  http_host_80_S_ExperimentC --> S_ExperimentC_http_host_30003
+  http_host_80_P_ExperimentA --> P_ExperimentA_http_host_30004
+  http_host_80_P_ExperimentB --> P_ExperimentB_http_host_30005
+  http_host_80_P_ExperimentC --> P_ExperimentC_http_host_30006
+}
 @enduml
