@@ -73,7 +73,7 @@ outputLogFile=/FrinexBuildService/artifacts/frinex_build_test_$(date +%F_%T).txt
 # done
 # echo "</table>"
 echo "<table border=1>" > $outputHtmlFile
-echo "<tr><td></td><td>12g localWorkers=1</td><td>12g localWorkers=2</td><td>12g  localWorkers=4</td><td>12g  localWorkers=6</td><td>12g  localWorkers=8</td><td>12g  localWorkers=10</td><td>12g  localWorkers=12</td></tr>" >> $outputHtmlFile
+echo "<tr><td></td><td>12g -Xmx1g localWorkers=1</td><td>12g -Xmx1g localWorkers=2</td><td>12g -Xmx1g localWorkers=4</td><td>12g -Xmx1g localWorkers=6</td><td>12g -Xmx1g localWorkers=8</td><td>12g -Xmx1g localWorkers=10</td><td>12g -Xmx1g localWorkers=12</td></tr>" >> $outputHtmlFile
 for settingCPU in 1 2 4 6 8 10 12
 do
     echo "<tr><td>$settingCPU CPU</td>" >> $outputHtmlFile
