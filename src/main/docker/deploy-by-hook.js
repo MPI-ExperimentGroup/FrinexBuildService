@@ -1433,14 +1433,18 @@ function copyDeleteFile(incomingFile, targetFile) {
         fs.renameSync(incomingFile, incomingFile + ".lock");
         var incomingReadStream = fs.createReadStream(incomingFile + ".lock");
         incomingReadStream.on('close', function () {
-            if (fs.existsSync(incomingFile + ".lock")) {
-                fs.unlinkSync(incomingFile + ".lock");
-                console.log('removed: ' + incomingFile + ".lock");
-                //fs.writeSync(resultsFile, "<div>removed: " + incomingFile + "</div>");
+            try {
+                if (fs.existsSync(incomingFile + ".lock")) {
+                    fs.unlinkSync(incomingFile + ".lock");
+                    console.log('removed: ' + incomingFile + ".lock");
+                    //fs.writeSync(resultsFile, "<div>removed: " + incomingFile + "</div>");
+                }
+                /*fs.rename(targetFile + '.tmp', targetFile, function (reason) {
+                    if (reason) console.error("copyDeleteFile.tmp failed: " + incomingFile + ":" + targetFile + ":" + reason);
+                });*/
+            } catch (reason) {
+                console.error("copyDeleteFile close failed: " + incomingFile + ":" + targetFile + ":" + reason);
             }
-            /*fs.rename(targetFile + '.tmp', targetFile, function (reason) {
-                if (reason) console.error("copyDeleteFile.tmp failed: " + incomingFile + ":" + targetFile + ":" + reason);
-            });*/
         });
         incomingReadStream.pipe(fs.createWriteStream(targetFile)); // + '.tmp' at the point of close the destination file is still not accessable for rename.
     } catch (reason) {
