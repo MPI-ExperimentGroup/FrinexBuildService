@@ -54,7 +54,7 @@ echo $outputLogFile
 #     done
 #     echo "</tr" >> $outputHtmlFile
 # done
-# echo "</table>"
+# echo "</table>" >> $outputHtmlFile
 # echo "<table border=1>" > $outputHtmlFile
 # echo "<tr><td></td><td>8g Xmx1g</td><td>8g Xmx2g</td><td>8g Xmx4g</td><td>8g Xmx6g</td><td>8g Xmx8g</td></tr>" >> $outputHtmlFile
 # for settingCPU in 1 2 4 6 8 10 12
@@ -75,7 +75,7 @@ echo $outputLogFile
 #     done
 #     echo "</tr" >> $outputHtmlFile
 # done
-# echo "</table>"
+# echo "</table>" >> $outputHtmlFile
 # echo "<table border=1>" > $outputHtmlFile
 # echo "<tr><td></td><td>12g -Xmx1g localWorkers=1</td><td>12g -Xmx1g localWorkers=2</td><td>12g -Xmx1g localWorkers=4</td><td>12g -Xmx1g localWorkers=6</td><td>12g -Xmx1g localWorkers=8</td><td>12g -Xmx1g localWorkers=10</td><td>12g -Xmx1g localWorkers=12</td></tr>" >> $outputHtmlFile
 # for settingCPU in 4 6 8 10 12
@@ -96,7 +96,7 @@ echo $outputLogFile
 #     done
 #     echo "</tr" >> $outputHtmlFile
 # done
-# echo "</table>"
+# echo "</table>" >> $outputHtmlFile
 # echo "<table border=1>" > $outputHtmlFile
 # echo "<tr><td>online_emotions</td><td>8g</td><td>12g</td><td>16g</td></tr>" >> $outputHtmlFile
 # for settingCPU in 8 10 12
@@ -117,7 +117,7 @@ echo $outputLogFile
 #     done
 #     echo "</tr" >> $outputHtmlFile
 # done
-# echo "</table>"
+# echo "</table>" >> $outputHtmlFile
 echo "<table border=1>" > $outputHtmlFile
 echo "<tr><td>online_emotions -Xmx2g</td><td>16g</td><td>20g</td><td>24g</td></tr>" >> $outputHtmlFile
 for settingCPU in 8 10 12
@@ -139,4 +139,4 @@ do
     done
     echo "</tr" >> $outputHtmlFile
 done
-echo "</table>"
+echo "</table>" >> $outputHtmlFile
