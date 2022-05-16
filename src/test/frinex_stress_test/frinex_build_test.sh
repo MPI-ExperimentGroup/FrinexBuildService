@@ -133,7 +133,7 @@ do
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dexperiment.configuration.name=online_emotions \
-        -Dgwt.extraJvmArgs=\"-Xmx2g \
+        -Dgwt.extraJvmArgs=\"-Xmx2g\" \
         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
         echo "</td>" >> $outputHtmlFile
     done
