@@ -119,11 +119,11 @@ echo $outputLogFile
 # done
 # echo "</table>" >> $outputHtmlFile
 echo "<table border=1>" > $outputHtmlFile
-echo "<tr><td>online_emotions -Xmx2g</td><td>16g</td><td>20g</td><td>24g</td></tr>" >> $outputHtmlFile
+echo "<tr><td>online_emotions -Xmx2g</td><td>8g</td><td>16g</td><td>20g</td><td>24g</td></tr>" >> $outputHtmlFile
 for settingCPU in 8 10 12
 do
     echo "<tr><td>$settingCPU CPU</td>" >> $outputHtmlFile
-    for settingRAM in 8g 12g 16g
+    for settingRAM in 8g 16g 20g 24g
     do
         echo "<td>" >> $outputHtmlFile
         docker stop frinex_build_test_$settingCPU-$settingRAM
@@ -134,6 +134,27 @@ do
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dexperiment.configuration.name=online_emotions \
         -Dgwt.extraJvmArgs=\"-Xmx2g\" \
+        "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
+        echo "</td>" >> $outputHtmlFile
+    done
+    echo "</tr" >> $outputHtmlFile
+done
+echo "</table>" >> $outputHtmlFile
+echo "<table border=1>" > $outputHtmlFile
+echo "<tr><td>online_emotions</td><td>8g</td><td>16g</td><td>20g</td><td>24g</td></tr>" >> $outputHtmlFile
+for settingCPU in 12 14 18
+do
+    echo "<tr><td>$settingCPU CPU</td>" >> $outputHtmlFile
+    for settingRAM in 8g 16g 20g 24g
+    do
+        echo "<td>" >> $outputHtmlFile
+        docker stop frinex_build_test_$settingCPU-$settingRAM
+        docker rm frinex_build_test_$settingCPU-$settingRAM
+        time (
+        sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM \
+        -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+        /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
+        -Dexperiment.configuration.name=online_emotions \
         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
         echo "</td>" >> $outputHtmlFile
     done
