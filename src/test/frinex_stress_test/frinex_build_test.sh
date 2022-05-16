@@ -30,6 +30,10 @@ scriptDir=$(pwd -P)
 
 outputHtmlFile=/FrinexBuildService/artifacts/frinex_build_test_$(date +%F_%T).html
 outputLogFile=/FrinexBuildService/artifacts/frinex_build_test_$(date +%F_%T).txt
+
+echo $outputHtmlFile
+echo $outputLogFile
+
 # echo "<table border=1>" > $outputHtmlFile
 # echo "<tr><td></td><td>1g</td><td>2g</td><td>4g</td><td>6g</td><td>8g</td></tr>" >> $outputHtmlFile
 # for settingCPU in 1 2 4 6 8 10 12
