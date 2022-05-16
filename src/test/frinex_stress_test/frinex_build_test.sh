@@ -94,11 +94,11 @@ outputLogFile=/FrinexBuildService/artifacts/frinex_build_test_$(date +%F_%T).txt
 # done
 # echo "</table>"
 echo "<table border=1>" > $outputHtmlFile
-echo "<tr>online_emotions<td></td><td>4g</td><td>6g</td><td>8g</td></tr>" >> $outputHtmlFile
+echo "<tr><td>online_emotions</td><td>8g</td><td>12g</td><td>16g</td></tr>" >> $outputHtmlFile
 for settingCPU in 8 10 12
 do
     echo "<tr><td>$settingCPU CPU</td>" >> $outputHtmlFile
-    for settingRAM in 4g 6g 8g
+    for settingRAM in 8g 12g 16g
     do
         echo "<td>" >> $outputHtmlFile
         docker stop frinex_build_test_$settingCPU-$settingRAM
