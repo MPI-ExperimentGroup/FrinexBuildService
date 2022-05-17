@@ -169,8 +169,10 @@ do
     for settingRAM in 8g 16g 20g 24g
     do
         echo "<td>" >> $outputHtmlFile
-        docker stop frinex_build_test_$settingCPU-$settingRAM
-        docker rm frinex_build_test_$settingCPU-$settingRAM
+        docker stop frinex_build_test_$settingCPU-$settingRAM-A
+        docker rm frinex_build_test_$settingCPU-$settingRAM-A
+        docker stop frinex_build_test_$settingCPU-$settingRAM-B
+        docker rm frinex_build_test_$settingCPU-$settingRAM-B
         time (
         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM-A \
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
