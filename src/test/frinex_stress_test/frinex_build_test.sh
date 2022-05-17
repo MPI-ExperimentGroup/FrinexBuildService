@@ -178,7 +178,8 @@ do
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dexperiment.configuration.name=online_emotions \
-        "  >>$outputLogFile 2>>$outputLogFile; \
+        "  >>$outputLogFile 2>>$outputLogFile \
+        ; \
         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM-B \
         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
