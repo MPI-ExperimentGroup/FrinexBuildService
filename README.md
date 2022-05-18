@@ -21,6 +21,11 @@ docker container ls
 localhost /docs/DockerSwarmOverview.svg
 localhost /docs/ServiceOverview.svg
 
+# Docker Socket
+In order for the Frinex build container to start build containers it needs to have access to the docker socket normally /var/run/docker.sock. This is done by attaching the directory /var/run/docker_frinex_build containing the socket as a volume to the build container. The directory containing the docker socket is used as the attached volume rather than the socket iself to prevent a race condition where the build container attempts to mount the socket before it is created on start up (which results in a directory being created where the socket should be).
+The custom socket location is set in the docker start up command:
+DOCKER_OPTS="-H unix:///var/run/docker.sock -H unix://var/run/docker_frinex_build/docker.sock"
+
 # Maintenance Scripts
 
 clean_frinex_docker.sh
