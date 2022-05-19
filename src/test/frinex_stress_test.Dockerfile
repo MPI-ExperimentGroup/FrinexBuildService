@@ -29,3 +29,7 @@ COPY frinex_stress_test/test_data/100ms_v.mp4 /FrinexBuildService/test_data
 COPY frinex_stress_test/test_data/100ms_a.ogg /FrinexBuildService/test_data
 
 COPY frinex_stress_test/frinex_build_test.sh /FrinexBuildService/
+
+COPY frinex_stress_test/filter_config_files.sh /FrinexBuildService/
+RUN chmod +x /FrinexBuildService/filter_config_files.sh
+RUN /FrinexBuildService/filter_config_files.sh

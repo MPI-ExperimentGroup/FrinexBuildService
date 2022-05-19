@@ -10,10 +10,6 @@ sed -i "s|UserLDAP|example|g" /FrinexBuildService/frinex-git-server.conf
 sed -i "s|PassLDAP|example|g" /FrinexBuildService/frinex-git-server.conf
 sed -i "s|#LDAPOPTION||g" /FrinexBuildService/frinex-git-server.conf 
 #sed -i "s|#PUBLICOPTION||g" /FrinexBuildService/frinex-git-server.conf 
-sed -i "s|swarmNode1Url|http://node1.example.com|g" /FrinexBuildService/frinex_service_hammer.sh
-sed -i "s|swarmNode2Url|http://node2.example.com|g" /FrinexBuildService/frinex_service_hammer.sh
-sed -i "s|swarmNode3Url|http://node3.example.com|g" /FrinexBuildService/frinex_service_hammer.sh
-sed -i "s|nginxProxiedUrl|https://staging.example.com|g" /FrinexBuildService/frinex_service_hammer.sh
 fi
 
 if [ -e /FrinexBuildService/cgi/repository_setup.cgi ]; then

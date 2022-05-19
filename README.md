@@ -22,9 +22,13 @@ localhost /docs/DockerSwarmOverview.svg
 localhost /docs/ServiceOverview.svg
 
 # Docker Socket
-In order for the Frinex build container to start build containers it needs to have access to the docker socket normally /var/run/docker.sock. This is done by attaching the directory /var/docker_frinex_build containing the socket as a volume to the build container. The directory containing the docker socket is used as the attached volume rather than the socket iself to prevent a race condition where the build container attempts to mount the socket before it is created on start up (which results in a directory being created where the socket should be).
-The custom socket location is set in the docker start up command:
+In order for the Frinex build container to start build containers and for the frinex_listing_provider to list services they need to have access to the docker socket normally /var/run/docker.sock. 
+The start command for these containers does this with: --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock
+
+If however this causes issues, such as /var/run/docker.sock becoming a directory, it can usually be solved by attaching the directory /var/docker_frinex_build containing the socket as a volume to the build container. The directory containing the docker socket is used as the attached volume rather than the socket iself to prevent a race condition where the build container attempts to mount the socket before it is created on start up (which results in a directory being created where the socket should be).
+If this is needed the custom socket location is set in the docker start up command:
 DOCKER_OPTS="-H unix:///var/run/docker.sock -H unix:///var/docker_frinex_build/docker.sock"
+In which case the containers also need to be modified to use -e DOCKER_HOST="unix:///var/docker_frinex_build/docker.sock" -v /var/docker_frinex_build:/var/docker_frinex_build instead of --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock
 
 # Maintenance Scripts
 
@@ -64,6 +68,7 @@ There are two postgres instances running on different ports and each requires it
 The required admin user for the staging instance can be created with:
 CREATE ROLE frinex_staging_user WITH LOGIN CREATEDB CREATEROLE PASSWORD 'changethis';
 The required admin user for the production instance can be created with:
+CREATE ROLE frinex_staging_user WITH LOGIN CREATEDB CREATEROLE PASSWORD 'changethis';
 CREATE ROLE frinex_production_user WITH LOGIN CREATEDB CREATEROLE PASSWORD 'changethis';
 
 # CGI Scripts
