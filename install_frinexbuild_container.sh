@@ -61,8 +61,8 @@ else
     # docker stop frinex_db_manager 
     # docker container rm frinex_db_manager 
 
-    # TODO: test existance of the DB users that are used in frinex_db_manager to create new databases and users 
-    
+    # If the DB users that are required by frinex_db_manager to create new databases and users do not exist then an error will be shown in the build listing.
+
     # start the frinex_db_manager in the bridge network
     # docker run --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
 
