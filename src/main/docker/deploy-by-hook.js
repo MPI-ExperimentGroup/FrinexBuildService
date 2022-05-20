@@ -1361,22 +1361,7 @@ function buildFromListing() {
                             // in this case delete the XML as well
                             fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
                         } else {
-                            var databaseFailed = false;
-                            if (deploymentType.includes('docker')) {
-                                got.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildName + "_db", { responseType: 'text' }).then(response => {
-                                    console.log("frinex_db_manager: " + buildName + " : " + response.statusCode);
-                                    databaseFailed = false;
-                                }).catch(error => {
-                                    console.log("frinex_db_manager: " + buildName + " : " + error);
-                                    databaseFailed = true;
-                                });
-                            }
-                            if (databaseFailed) {
-                                storeResult(fileNamePart, "DB failed", "staging", "web", true, false, false);
-                                console.log('removing: ' + processingDirectory + '/validated/' + filename);
-                                // remove the processing/validated XML since it will not be built after this point
-                                fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
-                            } else {
+                            var processBuildEntry = function() {
                                 var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
                                 var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
                                 console.log('moving: ' + queuedConfigFile);
@@ -1426,6 +1411,21 @@ function buildFromListing() {
                                         storeResult(fileNamePart, productionServerUrl, "production", "target", false, false, false);
                                     }
                                 }
+                            }
+                            if (deploymentType.includes('docker')) {
+                                got.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildName + "_db", { responseType: 'text' }).then(response => {
+                                    console.log("frinex_db_manager: " + buildName + " : " + response.statusCode);
+                                    processBuildEntry();
+                                }).catch(error => {
+                                    console.log("frinex_db_manager: " + buildName + " : " + error);
+                                    storeResult(fileNamePart, "DB failed", "staging", "web", true, false, false);
+                                    console.log('removing: ' + processingDirectory + '/validated/' + filename);
+                                    // remove the build entry because the DB creation failed
+                                    fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
+                                    listingMap.delete(buildName);
+                                });
+                            } else {
+                                processBuildEntry();
                             }
                         }
                     }
