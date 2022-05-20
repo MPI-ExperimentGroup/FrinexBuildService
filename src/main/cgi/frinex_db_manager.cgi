@@ -50,28 +50,28 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
     appNameInternal=${QUERY_STRING#"frinex_"}
     appNameInternal=${appNameInternal%"_db"}
     if [[ ${#appNameInternal} -gt 2 ]] ; then
-        # echo "appNameInternal: $appNameInternal"
+        messageString="appNameInternal: $appNameInternal"
         # create the experiment DB on staging
         if [ "$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
-            # echo "Database already exists"
-            psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
+            messageString=$messageString"\nDatabase already exists\n"
+            messageString=$messageString$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';")
         else
-            # echo "Database being created"
-            psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
-            psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;"
-            psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;"
+            messageString=$messageString"\nDatabase being created\n"
+            messageString=$messageString$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';")
+            messageString=$messageString$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;")
+            messageString=$messageString$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;")
         fi
         # create the experiment DB on production
         if [ "$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
-            psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
-            echo "Status: 200 OK Database exists $QUERY_STRING"
+            messageString=$messageString$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';")
+            echo "Status: 200 OK Database exists $QUERY_STRING $messageString"
             echo ''
         else
             # echo "Database being created"
-            psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';"
-            psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;"
-            psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;"
-            echo "Status: 200 OK Database created $QUERY_STRING"
+            messageString=$messageString$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'examplechangethis';")
+            messageString=$messageString$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;")
+            messageString=$messageString$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;")
+            echo "Status: 200 OK Database created $QUERY_STRING $messageString"
             echo ''
         fi
     else
