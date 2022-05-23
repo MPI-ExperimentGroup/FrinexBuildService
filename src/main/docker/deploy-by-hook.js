@@ -1419,7 +1419,7 @@ function buildFromListing() {
                             if (deploymentType.includes('docker')) {
                                 got.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildName + "_db", { responseType: 'text' }).then(response => {
                                     console.log("frinex_db_manager: " + buildName + " : " + response.statusCode);
-                                    processBuildEntry();
+                                    processBuildEntry(filename, buildName, listingFile);
                                 }).catch(error => {
                                     console.log("frinex_db_manager: " + buildName + " : " + error);
                                     storeResult(fileNamePart, "DB failed", "staging", "web", true, false, false);
