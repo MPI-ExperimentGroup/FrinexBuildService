@@ -1361,31 +1361,31 @@ function buildFromListing() {
                             // in this case delete the XML as well
                             fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
                         } else {
-                            var processBuildEntry = function() {
-                                var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
-                                var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
+                            var processBuildEntry = function(filenameL, buildNameL, listingFileL) {
+                                var queuedConfigFile = path.resolve(processingDirectory + '/queued', filenameL);
+                                var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filenameL);
                                 console.log('moving: ' + queuedConfigFile);
                                 // this move is within the same volume so we can do it this easy way
                                 fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
 
                                 // keeping the listing entry in a map so only one can exist for any experiment regardless of mid compilation rebuild requests
-                                console.log('jsonListing: ' + buildName);
-                                //fs.writeSync(resultsFile, "<div>jsonListing: " + buildName + "</div>");
-                                var listingJsonData = JSON.parse(fs.readFileSync(listingFile, 'utf8'));
-                                listingJsonData.buildName = buildName;
+                                console.log('jsonListing: ' + buildNameL);
+                                //fs.writeSync(resultsFile, "<div>jsonListing: " + buildNameL + "</div>");
+                                var listingJsonData = JSON.parse(fs.readFileSync(listingFileL, 'utf8'));
+                                listingJsonData.buildName = buildNameL;
                                 console.log('listingJsonData: ' + JSON.stringify(listingJsonData));
-                                fs.unlinkSync(listingFile);
-                                listingMap.set(buildName, listingJsonData);
-                                storeResult(fileNamePart, '', "staging", "web", false, false, false);
-                                storeResult(fileNamePart, '', "staging", "admin", false, false, false);
-                                storeResult(fileNamePart, '', "staging", "android", false, false, false);
-                                storeResult(fileNamePart, '', "staging", "desktop", false, false, false);
-                                storeResult(fileNamePart, '', "production", "target", false, false, false);
-                                storeResult(fileNamePart, ((listingJsonData.frinexVersion != null && listingJsonData.frinexVersion.length > 0) ? listingJsonData.frinexVersion : 'stable'), "frinex", "version", false, false, false);
-                                storeResult(fileNamePart, '', "production", "web", false, false, false);
-                                storeResult(fileNamePart, '', "production", "admin", false, false, false);
-                                storeResult(fileNamePart, '', "production", "android", false, false, false);
-                                storeResult(fileNamePart, '', "production", "desktop", false, false, false);
+                                fs.unlinkSync(listingFileL);
+                                listingMap.set(buildNameL, listingJsonData);
+                                storeResult(buildNameL, '', "staging", "web", false, false, false);
+                                storeResult(buildNameL, '', "staging", "admin", false, false, false);
+                                storeResult(buildNameL, '', "staging", "android", false, false, false);
+                                storeResult(buildNameL, '', "staging", "desktop", false, false, false);
+                                storeResult(buildNameL, '', "production", "target", false, false, false);
+                                storeResult(buildNameL, ((listingJsonData.frinexVersion != null && listingJsonData.frinexVersion.length > 0) ? listingJsonData.frinexVersion : 'stable'), "frinex", "version", false, false, false);
+                                storeResult(buildNameL, '', "production", "web", false, false, false);
+                                storeResult(buildNameL, '', "production", "admin", false, false, false);
+                                storeResult(buildNameL, '', "production", "android", false, false, false);
+                                storeResult(buildNameL, '', "production", "desktop", false, false, false);
                                 if (listingJsonData.state === "staging" || listingJsonData.state === "production") {
                                     storeResult(listingJsonData.buildName, 'queued', "staging", "web", false, false, false);
                                     storeResult(listingJsonData.buildName, 'queued', "staging", "admin", false, false, false);
@@ -1406,9 +1406,9 @@ function buildFromListing() {
                                         storeResult(listingJsonData.buildName, 'queued', "production", "desktop", false, false, false);
                                     }
                                     if (listingJsonData.productionServer != null && listingJsonData.productionServer.length > 0) {
-                                        storeResult(fileNamePart, listingJsonData.productionServer, "production", "target", false, false, false);
+                                        storeResult(buildNameL, listingJsonData.productionServer, "production", "target", false, false, false);
                                     } else {
-                                        storeResult(fileNamePart, productionServerUrl, "production", "target", false, false, false);
+                                        storeResult(buildNameL, productionServerUrl, "production", "target", false, false, false);
                                     }
                                 }
                             }
@@ -1425,7 +1425,7 @@ function buildFromListing() {
                                     listingMap.delete(buildName);
                                 });
                             } else {
-                                processBuildEntry();
+                                processBuildEntry(filename, buildName, listingFile);
                             }
                         }
                     }
