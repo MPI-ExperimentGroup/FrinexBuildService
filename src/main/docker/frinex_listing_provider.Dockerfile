@@ -33,6 +33,7 @@ COPY cgi/frinex_staging_upstreams.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_staging_locations.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_production_upstreams.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_production_locations.cgi  /FrinexBuildService/cgi/
+COPY cgi/frinex_tomcat_staging_locations.cgi  /FrinexBuildService/cgi/
 COPY config/frinex_db_manager.conf  /FrinexBuildService/
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
