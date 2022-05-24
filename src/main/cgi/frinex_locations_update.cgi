@@ -57,9 +57,9 @@ echo "$serviceList" \
     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
+echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 curl https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
 do
-    rm  /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
     if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
         echo -e "location /$runningWar {\n proxy_pass http://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass http://tomcatstaging/$runningWar-admin;\n}" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
     fi
