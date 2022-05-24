@@ -57,11 +57,11 @@ echo "$serviceList" \
     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
-stagingServices=$(sudo docker service ls | grep -E "_admin|_web" | grep -E "_staging" | grep -E "8080/tcp")
 curl https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
 do
-    if [[ ${stagingServices} != *$runningWar"_staging"* ]];then
-        echo -e "location /$runningWar {\n proxy_pass http://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass http://tomcatstaging/$runningWar-admin;\n}" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
+    rm  /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
+    if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
+        echo -e "location /$runningWar {\n proxy_pass http://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass http://tomcatstaging/$runningWar-admin;\n}" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
     fi
 done
 
