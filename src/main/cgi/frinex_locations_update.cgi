@@ -61,7 +61,7 @@ echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 curl https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
 do
     if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
-        echo -e "location /$runningWar {\n proxy_pass http://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass http://tomcatstaging/$runningWar-admin;\n}" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
+        echo -e "location /$runningWar {\n proxy_pass http://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass http://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
     fi
 done
 
