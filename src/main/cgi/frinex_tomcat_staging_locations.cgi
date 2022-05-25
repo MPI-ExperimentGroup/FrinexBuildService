@@ -27,7 +27,7 @@
 echo "Content-type: text/json"
 echo ''
 runningServices=$(sudo docker service ls | grep -E "_admin|_web" | grep -E "_staging" | grep -E "8080/tcp")
-curl https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
+curl -s https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
 do
     if [[ ${runningServices} != *$runningWar"_staging"* ]];then
         echo "location /$runningWar {"
