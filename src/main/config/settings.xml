@@ -20,9 +20,10 @@
         <profile>
             <id>default-profile</id>
             <properties>
-                <experiment.configuration.admin.password>example</experiment.configuration.admin.password>
-               <!-- todo: db host and password should go in the publish.properties so that the frinexapps image is agnostic to the machine it runs on -->
-                <experiment.configuration.db.password>example</experiment.configuration.db.password>
+                <!-- these properties of admin password and db host and password are set in the publish.properties so that the frinexapps image is agnostic to the machine it runs on -->
+                <!-- <experiment.configuration.admin.password>example</experiment.configuration.admin.password> -->
+                <!-- <experiment.configuration.db.host>example.com</experiment.configuration.db.host> -->
+                <!-- <experiment.configuration.db.password>example</experiment.configuration.db.password> -->
             </properties>
         </profile>
     </profiles>
