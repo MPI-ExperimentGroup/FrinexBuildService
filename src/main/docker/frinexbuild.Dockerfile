@@ -133,4 +133,5 @@ RUN chmod -R ug+rwx /FrinexBuildService/cgi
 WORKDIR /FrinexBuildService
 VOLUME ["protectedDirectory:/FrinexBuildService/protected"]
 VOLUME ["buildServerTarget:/FrinexBuildService/artifacts"]
+RUN chown www-data:www-data /usr/local/apache2/logs
 USER www-data

@@ -50,4 +50,5 @@ RUN chown -R www-data:daemon /FrinexBuildService/cgi
 RUN chmod -R ug+rwx /FrinexBuildService/cgi
 RUN chmod 600 /FrinexBuildService/frinex_db_user_authentication
 WORKDIR /FrinexBuildService
+RUN chown www-data:www-data /usr/local/apache2/logs
 USER www-data
