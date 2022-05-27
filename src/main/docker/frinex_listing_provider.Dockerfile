@@ -43,3 +43,4 @@ RUN chown -R www-data:daemon /FrinexBuildService
 RUN chown -R www-data:daemon /usr/local/apache2/htdocs/
 RUN chmod -R ug+rwx /FrinexBuildService
 WORKDIR /FrinexBuildService
+USER www-data

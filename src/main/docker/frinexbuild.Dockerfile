@@ -133,3 +133,4 @@ RUN chmod -R ug+rwx /FrinexBuildService/cgi
 WORKDIR /FrinexBuildService
 VOLUME ["protectedDirectory:/FrinexBuildService/protected"]
 VOLUME ["buildServerTarget:/FrinexBuildService/artifacts"]
+USER www-data
