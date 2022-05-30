@@ -1305,12 +1305,6 @@ function processBuildEntry(filenameL, buildNameL, listingFileL) {
     console.log('filenameL: ' + filenameL);
     console.log('buildNameL: ' + buildNameL);
     console.log('listingFileL: ' + listingFileL);
-    var queuedConfigFile = path.resolve(processingDirectory + '/queued', filenameL);
-    var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filenameL);
-    console.log('moving: ' + queuedConfigFile);
-    // this move is within the same volume so we can do it this easy way
-    fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
-
     // keeping the listing entry in a map so only one can exist for any experiment regardless of mid compilation rebuild requests
     console.log('jsonListing: ' + buildNameL);
     //fs.writeSync(resultsFile, "<div>jsonListing: " + buildNameL + "</div>");
@@ -1363,9 +1357,9 @@ function processBuildEntryDB(filenameL, buildNameL, listingFileL) {
     }).catch(error => {
         console.log("frinex_db_manager: " + buildNameL + " : " + error);
         storeResult(buildNameL, "DB failed", "staging", "web", true, false, false);
-        console.log('removing: ' + processingDirectory + '/validated/' + filenameL);
+        console.log('removing: ' + processingDirectory + '/staging-queued' + filenameL);
         // remove the build entry because the DB creation failed
-        fs.unlinkSync(path.resolve(processingDirectory + '/queued', filenameL));
+        fs.unlinkSync(path.resolve(processingDirectory + '/staging-queued', filenameL));
         listingMap.delete(buildNameL);
     });
 }
@@ -1430,6 +1424,11 @@ function buildFromListing() {
                             // in this case delete the XML as well
                             fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
                         } else {
+                            var queuedConfigFile = path.resolve(processingDirectory + '/queued', filename);
+                            var stagingQueuedConfigFile = path.resolve(processingDirectory + '/staging-queued', filename);
+                            console.log('moving: ' + queuedConfigFile);
+                            // this move is within the same volume so we can do it this easy way
+                            fs.renameSync(queuedConfigFile, stagingQueuedConfigFile);
                             if (deploymentType.includes('docker')) {
                                 processBuildEntryDB(filename, buildName, listingFile);
                             } else {
