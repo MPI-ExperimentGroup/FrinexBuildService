@@ -1353,7 +1353,7 @@ function processBuildEntry(filenameL, buildNameL, listingFileL) {
 function processBuildEntryDB(filenameL, buildNameL, listingFileL) {
     got.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildNameL + "_db", { responseType: 'text' }).then(response => {
         console.log("frinex_db_manager: " + buildNameL + " : " + response.statusCode);
-        processBuildEntry(filenameL, buildNameL, listingFile);
+        processBuildEntry(filenameL, buildNameL, listingFileL);
     }).catch(error => {
         console.log("frinex_db_manager: " + buildNameL + " : " + error);
         storeResult(buildNameL, "DB failed", "staging", "web", true, false, false);
