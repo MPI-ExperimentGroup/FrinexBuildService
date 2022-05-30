@@ -1301,7 +1301,7 @@ function buildNextExperiment() {
     }
 }
 
-function processBuildEntry (filenameL, buildNameL, listingFileL) {
+function processBuildEntry(filenameL, buildNameL, listingFileL) {
     console.log('filenameL: ' + filenameL);
     console.log('buildNameL: ' + buildNameL);
     console.log('listingFileL: ' + listingFileL);
@@ -1354,6 +1354,20 @@ function processBuildEntry (filenameL, buildNameL, listingFileL) {
             storeResult(buildNameL, productionServerUrl, "production", "target", false, false, false);
         }
     }
+}
+
+function processBuildEntryDB(filenameL, buildNameL, listingFileL) {
+    got.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildNameL + "_db", { responseType: 'text' }).then(response => {
+        console.log("frinex_db_manager: " + buildNameL + " : " + response.statusCode);
+        processBuildEntry(filenameL, buildNameL, listingFile);
+    }).catch(error => {
+        console.log("frinex_db_manager: " + buildNameL + " : " + error);
+        storeResult(buildNameL, "DB failed", "staging", "web", true, false, false);
+        console.log('removing: ' + processingDirectory + '/validated/' + filenameL);
+        // remove the build entry because the DB creation failed
+        fs.unlinkSync(path.resolve(processingDirectory + '/queued', filenameL));
+        listingMap.delete(buildNameL);
+    });
 }
 
 function buildFromListing() {
@@ -1417,17 +1431,7 @@ function buildFromListing() {
                             fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
                         } else {
                             if (deploymentType.includes('docker')) {
-                                got.get("http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_" + buildName + "_db", { responseType: 'text' }).then(response => {
-                                    console.log("frinex_db_manager: " + buildName + " : " + response.statusCode);
-                                    processBuildEntry(filename, buildName, listingFile);
-                                }).catch(error => {
-                                    console.log("frinex_db_manager: " + buildName + " : " + error);
-                                    storeResult(fileNamePart, "DB failed", "staging", "web", true, false, false);
-                                    console.log('removing: ' + processingDirectory + '/validated/' + filename);
-                                    // remove the build entry because the DB creation failed
-                                    fs.unlinkSync(path.resolve(processingDirectory + '/queued', filename));
-                                    listingMap.delete(buildName);
-                                });
+                                processBuildEntryDB(filename, buildName, listingFile);
                             } else {
                                 processBuildEntry(filename, buildName, listingFile);
                             }
