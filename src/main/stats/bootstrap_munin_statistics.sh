@@ -25,7 +25,7 @@ export PGPASSFILE
 echo "{";
 # /frinex_munin_stats
 psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
-    currentExperimentUser=frinex_${currentexperiment%_db}_user
+    currentExperimentUser=${currentexperiment%_db}_user
     echo '"'$currentExperimentUser'": {'
     PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) || '\",' from screen_data";
     PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"totalDeploymentsAccessed\":\"' || count(distinct tag_value) || '\",' from tag_data where event_tag = 'compileDate'";
