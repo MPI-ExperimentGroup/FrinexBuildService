@@ -29,6 +29,8 @@ echo "Content-type: text/html"
 PGPASSFILE=/FrinexBuildService/frinex_db_user_authentication
 export PGPASSFILE
 
+# this CGI script can be manually tested with: QUERY_STRING="frinex_manualtest_db" bash cgi/frinex_db_manager.cgi
+
 # appNameInternal must be a "lowercaseValue" enforced by the the XSD, defined as "[a-z]([a-z_0-9]){3,}"
 
 # echo "These should pass:"
