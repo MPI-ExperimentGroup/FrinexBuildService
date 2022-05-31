@@ -19,6 +19,9 @@
 # @since 31 May, 2022 12:49 PM (creation date)
 # @author Peter Withers <peter.withers@mpi.nl>
 
+PGPASSFILE=/FrinexBuildService/frinex_db_user_authentication
+export PGPASSFILE
+
 echo "{";
 # /frinex_munin_stats
 psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
