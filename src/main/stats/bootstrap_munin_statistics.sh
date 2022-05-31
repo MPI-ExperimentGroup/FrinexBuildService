@@ -39,4 +39,5 @@ psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d post
     #echo '"sessionFirstAndLastSeen": [';
     #PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc";
     #echo "]},";
+    chmod a+wr $outputFile
 done
