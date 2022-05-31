@@ -36,7 +36,7 @@ invalidate_stats() {
 }
 
 update_stats() {
-    invalidate_stats;
+    # invalidate_stats;
     hoststring=$(hostname -f)
     for currentUrl in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/services.json \
     | grep -E "$1_admin" \

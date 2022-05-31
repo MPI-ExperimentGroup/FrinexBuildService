@@ -97,6 +97,9 @@ else
     sudo ln -s /usr/lib/munin/plugins/frinex_build_stats /etc/munin/plugins/frinex_build_example0
     sudo ln -s /usr/lib/munin/plugins/frinex_build_stats /etc/munin/plugins/frinex_build_example1
 
+    # boot strap the experiment stats plugin data directly from postgres
+    docker run -v /srv/frinex_munin_data/stats:/frinex_munin_stats -it --rm --name bootstrap_munin_stats frinex_db_manager:latest bash /FrinexBuildService/stats/bootstrap_munin_statistics.sh
+
     # please note that the following needs to be added to /etc/munin/plugin-conf.d/munin-node
     #   [frinex_*]
     #   group docker
