@@ -22,22 +22,21 @@
 PGPASSFILE=/FrinexBuildService/frinex_db_user_authentication
 export PGPASSFILE
 
-PGPASSWORD=examplechangethis
-
 echo "{";
 # /frinex_munin_stats
 psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
-    echo '"'$currentexperiment'": {'
-    psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentexperiment}_user -d $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) || '\",' from screen_data";
-    psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentexperiment}_user -d $currentexperiment --no-align -t -c "select '\"totalDeploymentsAccessed\":\"' || count(distinct tag_value) || '\",' from tag_data where event_tag = 'compileDate'";
-    psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentexperiment}_user -d $currentexperiment --no-align -t -c "select '\"totalParticipantsSeen\":\"' || count(distinct user_id) || '\",' from participant";
-    psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentexperiment}_user -d $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) || '\",' from participant";
-    psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentexperiment}_user -d $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) || '\",' from participant";
+    currentExperimentUser=frinex_${currentexperiment%_db}_user
+    echo '"'$currentExperimentUser'": {'
+    PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentExperimentUser}_user -d $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) || '\",' from screen_data";
+    PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentExperimentUser}_user -d $currentexperiment --no-align -t -c "select '\"totalDeploymentsAccessed\":\"' || count(distinct tag_value) || '\",' from tag_data where event_tag = 'compileDate'";
+    PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentExperimentUser}_user -d $currentexperiment --no-align -t -c "select '\"totalParticipantsSeen\":\"' || count(distinct user_id) || '\",' from participant";
+    PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentExperimentUser}_user -d $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) || '\",' from participant";
+    PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentExperimentUser}_user -d $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) || '\",' from participant";
     echo '"participantsFirstAndLastSeen": [';
-    psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentexperiment}_user -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant group by user_id order by min(submit_date) asc";
+    PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentExperimentUser}_user -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant group by user_id order by min(submit_date) asc";
     echo "],";
     echo '"sessionFirstAndLastSeen": [';
-    psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentexperiment}_user -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc";
+    PGPASSWORD=examplechangethis psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${currentExperimentUser}_user -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc";
     echo "]},";
 done
 echo "}";
