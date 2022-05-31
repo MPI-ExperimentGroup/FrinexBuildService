@@ -34,9 +34,12 @@ COPY stats/bootstrap_munin_statistics.sh  /FrinexBuildService/stats/
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 RUN sed -i "s|DatabaseStagingUrl|staging.example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
-RUN sed -i "s|DatabaseStagingPort|5432|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseStagingPort|5433|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
-RUN sed -i "s|DatabaseProductionPort|5432|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseStagingPort|5433|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseProductionPort|5434|g" /FrinexBuildService/stats/bootstrap_munin_statistics.sh
+RUN sed -i "s|examplechangethis|example|g" /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 #RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 #RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
