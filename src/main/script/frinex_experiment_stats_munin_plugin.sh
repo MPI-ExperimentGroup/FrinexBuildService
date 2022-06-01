@@ -64,6 +64,7 @@ update_stats() {
 
 output_config() {
     for deployemntType in staging production
+    do
         for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
         do
             echo "multigraph $deployemntType$graphType"
@@ -82,6 +83,7 @@ output_values() {
     # TODO: cat and grep the values for the current grap from the temp files
     # TODO: If the plugin - for any reason - has no value to report, then it may send the value U for undefined. 
     for deployemntType in staging production
+    do
         for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
         do
             echo "multigraph $deployemntType$graphType"
