@@ -29,9 +29,10 @@ run_queries() {
     databaseUrl=$4
     databasePort=$5
     echo $outputFile
+    echo date > $outputFile;
     #PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) from screen_data";
-    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalDeploymentsAccessed.value ' || count(distinct tag_value) from tag_data where event_tag = 'compileDate'" > $outputFile;
-    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalPageLoads.value ' || count(distinct tag_date) from tag_data where event_tag = 'compileDate'" > $outputFile;
+    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalDeploymentsAccessed.value ' || count(distinct tag_value) from tag_data where event_tag = 'compileDate'" >> $outputFile;
+    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalPageLoads.value ' || count(distinct tag_date) from tag_data where event_tag = 'compileDate'" >> $outputFile;
     PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalParticipantsSeen.value ' || count(distinct user_id) from participant" >> $outputFile;
     PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalStimulusResponses.value ' || select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response" >> $outputFile;
     PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalMediaResponses.value ' || select count (id) from audiodata" >> $outputFile;
