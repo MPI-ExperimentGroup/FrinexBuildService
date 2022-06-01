@@ -63,15 +63,17 @@ update_stats() {
 }
 
 output_config() {
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
-    do
-        echo "multigraph $graphType"
-        echo "graph_title Frinex Docker $graphType"
-        echo "graph_category frinex"
-        for filePath in $dataDirectory/*_admin; do
-            fileName=${filePath#"$dataDirectory/"}
-            echo "$fileName.label $fileName"
-            echo "$fileName.draw AREASTACK"
+    for deployemntType in staging production
+        for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+        do
+            echo "multigraph $deployemntType$graphType"
+            echo "graph_title Frinex Docker $deployemntType $graphType"
+            echo "graph_category frinex"
+            for filePath in $dataDirectory/*$deployemntType"_admin"; do
+                fileName=${filePath#"$dataDirectory/"}
+                echo "$fileName.label $fileName"
+                echo "$fileName.draw AREASTACK"
+            done
         done
     done
 }
@@ -79,12 +81,14 @@ output_config() {
 output_values() {
     # TODO: cat and grep the values for the current grap from the temp files
     # TODO: If the plugin - for any reason - has no value to report, then it may send the value U for undefined. 
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
-    do
-        echo "multigraph $graphType"
-        for filePath in $dataDirectory/*_admin; do
-            fileName=${filePath#"$dataDirectory/"}
-            grep $graphType $filePath | sed "s/$graphType/$fileName/g"
+    for deployemntType in staging production
+        for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+        do
+            echo "multigraph $deployemntType$graphType"
+            for filePath in $dataDirectory/*$deployemntType"_admin"; do
+                fileName=${filePath#"$dataDirectory/"}
+                grep $graphType $filePath | sed "s/$graphType/$fileName/g"
+            done
         done
     done
 }
