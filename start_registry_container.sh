@@ -30,7 +30,7 @@ echo "TODO: please update example.com to the relevant URI, then comment this lin
 # sudo mkdir /etc/docker/certs.d/example.com/
 # sudo cp /var/lib/docker/volumes/registry_certs/_data/example.com.crt /etc/docker/certs.d/example.com/ca.crt
 
-# TODO: when the certificate is made the resultiing file /etc/docker/certs.d/example.com/ca.crt must be copied to each swarm node so that they trust the registry
+# TODO: when the certificate is made the resulting file /etc/docker/certs.d/example.com/ca.crt must be copied to each swarm node so that they trust the registry
 
 docker stop registry
 docker container rm registry
