@@ -31,7 +31,7 @@ if ! grep -q $(hostname) publish.properties; then
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # clean up volumes
-    docker volume rm $(docker volume ls | grep -v "gitRepositories" | grep -v "gitCheckedout" | grep -v "m2Directory" | grep -v "buildServerTarget" | awk 'NR>1 {print $2}')
+    docker volume rm $(docker volume ls | grep -v "gitRepositories" | grep -v "gitCheckedout" | grep -v "m2Directory" | grep -v "buildServerTarget" | grep -v "frinexDockerRegistry" | awk 'NR>1 {print $2}')
     # clean up images
     docker image rm $(docker image ls | grep -v "frinexbuild" | grep -v "frinexapps" | grep -v "frinex_db_manager" | awk 'NR>1 {print $3}')
     # prune what remains

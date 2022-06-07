@@ -38,7 +38,8 @@ docker run -d \
    --restart=always \
    --name registry \
    -v registry_certs:/certs \
-   -v /srv/frinex_docker_registry:/var/lib/registry \
+   #-v /srv/frinex_docker_registry:/var/lib/registry \
+   -v frinexDockerRegistry:/var/lib/registry \
    -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
    -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/example.com.crt \
    -e REGISTRY_HTTP_TLS_KEY=/certs/example.com.key \
