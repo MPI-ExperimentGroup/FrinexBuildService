@@ -22,11 +22,15 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
+echo "TODO: please update example.com to the relevant URI, then comment this line to proceed"; exit;
+
 # Deploying Frinex experiments to the Docker swarm requires this registry to be running
 # docker run --rm -it -v registry_certs:/certs nginx openssl req -newkey rsa:4096 -nodes -sha256 -keyout /certs/example.com.key -addext "subjectAltName = DNS:example.com" -x509 -days 3650 -out /certs/example.com.crt
 # the self signed certificate needs to be added to the trust directory of each docker node
 # sudo mkdir /etc/docker/certs.d/example.com/
 # sudo cp /var/lib/docker/volumes/registry_certs/_data/example.com.crt /etc/docker/certs.d/example.com/ca.crt
+
+# TODO: when the certificate is made the resultiing file /etc/docker/certs.d/example.com/ca.crt must be copied to each swarm node so that they trust the registry
 
 docker stop registry
 docker container rm registry
@@ -34,6 +38,7 @@ docker run -d \
    --restart=always \
    --name registry \
    -v registry_certs:/certs \
+#   -v /mnt/registry:/var/lib/registry \
    -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
    -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/example.com.crt \
    -e REGISTRY_HTTP_TLS_KEY=/certs/example.com.key \
