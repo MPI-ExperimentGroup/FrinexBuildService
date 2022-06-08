@@ -51,27 +51,30 @@ else
         # make sure the local .m2 directory has the alpha jar files. In this case we just install AdaptiveVocabularyAssessmentModule which will also install frinex common and the parent pom, because compiling the GWT component is not needed here
         docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate/AdaptiveVocabularyAssessmentModule frinexapps-jdk:alpha /bin/bash -c "mvn install -gs /maven/.m2/settings.xml"        
         echo "frinexapps-jdk ok"
+
+        # prepare the corova and electron test build files
+        docker create -it --name cordova_electron_temp frinexapps-jdk:alpha bash
+        docker cp cordova_electron_temp:/test_data_cordova $workingDir/src/main/test_data_cordova
+        docker cp cordova_electron_temp:/test_data_electron $workingDir/src/main/test_data_electron
+        docker rm -f cordova_electron_temp
+
+        # build the frinexapps-cordova dockerfile:
+        if docker build --no-cache -f docker/frinexapps-cordova.Dockerfile -t frinexapps-cordova:alpha .
+        then
+            docker tag frinexapps-cordova:alpha frinexapps-cordova:$alphaVersion
+            echo "frinexapps-cordova ok"
+        fi
+
+        # build the frinexapps-electron dockerfile:
+        if docker build --no-cache -f docker/frinexapps-electron.Dockerfile -t frinexapps-electron:alpha .
+        then
+            docker tag frinexapps-electron:alpha frinexapps-electron:$alphaVersion
+            echo "frinexapps-electron ok"
+        fi
+
+        # remove the corova and electron test build files
+        rm -r $workingDir/src/main/test_data_cordova
+        rm -r $workingDir/src/main/test_data_electron
+
     fi;
-
-    # prepare the corova and electron test build files
-    docker create -it --name cordova_electron_temp frinexapps-jdk:alpha bash
-    docker cp cordova_electron_temp:/test_data_cordova $workingDir/src/main/test_data_cordova
-    docker cp cordova_electron_temp:/test_data_electron $workingDir/src/main/test_data_electron
-    docker rm -f cordova_electron_temp
-
-    # build the frinexapps-cordova dockerfile:
-    if docker build --no-cache -f docker/frinexapps-cordova.Dockerfile -t frinexapps-cordova:alpha . 
-    then 
-        echo "frinexapps-cordova ok"
-    fi
-
-    # build the frinexapps-electron dockerfile:
-    if docker build --no-cache -f docker/frinexapps-electron.Dockerfile -t frinexapps-electron:alpha . 
-    then 
-        echo "frinexapps-electron ok"
-    fi
-
-    # remove the corova and electron test build files
-    rm -r $workingDir/src/main/test_data_cordova
-    rm -r $workingDir/src/main/test_data_electron
 fi;
