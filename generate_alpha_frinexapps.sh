@@ -51,4 +51,20 @@ else
         docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "mvn install -gs /maven/.m2/settings.xml"
 
     fi;
+
+    # prepare the corova and electron test build files
+    docker create -it --name cordova_electron_temp frinexapps-jdk:alpha bash
+    docker cp cordova_electron_temp:/test_data_cordova $workingDir/src/main/test_data_cordova
+    docker cp cordova_electron_temp:/test_data_electron $workingDir/src/main/test_data_electron
+    docker rm -f cordova_electron_temp
+
+    # build the frinexapps-cordova dockerfile:
+    if docker build --no-cache -f docker/frinexapps-cordova.Dockerfile -t frinexapps-cordova:alpha . 
+    then 
+        echo "frinexapps-cordova ok"
+    fi
+
+    # remove the corova and electron test build files
+    rm -r $workingDir/src/main/test_data_cordova
+    rm -r $workingDir/src/main/test_data_electron
 fi;
