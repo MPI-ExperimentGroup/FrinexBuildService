@@ -1,0 +1,82 @@
+# Copyright (C) 2022 Max Planck Institute for Psycholinguistics
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+
+#
+# @since 8 June 2022 14:30 PM (creation date)
+# @author Peter Withers <peter.withers@mpi.nl>
+#
+
+FROM openjdk:8
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN dpkg --add-architecture i386
+RUN apt-get update # --fix-missing
+RUN apt-get -y upgrade # --fix-missing
+RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick graphviz maven nodejs vim wine32 file
+
+ENV ANDROID_VERSION=30 \
+    ANDROID_HOME=/android-sdk \
+    ANDROID_SDK_ROOT=/android-sdk \
+    ANDROID_BUILD_TOOLS_VERSION=30.0.2
+ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/tools
+RUN mkdir /android-sdk \
+    && cd /android-sdk \
+    && curl -o cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-6514223_latest.zip"
+#    && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
+RUN mkdir /android-sdk/cmdline-tools \
+    && cd /android-sdk/cmdline-tools \
+    && unzip ../cmdline-tools.zip \
+    && rm ../cmdline-tools.zip \
+    && yes | /android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
+RUN /android-sdk/cmdline-tools/tools/bin/sdkmanager --update
+RUN /android-sdk/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
+    "platforms;android-${ANDROID_VERSION}" \
+    "platform-tools"
+RUN npm install npm -g # update npm
+RUN npm install -g cordova@10.0.0
+
+COPY android-keys/frinex-build.json /android-keys/
+COPY android-keys/frinex-cordova.jks /android-keys/
+
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
+    && stat target/with_stimulus_example-win32-x64.zip \
+    && stat target/with_stimulus_example-darwin-x64.zip
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
+    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
+
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && mkdir /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit \
+    && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
+    && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
+    && stat target/rosselfieldkit-win32-x64.zip \
+    && stat target/rosselfieldkit-darwin-x64.zip
+RUN cd /ExperimentTemplate/gwt-cordova \
+    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
+    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
+RUN cd /ExperimentTemplate/gwt-cordova/ \
+    && mvn clean
+RUN cd /ExperimentTemplate/registration/ \
+    && mvn clean
+    # clean out the static directory to prevent these files being used in the automated builds
+RUN rm -r /ExperimentTemplate/gwt-cordova/src/main/static/*
+
+WORKDIR /target
