@@ -51,32 +51,18 @@ RUN npm install -g cordova@10.0.0
 COPY android-keys/frinex-build.json /android-keys/
 COPY android-keys/frinex-cordova.jks /android-keys/
 
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
-    && stat target/with_stimulus_example-win32-x64.zip \
-    && stat target/with_stimulus_example-darwin-x64.zip
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
-    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
+COPY test_data_cordova /test_data_cordova
 
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mkdir /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit \
-    && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
-    && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
-    && stat target/rosselfieldkit-win32-x64.zip \
-    && stat target/rosselfieldkit-darwin-x64.zip
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
-    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
-RUN cd /ExperimentTemplate/gwt-cordova/ \
-    && mvn clean
-RUN cd /ExperimentTemplate/registration/ \
-    && mvn clean
-    # clean out the static directory to prevent these files being used in the automated builds
-RUN rm -r /ExperimentTemplate/gwt-cordova/src/main/static/*
+    && bash /test_data_cordova/with_stimulus_example/setup-cordova.sh \
+    && stat /test_data_cordova/with_stimulus_example/app-release.apk
 
+RUN cd /test_data_cordova/rosselfieldkit \
+    && bash /test_data_cordova/rosselfieldkit/setup-cordova.sh \
+    && stat /test_data_cordova/rosselfieldkit/app-release.apk
+
+# clean out the test directory to prevent these files being used in the automated builds
+RUN rm -r /test_data_cordova
+
+RUN mkdir /target
 WORKDIR /target
