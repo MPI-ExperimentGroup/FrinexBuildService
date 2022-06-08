@@ -64,6 +64,12 @@ else
         echo "frinexapps-cordova ok"
     fi
 
+    # build the frinexapps-electron dockerfile:
+    if docker build --no-cache -f docker/frinexapps-electron.Dockerfile -t frinexapps-electron:alpha . 
+    then 
+        echo "frinexapps-electron ok"
+    fi
+
     # remove the corova and electron test build files
     rm -r $workingDir/src/main/test_data_cordova
     rm -r $workingDir/src/main/test_data_electron
