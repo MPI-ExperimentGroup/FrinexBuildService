@@ -74,14 +74,14 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 512x513 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
-RUN mkdir /test_data_electron_with_stimulus_example \
-    && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron_with_stimulus_example/ \
-    && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example*-electron.zip /test_data_electron_with_stimulus_example/
-RUN mkdir /test_data_cordova_with_stimulus_example \
-    && cp /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /test_data_cordova_with_stimulus_example/ \
-    && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example*-cordova.zip /test_data_cordova_with_stimulus_example/
-
-RUN ls -l /test*
+RUN mkdir /test_data_electron \
+    && mkdir /test_data_electron/with_stimulus_example \
+    && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron/with_stimulus_example/ \
+    && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example*-electron.zip /test_data_electron/with_stimulus_example/
+RUN mkdir /test_data_cordova \
+    && mkdir /test_data_cordova/with_stimulus_example \
+    && cp /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /test_data_cordova/with_stimulus_example/ \
+    && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example*-cordova.zip /test_data_cordova/with_stimulus_example/
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mkdir /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit \
@@ -89,13 +89,13 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
-    && stat target/rosselfieldkit-win32-x64.zip \
-    && stat target/rosselfieldkit-darwin-x64.zip
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
-    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/rosselfieldkit.apk
+RUN mkdir /test_data_electron/rosselfieldkit \
+    && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron/rosselfieldkit/ \
+    && cp /ExperimentTemplate/gwt-cordova/target/rosselfieldkit*-electron.zip /test_data_electron/rosselfieldkit/
+RUN mkdir /test_data_cordova/rosselfieldkit \
+    && cp /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /test_data_cordova/rosselfieldkit/ \
+    && cp /ExperimentTemplate/gwt-cordova/target/rosselfieldkit*-cordova.zip /test_data_cordova/rosselfieldkit/
+
 RUN cd /ExperimentTemplate/gwt-cordova/ \
     && mvn clean
 RUN cd /ExperimentTemplate/registration/ \
