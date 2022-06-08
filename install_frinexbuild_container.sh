@@ -36,9 +36,6 @@ else
     # build the frinexbuild dockerfile
     docker build --no-cache -f docker/frinexbuild.Dockerfile -t frinexbuild:latest .
 
-    # build the frinexapps dockerfile:
-    # docker build --rm -f docker/frinexapps.Dockerfile -t frinexapps:latest .
-
     # build a tomcat docker image to test deployments
     #docker build --rm -f docker/tomcatstaging.Dockerfile -t tomcatstaging:latest .
 

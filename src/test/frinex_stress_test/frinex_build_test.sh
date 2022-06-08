@@ -46,7 +46,7 @@ echo $outputLogFile
 #         docker rm frinex_build_test_$settingCPU-$settingRAM
 #         time (
 #         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM \
-#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha \
 #         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
 #         -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPU \
 #         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
@@ -67,7 +67,7 @@ echo $outputLogFile
 #         docker rm frinex_build_test_$settingCPU-$settingRAM
 #         time (
 #         sudo docker run --rm --cpus=12 --memory=8g --name frinex_build_test_$settingCPU-$settingRAM \
-#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha \
 #         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
 #         -Dgwt.extraJvmArgs=\"-Xmx$settingRAM\" -Dgwt.localWorkers=$settingCPU \
 #         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
@@ -88,7 +88,7 @@ echo $outputLogFile
 #         docker rm frinex_build_test_$settingCPU-$settingWorkers
 #         time (
 #         sudo docker run --rm --cpus=$settingCPU --memory=12g --name frinex_build_test_$settingCPU-$settingWorkers \
-#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha \
 #         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
 #         -Dgwt.localWorkers=$settingWorkers \
 #         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
@@ -109,7 +109,7 @@ echo $outputLogFile
 #         docker rm frinex_build_test_$settingCPU-$settingRAM
 #         time (
 #         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM \
-#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha \
 #         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
 #         -Dexperiment.configuration.name=online_emotions \
 #         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
@@ -130,7 +130,7 @@ echo $outputLogFile
 #         docker rm frinex_build_test_$settingCPU-$settingRAM
 #         time (
 #         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM \
-#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha \
 #         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
 #         -Dexperiment.configuration.name=online_emotions \
 #         -Dgwt.extraJvmArgs=\"-Xmx2g\" \
@@ -152,7 +152,7 @@ echo $outputLogFile
 #         docker rm frinex_build_test_$settingCPU-$settingRAM
 #         time (
 #         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM \
-#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+#         -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha \
 #         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
 #         -Dexperiment.configuration.name=online_emotions \
 #         "  >>$outputLogFile 2>>$outputLogFile ) 2>> $outputHtmlFile
@@ -175,13 +175,13 @@ do
         docker rm frinex_build_test_$settingCPU-$settingRAM-B
         time (
         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM-A \
-        -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+        -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dexperiment.configuration.name=online_emotions \
         "  >>$outputLogFile 2>>$outputLogFile \
         ; \
         sudo docker run --rm --cpus=$settingCPU --memory=$settingRAM --name frinex_build_test_$settingCPU-$settingRAM-B \
-        -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps:alpha \
+        -v buildServerTarget:/FrinexBuildService/artifacts -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha \
         /bin/bash -c "cd /ExperimentTemplate/gwt-cordova; mvn clean package -gs /maven/.m2/settings.xml -DskipTests \
         -Dexperiment.configuration.name=online_emotions \
         "  >>$outputLogFile 2>>$outputLogFile \

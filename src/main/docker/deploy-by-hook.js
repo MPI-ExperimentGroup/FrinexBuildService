@@ -211,7 +211,7 @@ function unDeploy(currentEntry) {
             //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+            + ' -w /ExperimentTemplate frinexapps-jdk:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -257,7 +257,7 @@ function unDeploy(currentEntry) {
             //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
+            + ' -w /ExperimentTemplate frinexapps-jdk:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -303,7 +303,7 @@ function unDeploy(currentEntry) {
             //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+            + ' -w /ExperimentTemplate frinexapps-jdk:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -353,7 +353,7 @@ function unDeploy(currentEntry) {
             //+ ' -v webappsTomcatStaging:/usr/local/tomcat/webapps'
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
+            + ' -w /ExperimentTemplate frinexapps-jdk:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -478,7 +478,7 @@ function deployStagingGui(currentEntry) {
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v protectedDirectory:' + protectedDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps:'
+            + ' -w /ExperimentTemplate frinexapps-jdk:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             //+ " sed -i 's/-Xmx1g/-Xmx4g/g' pom.xml;"
@@ -645,7 +645,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v protectedDirectory:' + protectedDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps:'
+            + ' -w /ExperimentTemplate frinexapps-jdk:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
@@ -826,7 +826,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' -v buildServerTarget:' + targetDirectory
                         + ' -v protectedDirectory:' + protectedDirectory
                         + ' -v m2Directory:/maven/.m2/'
-                        + ' -w /ExperimentTemplate frinexapps:'
+                        + ' -w /ExperimentTemplate frinexapps-jdk:'
                         + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
                         + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
@@ -995,7 +995,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v protectedDirectory:' + protectedDirectory
             + ' -v m2Directory:/maven/.m2/'
-            + ' -w /ExperimentTemplate frinexapps:'
+            + ' -w /ExperimentTemplate frinexapps-jdk:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
@@ -1116,7 +1116,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             + buildContainerOptions
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
-            + ' frinexapps:'
+            + ' frinexapps-cordova:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "'
             + ' rm ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_cordova.apk &>> " + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
@@ -1195,7 +1195,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             + buildContainerOptions
             + ' -v processingDirectory:/FrinexBuildService/processing'
             + ' -v buildServerTarget:' + targetDirectory
-            + ' frinexapps:'
+            + ' frinexapps-electron:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
@@ -1849,7 +1849,7 @@ function convertJsonToXml() {
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
-        + ' frinexapps:stable /bin/bash -c "mvn exec:exec'
+        + ' frinexapps-jdk:stable /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
@@ -1877,22 +1877,22 @@ function convertJsonToXml() {
 }
 
 function updateDocumentation() {
-    // extract the latest versions of frinex.xml frinex.xsd and minimal_example.xml from the frinexapps:latest image that is currently in use
+    // extract the latest versions of frinex.xml frinex.xsd and minimal_example.xml from the frinexapps-jdk:latest image that is currently in use
     var dockerString = 'sudo docker container rm -f update_schema_docs'
         + ' &> ' + targetDirectory + '/update_schema_docs.txt;'
         /*
         note: these files are created when the images are generated and therefore do not need to be copied at this point
-        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/stable.xsd"'
+        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/stable.xsd"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/stable.html"'
+        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/stable.html"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:beta /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/beta.xsd"'
+        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:beta /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/beta.xsd"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:beta /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/beta.html"'
+        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:beta /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/beta.html"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:latest /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/latest.xsd"'
+        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:latest /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/latest.xsd"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps:latest /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/latest.html"'
+        + 'sudo docker run --rm --name update_schema_docs -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:latest /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/latest.html"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
         */
         + 'sudo docker run --rm '
@@ -1901,7 +1901,7 @@ function updateDocumentation() {
         + ' -v buildServerTarget:' + targetDirectory
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
-        + ' frinexapps:stable /bin/bash -c "mvn exec:exec'
+        + ' frinexapps-jdk:stable /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
