@@ -28,7 +28,6 @@ RUN apt-get -y upgrade # --fix-missing
 RUN apt-get -y install unzip zip build-essential gradle imagemagick nodejs vim file
 
 ENV ANDROID_VERSION=30 \
-    ANDROID_HOME=/android-sdk \
     ANDROID_SDK_ROOT=/android-sdk \
     ANDROID_BUILD_TOOLS_VERSION=32.0.0
 ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/cmdline-tools
