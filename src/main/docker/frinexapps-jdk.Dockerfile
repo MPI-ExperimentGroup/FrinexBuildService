@@ -74,13 +74,14 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 512x513 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-electron.sh \
-    && stat target/with_stimulus_example-win32-x64.zip \
-    && stat target/with_stimulus_example-darwin-x64.zip
-RUN cd /ExperimentTemplate/gwt-cordova \
-    && bash /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh \
-    && cp /ExperimentTemplate/gwt-cordova/target/app-release.apk /target/with_stimulus_example.apk
+RUN mkdir /test_data_electron_with_stimulus_example \
+    && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron_with_stimulus_example/ \
+    && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example-electron.zip /test_data_electron_with_stimulus_example/ \
+RUN mkdir /test_data_cordova_with_stimulus_example \
+    && cp /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /test_data_cordova_with_stimulus_example/ \
+    && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example-cordova.zip /test_data_cordova_with_stimulus_example/
+
+RUN ls -l /test*
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mkdir /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit \
