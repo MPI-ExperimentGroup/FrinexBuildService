@@ -41,9 +41,9 @@ RUN mkdir /android-sdk/cmdline-tools \
     && cd /android-sdk/cmdline-tools \
     && unzip ../cmdline-tools.zip \
     && rm ../cmdline-tools.zip \
-    && yes | /android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
-RUN /android-sdk/cmdline-tools/tools/bin/sdkmanager --update
-RUN /android-sdk/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
+    && yes | /android-sdk/cmdline-tools/bin/sdkmanager --licenses
+RUN /android-sdk/cmdline-tools/bin/sdkmanager --update
+RUN /android-sdk/cmdline-tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
     "platforms;android-${ANDROID_VERSION}" \
     "platform-tools"
 RUN npm install npm -g # update npm
