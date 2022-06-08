@@ -35,6 +35,16 @@ else
     # tag beta as the new stable
     docker tag frinexapps-jdk:beta frinexapps-jdk:stable
 
+    # tag the old cordova stable
+    docker tag frinexapps-cordova:stable frinexapps-cordova:stable_$(date +%F)
+    # tag beta as the new stable
+    docker tag frinexapps-cordova:beta frinexapps-cordova:stable
+
+    # tag the old electron stable
+    docker tag frinexapps-electron:stable frinexapps-electron:stable_$(date +%F)
+    # tag beta as the new stable
+    docker tag frinexapps-electron:beta frinexapps-electron:stable
+
     # make the current XSD available for this stable so that they can be used by frinex builds with frinexVersion
     docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/frinex.xsd"
     docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/frinex.html"
