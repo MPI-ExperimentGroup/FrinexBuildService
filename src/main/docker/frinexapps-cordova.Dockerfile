@@ -47,7 +47,7 @@ RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;${ANDROID_BUIL
     "platforms;android-${ANDROID_VERSION}" \
     "platform-tools"
 RUN npm install npm -g # update npm
-RUN npm install -g cordova@10.0.0
+RUN npm install -g cordova@11.0.0
 
 COPY android-keys/frinex-build.json /android-keys/
 COPY android-keys/frinex-cordova.jks /android-keys/
