@@ -34,7 +34,8 @@ else
     git pull
 
     # build the frinexapps-jdk dockerfile:
-    if docker build --no-cache -f docker/frinexapps-jdk.Dockerfile -t frinexapps-jdk:alpha . 
+    # --no-cache
+    if docker build -f docker/frinexapps-jdk.Dockerfile -t frinexapps-jdk:alpha . 
     then 
         # tag the alpha version with its own build version
         alphaVersion=$(docker run --rm -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:alpha /bin/bash -c "cat /ExperimentTemplate/gwt-cordova.version")
