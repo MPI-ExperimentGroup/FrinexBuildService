@@ -22,19 +22,20 @@
 
 FROM openjdk:8
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-RUN dpkg --add-architecture i386
+# RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
-RUN apt-get -y install unzip zip mono-devel build-essential gradle imagemagick graphviz maven nodejs vim wine32 file
+RUN apt-get -y install unzip zip build-essential gradle imagemagick nodejs vim wine32 file
 
 ENV ANDROID_VERSION=30 \
     ANDROID_HOME=/android-sdk \
     ANDROID_SDK_ROOT=/android-sdk \
-    ANDROID_BUILD_TOOLS_VERSION=30.0.2
+    ANDROID_BUILD_TOOLS_VERSION=32.0.0
 ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/tools
+# the listing of commandlinetools can be found here https://developer.android.com/studio#command-tools
 RUN mkdir /android-sdk \
     && cd /android-sdk \
-    && curl -o cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-6514223_latest.zip"
+    && curl -o cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip"
 #    && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
 RUN mkdir /android-sdk/cmdline-tools \
     && cd /android-sdk/cmdline-tools \
