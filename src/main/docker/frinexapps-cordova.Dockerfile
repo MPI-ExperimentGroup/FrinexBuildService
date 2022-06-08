@@ -20,8 +20,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-# FROM openjdk:8
-FROM openjdk:11
+FROM openjdk:8
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 # RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing
