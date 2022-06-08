@@ -53,7 +53,7 @@ COPY android-keys/frinex-cordova.jks /android-keys/
 
 COPY test_data_cordova /test_data_cordova
 
-RUN cd /ExperimentTemplate/gwt-cordova \
+RUN cd /test_data_cordova/with_stimulus_example \
     && bash /test_data_cordova/with_stimulus_example/setup-cordova.sh \
     && stat /test_data_cordova/with_stimulus_example/app-release.apk
 
