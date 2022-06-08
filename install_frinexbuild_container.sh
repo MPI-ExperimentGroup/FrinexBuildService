@@ -48,28 +48,33 @@ else
     # start the staging tomcat server
     #docker run --name tomcatstaging -d --rm -i -p 8071:8080 -v webappsTomcatStaging:/usr/local/tomcat/webapps tomcatstaging:latest
 
+    # This step is not needed in non swarm installations
     # build the frinex_db_manager
-    # docker build --rm -f docker/frinex_db_manager.Dockerfile -t frinex_db_manager:latest .
+    docker build --rm -f docker/frinex_db_manager.Dockerfile -t frinex_db_manager:latest .
     
+    # This step is not needed in non swarm installations
     # create the frinex_db_manager bridge network 
-    # docker network create frinex_db_manager_net
+    docker network create frinex_db_manager_net
 
+    # This step is not needed in non swarm installations
     # remove the old frinex_db_manager
-    # docker stop frinex_db_manager 
-    # docker container rm frinex_db_manager 
+    docker stop frinex_db_manager 
+    docker container rm frinex_db_manager 
 
     # If the DB users that are required by frinex_db_manager to create new databases and users do not exist then an error will be shown in the build listing.
 
+    # This step is not needed in non swarm installations
     # start the frinex_db_manager in the bridge network
-    # docker run --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
+    docker run --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
 
+    # This step is not needed in non swarm installations
     # build the frinex_listing_provider
-    # docker build --rm -f docker/frinex_listing_provider.Dockerfile -t frinex_listing_provider:latest .
+    docker build --rm -f docker/frinex_listing_provider.Dockerfile -t frinex_listing_provider:latest .
     # remove the old frinex_listing_provider
-    # docker stop frinex_listing_provider 
-    # docker container rm frinex_listing_provider 
+    docker stop frinex_listing_provider 
+    docker container rm frinex_listing_provider 
     # start the frinex_listing_provider
-    # docker run --restart unless-stopped --name frinex_listing_provider --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
+    docker run --restart unless-stopped --name frinex_listing_provider --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
 
     # remove the old frinexbuild
     docker stop frinexbuild 
@@ -85,8 +90,9 @@ else
     # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
 
     # start the frinexbuild container with access to /var/run/docker.sock so that it can create sibling containers of frinexapps
-    # docker run --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock  -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
-    docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v wizardExperiments:/FrinexBuildService/wizard-experiments -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+    docker run --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock  -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+    # in non swarm installations the frinex_db_manager_net is excluded as follows
+    #docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v wizardExperiments:/FrinexBuildService/wizard-experiments -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
     # -v $workingDir/BackupFiles:/BackupFiles 
     # the -v m2Directory:/maven/.m2/ volume is not strictly needed in this container but it makes it easer to run docker purge without destroying the .m2/settings.xml etc
     # docker run  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinexbuild-temp frinexbuild:latest bash
