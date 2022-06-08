@@ -76,7 +76,7 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
 RUN mkdir /test_data_electron_with_stimulus_example \
     && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron_with_stimulus_example/ \
-    && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example-electron.zip /test_data_electron_with_stimulus_example/ \
+    && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example-electron.zip /test_data_electron_with_stimulus_example/
 RUN mkdir /test_data_cordova_with_stimulus_example \
     && cp /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /test_data_cordova_with_stimulus_example/ \
     && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example-cordova.zip /test_data_cordova_with_stimulus_example/
