@@ -25,7 +25,7 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 # RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
-RUN apt-get -y install unzip zip build-essential gradle imagemagick nodejs vim wine32 file
+RUN apt-get -y install unzip zip build-essential gradle imagemagick nodejs vim file
 
 ENV ANDROID_VERSION=30 \
     ANDROID_HOME=/android-sdk \
