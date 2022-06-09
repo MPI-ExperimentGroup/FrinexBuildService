@@ -53,27 +53,26 @@ RUN cd /ExperimentTemplate \
 
 RUN mkdir /ExperimentTemplate/target
 
-# copy the maven settings to the .m2 directory that will later be a volume
+# make the .m2 directory that will later be a volume
 RUN mkdir /maven
 RUN mkdir /maven/.m2
-COPY config/settings.xml /maven/.m2/
 
 RUN cd /ExperimentTemplate \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+    && mvn clean install -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 RUN cd /ExperimentTemplate \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=alloptions
+    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=alloptions
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn -q -gs /maven/.m2/settings.xml -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
+    && mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
 RUN cd /ExperimentTemplate \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example
+    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example
 RUN mkdir /target
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
     && convert -gravity center -size 512x513 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
+    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
 RUN mkdir /test_data_electron \
     && mkdir /test_data_electron/with_stimulus_example \
     && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron/with_stimulus_example/ \
@@ -88,7 +87,7 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
     && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -gs /maven/.m2/settings.xml -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
+    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
 RUN mkdir /test_data_electron/rosselfieldkit \
     && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron/rosselfieldkit/ \
     && cp /ExperimentTemplate/gwt-cordova/target/rosselfieldkit*-electron.zip /test_data_electron/rosselfieldkit/

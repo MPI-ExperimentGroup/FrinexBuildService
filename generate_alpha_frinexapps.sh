@@ -48,8 +48,12 @@ else
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:alpha /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/alpha.xsd"
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:alpha /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/alpha.html"
         docker run --user root --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "chown frinex:www-data /FrinexBuildService/artifacts/*.xsd; chown frinex:www-data /FrinexBuildService/artifacts/*.html;"
+        
+        # copy the maven settings to the .m2 directory that is a in volume
+        docker run --rm -v $workingDir/src/main/config:/config -v m2Directory:/maven/.m2/ -w /ExperimentTemplate/AdaptiveVocabularyAssessmentModule frinexapps-jdk:alpha /bin/bash -c "cp /config/settings.xml /maven/.m2/"
+
         # make sure the local .m2 directory has the alpha jar files. In this case we just install AdaptiveVocabularyAssessmentModule which will also install frinex common and the parent pom, because compiling the GWT component is not needed here
-        docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate/AdaptiveVocabularyAssessmentModule frinexapps-jdk:alpha /bin/bash -c "mvn install -gs /maven/.m2/settings.xml"        
+        docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate/AdaptiveVocabularyAssessmentModule frinexapps-jdk:alpha /bin/bash -c "mvn install -gs /maven/.m2/settings.xml"
         echo "frinexapps-jdk ok"
 
         # prepare the corova and electron test build files
