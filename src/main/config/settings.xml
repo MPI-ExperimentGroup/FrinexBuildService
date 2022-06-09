@@ -20,10 +20,11 @@
         <profile>
             <id>default-profile</id>
             <properties>
-                <!-- these properties of admin password and db host and password are set in the publish.properties so that the frinexapps image is agnostic to the machine it runs on -->
-                <!-- <experiment.configuration.admin.password>example</experiment.configuration.admin.password> -->
+                <!-- the db host is set in the publish.properties because it differs between staging and production -->
                 <!-- <experiment.configuration.db.host>example.com</experiment.configuration.db.host> -->
-                <!-- <experiment.configuration.db.password>example</experiment.configuration.db.password> -->
+                <!-- this default admin password is only used on staging -->
+                <experiment.configuration.admin.password>examplechangethis</experiment.configuration.admin.password>
+                <experiment.configuration.db.password>examplechangethis</experiment.configuration.db.password>
             </properties>
         </profile>
     </profiles>

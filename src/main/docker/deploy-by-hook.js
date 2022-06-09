@@ -63,6 +63,8 @@ const stagingServer = properties.get('staging.serverName');
 const stagingServerUrl = properties.get('staging.serverUrl');
 const stagingGroupsSocketUrl = properties.get('staging.groupsSocketUrl');
 const stagingDbHost = properties.get('staging.dbHost');
+// admin login for staging is taken from the settings.xml rather than the publish.properties
+// const stagingAdminToken = properties.get('staging.adminToken');
 const productionServer = properties.get('production.serverName');
 const productionServerUrl = properties.get('production.serverUrl');
 const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
@@ -671,7 +673,8 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
             + ' -Dexperiment.configuration.db.host=' + stagingDbHost
-            // admin login is not needed for staging + ' -Dexperiment.configuration.admin.password=' + getExperimentToken(currentEntry.buildName)
+            // admin login for staging is taken from the settings.xml rather than the publish.properties
+            // + ' -Dexperiment.configuration.admin.password=' + stagingAdminToken
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
