@@ -1027,6 +1027,10 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
                 + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 + ' -Dexperiment.productionCheckString=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
+                // we handle the db host for custom servers which still needs to be localhost by not specifying 
+                // the db host so that it defaults to the value in the pom.xml which is localhost:5432
+                // otherwise it could be done with:
+                //  + ' -Dexperiment.configuration.db.host=' + properties.get(currentEntry.productionServer.replace(/^https?:\/\//, '') + '.dbHost')
                 : ' -Dexperiment.destinationServer=' + productionServer
                 + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                 + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
