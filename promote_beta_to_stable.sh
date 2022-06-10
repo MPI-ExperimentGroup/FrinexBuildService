@@ -52,7 +52,7 @@ else
     docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/stable.html"
     # make the changes file available for this stable so that they can be viewed from the build page
     docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "cp /ExperimentTemplate/changes.txt /FrinexBuildService/artifacts/stablechanges.txt"
-    docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "chown frinex:www-data /FrinexBuildService/artifacts/*.xsd; chown frinex:www-data /FrinexBuildService/artifacts/*.html; chown frinex:www-data /FrinexBuildService/artifacts/*.txt; chmod a+wr /FrinexBuildService/artifacts/*.txt;"
+    docker run --user root --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "chown frinex:www-data /FrinexBuildService/artifacts/*.xsd; chown frinex:www-data /FrinexBuildService/artifacts/*.html; chown frinex:www-data /FrinexBuildService/artifacts/*.txt; chmod a+wr /FrinexBuildService/artifacts/*.txt;"
 fi;
 
 
