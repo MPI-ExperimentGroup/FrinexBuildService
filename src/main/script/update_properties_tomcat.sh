@@ -28,13 +28,17 @@ cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
 
+cp /srv/tomcat/webapps/*-admin.war* /mnt/tmpbackup/
+echo "Backup made, exiting. Remove this section from this script to continue."
+exit
+
 # find all admin war files 
 for foundPath in /srv/tomcat/webapps/*-admin.war*
 do
     tempPath=$foundPath.temp
-    backupPath=$foundPath.backup
+    #backupPath=$foundPath.backup
     # restore the backup if it exists
-    mv $backupPath $foundPath
+    #mv $backupPath $foundPath
     # make a temp file to modify
     cp $foundPath $tempPath
     echo $tempPath;
@@ -52,7 +56,7 @@ do
     unzip -p $tempPath WEB-INF/classes/application.properties
 
     # move the original to use as the backup
-    mv $foundPath $backupPath
+    #mv $foundPath $backupPath
     # use the temp file to replace the original
     mv $tempPath $foundPath
 done
