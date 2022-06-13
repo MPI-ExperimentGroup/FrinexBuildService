@@ -29,16 +29,18 @@ scriptDir=$(pwd -P)
 #echo $scriptDir
 
 # find all admin war files 
-for foundPath in `find /srv/tomcat/webapps/ -maxdepth 1 -mindepth 1 -type f -name *-admin.war* -printf '%f\n'`
+for foundPath in /srv/tomcat/webapps/*-admin.war*
 do
-    tempPath = $foundPath.temp
-    cp $tempPath $foundPath
+    tempPath=$foundPath.temp
+    cp $foundPath $tempPath
     echo $tempPath;
-    unzip -p $tempPath WEB-INF/classes/application.properties
+    # print out the original values
+    unzip -p $foundPath WEB-INF/classes/application.properties
 
     # unzip $tempPath WEB-INF/classes/application.properties -d .
     # sed -i "s/localhost/updatedhost/g" WEB-INF/classes/application.properties
     # zip $tempPath WEB-INF/classes/application.properties
 
+    # print out the updated values
     unzip -p $tempPath WEB-INF/classes/application.properties
 done
