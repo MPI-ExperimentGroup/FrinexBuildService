@@ -32,15 +32,27 @@ scriptDir=$(pwd -P)
 for foundPath in /srv/tomcat/webapps/*-admin.war*
 do
     tempPath=$foundPath.temp
+    backupPath=$foundPath.backup
+    # restore the backup if it exists
+    mv $backupPath $foundPath
+    # make a temp file to modify
     cp $foundPath $tempPath
     echo $tempPath;
     # print out the original values
     unzip -p $foundPath WEB-INF/classes/application.properties
 
-    # unzip $tempPath WEB-INF/classes/application.properties -d .
-    # sed -i "s/localhost/updatedhost/g" WEB-INF/classes/application.properties
-    # zip $tempPath WEB-INF/classes/application.properties
+    unzip $tempPath WEB-INF/classes/application.properties -d .
+    # replace the values
+    sed -i "s/localhost/updatedhost/g" WEB-INF/classes/application.properties
+    zip $tempPath WEB-INF/classes/application.properties
+    # clean up files
+    rm WEB-INF/classes/application.properties
 
     # print out the updated values
     unzip -p $tempPath WEB-INF/classes/application.properties
+
+    # move the original to use as the backup
+    mv $foundPath $backupPath
+    # use the temp file to replace the original
+    mv $tempPath $foundPath
 done
