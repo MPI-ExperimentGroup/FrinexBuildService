@@ -47,14 +47,14 @@ run_queries() {
     chmod a+wr $outputFile
 }
 
-psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_staging_user -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
+psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
     currentExperimentName=${currentexperiment%_db}
     currentExperimentUser=$currentExperimentName"_user"
     outputFile=/frinex_munin_stats/${currentExperimentName#frinex_}_staging_admin
     run_queries $currentExperimentName $currentExperimentUser $outputFile DatabaseStagingUrl DatabaseStagingPort
 done
 
-psql -h DatabaseProductionUrl -p DatabaseProductionPort -U frinex_production_user -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
+psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
     currentExperimentName=${currentexperiment%_db}
     currentExperimentUser=$currentExperimentName"_user"
     outputFile=/frinex_munin_stats/${currentExperimentName#frinex_}_production_admin

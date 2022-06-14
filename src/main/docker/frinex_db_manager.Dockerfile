@@ -49,8 +49,8 @@ RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/ht
 #TODO: can we restrict the parameters of this sudoers entry?
 RUN echo '%www-data ALL=(ALL) NOPASSWD: /usr/bin/psql' >> /etc/sudoers 
 # provide an authentication menthod for the CGI script
-RUN echo "staging.example.com:5432:postgres:frinex_db_user:examplepassword" > /FrinexBuildService/frinex_db_user_authentication
-RUN echo "production.example.com:5432:postgres:frinex_db_user:examplepassword" >> /FrinexBuildService/frinex_db_user_authentication
+RUN echo "staging.example.com:5432:postgres:db_manager_frinex_staging:examplepassword" > /FrinexBuildService/frinex_db_user_authentication
+RUN echo "production.example.com:5432:postgres:db_manager_frinex_production:examplepassword" >> /FrinexBuildService/frinex_db_user_authentication
 RUN chown -R www-data:daemon /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 RUN chown -R www-data:daemon /FrinexBuildService/cgi

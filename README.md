@@ -66,10 +66,9 @@ restore_frinexbuild_backup.sh
 The build system uses the frinex_db_manager container to generate databases for new experiments.
 There are two postgres instances running on different ports and each requires its own admin user
 The required admin user for the staging instance can be created with:
-CREATE ROLE frinex_staging_user WITH LOGIN CREATEDB CREATEROLE PASSWORD 'changethis';
+CREATE ROLE db_manager_frinex_staging WITH LOGIN CREATEDB CREATEROLE PASSWORD 'changethis';
 The required admin user for the production instance can be created with:
-CREATE ROLE frinex_staging_user WITH LOGIN CREATEDB CREATEROLE PASSWORD 'changethis';
-CREATE ROLE frinex_production_user WITH LOGIN CREATEDB CREATEROLE PASSWORD 'changethis';
+CREATE ROLE db_manager_frinex_production WITH LOGIN CREATEDB CREATEROLE PASSWORD 'changethis';
 
 # CGI Scripts
 /cgi/experiment_access.cgi
