@@ -1955,7 +1955,7 @@ function updateDocumentation() {
 
 function prepareImageList() {
     // generate a searchable list of frinex versions
-    var dockerString = "sudo docker image ls | grep frinexapps- | awk 'NR>1 {print $2 \",\"}'"
+    var dockerString = "sudo docker image ls | grep frinexapps-jdk | awk 'NR>1 {print $2 \",\"}'"
     console.log(dockerString);
     try {
         child_process.exec(dockerString, (error, stdout, stderr) => {
