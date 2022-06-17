@@ -23,8 +23,8 @@
                 <!-- the db host is set in the publish.properties because it differs between staging and production -->
                 <!-- <experiment.configuration.db.host>example.com</experiment.configuration.db.host> -->
                 <!-- this default admin password is only used on staging -->
-                <experiment.configuration.admin.password>DatabaseStagingPass</experiment.configuration.admin.password>
-                <experiment.configuration.db.password>DatabaseProductionPass</experiment.configuration.db.password>
+                <experiment.configuration.admin.password>examplechangethis</experiment.configuration.admin.password>
+                <experiment.configuration.db.password>examplechangethis</experiment.configuration.db.password>
             </properties>
         </profile>
     </profiles>
