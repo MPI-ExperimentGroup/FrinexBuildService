@@ -41,13 +41,15 @@ RUN sed -i "s|DatabaseStagingUrl|staging.example.com|g" /FrinexBuildService/stat
 RUN sed -i "s|DatabaseStagingPort|5433|g" /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 RUN sed -i "s|DatabaseProductionPort|5434|g" /FrinexBuildService/stats/bootstrap_munin_statistics.sh
-RUN sed -i "s|examplechangethis|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
-RUN sed -i "s|examplechangethis|example|g" /FrinexBuildService/stats/bootstrap_munin_statistics.sh
+RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/stats/bootstrap_munin_statistics.sh
+RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 #RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 #RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
 #TODO: can we restrict the parameters of this sudoers entry?
-RUN echo '%www-data ALL=(ALL) NOPASSWD: /usr/bin/psql' >> /etc/sudoers 
+RUN echo '%www-data ALL=(ALL) NOPASSWD: /usr/bin/psql' >> /etc/sudoers
 # provide an authentication menthod for the CGI script
 RUN echo "staging.example.com:5432:postgres:db_manager_frinex_staging:examplepassword" > /FrinexBuildService/frinex_db_user_authentication
 RUN echo "production.example.com:5432:postgres:db_manager_frinex_production:examplepassword" >> /FrinexBuildService/frinex_db_user_authentication

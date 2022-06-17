@@ -28,21 +28,22 @@ run_queries() {
     outputFile=$3
     databaseUrl=$4
     databasePort=$5
+    databasePass=$6
     echo $outputFile
     date > $outputFile;
-    #PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) from screen_data";
-    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalDeploymentsAccessed.value ' || count(distinct tag_value) from tag_data where event_tag = 'compileDate'" >> $outputFile;
-    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalPageLoads.value ' || count(distinct tag_date) from tag_data where event_tag = 'compileDate'" >> $outputFile;
-    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalParticipantsSeen.value ' || count(distinct user_id) from participant" >> $outputFile;
-    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalStimulusResponses.value ' || count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response" >> $outputFile;
-    PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalMediaResponses.value ' || count (id) from audio_data" >> $outputFile;
-    #PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) from participant";
-    #PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) from participant";
+    #PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) from screen_data";
+    PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalDeploymentsAccessed.value ' || count(distinct tag_value) from tag_data where event_tag = 'compileDate'" >> $outputFile;
+    PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalPageLoads.value ' || count(distinct tag_date) from tag_data where event_tag = 'compileDate'" >> $outputFile;
+    PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalParticipantsSeen.value ' || count(distinct user_id) from participant" >> $outputFile;
+    PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalStimulusResponses.value ' || count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response" >> $outputFile;
+    PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalMediaResponses.value ' || count (id) from audio_data" >> $outputFile;
+    #PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) from participant";
+    #PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) from participant";
     #echo '"participantsFirstAndLastSeen": [';
-    #PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant group by user_id order by min(submit_date) asc";
+    #PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant group by user_id order by min(submit_date) asc";
     #echo "],";
     #echo '"sessionFirstAndLastSeen": [';
-    #PGPASSWORD=examplechangethis psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc";
+    #PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc";
     #echo "]},";
     chmod a+wr $outputFile
 }
@@ -51,12 +52,12 @@ psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -
     currentExperimentName=${currentexperiment%_db}
     currentExperimentUser=$currentExperimentName"_user"
     outputFile=/frinex_munin_stats/${currentExperimentName#frinex_}_staging_admin
-    run_queries $currentExperimentName $currentExperimentUser $outputFile DatabaseStagingUrl DatabaseStagingPort
+    run_queries $currentExperimentName $currentExperimentUser $outputFile DatabaseStagingUrl DatabaseStagingPort "DatabaseStagingPass"
 done
 
 psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
     currentExperimentName=${currentexperiment%_db}
     currentExperimentUser=$currentExperimentName"_user"
     outputFile=/frinex_munin_stats/${currentExperimentName#frinex_}_production_admin
-    run_queries $currentExperimentName $currentExperimentUser $outputFile DatabaseProductionUrl DatabaseProductionPort
+    run_queries $currentExperimentName $currentExperimentUser $outputFile DatabaseProductionUrl DatabaseProductionPort "DatabaseProductionPass"
 done
