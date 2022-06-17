@@ -1726,7 +1726,7 @@ function moveIncomingToQueued() {
                             fs.stat(incomingFile, function (error, stat) {
                                 if (error) { return console.error(error); }
                                 var currentTime = new Date().getTime();
-                                var deleteTime = new Date(stat.mtime).getTime() + 1000 + 60 + 10 // (10 minutes)
+                                var deleteTime = new Date(stat.mtime).getTime() + (1000 * 60 * 10) // (10 minutes)
                                 if (currentTime > deleteTime) {
                                     console.log('deleting old: ' + incomingFile);
                                     return fs.unlink(filePath, function (error) {
