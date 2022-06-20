@@ -46,7 +46,8 @@ update_stats() {
     do
         experimentAdminName=$(cut -d'/' -f2 <<< $currentUrl)
         #echo $experimentAdminName
-        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
+        # changed --max-time 2 to --max-time 1 due to munin timeouts when NGINX fails on all experiments
+        usageStatsResult=$(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentAdminName
             # cat $dataDirectory/$experimentAdminName
