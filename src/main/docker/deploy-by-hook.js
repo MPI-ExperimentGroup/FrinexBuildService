@@ -1722,18 +1722,20 @@ function moveIncomingToQueued() {
                         var queuedFile = path.resolve(incomingDirectory + '/queued/', lowerCaseFileName);
                         if (path.extname(lowerCaseFileName) === ".commit") {
                             // the committer info is used when the XML or JSON file is processed
-                            // if the .xml.commit file is older than X and there are no other files then it should be deleted
-                            fs.stat(incomingFile, function (error, stat) {
-                                if (error) { return console.error(error); }
-                                var currentTime = new Date().getTime();
-                                var deleteTime = new Date(stat.mtime).getTime() + (1000 * 60 * 10) // (10 minutes)
-                                if (currentTime > deleteTime) {
-                                    console.log('deleting old: ' + incomingFile);
-                                    return fs.unlink(incomingFile, function (error) {
-                                        if (error) return console.error(error);
-                                    });
-                                }
-                            });
+                            if (fs.existsSync(incomingFile)) {
+                                // if the .xml.commit file is older than X and there are no other files then it should be deleted
+                                fs.stat(incomingFile, function (error, stat) {
+                                    if (error) { return console.error(error); }
+                                    var currentTime = new Date().getTime();
+                                    var deleteTime = new Date(stat.mtime).getTime() + (1000 * 60 * 10) // (10 minutes)
+                                    if (currentTime > deleteTime) {
+                                        console.log('deleting old: ' + incomingFile);
+                                        return fs.unlink(incomingFile, function (error) {
+                                            if (error) return console.error(error);
+                                        });
+                                    }
+                                });
+                            }
                         } else if (checkForDuplicates(currentName) !== 1) {
                             // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
                             initialiseResult(currentName, '<a class="shortmessage" href="' + currentName + '/' + currentName + '_conflict_error.txt?' + new Date().getTime() + '">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true, '', '');
