@@ -50,7 +50,7 @@ RUN npm install npm -g # update npm
 RUN npm install -g cordova@11.0.0
 
 # set up gradle manually so we get a more recent version
-ENV PATH=${PATH}:/opt/gradle
+ENV PATH=${PATH}:/opt/gradle/bin
 RUN mkdir /opt/gradle \
     && wget https://services.gradle.org/distributions/gradle-7.4.2-bin.zip \
     && unzip -d /opt/gradle gradle-*-bin.zip \
