@@ -56,11 +56,13 @@ COPY test_data_cordova /test_data_cordova
 
 RUN cd /test_data_cordova/with_stimulus_example \
     && bash /test_data_cordova/with_stimulus_example/setup-cordova.sh \
-    && stat /test_data_cordova/with_stimulus_example/app-release.apk
+    && stat /test_data_cordova/with_stimulus_example/app-release.apk \
+    && stat /test_data_cordova/with_stimulus_example/app-release.aab
 
 RUN cd /test_data_cordova/rosselfieldkit \
     && bash /test_data_cordova/rosselfieldkit/setup-cordova.sh \
-    && stat /test_data_cordova/rosselfieldkit/app-release.apk
+    && stat /test_data_cordova/rosselfieldkit/app-release.apk \
+    && stat /test_data_cordova/rosselfieldkit/app-release.aab
 
 # clean out the test directory to prevent these files being used in the automated builds
 RUN rm -r /test_data_cordova
