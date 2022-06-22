@@ -49,6 +49,9 @@ RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;${ANDROID_BUIL
 RUN npm install npm -g # update npm
 RUN npm install -g cordova@11.0.0
 
+# clone the Frinex repository so that the FieldKitRecorder is available
+RUN git clone https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
+
 COPY android-keys/frinex-build.json /android-keys/
 COPY android-keys/frinex-cordova.jks /android-keys/
 
