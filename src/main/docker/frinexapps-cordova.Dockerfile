@@ -54,8 +54,8 @@ ENV PATH=${PATH}:/opt/gradle
 RUN mkdir /opt/gradle \
     && wget https://services.gradle.org/distributions/gradle-7.4.2-bin.zip \
     && unzip -d /opt/gradle gradle-*-bin.zip \
-    && mv /opt/gradle/gradle-*/bin /opt/gradle/
-    && mv /opt/gradle/gradle-*/lib /opt/gradle/
+    && mv /opt/gradle/gradle-*/bin /opt/gradle/ \
+    && mv /opt/gradle/gradle-*/lib /opt/gradle/ \
     && rm gradle-*-bin.zip
 
 # clone the Frinex repository so that the FieldKitRecorder is available
