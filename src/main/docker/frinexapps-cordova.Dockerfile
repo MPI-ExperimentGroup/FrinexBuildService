@@ -51,7 +51,7 @@ RUN mkdir /android-sdk/cmdline-tools \
     && mv /android-sdk/cmdline-tools/cmdline-tools /android-sdk/cmdline-tools/latest \
     && yes | /android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
 RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager --update
-RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager
+RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager \
     "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
     "platforms;android-${ANDROID_VERSION}"
     #  "platform-tools" \
