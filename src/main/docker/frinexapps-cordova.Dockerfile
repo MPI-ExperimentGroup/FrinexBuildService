@@ -46,7 +46,7 @@ RUN mkdir /android-sdk \
     && curl -o cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip"
 #    && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
 RUN mkdir /android-sdk/cmdline-tools \
-    && unzip -d /android-sdk/cmdline-tools cmdline-tools.zip \
+    && unzip -d /android-sdk/cmdline-tools /android-sdk/cmdline-tools.zip \
     && rm ../cmdline-tools.zip \
     && mv /android-sdk/cmdline-tools/cmdline-tools /android-sdk/cmdline-tools/latest \
     && yes | /android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
