@@ -27,6 +27,15 @@ RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
 RUN apt-get -y install unzip zip build-essential imagemagick nodejs vim file
 
+# set up gradle manually so we get a more recent version
+ENV PATH=${PATH}:/opt/gradle/bin
+RUN mkdir /opt/gradle \
+    && wget https://services.gradle.org/distributions/gradle-7.4.2-bin.zip \
+    && unzip -d /opt/gradle gradle-*-bin.zip \
+    && mv /opt/gradle/gradle-*/bin /opt/gradle/ \
+    && mv /opt/gradle/gradle-*/lib /opt/gradle/ \
+    && rm gradle-*-bin.zip
+
 ENV ANDROID_VERSION=30 \
     ANDROID_SDK_ROOT=/android-sdk \
     ANDROID_BUILD_TOOLS_VERSION=30.0.3
@@ -48,15 +57,6 @@ RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;${ANDROID_BUIL
     "platform-tools"
 RUN npm install npm -g # update npm
 RUN npm install -g cordova@11.0.0
-
-# set up gradle manually so we get a more recent version
-ENV PATH=${PATH}:/opt/gradle/bin
-RUN mkdir /opt/gradle \
-    && wget https://services.gradle.org/distributions/gradle-7.4.2-bin.zip \
-    && unzip -d /opt/gradle gradle-*-bin.zip \
-    && mv /opt/gradle/gradle-*/bin /opt/gradle/ \
-    && mv /opt/gradle/gradle-*/lib /opt/gradle/ \
-    && rm gradle-*-bin.zip
 
 # clone the Frinex repository so that the FieldKitRecorder is available
 RUN git clone https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
