@@ -38,7 +38,7 @@ RUN mkdir /opt/gradle \
 
 ENV ANDROID_VERSION=30 \
     ANDROID_SDK_ROOT=/android-sdk \
-    ANDROID_BUILD_TOOLS_VERSION=32.0.0
+    ANDROID_BUILD_TOOLS_VERSION=30.0.3
 ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/cmdline-tools
 # the listing of commandlinetools can be found here https://developer.android.com/studio#command-tools
 RUN mkdir /android-sdk \
@@ -51,9 +51,9 @@ RUN mkdir /android-sdk/cmdline-tools \
     && mv /android-sdk/cmdline-tools/cmdline-tools /android-sdk/cmdline-tools/latest \
     && yes | /android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
 RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager --update
-RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
-    "platforms;android-${ANDROID_VERSION}" \
-    "platform-tools"
+RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" \
+    "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
+    "platforms;android-${ANDROID_VERSION}"
 RUN npm install npm -g # update npm
 RUN npm install -g cordova@11.0.0
 
