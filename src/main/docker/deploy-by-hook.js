@@ -1322,7 +1322,7 @@ function processBuildEntry(filenameL, buildNameL, listingFileL) {
     fs.unlinkSync(listingFileL);
     // check that the requested frinex version exists
     if (listingJsonData.frinexVersion != null && listingJsonData.frinexVersion.length > 0 && !availableImageList.includes(listingJsonData.frinexVersion)) {
-        console.error("Invalid version: " + currentEntry.frinexVersion);
+        console.error("Invalid version: " + listingJsonData.frinexVersion);
         storeResult(buildNameL, "Invalid Version", "validation", "json_xsd", true, false, false);
         console.log('removing: ' + processingDirectory + '/staging-queued' + filenameL);
         fs.unlinkSync(path.resolve(processingDirectory + '/staging-queued', filenameL));
