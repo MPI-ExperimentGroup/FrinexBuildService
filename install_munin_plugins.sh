@@ -47,6 +47,15 @@ else
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_production_web
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_production_admin
 
+    # instal the swarm node stats plugin
+    cp script/frinex_swarm_nodes_plugin.sh /tmp/frinex_swarm_nodes_plugin.sh
+    chmod 777 /tmp/frinex_swarm_nodes_plugin.sh
+    sudo rm /usr/lib/munin/plugins/frinex_swarm_nodes
+    sudo mv /tmp/frinex_swarm_nodes_plugin.sh /usr/lib/munin/plugins/frinex_swarm_nodes
+    sudo chmod 775 /usr/lib/munin/plugins/frinex_swarm_nodes
+    sudo chown root:root /usr/lib/munin/plugins/frinex_swarm_nodes
+    sudo ln -s /usr/lib/munin/plugins/frinex_swarm_nodes /etc/munin/plugins/frinex_swarm_nodes_node1_node2_node3
+
     # instal the experiment stats plugin and working directory
     sudo mkdir -p /srv/frinex_munin_data/stats
     cp script/frinex_experiment_stats_munin_plugin.sh /tmp/frinex_experiment_stats_munin_plugin.sh
