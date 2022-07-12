@@ -33,7 +33,7 @@ output_config() {
     echo "graph_category frinex"
     for nodeName in ${1//_/ }
     do
-        echo "staging_web_$nodeName.label $nodeName"
+        echo "frinex_swarm_node_$nodeName.label $nodeName"
     done
 }
 
@@ -41,7 +41,7 @@ output_config() {
 output_values() {
     for nodeName in ${1//_/ }
     do
-        echo "staging_web_$nodeName.value "$(docker node ps $nodeName | grep -E "_admin|_web" | grep Running | wc -l)
+        echo "frinex_swarm_node_$nodeName.value "$(docker node ps $nodeName | grep -E "_admin|_web" | grep Running | wc -l)
     done
 }
 
