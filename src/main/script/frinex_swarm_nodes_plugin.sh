@@ -41,7 +41,7 @@ output_config() {
 output_values() {
     for nodeName in ${1//_/ }
     do
-        echo "staging_web_$nodeName.value ${docker node ps lux22 | grep Running | wc -l}"
+        echo "staging_web_$nodeName.value ${docker node ps $nodeName | grep -E "_admin|_web" | grep Running | wc -l}"
     done
 }
 
