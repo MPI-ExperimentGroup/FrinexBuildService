@@ -42,7 +42,7 @@ output_config() {
 output_values() {
     for nodeName in ${1//_/ }
     do
-        echo "frinex_swarm_node_$nodeName.value "$(docker node ps $nodeName | grep -E "_admin|_web" | grep Running | wc -l)
+        echo "frinex_swarm_node_$nodeName.value "$(sudo docker node ps $nodeName | grep -E "_admin|_web" | grep Running | wc -l)
     done
 }
 
