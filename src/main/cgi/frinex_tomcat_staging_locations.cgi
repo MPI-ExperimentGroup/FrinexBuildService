@@ -31,11 +31,11 @@ curl -s https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\
 do
     if [[ ${runningServices} != *$runningWar"_staging"* ]];then
         echo "location /$runningWar {"
-        echo " proxy_pass http://tomcatstaging/$runningWar;"
+        echo " proxy_pass https://tomcatstaging/$runningWar;"
         echo "}"
         echo ""
         echo "location /$runningWar-admin {"
-        echo " proxy_pass http://tomcatstaging/$runningWar-admin;"
+        echo " proxy_pass https://tomcatstaging/$runningWar-admin;"
         echo "}"
     fi
 done
