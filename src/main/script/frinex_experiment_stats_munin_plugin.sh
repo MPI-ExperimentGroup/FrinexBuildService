@@ -90,7 +90,13 @@ output_values() {
             echo "multigraph $deployemntType$graphType"
             for filePath in $dataDirectory/*$deployemntType"_admin"; do
                 fileName=${filePath#"$dataDirectory/"}
-                grep $graphType $filePath | sed "s/$graphType/$fileName/g"
+                value=$(grep $graphType $filePath | sed "s/$graphType/$fileName/g")
+                if [ -z "$value" ]
+                then
+                    echo "$fileName.value U"
+                else
+                    echo $value
+                fi
             done
         done
     done
