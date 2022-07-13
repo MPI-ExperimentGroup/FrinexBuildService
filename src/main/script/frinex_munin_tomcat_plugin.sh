@@ -133,12 +133,12 @@ production_admin_values() {
 
 productionb_web_values() {
     echo "$(health_of_services "$productionbUrl" "" "production")"
-    printf "productionbSleeping.value %d\n" $(number_of_sleeping "$productionbUrl")
+    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionbUrl")
 }
 
 productionb_admin_values() {
     echo "$(health_of_services "$productionbUrl" "-admin" "productionAdmin")"
-    printf "productionbAdminSleeping.value %d\n" $(number_of_sleeping "$productionbUrl")
+    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionbUrl")
 }
 
 output_values() {
