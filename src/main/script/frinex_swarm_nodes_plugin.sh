@@ -34,7 +34,7 @@ output_config() {
     for nodeName in ${1//_/ }
     do
         echo "frinex_swarm_node_$nodeName.label $nodeName"
-        echo "frinex_swarm_node_$nodeName.draw AREASTACK"
+        # echo "frinex_swarm_node_$nodeName.draw AREASTACK"
     done
 }
 
