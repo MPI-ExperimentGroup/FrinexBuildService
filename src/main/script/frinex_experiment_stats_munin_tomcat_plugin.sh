@@ -56,6 +56,7 @@ output_config() {
         echo "multigraph $1_$graphType"
         echo "graph_title Frinex Tomcat $1 $graphType"
         echo "graph_category frinex"
+        echo "graph_total total $1 $graphType"
         for filePath in $dataDirectory/*-admin; do
             fileName=${filePath#"$dataDirectory/"}
             echo "$fileName.label $fileName"
