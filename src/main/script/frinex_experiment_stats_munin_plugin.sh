@@ -71,6 +71,7 @@ output_config() {
             echo "multigraph $deployemntType$graphType"
             echo "graph_title Frinex Docker $deployemntType $graphType"
             echo "graph_category frinex"
+            echo "graph_total total $deployemntType $graphType"
             for filePath in $dataDirectory/*$deployemntType"_admin"; do
                 fileName=${filePath#"$dataDirectory/"}
                 echo "$fileName.label $fileName"
