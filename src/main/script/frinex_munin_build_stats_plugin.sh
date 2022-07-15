@@ -32,6 +32,7 @@ dataDirectory=/srv/frinex_munin_data/builds
 output_config() {
     echo "graph_title Frinex $1 Build Stats"
     echo "graph_category frinex"
+    echo "graph_args --left-axis-formatter duration"    
     echo "staging_web_$1.label staging_web_$1"
     echo "staging_admin_$1.label staging_admin_$1"
     echo "staging_desktop_$1.label staging_desktop_$1"
