@@ -114,7 +114,7 @@ else
     sudo mv /tmp/frinex_munin_tomcat_docker_ratio.sh /usr/lib/munin/plugins/tomcat_docker_ratio_
     sudo chmod 775 /usr/lib/munin/plugins/tomcat_docker_ratio_
     sudo chown root:root /usr/lib/munin/plugins/tomcat_docker_ratio_
-    sudo ln -s /usr/lib/munin/plugins/tomcat_docker_ratio_ /etc/munin/plugins/tomcat_docker_ratio_tomcaturl_nginxurl
+    sudo ln -s /usr/lib/munin/plugins/tomcat_docker_ratio_ /etc/munin/plugins/tomcat_docker_ratio_tomcaturl_nginxurl_stagingorproduction
 
     # boot strap the experiment stats plugin data directly from postgres
     docker run -v /srv/frinex_munin_data/stats:/frinex_munin_stats -it --rm --name bootstrap_munin_stats frinex_db_manager:latest bash /FrinexBuildService/stats/bootstrap_munin_statistics.sh

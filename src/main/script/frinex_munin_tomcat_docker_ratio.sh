@@ -33,31 +33,16 @@ dataDirectory=/srv/frinex_munin_data/tomcat_docker_ratio
 output_values() {
     serviceList="$(sudo docker service ls \
         | grep -E "8080/tcp" \
+        | grep -E "_$2" \
         | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
-    echo -n "dockerStagingWebTotal.value "
+    echo -n "dockerWebTotal.value "
     echo echo "u"
-    echo -n "dockerStagingAdminTotal.value "
+    echo -n "dockerAdminTotal.value "
     echo echo "u"
-    echo -n "dockerStagingWebHealthy.value "
+    echo -n "dockerWebHealthy.value "
     echo echo "u"
-    echo -n "dockerStagingAdminHealthy.value "
-    echo echo "u"
-    echo -n "tomcatProductionWebTotal.value "
-    echo echo "u"
-    echo -n "tomcatProductionAdminTotal.value "
-    echo echo "u"
-    echo -n "tomcatProductionWebHealthy.value "
-    echo echo "u"
-    echo -n "tomcatProductionAdminHealthy.value "
-    echo echo "u"
-    echo -n "dockerProductionWebTotal.value "
-    echo echo "u"
-    echo -n "dockerProductionAdminTotal.value "
-    echo echo "u"
-    echo -n "dockerProductionWebHealthy.value "
-    echo echo "u"
-    echo -n "dockerProductionAdminHealthy.value "
+    echo -n "dockerAdminHealthy.value "
     echo echo "u"
 
     # echo "$serviceList" \
@@ -86,42 +71,39 @@ output_values() {
     #     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
-    tomcatStagingWebTotal=0;
-    tomcatStagingAdminTotal=0;
-    tomcatStagingWebHealthy=0;
-    tomcatStagingAdminHealthy=0;
-    # echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
-    # curl -s https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
-    # do
-    #     if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
-    #         echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
-    #     fi
-    # done
-    echo "tomcatStagingWebTotal.value $tomcatStagingWebTotal"
-    echo "tomcatStagingAdminTotal.value $tomcatStagingAdminTotal"
-    echo "tomcatStagingWebHealthy.value $tomcatStagingWebHealthy"
-    echo "tomcatStagingAdminHealthy.value $tomcatStagingAdminHealthy"
+    tomcatWebTotal=0;
+    tomcatAdminTotal=0;
+    tomcatWebHealthy=0;
+    tomcatAdminHealthy=0;
+    curl -s https://$1/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
+    do
+        if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
+            # echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
+            # healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/$serviceUrl$2/actuator/health)
+            # if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
+            #     healthCount=$[$healthCount +1]
+            # else
+            #     unknownCount=$[$unknownCount +1]
+            # fi
+        fi
+    done
+    echo "tomcatWebTotal.value $tomcatWebTotal"
+    echo "tomcatAdminTotal.value $tomcatAdminTotal"
+    echo "tomcatWebHealthy.value $tomcatWebHealthy"
+    echo "tomcatAdminHealthy.value $tomcatAdminHealthy"
 }
 
 output_config() {
     echo "graph_title Frinex Tomcat Docker Ratio $0 $1 $2"
     echo "graph_category frinex"
-    echo "tomcatStagingWebTotal.label Tomcat Staging Web Total"
-    echo "tomcatStagingAdminTotal.label Tomcat Staging Admin Total"
-    echo "tomcatStagingWebHealthy.label Tomcat Staging Web Healthy"
-    echo "tomcatStagingAdminHealthy.label Tomcat Staging Admin Healthy"
-    echo "dockerStagingWebTotal.label Docker Staging Web Total"
-    echo "dockerStagingAdminTotal.label Docker Staging Admin Total"
-    echo "dockerStagingWebHealthy.label Docker Staging Web Healthy"
-    echo "dockerStagingAdminHealthy.label Docker Staging Admin Healthy"
-    echo "tomcatProductionWebTotal.label Tomcat Production Web Total"
-    echo "tomcatProductionAdminTotal.label Tomcat Production Admin Total"
-    echo "tomcatProductionWebHealthy.label Tomcat Production Web Healthy"
-    echo "tomcatProductionAdminHealthy.label Tomcat Production Admin Healthy"
-    echo "dockerProductionWebTotal.label Docker Production Web Total"
-    echo "dockerProductionAdminTotal.label Docker Production Admin Total"
-    echo "dockerProductionWebHealthy.label Docker Production Web Healthy"
-    echo "dockerProductionAdminHealthy.label Docker Production Admin Healthy"
+    echo "tomcatWebTotal.label Tomcat Web Total"
+    echo "tomcatAdminTotal.label Tomcat Admin Total"
+    echo "tomcatWebHealthy.label Tomcat Web Healthy"
+    echo "tomcatAdminHealthy.label Tomcat Admin Healthy"
+    echo "dockerWebTotal.label Docket Web Total"
+    echo "dockerAdminTotal.label Docket Admin Total"
+    echo "dockerWebHealthy.label Docket Web Healthy"
+    echo "dockerAdminHealthy.label Docket Admin Healthy"
 }
 
 update_data() {
