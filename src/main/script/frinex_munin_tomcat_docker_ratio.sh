@@ -22,7 +22,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-# This MUNIN plugin monitors the ratio of experiments served by tomcat v docker and the health of the nginx proxy and web application for each
+# This MUNIN plugin monitors the ratio of experiments served by tomcat vs docker and the health of the nginx proxy and web application for each entry
 
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
@@ -35,37 +35,29 @@ output_values() {
         | grep -E "8080/tcp" \
         | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
-    echo -n "tomcatStagingWebTotal.value "
-    echo echo "u"
-    echo -n "tomcatStagingAdminTotal.value "
-    echo echo "u"
-    echo -n "tomcatStagingWebTotal.value "
-    echo echo "u"
-    echo -n "tomcatStagingAdminTotal.value "
-    echo echo "u"
     echo -n "dockerStagingWebTotal.value "
     echo echo "u"
     echo -n "dockerStagingAdminTotal.value "
     echo echo "u"
-    echo -n "dockerStagingWebTotal.value "
+    echo -n "dockerStagingWebHealthy.value "
     echo echo "u"
-    echo -n "dockerStagingAdminTotal.value "
+    echo -n "dockerStagingAdminHealthy.value "
     echo echo "u"
     echo -n "tomcatProductionWebTotal.value "
     echo echo "u"
     echo -n "tomcatProductionAdminTotal.value "
     echo echo "u"
-    echo -n "tomcatProductionWebTotal.value "
+    echo -n "tomcatProductionWebHealthy.value "
     echo echo "u"
-    echo -n "tomcatProductionAdminTotal.value "
-    echo echo "u"
-    echo -n "dockerProductionWebTotal.value "
-    echo echo "u"
-    echo -n "dockerProductionAdminTotal.value "
+    echo -n "tomcatProductionAdminHealthy.value "
     echo echo "u"
     echo -n "dockerProductionWebTotal.value "
     echo echo "u"
     echo -n "dockerProductionAdminTotal.value "
+    echo echo "u"
+    echo -n "dockerProductionWebHealthy.value "
+    echo echo "u"
+    echo -n "dockerProductionAdminHealthy.value "
     echo echo "u"
 
     # echo "$serviceList" \
@@ -94,6 +86,10 @@ output_values() {
     #     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
+    tomcatStagingWebTotal=0;
+    tomcatStagingAdminTotal=0;
+    tomcatStagingWebHealthy=0;
+    tomcatStagingAdminHealthy=0;
     # echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
     # curl -s https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
     # do
@@ -101,37 +97,41 @@ output_values() {
     #         echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
     #     fi
     # done
+    echo "tomcatStagingWebTotal.value $tomcatStagingWebTotal"
+    echo "tomcatStagingAdminTotal.value $tomcatStagingAdminTotal"
+    echo "tomcatStagingWebHealthy.value $tomcatStagingWebHealthy"
+    echo "tomcatStagingAdminHealthy.value $tomcatStagingAdminHealthy"
 }
 
 output_config() {
-    echo "graph_title Frinex Tomcat Docker Ratio $0 $1"
+    echo "graph_title Frinex Tomcat Docker Ratio $0 $1 $2"
     echo "graph_category frinex"
     echo "tomcatStagingWebTotal.label Tomcat Staging Web Total"
     echo "tomcatStagingAdminTotal.label Tomcat Staging Admin Total"
-    echo "tomcatStagingWebTotal.label Tomcat Staging Web Healthy"
-    echo "tomcatStagingAdminTotal.label Tomcat Staging Admin Healthy"
+    echo "tomcatStagingWebHealthy.label Tomcat Staging Web Healthy"
+    echo "tomcatStagingAdminHealthy.label Tomcat Staging Admin Healthy"
     echo "dockerStagingWebTotal.label Docker Staging Web Total"
     echo "dockerStagingAdminTotal.label Docker Staging Admin Total"
-    echo "dockerStagingWebTotal.label Docker Staging Web Healthy"
-    echo "dockerStagingAdminTotal.label Docker Staging Admin Healthy"
+    echo "dockerStagingWebHealthy.label Docker Staging Web Healthy"
+    echo "dockerStagingAdminHealthy.label Docker Staging Admin Healthy"
     echo "tomcatProductionWebTotal.label Tomcat Production Web Total"
     echo "tomcatProductionAdminTotal.label Tomcat Production Admin Total"
-    echo "tomcatProductionWebTotal.label Tomcat Production Web Healthy"
-    echo "tomcatProductionAdminTotal.label Tomcat Production Admin Healthy"
+    echo "tomcatProductionWebHealthy.label Tomcat Production Web Healthy"
+    echo "tomcatProductionAdminHealthy.label Tomcat Production Admin Healthy"
     echo "dockerProductionWebTotal.label Docker Production Web Total"
     echo "dockerProductionAdminTotal.label Docker Production Admin Total"
-    echo "dockerProductionWebTotal.label Docker Production Web Healthy"
-    echo "dockerProductionAdminTotal.label Docker Production Admin Healthy"
+    echo "dockerProductionWebHealthy.label Docker Production Web Healthy"
+    echo "dockerProductionAdminHealthy.label Docker Production Admin Healthy"
 }
 
 update_data() {
     serverNameParts=${1//_/ }
-    output_values $serverNameParts[0] $serverNameParts[1] > $dataDirectory/$1.values
-    output_config $serverNameParts[0] $serverNameParts[1] > $dataDirectory/$1.config
+    output_values $serverNameParts[0] $serverNameParts[1] $serverNameParts[2] > $dataDirectory/$1.values
+    output_config $serverNameParts[0] $serverNameParts[1] $serverNameParts[2] > $dataDirectory/$1.config
 }
 
 output_usage() {
-    printf >&2 "%s - munin plugin to show the ratio of experiments served by tomcat v docker and the health of the nginx proxy and web application for each\n" ${0##*/}
+    printf >&2 "%s - munin plugin to show the ratio of experiments served by tomcat vs docker and the health of the nginx proxy and web application for each entry\n" ${0##*/}
     printf >&2 "Usage: %s [config]\n" ${0##*/}
 }
 
