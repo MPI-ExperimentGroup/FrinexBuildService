@@ -57,6 +57,7 @@ output_config() {
         echo "graph_title Frinex Tomcat $1 $graphType"
         echo "graph_category frinex"
         echo "graph_total total $1 $graphType"
+        echo "graph_args --no-legend"        
         for filePath in $dataDirectory/*-admin; do
             fileName=${filePath#"$dataDirectory/"}
             echo "$fileName.label $fileName"
