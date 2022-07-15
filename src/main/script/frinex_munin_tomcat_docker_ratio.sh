@@ -1,0 +1,160 @@
+#!/bin/bash
+#
+# Copyright (C) 2022 Max Planck Institute for Psycholinguistics
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+
+#
+# @since 15 July 2022 14:07 PM (creation date)
+# @author Peter Withers <peter.withers@mpi.nl>
+#
+
+# This MUNIN plugin monitors the ratio of experiments served by tomcat v docker and the health of the nginx proxy and web application for each
+
+cd $(dirname "$0")
+scriptDir=$(pwd -P)
+#echo $scriptDir
+linkName=$(basename $0)
+dataDirectory=/srv/frinex_munin_data/tomcat_docker_ratio
+
+output_values() {
+    serviceList="$(sudo docker service ls \
+        | grep -E "8080/tcp" \
+        | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
+
+    echo -n "tomcatStagingWebTotal.value "
+    echo echo "u"
+    echo -n "tomcatStagingAdminTotal.value "
+    echo echo "u"
+    echo -n "tomcatStagingWebTotal.value "
+    echo echo "u"
+    echo -n "tomcatStagingAdminTotal.value "
+    echo echo "u"
+    echo -n "dockerStagingWebTotal.value "
+    echo echo "u"
+    echo -n "dockerStagingAdminTotal.value "
+    echo echo "u"
+    echo -n "dockerStagingWebTotal.value "
+    echo echo "u"
+    echo -n "dockerStagingAdminTotal.value "
+    echo echo "u"
+    echo -n "tomcatProductionWebTotal.value "
+    echo echo "u"
+    echo -n "tomcatProductionAdminTotal.value "
+    echo echo "u"
+    echo -n "tomcatProductionWebTotal.value "
+    echo echo "u"
+    echo -n "tomcatProductionAdminTotal.value "
+    echo echo "u"
+    echo -n "dockerProductionWebTotal.value "
+    echo echo "u"
+    echo -n "dockerProductionAdminTotal.value "
+    echo echo "u"
+    echo -n "dockerProductionWebTotal.value "
+    echo echo "u"
+    echo -n "dockerProductionAdminTotal.value "
+    echo echo "u"
+
+    # echo "$serviceList" \
+    #     | grep -E "_admin|_web" \
+    #     | grep -E "_production" \
+    #     | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
+    #     | sed 's/_production_web {/ {/g' \
+    #     | sed 's/_production_admin {/-admin {/g' \
+    #     > /usr/local/apache2/htdocs/frinex_production_locations.txt
+
+    # echo "$serviceList" \
+    #     | grep -E "_production" \
+    #     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
+    #     > /usr/local/apache2/htdocs/frinex_production_upstreams.txt
+
+    # echo "$serviceList" \
+    #     | grep -E "_admin|_web" \
+    #     | grep -E "_staging" \
+    #     | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
+    #     | sed 's/_staging_web {/ {/g' \
+    #     | sed 's/_staging_admin {/-admin {/g' \
+    #     > /usr/local/apache2/htdocs/frinex_staging_locations.txt
+
+    # echo "$serviceList" \
+    #     | grep -E "_staging" \
+    #     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
+    #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
+
+    # echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
+    # curl -s https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
+    # do
+    #     if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
+    #         echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
+    #     fi
+    # done
+}
+
+output_config() {
+    echo "graph_title Frinex Tomcat Docker Ratio $0 $1"
+    echo "graph_category frinex"
+    echo "tomcatStagingWebTotal.label Tomcat Staging Web Total"
+    echo "tomcatStagingAdminTotal.label Tomcat Staging Admin Total"
+    echo "tomcatStagingWebTotal.label Tomcat Staging Web Healthy"
+    echo "tomcatStagingAdminTotal.label Tomcat Staging Admin Healthy"
+    echo "dockerStagingWebTotal.label Docker Staging Web Total"
+    echo "dockerStagingAdminTotal.label Docker Staging Admin Total"
+    echo "dockerStagingWebTotal.label Docker Staging Web Healthy"
+    echo "dockerStagingAdminTotal.label Docker Staging Admin Healthy"
+    echo "tomcatProductionWebTotal.label Tomcat Production Web Total"
+    echo "tomcatProductionAdminTotal.label Tomcat Production Admin Total"
+    echo "tomcatProductionWebTotal.label Tomcat Production Web Healthy"
+    echo "tomcatProductionAdminTotal.label Tomcat Production Admin Healthy"
+    echo "dockerProductionWebTotal.label Docker Production Web Total"
+    echo "dockerProductionAdminTotal.label Docker Production Admin Total"
+    echo "dockerProductionWebTotal.label Docker Production Web Healthy"
+    echo "dockerProductionAdminTotal.label Docker Production Admin Healthy"
+}
+
+update_data() {
+    serverNameParts=${1//_/ }
+    output_values $serverNameParts[0] $serverNameParts[1] > $dataDirectory/$1.values
+    output_config $serverNameParts[0] $serverNameParts[1] > $dataDirectory/$1.config
+}
+
+output_usage() {
+    printf >&2 "%s - munin plugin to show the ratio of experiments served by tomcat v docker and the health of the nginx proxy and web application for each\n" ${0##*/}
+    printf >&2 "Usage: %s [config]\n" ${0##*/}
+}
+
+case $# in
+    0)
+        touch $dataDirectory/${linkName#"tomcat_docker_ratio_"}.values
+        cat $dataDirectory/${linkName#"tomcat_docker_ratio_"}.values
+        update_data ${linkName#"tomcat_docker_ratio_"}&
+        ;;
+    1)
+        case $1 in
+            config)
+                touch $dataDirectory/${linkName#"tomcat_docker_ratio_"}.config
+                cat $dataDirectory/${linkName#"tomcat_docker_ratio_"}.config
+                ;;
+            *)
+                output_usage
+                exit 1
+                ;;
+        esac
+        ;;
+    *)
+        output_usage
+        exit 1
+        ;;
+esac
