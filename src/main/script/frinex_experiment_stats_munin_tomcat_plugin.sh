@@ -37,7 +37,7 @@ invalidate_stats() {
 }
 
 update_stats() {
-    invalidate_stats;
+    # invalidate_stats;
     hoststring=$1
     for experimentName in $(curl --silent -H 'Content-Type: application/json' http://$hoststring/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
     do
