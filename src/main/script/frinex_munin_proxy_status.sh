@@ -123,15 +123,15 @@ output_usage() {
 
 case $# in
     0)
-        touch $dataDirectory/${linkName#"tomcat_docker_ratio_"}.values
-        cat $dataDirectory/${linkName#"tomcat_docker_ratio_"}.values
-        update_data ${linkName#"tomcat_docker_ratio_"}&
+        touch $dataDirectory/${linkName#"frinex_proxy_status_"}.values
+        cat $dataDirectory/${linkName#"frinex_proxy_status_"}.values
+        update_data ${linkName#"frinex_proxy_status_"}&
         ;;
     1)
         case $1 in
             config)
-                touch $dataDirectory/${linkName#"tomcat_docker_ratio_"}.config
-                cat $dataDirectory/${linkName#"tomcat_docker_ratio_"}.config
+                touch $dataDirectory/${linkName#"frinex_proxy_status_"}.config
+                cat $dataDirectory/${linkName#"frinex_proxy_status_"}.config
                 ;;
             *)
                 output_usage
