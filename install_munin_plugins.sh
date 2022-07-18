@@ -107,7 +107,7 @@ else
     sudo ln -s /usr/lib/munin/plugins/frinex_build_stats /etc/munin/plugins/frinex_build_example1
 
     # instal the frinex tomcat docker ratio plugin and working directory
-    sudo mkdir -p /srv/frinex_munin_data/tomcat_docker_ratio
+    sudo mkdir -p /srv/frinex_munin_data/frinex_proxy_status
     cp script/frinex_munin_proxy_status.sh /tmp/frinex_munin_proxy_status.sh
     chmod 777 /tmp/frinex_munin_proxy_status.sh
     sudo rm /usr/lib/munin/plugins/frinex_proxy_status_

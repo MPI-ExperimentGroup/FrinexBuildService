@@ -28,7 +28,7 @@ cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
 linkName=$(basename $0)
-dataDirectory=/srv/frinex_munin_data/tomcat_docker_ratio
+dataDirectory=/srv/frinex_munin_data/frinex_proxy_status
 
 output_values() {
     serviceList="$(sudo docker service ls \
