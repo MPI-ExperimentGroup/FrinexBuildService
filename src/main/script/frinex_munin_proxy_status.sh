@@ -80,29 +80,29 @@ output_values() {
     do
         if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
             # echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
-            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$1/$runningWar-admin/actuator/health | grep "spring-boot")
+            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar-admin/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatAdminFound=$[$tomcatAdminFound +1]
-                echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
+                # echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
             fi
-            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$1/$runningWar/actuator/health | grep "spring-boot")
+            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatWebFound=$[$tomcatWebFound +1]
-                echo "web found $tomcatWebFound" >> $dataDirectory/plugin.log
+                # echo "web found $tomcatWebFound" >> $dataDirectory/plugin.log
             fi
             tomcatWebTotal=$[$tomcatWebTotal +1]
             tomcatAdminTotal=$[$tomcatAdminTotal +1]
-            echo "" >> $dataDirectory/plugin.log
-            echo "https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
-            echo "$headerResult" >> $dataDirectory/plugin.log
+            # echo "" >> $dataDirectory/plugin.log
+            # echo "https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
+            # echo "$headerResult" >> $dataDirectory/plugin.log
         fi
     done
     echo "tomcatWebTotal.value $tomcatWebTotal"
     echo "tomcatAdminTotal.value $tomcatAdminTotal"
-    echo "tomcatAdminTotal.value $tomcatAdminTotal" >> $dataDirectory/plugin.log
+    # echo "tomcatAdminTotal.value $tomcatAdminTotal" >> $dataDirectory/plugin.log
     echo "tomcatWebFound.value $tomcatWebFound"
     echo "tomcatAdminFound.value $tomcatAdminFound"
-    echo "tomcatAdminFound.value $tomcatAdminFound" >> $dataDirectory/plugin.log
+    # echo "tomcatAdminFound.value $tomcatAdminFound" >> $dataDirectory/plugin.log
 }
 
 output_config() {
