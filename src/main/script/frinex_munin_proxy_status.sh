@@ -82,7 +82,7 @@ output_values() {
         )
     do
         #echo "service URL: https://$2/$runningWar/actuator/health" >> $dataDirectory/$1_$2_$3.log
-        headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
+        headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "Content-Type")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 if [[ "$runningWar" == *"-admin"* ]]; then
                     dockerAdminFound=$[$dockerAdminFound +1]
@@ -91,7 +91,16 @@ output_values() {
                 fi
                 # echo "admin found $tomcatAdminFound" >> $dataDirectory/$1_$2_$3.log
             else
-                echo "service not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/$1_$2_$3.log
+                if [[ "$runningWar" == *"-admin"* ]]; then
+                    echo "service not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/$1_$2_$3.log
+                else
+                    if [[ "$headerResult" == *"json"* ]]; then
+                        dockerWebFound=$[$dockerWebFound +1]
+                    else
+                        echo "service not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/$1_$2_$3.log
+                    fi
+                fi
+                
             fi
             if [[ "$runningWar" == *"-admin"* ]]; then
                 dockerAdminTotal=$[$dockerAdminTotal +1]
