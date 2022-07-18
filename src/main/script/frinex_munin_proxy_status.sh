@@ -80,7 +80,7 @@ output_values() {
     do
         if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
             # echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
-            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar-admin/actuator/health | grep "spring-boot")
+            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$1/$runningWar-admin/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatAdminFound=$[$tomcatAdminFound +1]
                 echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
