@@ -40,9 +40,9 @@ output_values() {
     echo echo "u"
     echo -n "dockerAdminTotal.value "
     echo echo "u"
-    echo -n "dockerWebHealthy.value "
+    echo -n "dockerWebFound.value "
     echo echo "u"
-    echo -n "dockerAdminHealthy.value "
+    echo -n "dockerAdminFound.value "
     echo echo "u"
 
     # echo "$serviceList" \
@@ -71,26 +71,30 @@ output_values() {
     #     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
+    echo "$0, $1, $2" > $dataDirectory/plugin.log
     tomcatWebTotal=0;
     tomcatAdminTotal=0;
-    tomcatWebHealthy=0;
-    tomcatAdminHealthy=0;
+    tomcatWebFound=0;
+    tomcatAdminFound=0;
     curl -s https://$1/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
     do
         if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
             # echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
-            healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$1/$runningWar-admin/actuator/health)
-            if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
-                tomcatAdminHealthy=$[$tomcatAdminHealthy +1]
+            headerResult=$(curl -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$1/$runningWar-admin/actuator/health)
+            if [[ $headerResult == *"spring-boot"* ]]; then
+                tomcatAdminFound=$[$tomcatAdminFound +1]
             fi
             tomcatWebTotal=$[$tomcatWebTotal +1]
             tomcatAdminTotal=$[$tomcatAdminTotal +1]
+            echo "" >> $dataDirectory/plugin.log
+            echo "$runningWar" >> $dataDirectory/plugin.log
+            echo "$headerResult" >> $dataDirectory/plugin.log
         fi
     done
     echo "tomcatWebTotal.value $tomcatWebTotal"
     echo "tomcatAdminTotal.value $tomcatAdminTotal"
-    echo "tomcatWebHealthy.value $tomcatWebHealthy"
-    echo "tomcatAdminHealthy.value $tomcatAdminHealthy"
+    echo "tomcatWebFound.value $tomcatWebFound"
+    echo "tomcatAdminFound.value $tomcatAdminFound"
 }
 
 output_config() {
@@ -98,12 +102,12 @@ output_config() {
     echo "graph_category frinex"
     echo "tomcatWebTotal.label Tomcat Web Total"
     echo "tomcatAdminTotal.label Tomcat Admin Total"
-    echo "tomcatWebHealthy.label Tomcat Web Healthy"
-    echo "tomcatAdminHealthy.label Tomcat Admin Healthy"
+    echo "tomcatWebFound.label Tomcat Web Found"
+    echo "tomcatAdminFound.label Tomcat Admin Found"
     echo "dockerWebTotal.label Docket Web Total"
     echo "dockerAdminTotal.label Docket Admin Total"
-    echo "dockerWebHealthy.label Docket Web Healthy"
-    echo "dockerAdminHealthy.label Docket Admin Healthy"
+    echo "dockerWebFound.label Docket Web Found"
+    echo "dockerAdminFound.label Docket Admin Found"
 }
 
 update_data() {
