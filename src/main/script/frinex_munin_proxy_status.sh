@@ -76,6 +76,17 @@ output_values() {
     tomcatAdminTotal=0;
     tomcatWebFound=0;
     tomcatAdminFound=0;
+    for runningWar in $( \
+        echo "$serviceList" \
+        | grep -E "_admin|_web" \
+        | grep -E "_$3" \
+        | awk '{print "$2\n"}' \
+        | sed "s/_$3_web {//g" \
+        | sed "s/_$3_admin {/-admin/g" \
+        )
+    do
+        echo "service URL: https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
+    done
     for runningWar in $(curl -k -s https://$1/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g")
     do
         if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
