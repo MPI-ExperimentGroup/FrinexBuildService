@@ -36,14 +36,6 @@ output_values() {
         | grep -E "_$3" \
         | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
-    echo -n "dockerWebTotal.value "
-    echo echo "u"
-    echo -n "dockerAdminTotal.value "
-    echo echo "u"
-    echo -n "dockerWebFound.value "
-    echo echo "u"
-    echo -n "dockerAdminFound.value "
-    echo echo "u"
 
     # echo "$serviceList" \
     #     | grep -E "_admin|_web" \
@@ -72,6 +64,10 @@ output_values() {
     #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
     echo "$0, $1, $2, $3, " > $dataDirectory/plugin.log
+    dockerWebTotal=0;
+    dockerAdminTotal=0;
+    dockerWebFound=0;
+    dockerAdminFound=0;
     tomcatWebTotal=0;
     tomcatAdminTotal=0;
     tomcatWebFound=0;
@@ -85,8 +81,29 @@ output_values() {
         | sed "s/_$3_admin/-admin/g" \
         )
     do
-        echo "service URL: https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
+        #echo "service URL: https://$2/$runningWar/actuator/health" >> $dataDirectory/plugin.log
+        headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
+            if [[ "$headerResult" == *"spring-boot"* ]]; then
+                if [[ "$runningWar" == *"-admin"* ]]; then
+                    dockerAdminFound=$[$dockerAdminFound +1]
+                else
+                    dockerWebFound=$[$dockerWebFound +1]
+                fi
+                # echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
+            else
+                echo "service not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/plugin.log
+            fi
+            if [[ "$runningWar" == *"-admin"* ]]; then
+                dockerAdminTotal=$[$dockerAdminTotal +1]
+            else
+                dockerWebTotal=$[$dockerWebTotal +1]
+            fi
     done
+    echo "dockerWebTotal.value $dockerWebTotal"
+    echo "dockerAdminTotal.value $dockerAdminTotal"
+    echo "dockerWebFound.value $dockerWebFound"
+    echo "dockerAdminFound.value $dockerAdminFound"
+
     for runningWar in $(curl -k -s https://$1/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g")
     do
         if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
@@ -96,14 +113,14 @@ output_values() {
                 tomcatAdminFound=$[$tomcatAdminFound +1]
                 # echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
             else
-                echo "not found: https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
+                echo "tomcat not found: https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
             fi
             headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatWebFound=$[$tomcatWebFound +1]
                 # echo "web found $tomcatWebFound" >> $dataDirectory/plugin.log
             else
-                echo "not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/plugin.log
+                echo "tomcat not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/plugin.log
             fi
             tomcatWebTotal=$[$tomcatWebTotal +1]
             tomcatAdminTotal=$[$tomcatAdminTotal +1]
