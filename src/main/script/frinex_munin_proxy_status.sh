@@ -76,7 +76,7 @@ output_values() {
     tomcatAdminTotal=0;
     tomcatWebFound=0;
     tomcatAdminFound=0;
-    curl -k -s https://$1/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
+    for runningWar in $(curl -k -s https://$1/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g")
     do
         if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
             # echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
