@@ -115,8 +115,10 @@ output_values() {
             else
                 echo "tomcat not found: https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/$1_$2_$3.log
             fi
-            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
-            if [[ "$headerResult" == *"spring-boot"* ]]; then
+            # headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
+            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "Content-Type")
+            # if [[ "$headerResult" == *"spring-boot"* ]]; then
+            if [[ "$headerResult" == *"json"* ]]; then
                 tomcatWebFound=$[$tomcatWebFound +1]
                 # echo "web found $tomcatWebFound" >> $dataDirectory/$1_$2_$3.log
             else
