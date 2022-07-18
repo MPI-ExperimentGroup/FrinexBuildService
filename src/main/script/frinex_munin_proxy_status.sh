@@ -113,8 +113,8 @@ output_config() {
 
 update_data() {
     serverNameParts=${1//_/ }
-    output_values $serverNameParts[0] $serverNameParts[1] $serverNameParts[2] > $dataDirectory/$1.values
-    output_config $serverNameParts[0] $serverNameParts[1] $serverNameParts[2] > $dataDirectory/$1.config
+    output_values "$serverNameParts[0]" "$serverNameParts[1]" "$serverNameParts[2]" > $dataDirectory/$1.values
+    output_config "$serverNameParts[0]" "$serverNameParts[1]" "$serverNameParts[2]" > $dataDirectory/$1.config
 }
 
 output_usage() {
