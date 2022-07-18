@@ -71,12 +71,12 @@ output_values() {
     #     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
-    echo "$0, $1, $2" > $dataDirectory/plugin.log
+    echo "$0, $1, $2, $3" > $dataDirectory/plugin.log
     tomcatWebTotal=0;
     tomcatAdminTotal=0;
     tomcatWebFound=0;
     tomcatAdminFound=0;
-    curl -s https://$1/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
+    curl -k -s https://$1/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g" | while read runningWar;
     do
         if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
             # echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
