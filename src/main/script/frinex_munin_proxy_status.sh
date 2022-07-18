@@ -71,7 +71,7 @@ output_values() {
     #     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
-    echo "$0, $1, $2, $3" > $dataDirectory/plugin.log
+    echo "$0, $1, $2, $3, " > $dataDirectory/plugin.log
     tomcatWebTotal=0;
     tomcatAdminTotal=0;
     tomcatWebFound=0;
@@ -80,15 +80,15 @@ output_values() {
     do
         if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
             # echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
-            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$1/$runningWar-admin/actuator/health | grep "spring-boot")
+            headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar-admin/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatAdminFound=$[$tomcatAdminFound +1]
-                echo "admin found" >> $dataDirectory/plugin.log
+                echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
             fi
             tomcatWebTotal=$[$tomcatWebTotal +1]
             tomcatAdminTotal=$[$tomcatAdminTotal +1]
             echo "" >> $dataDirectory/plugin.log
-            echo "$runningWar" >> $dataDirectory/plugin.log
+            echo "https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
             echo "$headerResult" >> $dataDirectory/plugin.log
         fi
     done
