@@ -94,8 +94,10 @@ output_values() {
     done
     echo "tomcatWebTotal.value $tomcatWebTotal"
     echo "tomcatAdminTotal.value $tomcatAdminTotal"
+    echo "tomcatAdminTotal.value $tomcatAdminTotal" >> $dataDirectory/plugin.log
     echo "tomcatWebFound.value $tomcatWebFound"
     echo "tomcatAdminFound.value $tomcatAdminFound"
+    echo "tomcatAdminFound.value $tomcatAdminFound" >> $dataDirectory/plugin.log
 }
 
 output_config() {
@@ -113,8 +115,8 @@ output_config() {
 
 update_data() {
     serverNameParts=${1//_/ }
-    output_values "$serverNameParts[0]" "$serverNameParts[1]" "$serverNameParts[2]" > $dataDirectory/$1.values
-    output_config "$serverNameParts[0]" "$serverNameParts[1]" "$serverNameParts[2]" > $dataDirectory/$1.config
+    output_values ${serverNameParts[0]} ${serverNameParts[1]} ${serverNameParts[2]} > $dataDirectory/$1.values
+    output_config ${serverNameParts[0]} ${serverNameParts[1]} ${serverNameParts[2]} > $dataDirectory/$1.config
 }
 
 output_usage() {
