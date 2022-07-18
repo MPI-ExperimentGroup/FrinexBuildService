@@ -33,7 +33,7 @@ dataDirectory=/srv/frinex_munin_data/frinex_proxy_status
 output_values() {
     serviceList="$(sudo docker service ls \
         | grep -E "8080/tcp" \
-        | grep -E "_$2" \
+        | grep -E "_$3" \
         | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
     echo -n "dockerWebTotal.value "
