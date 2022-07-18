@@ -63,7 +63,7 @@ output_values() {
     #     | awk '{print "upstream " $1 " {\n server lux22.mpi.nl:" $6 ";\n server lux23.mpi.nl:" $6 ";\n server lux25.mpi.nl:" $6 ";\n}\n"}' \
     #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
-    echo "$0, $1, $2, $3, " > $dataDirectory/plugin.log
+    echo "$0, $1, $2, $3, " > $dataDirectory/$0.log
     dockerWebTotal=0;
     dockerAdminTotal=0;
     dockerWebFound=0;
@@ -81,7 +81,7 @@ output_values() {
         | sed "s/_$3_admin/-admin/g" \
         )
     do
-        #echo "service URL: https://$2/$runningWar/actuator/health" >> $dataDirectory/plugin.log
+        #echo "service URL: https://$2/$runningWar/actuator/health" >> $dataDirectory/$0.log
         headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 if [[ "$runningWar" == *"-admin"* ]]; then
@@ -89,9 +89,9 @@ output_values() {
                 else
                     dockerWebFound=$[$dockerWebFound +1]
                 fi
-                # echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
+                # echo "admin found $tomcatAdminFound" >> $dataDirectory/$0.log
             else
-                echo "service not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/plugin.log
+                echo "service not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/$0.log
             fi
             if [[ "$runningWar" == *"-admin"* ]]; then
                 dockerAdminTotal=$[$dockerAdminTotal +1]
@@ -111,30 +111,30 @@ output_values() {
             headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar-admin/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatAdminFound=$[$tomcatAdminFound +1]
-                # echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
+                # echo "admin found $tomcatAdminFound" >> $dataDirectory/$0.log
             else
-                echo "tomcat not found: https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
+                echo "tomcat not found: https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/$0.log
             fi
             headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatWebFound=$[$tomcatWebFound +1]
-                # echo "web found $tomcatWebFound" >> $dataDirectory/plugin.log
+                # echo "web found $tomcatWebFound" >> $dataDirectory/$0.log
             else
-                echo "tomcat not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/plugin.log
+                echo "tomcat not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/$0.log
             fi
             tomcatWebTotal=$[$tomcatWebTotal +1]
             tomcatAdminTotal=$[$tomcatAdminTotal +1]
-            # echo "" >> $dataDirectory/plugin.log
-            # echo "https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
-            # echo "$headerResult" >> $dataDirectory/plugin.log
+            # echo "" >> $dataDirectory/$0.log
+            # echo "https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/$0.log
+            # echo "$headerResult" >> $dataDirectory/$0.log
         fi
     done
     echo "tomcatWebTotal.value $tomcatWebTotal"
     echo "tomcatAdminTotal.value $tomcatAdminTotal"
-    # echo "tomcatAdminTotal.value $tomcatAdminTotal" >> $dataDirectory/plugin.log
+    # echo "tomcatAdminTotal.value $tomcatAdminTotal" >> $dataDirectory/$0.log
     echo "tomcatWebFound.value $tomcatWebFound"
     echo "tomcatAdminFound.value $tomcatAdminFound"
-    # echo "tomcatAdminFound.value $tomcatAdminFound" >> $dataDirectory/plugin.log
+    # echo "tomcatAdminFound.value $tomcatAdminFound" >> $dataDirectory/$0.log
 }
 
 output_config() {
