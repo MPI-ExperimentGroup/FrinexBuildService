@@ -144,10 +144,10 @@ output_config() {
     echo "tomcatAdminTotal.label Tomcat Admin Total"
     echo "tomcatWebFound.label Tomcat Web Found"
     echo "tomcatAdminFound.label Tomcat Admin Found"
-    echo "dockerWebTotal.label Docket Web Total"
-    echo "dockerAdminTotal.label Docket Admin Total"
-    echo "dockerWebFound.label Docket Web Found"
-    echo "dockerAdminFound.label Docket Admin Found"
+    echo "dockerWebTotal.label Docker Web Total"
+    echo "dockerAdminTotal.label Docker Admin Total"
+    echo "dockerWebFound.label Docker Web Found"
+    echo "dockerAdminFound.label Docker Admin Found"
 }
 
 update_data() {
