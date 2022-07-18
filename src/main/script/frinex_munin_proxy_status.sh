@@ -80,7 +80,7 @@ output_values() {
         echo "$serviceList" \
         | grep -E "_admin|_web" \
         | grep -E "_$3" \
-        | awk '{print "$2\n"}' \
+        | awk '{print $2}' \
         | sed "s/_$3_web {//g" \
         | sed "s/_$3_admin {/-admin/g" \
         )
