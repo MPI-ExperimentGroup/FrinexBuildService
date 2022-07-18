@@ -84,11 +84,15 @@ output_values() {
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatAdminFound=$[$tomcatAdminFound +1]
                 # echo "admin found $tomcatAdminFound" >> $dataDirectory/plugin.log
+            else
+                echo "not found: https://$2/$runningWar-admin/actuator/health" >> $dataDirectory/plugin.log
             fi
             headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://$2/$runningWar/actuator/health | grep "spring-boot")
             if [[ "$headerResult" == *"spring-boot"* ]]; then
                 tomcatWebFound=$[$tomcatWebFound +1]
                 # echo "web found $tomcatWebFound" >> $dataDirectory/plugin.log
+            else
+                echo "not found: https://$2/$runningWar/actuator/health" >> $dataDirectory/plugin.log
             fi
             tomcatWebTotal=$[$tomcatWebTotal +1]
             tomcatAdminTotal=$[$tomcatAdminTotal +1]
