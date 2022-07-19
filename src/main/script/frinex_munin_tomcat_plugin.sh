@@ -31,7 +31,7 @@ dataDirectory=/srv/frinex_munin_data/tomcat
 stagingProxy="https://staging.example.com"
 stagingTomcat="https://staging.example.com"
 productionProxy="https://production.example.com"
-productionTopmcat="https://production.example.com"
+productionTomcat="https://production.example.com"
 productionbProxy="https://productionb.example.com"
 productionbTomcat="https://productionb.example.com"
 
