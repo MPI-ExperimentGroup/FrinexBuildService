@@ -59,8 +59,10 @@ update_stats() {
             # echo "totalStimulusResponses.label Stimulus Responses"
             # echo "totalMediaResponses.label Media Responses"
     done
-    output_values > $dataDirectory/output.values
-    output_config > $dataDirectory/output.config
+    output_values > $dataDirectory/output.values.tmp
+    output_config > $dataDirectory/output.config.tmp
+    mv -f $dataDirectory/output.config.tmp $dataDirectory/output.config
+    mv -f $dataDirectory/output.values.tmp $dataDirectory/output.values
 }
 
 output_config() {

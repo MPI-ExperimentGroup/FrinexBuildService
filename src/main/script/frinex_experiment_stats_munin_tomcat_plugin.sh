@@ -46,8 +46,10 @@ update_stats() {
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName-admin
         fi
     done
-    output_values $hoststring > $dataDirectory/$hoststring.values
-    output_config $hoststring > $dataDirectory/$hoststring.config
+    output_values $hoststring > $dataDirectory/$hoststring.values.tmp
+    output_config $hoststring > $dataDirectory/$hoststring.config.tmp
+    mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
+    mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
 }
 
 output_config() {
