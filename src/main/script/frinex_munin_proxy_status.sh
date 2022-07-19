@@ -149,7 +149,7 @@ output_values() {
 }
 
 output_config() {
-    echo "graph_title Frinex Proxy Status $2 $3"
+    echo "graph_title Frinex Proxy Status $1 $2 $3"
     echo "graph_category frinex"
     echo "tomcatWebTotal.label Tomcat Web Total"
     echo "tomcatAdminTotal.label Tomcat Admin Total"
