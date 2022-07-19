@@ -145,31 +145,31 @@ output_values() {
     case $1 in
         staging_web)
             cat $dataDirectory/staging_web_values
-            staging_web_values > $dataDirectory/staging_web_values&
+            { staging_web_values > $dataDirectory/staging_web_values.tmp; mv -f $dataDirectory/staging_web_values.tmp $dataDirectory/staging_web_values }&
             ;;
         staging_admin)
             cat $dataDirectory/staging_admin_values
-            staging_admin_values > $dataDirectory/staging_admin_values&
+            { staging_admin_values > $dataDirectory/staging_admin_values.tmp; mv -f $dataDirectory/staging_admin_values.tmp $dataDirectory/staging_admin_values }&
             ;;
         production_web)
             cat $dataDirectory/production_web_values
-            production_web_values > $dataDirectory/production_web_values&
+            { production_web_values > $dataDirectory/production_web_values.tmp; mv -f $dataDirectory/production_web_values.tmp $dataDirectory/production_web_values }&
             ;;
         production_admin)
             cat $dataDirectory/production_admin_values
-            production_admin_values > $dataDirectory/production_admin_values&
+            { production_admin_values > $dataDirectory/production_admin_values.tmp; mv -f $dataDirectory/production_admin_values.tmp $dataDirectory/production_admin_values }&
             ;;
         productionb_web)
             cat $dataDirectory/productionb_web_values
-            productionb_web_values > $dataDirectory/productionb_web_values&
+            { productionb_web_values > $dataDirectory/productionb_web_values.tmp; mv -f $dataDirectory/productionb_web_values.tmp $dataDirectory/productionb_web_values }&
             ;;
         productionb_admin)
             cat $dataDirectory/productionb_admin_values
-            productionb_admin_values > $dataDirectory/productionb_admin_values&
+            { productionb_admin_values > $dataDirectory/productionb_admin_values.tmp; mv -f $dataDirectory/productionb_admin_values.tmp $dataDirectory/productionb_admin_values }&
             ;;
         *)
             cat $dataDirectory/frinex_munin_all
-            { staging_web_values; staging_admin_values; production_web_values; production_admin_values; } > $dataDirectory/frinex_munin_all&
+            { { staging_web_values; staging_admin_values; production_web_values; production_admin_values; } > $dataDirectory/frinex_munin_all.tmp; mv -f $dataDirectory/frinex_munin_all.tmp $dataDirectory/frinex_munin_all }&
             ;;
     esac
 }
