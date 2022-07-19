@@ -28,9 +28,12 @@ cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
 dataDirectory=/srv/frinex_munin_data/tomcat
-stagingUrl="https://staging.example.com"
-productionUrl="https://production.example.com"
-productionbUrl="https://productionb.example.com"
+stagingProxy="https://staging.example.com"
+stagingTomcat="https://staging.example.com"
+productionProxy="https://production.example.com"
+productionTopmcat="https://production.example.com"
+productionbProxy="https://productionb.example.com"
+productionbTomcat="https://productionb.example.com"
 
 staging_web_config() {
     echo "stagingUnknown.label Unknown Staging"
@@ -112,33 +115,33 @@ output_config() {
 }
 
 staging_web_values() {
-    echo "$(health_of_services "$stagingUrl" "" "staging")"
-    printf "stagingSleeping.value %d\n" $(number_of_sleeping "$stagingUrl")
+    echo "$(health_of_services "$stagingTomcat" "$stagingProxy" "" "staging")"
+    printf "stagingSleeping.value %d\n" $(number_of_sleeping "$stagingTomcat")
 }
 
 staging_admin_values() {
-    echo "$(health_of_services "$stagingUrl" "-admin" "stagingAdmin")"
-    printf "stagingAdminSleeping.value %d\n" $(number_of_sleeping "$stagingUrl")
+    echo "$(health_of_services "$stagingTomcat" "$stagingProxy" "-admin" "stagingAdmin")"
+    printf "stagingAdminSleeping.value %d\n" $(number_of_sleeping "$stagingTomcat")
 }
 
 production_web_values() {
-    echo "$(health_of_services "$productionUrl" "" "production")"
-    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionUrl")
+    echo "$(health_of_services "$productionTomcat" "$productionProxy" "" "production")"
+    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionTomcat")
 }
 
 production_admin_values() {
-    echo "$(health_of_services "$productionUrl" "-admin" "productionAdmin")"
-    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionUrl")
+    echo "$(health_of_services "$productionTomcat" "$productionProxy" "-admin" "productionAdmin")"
+    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionTomcat")
 }
 
 productionb_web_values() {
-    echo "$(health_of_services "$productionbUrl" "" "production")"
-    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionbUrl")
+    echo "$(health_of_services "$productionbTomcat" "$productionbProxy" "" "production")"
+    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionbTomcat")
 }
 
 productionb_admin_values() {
-    echo "$(health_of_services "$productionbUrl" "-admin" "productionAdmin")"
-    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionbUrl")
+    echo "$(health_of_services "$productionbTomcat" "$productionbProxy" "-admin" "productionAdmin")"
+    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionbTomcat")
 }
 
 output_values() {
@@ -184,15 +187,15 @@ health_of_services() {
     unknownCount=0;
     for serviceUrl in $(curl -k --silent -H 'Content-Type: application/json' $1/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
     do
-        healthResult=$(curl -k --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $1/$serviceUrl$2/actuator/health)
+        healthResult=$(curl -k --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $2/$serviceUrl$3/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
         else
             unknownCount=$[$unknownCount +1]
         fi   
     done
-    echo "$3Healthy.value $healthCount"
-    echo "$3Unknown.value $unknownCount"
+    echo "$4Healthy.value $healthCount"
+    echo "$4Unknown.value $unknownCount"
 }
 
 output_usage() {
