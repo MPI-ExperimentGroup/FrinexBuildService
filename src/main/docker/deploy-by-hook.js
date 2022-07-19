@@ -485,6 +485,8 @@ function deployStagingGui(currentEntry) {
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             //+ " sed -i 's/-Xmx1g/-Xmx4g/g' pom.xml;"
+            // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images do not need this
+            + " sed -i 's|experiment.destinationServerUrl}/manager/text|experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ((currentEntry.state === "draft") ? " sed -i 's|<extraJvmArgs>|<draftCompile>true</draftCompile><extraJvmArgs>|g' pom.xml;" : '')
             + ((currentEntry.state === "draft") ? " sed -i 's|<source|<collapse-all-properties /><source|g' src/main/resources/nl/mpi/tg/eg/ExperimentTemplate.gwt.xml;" : '')
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
@@ -651,6 +653,8 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -w /ExperimentTemplate frinexapps-jdk:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
+            // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images do not need this
+            + " sed -i 's|experiment.destinationServerUrl}/manager/text|experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
