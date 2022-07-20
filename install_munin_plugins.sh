@@ -97,10 +97,10 @@ else
 
     # instal the frinex build server stats plugin and working directory
     sudo mkdir -p /srv/frinex_munin_data/builds
-    cp script/frinex_munin_build_stats_plugin.sh /tmp/frinex_munin_build_stats_plugin.sh
-    chmod 777 /tmp/frinex_munin_build_stats_plugin.sh
+    cp script/frinex_build_stats_munin_plugin.sh /tmp/frinex_build_stats_munin_plugin.sh
+    chmod 777 /tmp/frinex_build_stats_munin_plugin.sh
     sudo rm /usr/lib/munin/plugins/frinex_build_stats
-    sudo mv /tmp/frinex_munin_build_stats_plugin.sh /usr/lib/munin/plugins/frinex_build_stats
+    sudo mv /tmp/frinex_build_stats_munin_plugin.sh /usr/lib/munin/plugins/frinex_build_stats
     sudo chmod 775 /usr/lib/munin/plugins/frinex_build_stats
     sudo chown root:root /usr/lib/munin/plugins/frinex_build_stats
     sudo ln -s /usr/lib/munin/plugins/frinex_build_stats /etc/munin/plugins/frinex_build_example0
