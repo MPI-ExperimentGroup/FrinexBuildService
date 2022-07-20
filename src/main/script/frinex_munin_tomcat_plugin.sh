@@ -115,33 +115,99 @@ output_config() {
 }
 
 staging_web_values() {
-    echo "$(health_of_services "$stagingTomcat" "$stagingProxy" "" "staging")"
-    printf "stagingSleeping.value %d\n" $(number_of_sleeping "$stagingTomcat")
+    if test -f $dataDirectory/staging_web_values.lock; then
+        date >> $dataDirectory/staging_web_values.log
+        echo " lock file found" >> $dataDirectory/staging_web_values.log
+        if [ "$(find $dataDirectory/staging_web_values.lock -mmin +60)" ]; then 
+            rm $dataDirectory/staging_web_values.lock
+            echo "lock file expired" >> $dataDirectory/staging_web_values.log
+        fi
+    else
+        touch $dataDirectory/staging_web_values.lock
+        echo "$(health_of_services "$stagingTomcat" "$stagingProxy" "" "staging")"
+        printf "stagingSleeping.value %d\n" $(number_of_sleeping "$stagingTomcat")
+        rm $dataDirectory/staging_web_values.lock
+    fi
 }
 
 staging_admin_values() {
-    echo "$(health_of_services "$stagingTomcat" "$stagingProxy" "-admin" "stagingAdmin")"
-    printf "stagingAdminSleeping.value %d\n" $(number_of_sleeping "$stagingTomcat")
+    if test -f $dataDirectory/staging_admin_values.lock; then
+        date >> $dataDirectory/staging_admin_values.log
+        echo " lock file found" >> $dataDirectory/staging_admin_values.log
+        if [ "$(find $dataDirectory/staging_admin_values.lock -mmin +60)" ]; then 
+            rm $dataDirectory/staging_admin_values.lock
+            echo "lock file expired" >> $dataDirectory/staging_admin_values.log
+        fi
+    else
+        touch $dataDirectory/staging_admin_values.lock
+        echo "$(health_of_services "$stagingTomcat" "$stagingProxy" "-admin" "stagingAdmin")"
+        printf "stagingAdminSleeping.value %d\n" $(number_of_sleeping "$stagingTomcat")
+        rm $dataDirectory/staging_admin_values.lock
+    fi
 }
 
 production_web_values() {
-    echo "$(health_of_services "$productionTomcat" "$productionProxy" "" "production")"
-    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionTomcat")
+    if test -f $dataDirectory/production_web_values.lock; then
+        date >> $dataDirectory/production_web_values.log
+        echo " lock file found" >> $dataDirectory/production_web_values.log
+        if [ "$(find $dataDirectory/production_web_values.lock -mmin +60)" ]; then 
+            rm $dataDirectory/production_web_values.lock
+            echo "lock file expired" >> $dataDirectory/production_web_values.log
+        fi
+    else
+        touch $dataDirectory/production_web_values.lock
+        echo "$(health_of_services "$productionTomcat" "$productionProxy" "" "production")"
+        printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionTomcat")
+        rm $dataDirectory/production_web_values.lock
+    fi
 }
 
 production_admin_values() {
-    echo "$(health_of_services "$productionTomcat" "$productionProxy" "-admin" "productionAdmin")"
-    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionTomcat")
+    if test -f $dataDirectory/production_admin_values.lock; then
+        date >> $dataDirectory/production_admin_values.log
+        echo " lock file found" >> $dataDirectory/production_admin_values.log
+        if [ "$(find $dataDirectory/production_admin_values.lock -mmin +60)" ]; then 
+            rm $dataDirectory/production_admin_values.lock
+            echo "lock file expired" >> $dataDirectory/production_admin_values.log
+        fi
+    else
+        touch $dataDirectory/production_admin_values.lock
+        echo "$(health_of_services "$productionTomcat" "$productionProxy" "-admin" "productionAdmin")"
+        printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionTomcat")
+        rm $dataDirectory/production_admin_values.lock
+    fi
 }
 
 productionb_web_values() {
-    echo "$(health_of_services "$productionbTomcat" "$productionbProxy" "" "production")"
-    printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionbTomcat")
+    if test -f $dataDirectory/productionb_web_values.lock; then
+        date >> $dataDirectory/productionb_web_values.log
+        echo " lock file found" >> $dataDirectory/productionb_web_values.log
+        if [ "$(find $dataDirectory/productionb_web_values.lock -mmin +60)" ]; then 
+            rm $dataDirectory/productionb_web_values.lock
+            echo "lock file expired" >> $dataDirectory/productionb_web_values.log
+        fi
+    else
+        touch $dataDirectory/productionb_web_values.lock
+        echo "$(health_of_services "$productionbTomcat" "$productionbProxy" "" "production")"
+        printf "productionSleeping.value %d\n" $(number_of_sleeping "$productionbTomcat")
+        rm $dataDirectory/productionb_web_values.lock
+    fi
 }
 
 productionb_admin_values() {
-    echo "$(health_of_services "$productionbTomcat" "$productionbProxy" "-admin" "productionAdmin")"
-    printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionbTomcat")
+    if test -f $dataDirectory/productionb_admin_values.lock; then
+        date >> $dataDirectory/productionb_admin_values.log
+        echo " lock file found" >> $dataDirectory/productionb_admin_values.log
+        if [ "$(find $dataDirectory/productionb_admin_values.lock -mmin +60)" ]; then 
+            rm $dataDirectory/productionb_admin_values.lock
+            echo "lock file expired" >> $dataDirectory/productionb_admin_values.log
+        fi
+    else
+        touch $dataDirectory/productionb_admin_values.lock
+        echo "$(health_of_services "$productionbTomcat" "$productionbProxy" "-admin" "productionAdmin")"
+        printf "productionAdminSleeping.value %d\n" $(number_of_sleeping "$productionbTomcat")
+        rm $dataDirectory/productionb_admin_values.lock
+    fi
 }
 
 output_values() {
