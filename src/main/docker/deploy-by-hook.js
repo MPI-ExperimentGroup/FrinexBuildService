@@ -183,6 +183,7 @@ function stopUpdatingResults() {
     fs.writeSync(resultsFile, "<div>build process complete</div>");
     // update the docker service listing JSON (one last chance to update the service listing)
     updateServicesJson();
+    triggerProxyUpdate();
     buildHistoryJson.building = false;
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
@@ -405,6 +406,16 @@ function updateServicesJson() {
     }
 }
 
+function triggerProxyUpdate() {
+    // triger the proxy to reaload the service list by calling the proxyUpdateTrigger URL
+    console.log("proxyUpdateTrigger (" + new Date().toISOString() + "): " + proxyUpdateTrigger);
+    got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
+        console.log("proxyUpdateTrigger (response): " + response.statusCode);
+    }).catch(error => {
+        console.log("proxyUpdateTrigger (error): " + error.message);
+    });
+}
+
 function deployDockerService(currentEntry, warFileName, serviceName) {
     //const warFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + warFileName;
     const dockerFilePath = protectedDirectory + "/" + currentEntry.buildName + "/" + serviceName + ".Docker";
@@ -427,14 +438,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
         // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
-
-        // triger the proxy to reaload the service list by calling the proxyUpdateTrigger URL
-        console.log("proxyUpdateTrigger (" + new Date().toISOString() + "): " + proxyUpdateTrigger);
-        got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
-            console.log("proxyUpdateTrigger (response): " + response.statusCode);
-        }).catch(error => {
-            console.log("proxyUpdateTrigger (error): " + error.message);
-        });
+        triggerProxyUpdate();
     } catch (error) {
         console.error("deployDockerService " + serviceName + " error:" + error);
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService error</a>', "production", "admin", true, false, true);
