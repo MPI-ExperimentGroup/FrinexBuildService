@@ -56,27 +56,27 @@ production_admin_config() {
 output_config() {
     case $1 in
         staging_web)
-            echo "graph_title Frinex Docker Health Staging Web"
+            echo "graph_title Frinex Service Health Staging Web"
             echo "graph_category frinex"
             staging_web_config
             ;;
         staging_admin)
-            echo "graph_title Frinex Docker Health Staging Admin"
+            echo "graph_title Frinex Service Health Staging Admin"
             echo "graph_category frinex"
             staging_admin_config
             ;;
         production_web)
-            echo "graph_title Frinex Docker Health Production Web"
+            echo "graph_title Frinex Service Health Production Web"
             echo "graph_category frinex"
             production_web_config
             ;;
         production_admin)
-            echo "graph_title Frinex Docker Health Production Admin"
+            echo "graph_title Frinex Service Health Production Admin"
             echo "graph_category frinex"
             production_admin_config
             ;;
         *)
-            echo "graph_title Frinex Docker Health Service Health"
+            echo "graph_title Frinex Service Health"
             echo "graph_category frinex"
             staging_web_config
             staging_admin_config
