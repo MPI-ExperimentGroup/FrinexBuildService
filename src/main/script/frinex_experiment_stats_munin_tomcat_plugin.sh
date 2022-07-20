@@ -41,7 +41,7 @@ update_stats() {
     if test -f $dataDirectory/$hoststring.lock; then
         date >> $dataDirectory/$hoststring.log
         echo " lock file found" >> $dataDirectory/$hoststring.log
-        if [ "$(find $dataDirectory/$hoststring.lock -mmin +120)" ]; then 
+        if [ "$(find $dataDirectory/$hoststring.lock -mmin +60)" ]; then 
             rm $dataDirectory/$hoststring.lock
             echo "lock file expired" >> $dataDirectory/$hoststring.log
         fi
