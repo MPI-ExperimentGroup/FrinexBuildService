@@ -37,19 +37,30 @@ invalidate_stats() {
 }
 
 update_stats() {
-    # invalidate_stats;
     hoststring=$1
-    for experimentName in $(curl -k --silent -H 'Content-Type: application/json' http://$hoststring/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
-    do
-        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/$experimentName-admin/public_quick_stats)
-        if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
-            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName-admin
+    if test -f $dataDirectory/$hoststring.lock; then
+        date >> $dataDirectory/$hoststring.log
+        echo " lock file found" >> $dataDirectory/$hoststring.log
+        if [ "$(find path/to/file -mmin +120)" ]; then 
+            rm $dataDirectory/$hoststring.lock
+            echo "lock file expired" >> $dataDirectory/$hoststring.log
         fi
-    done
-    output_values $hoststring > $dataDirectory/$hoststring.values.tmp
-    output_config $hoststring > $dataDirectory/$hoststring.config.tmp
-    mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
-    mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
+    else
+        touch $dataDirectory/$hoststring.lock
+        # invalidate_stats;
+        for experimentName in $(curl -k --silent -H 'Content-Type: application/json' http://$hoststring/running_experiments.json | grep -v '}' | grep -v '{' | sed 's/"//g' | sed 's/,//g')
+        do
+            usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring/$experimentName-admin/public_quick_stats)
+            if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
+                echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName-admin
+            fi
+        done
+        output_values $hoststring > $dataDirectory/$hoststring.values.tmp
+        output_config $hoststring > $dataDirectory/$hoststring.config.tmp
+        mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
+        mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
+        rm $dataDirectory/$hoststring.lock
+    fi
 }
 
 output_config() {
