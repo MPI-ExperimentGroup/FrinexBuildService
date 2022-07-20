@@ -35,10 +35,10 @@ else
 
     # copy the service health plugin to the munin plugins directory
     sudo mkdir -p /srv/frinex_munin_data/health
-    cp script/frinex_munin_plugin.sh /tmp/frinex_munin_plugin.sh
-    chmod 777 /tmp/frinex_munin_plugin.sh
+    cp script/frinex_service_health_munin_plugin.sh /tmp/frinex_service_health_munin_plugin.sh
+    chmod 777 /tmp/frinex_service_health_munin_plugin.sh
     sudo rm /usr/lib/munin/plugins/frinex_service_health
-    sudo mv /tmp/frinex_munin_plugin.sh /usr/lib/munin/plugins/frinex_service_health
+    sudo mv /tmp/frinex_service_health_munin_plugin.sh /usr/lib/munin/plugins/frinex_service_health
     sudo chmod 775 /usr/lib/munin/plugins/frinex_service_health
     sudo chown root:root /usr/lib/munin/plugins/frinex_service_health
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
