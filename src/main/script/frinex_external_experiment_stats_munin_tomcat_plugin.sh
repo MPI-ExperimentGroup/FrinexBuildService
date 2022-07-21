@@ -38,10 +38,11 @@ invalidate_stats() {
 
 update_stats() {
     pluginInstance=$1
-    instanceNameParts=${1//_/ }
-    hoststring=${instanceNameParts[0]}"://"${instanceNameParts[1]}":"${instanceNameParts[2]}
+    hoststring=${awk -F_ '{print $1 "://" $2 ":" $3}')}
     experimentName=${pluginInstance#${instanceNameParts[0]}"_"${instanceNameParts[1]}"_"${instanceNameParts[2]}"_"}
     echo "$pluginInstance" >> $dataDirectory/$pluginInstance.log
+    echo "$hoststring" >> $dataDirectory/$pluginInstance.log
+    echo "$experimentName" >> $dataDirectory/$pluginInstance.log
     echo "$hoststring/$experimentName/public_quick_stats" >> $dataDirectory/$pluginInstance.log
     if test -f $dataDirectory/$pluginInstance.lock; then
         date >> $dataDirectory/$pluginInstance.log
@@ -52,7 +53,7 @@ update_stats() {
         fi
     else
         touch $dataDirectory/$pluginInstance.lock
-        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' https://$hoststring/$experimentName-admin/public_quick_stats)
+        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' $hoststring/$experimentName/public_quick_stats)
         if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
             echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$pluginInstance
         fi
