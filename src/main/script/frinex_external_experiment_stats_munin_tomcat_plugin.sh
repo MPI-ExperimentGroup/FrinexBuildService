@@ -41,7 +41,8 @@ update_stats() {
     instanceNameParts=${1//_/ }
     hoststring="${instanceNameParts[0]}://${instanceNameParts[1]}:${instanceNameParts[2]}"
     experimentName=${pluginInstance#"${instanceNameParts[0]}_${instanceNameParts[1]}_${instanceNameParts[2]}_"}
-    echo "https://$hoststring/$experimentName-admin/public_quick_stats" >> $dataDirectory/$pluginInstance.log
+    echo "$pluginInstance" >> $dataDirectory/$pluginInstance.log
+    echo "$hoststring/$experimentName/public_quick_stats" >> $dataDirectory/$pluginInstance.log
     if test -f $dataDirectory/$pluginInstance.lock; then
         date >> $dataDirectory/$pluginInstance.log
         echo " lock file found" >> $dataDirectory/$pluginInstance.log
