@@ -39,8 +39,8 @@ invalidate_stats() {
 update_stats() {
     pluginInstance=$1
     instanceNameParts=${1//_/ }
-    hoststring="${serverNameParts[0]}://${serverNameParts[1]}:${serverNameParts[2]}"
-    experimentName=${serverNameParts[3]}
+    hoststring="${instanceNameParts[0]}://${instanceNameParts[1]}:${instanceNameParts[2]}"
+    experimentName=${pluginInstance#"${instanceNameParts[0]}_${instanceNameParts[1]}_${instanceNameParts[2]}_"}
     echo "https://$hoststring/$experimentName-admin/public_quick_stats" >> $dataDirectory/$pluginInstance.log
     if test -f $dataDirectory/$pluginInstance.lock; then
         date >> $dataDirectory/$pluginInstance.log
