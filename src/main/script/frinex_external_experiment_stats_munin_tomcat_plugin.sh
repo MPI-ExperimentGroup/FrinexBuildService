@@ -39,7 +39,8 @@ invalidate_stats() {
 update_stats() {
     pluginInstance=$1
     hoststring=$(echo $pluginInstance | awk -F_ '{print $1 "://" $2 ":" $3}')
-    experimentName=${pluginInstance#$hoststring"_"}
+    hostpart=$(echo $pluginInstance | awk -F_ '{print $1 "_" $2 "_" $3 "_"}')
+    experimentName=${pluginInstance#"$hostpart"}
     echo "$pluginInstance" >> $dataDirectory/$pluginInstance.log
     echo "$hoststring" >> $dataDirectory/$pluginInstance.log
     echo "$experimentName" >> $dataDirectory/$pluginInstance.log
