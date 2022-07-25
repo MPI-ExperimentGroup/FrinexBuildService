@@ -54,11 +54,23 @@ update_stats() {
         fi
     else
         touch $dataDirectory/$pluginInstance.lock
-        usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' $hoststring/$experimentName/public_quick_stats)
-        if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
-            echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$pluginInstance
+        if [ "$(find $dataDirectory/$pluginInstance.cache -mmin +360)" ]; then 
+            usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' $hoststring/$experimentName/public_quick_stats)
+            if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
+                echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$pluginInstance.cache
+            fi
+            echo "cache file update, clearing log file" > $dataDirectory/$pluginInstance.log
+            cat $dataDirectory/$pluginInstance.cache > $dataDirectory/$pluginInstance.values.tmp
+        else
+            healthResult=$(curl -k --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' $hoststring/$experimentName/actuator/health)
+            if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
+                echo "using cache file" >> $dataDirectory/$pluginInstance.log
+                cat $dataDirectory/$pluginInstance.cache > $dataDirectory/$pluginInstance.values.tmp
+            else
+                echo "health check error: $healthResult" >> $dataDirectory/$pluginInstance.log
+                echo -en "totalParticipantsSeen.value U\ntotalDeploymentsAccessed.value U\ntotalPageLoads.value U\ntotalStimulusResponses.value U\ntotalMediaResponses.value U\n" > $dataDirectory/$pluginInstance.values.tmp
+            fi   
         fi
-        cat $dataDirectory/$pluginInstance > $dataDirectory/$pluginInstance.values.tmp
         output_config $pluginInstance > $dataDirectory/$pluginInstance.config.tmp
         mv -f $dataDirectory/$pluginInstance.config.tmp $dataDirectory/$pluginInstance.config
         mv -f $dataDirectory/$pluginInstance.values.tmp $dataDirectory/$pluginInstance.values
