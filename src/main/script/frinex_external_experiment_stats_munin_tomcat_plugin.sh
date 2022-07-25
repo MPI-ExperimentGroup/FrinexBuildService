@@ -55,7 +55,7 @@ update_stats() {
     else
         touch $dataDirectory/$pluginInstance.lock
         if [ ! -f $dataDirectory/$pluginInstance.cache ] || [ "$(find $dataDirectory/$pluginInstance.cache -mmin +360)" ]; then 
-            usageStatsResult=$(curl --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' $hoststring/$experimentName/public_quick_stats)
+            usageStatsResult=$(curl -k --connect-timeout 1 --max-time 2 --fail-early --silent -H 'Content-Type: application/json' $hoststring/$experimentName/public_quick_stats)
             if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
                 echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$pluginInstance.cache
             fi
