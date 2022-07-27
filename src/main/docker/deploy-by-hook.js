@@ -172,7 +172,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
         }
         fs.writeFileSync(buildStatisticsFileName, JSON.stringify(buildStatisticsJson, null, 4), { mode: 0o755 });
         // update the docker service listing JSON (this moment is not so critical since the services will be changing regardless of this process)
-        updateServicesJson();
+        // updateServicesJson();
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
@@ -443,6 +443,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
         // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
+        updateServicesJson();
         triggerProxyUpdate();
     } catch (error) {
         console.error("deployDockerService " + serviceName + " error:" + error);
@@ -2072,7 +2073,7 @@ function prepareBuildHistory() {
                 buildHistoryJson.diskTotal = info.size;
             });
             // update the docker service listing JSON
-            updateServicesJson();
+            // updateServicesJson();
         } catch (error) {
             console.error("faild to read " + buildHistoryJson);
             console.error(error);
