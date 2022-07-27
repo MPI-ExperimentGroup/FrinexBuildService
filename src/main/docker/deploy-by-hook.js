@@ -2113,6 +2113,10 @@ function deleteOldProcessing() {
             }
         }
     }
+    const servicesJsonFileName = targetDirectory + "/services.json";
+    if (fs.existsSync(servicesJsonFileName)) {
+        fs.unlinkSync(servicesJsonFileName);
+    }
     prepareBuildHistory();
     prepareImageList();
 }
