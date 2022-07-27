@@ -2113,9 +2113,9 @@ function deleteOldProcessing() {
             }
         }
     }
-    const servicesJsonFileName = targetDirectory + "/services.json";
-    if (fs.existsSync(servicesJsonFileName)) {
-        fs.unlinkSync(servicesJsonFileName);
+    const servicesLogFileName = targetDirectory + "/proxyUpdateTrigger.log";
+    if (fs.existsSync(servicesLogFileName)) {
+        fs.unlinkSync(servicesLogFileName);
     }
     prepareBuildHistory();
     prepareImageList();
