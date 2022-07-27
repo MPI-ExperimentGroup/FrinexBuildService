@@ -414,6 +414,11 @@ function triggerProxyUpdate() {
     }).catch(error => {
         console.log("proxyUpdateTrigger (error): " + error.message);
     });
+    // log the services that were up at the time of the proxyUpdateTrigger
+    const servicesLogFileName = targetDirectory + "/proxyUpdateTrigger.log";
+    const servicesDockerString = "date >> " + servicesLogFileName + "; sudo docker service ls | grep -E \"_admin|_web\" >> " + servicesLogFileName + ";";
+    console.log(servicesDockerString);
+    child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
 }
 
 function deployDockerService(currentEntry, warFileName, serviceName) {
