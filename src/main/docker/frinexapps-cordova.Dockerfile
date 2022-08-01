@@ -56,7 +56,9 @@ RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager \
     "platforms;android-${ANDROID_VERSION}"
     #  "platform-tools" \
 RUN npm install npm -g # update npm
-RUN npm install -g cordova@11.0.0
+#RUN npm install -g cordova@11.0.0
+# rolled back to version 10 to address the admin connection issues
+RUN npm install -g cordova@10.0.0
 
 # clone the Frinex repository so that the FieldKitRecorder is available
 RUN git clone https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
