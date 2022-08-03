@@ -59,6 +59,9 @@ update_stats() {
         output_config $hoststring > $dataDirectory/$hoststring.config.tmp
         mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
         mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
+        # TODO: diff the previous to values and generate the change per period graphs        
+        # keep the current as the next prevous values
+        cp -f $dataDirectory/$hoststring.values $dataDirectory/$hoststring.previous
         rm $dataDirectory/$hoststring.lock
     fi
 }
