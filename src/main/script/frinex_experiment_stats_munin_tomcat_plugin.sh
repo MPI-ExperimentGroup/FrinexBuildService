@@ -56,9 +56,7 @@ update_stats() {
             fi
         done
         output_values $hoststring > $dataDirectory/$hoststring.values.tmp
-        # diff the previous to values and generate the change per period graphs
-        echo "multigraph $1_activity" > $dataDirectory/$hoststring.difference.tmp
-        diff --suppress-common-lines -y $dataDirectory/$hoststring.previous $dataDirectory/$hoststring.values.tmp | awk '{print $1, " ", $5-$2}' >> $dataDirectory/$hoststring.difference.tmp
+        output_difference $hoststring > $dataDirectory/$hoststring.difference.tmp
         output_config $hoststring > $dataDirectory/$hoststring.config.tmp
         # keep a dated copy to calculate the change per hour
         # cp $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring$(date +%Y%m%d%H).previous
@@ -92,6 +90,17 @@ output_config() {
     echo "graph_category frinex"
     echo "graph_total total $1 Activity"
     grep "\-admin" $dataDirectory/$1.difference.tmp | sed "s/.value//g" | awk '{print $1 ".label " $1}'
+}
+
+output_difference() {
+    # diff the previous to values and generate the change per period graphs
+    echo "multigraph $1_activity"
+    diff --suppress-common-lines -y $dataDirectory/$1.previous $dataDirectory/$1.values.tmp | awk '{print $1, " ", $5-$2}'
+    # generate totals for each type
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    do
+        grep $graphType $dataDirectory/$1.values.tmp | awk '{sum=sum+$2} END{print "total-'$graphType'.value " sum}'
+    done
 }
 
 output_values() {
