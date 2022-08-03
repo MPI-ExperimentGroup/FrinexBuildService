@@ -56,6 +56,9 @@ update_stats() {
             fi
         done
         output_values $hoststring > $dataDirectory/$hoststring.values.tmp
+        # diff the previous to values and generate the change per period graphs
+        echo "multigraph $1_activity" > $dataDirectory/$hoststring.difference.tmp
+        diff --suppress-common-lines -y $dataDirectory/$hoststring.previous $dataDirectory/$hoststring.values.tmp | awk '{print $1, " ", $5-$2}' >> $dataDirectory/$hoststring.difference.tmp
         output_config $hoststring > $dataDirectory/$hoststring.config.tmp
         # keep a dated copy to calculate the change per hour
         # cp $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring$(date +%Y%m%d%H).previous
@@ -63,9 +66,6 @@ update_stats() {
         # find $dataDirectory/$hoststring*.previous -mtime +1 -exec rm {} \;
         mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
         mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
-        # diff the previous to values and generate the change per period graphs
-        echo "multigraph $1_activity" > $dataDirectory/$hoststring.difference.tmp
-        diff --suppress-common-lines -y $dataDirectory/$hoststring.previous $dataDirectory/$hoststring.values | awk '{print $1, " ", $5-$2}' >> $dataDirectory/$hoststring.difference.tmp
         mv -f $dataDirectory/$hoststring.difference.tmp $dataDirectory/$hoststring.difference
         # keep the current as the next prevous values
         cp -f $dataDirectory/$hoststring.values $dataDirectory/$hoststring.previous
