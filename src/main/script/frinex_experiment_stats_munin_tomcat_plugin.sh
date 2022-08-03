@@ -100,7 +100,7 @@ output_difference() {
     # generate totals for each type
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
-        echo $difference | grep $graphType | awk '{sum=sum+$2} END{print "total-'$graphType'.value " sum}'
+        echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}'
     done
 }
 
