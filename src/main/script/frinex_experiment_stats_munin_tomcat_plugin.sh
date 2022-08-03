@@ -77,8 +77,8 @@ output_config() {
         echo "graph_args --no-legend"        
         for filePath in $dataDirectory/*-admin; do
             fileName=${filePath#"$dataDirectory/"}
-            echo "$graphType.$fileName.label $fileName"
-            echo "$graphType.$fileName.draw AREASTACK"
+            echo "$fileName-$graphType.label $fileName"
+            echo "$fileName-$graphType.draw AREASTACK"
         done
     done
 }
@@ -91,7 +91,7 @@ output_values() {
         echo "multigraph $1_$graphType"
         for filePath in $dataDirectory/*-admin; do
             fileName=${filePath#"$dataDirectory/"}
-            grep $graphType $filePath | sed "s/$graphType/$graphType.$fileName/g"
+            grep $graphType $filePath | sed "s/$graphType/$fileName-$graphType/g"
         done
     done
 }
