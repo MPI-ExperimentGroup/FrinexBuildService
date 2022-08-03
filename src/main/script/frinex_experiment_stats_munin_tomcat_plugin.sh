@@ -55,11 +55,12 @@ update_stats() {
                 echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName-admin
             fi
         done
-        output_values $hoststring > $dataDirectory/$hoststring.values.tmp
+        output_values $hoststring | sort > $dataDirectory/$hoststring.values.tmp
         output_config $hoststring > $dataDirectory/$hoststring.config.tmp
         mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
         mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
-        # TODO: diff the previous to values and generate the change per period graphs        
+        # TODO: diff the previous to values and generate the change per period graphs
+        diff $dataDirectory/$hoststring.previous $dataDirectory/$hoststring.values > $dataDirectory/$hoststring.difference
         # keep the current as the next prevous values
         cp -f $dataDirectory/$hoststring.values $dataDirectory/$hoststring.previous
         rm $dataDirectory/$hoststring.lock
