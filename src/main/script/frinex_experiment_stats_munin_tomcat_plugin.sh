@@ -57,10 +57,16 @@ update_stats() {
         done
         output_values $hoststring > $dataDirectory/$hoststring.values.tmp
         output_config $hoststring > $dataDirectory/$hoststring.config.tmp
+        # keep a dated copy to calculate the change per hour
+        # cp $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring$(date +%Y%m%d%H).previous
+        # clean up old dated copies
+        # find $dataDirectory/$hoststring*.previous -mtime +1 -exec rm {} \;
         mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
         mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
-        # TODO: diff the previous to values and generate the change per period graphs
-        diff --suppress-common-lines -y $dataDirectory/$hoststring.previous $dataDirectory/$hoststring.values | awk '{print $1, " ", $5-$2}' > $dataDirectory/$hoststring.difference
+        # diff the previous to values and generate the change per period graphs
+        echo "multigraph $1_activity" > $dataDirectory/$hoststring.difference.tmp
+        diff --suppress-common-lines -y $dataDirectory/$hoststring.previous $dataDirectory/$hoststring.values | awk '{print $1, " ", $5-$2}' >> $dataDirectory/$hoststring.difference.tmp
+        mv -f $dataDirectory/$hoststring.difference.tmp $dataDirectory/$hoststring.difference
         # keep the current as the next prevous values
         cp -f $dataDirectory/$hoststring.values $dataDirectory/$hoststring.previous
         rm $dataDirectory/$hoststring.lock
@@ -85,7 +91,7 @@ output_config() {
     echo "graph_title Frinex Tomcat $1 Activity"
     echo "graph_category frinex"
     echo "graph_total total $1 Activity"
-    cat $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label " $1}'
+    grep "-admin" $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label " $1}'
 }
 
 output_values() {
@@ -99,8 +105,6 @@ output_values() {
             grep $graphType $filePath | sed "s/$graphType/$fileName-$graphType/g"
         done
     done
-    echo "multigraph $1_activity"
-    cat $dataDirectory/$1.difference
 }
 
 output_usage() {
@@ -112,6 +116,8 @@ case $# in
     0)
         touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
         cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
+        touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.difference
+        cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.difference
         update_stats ${linkName#"frinex_experiment_stats_"}&
         ;;
     1)
