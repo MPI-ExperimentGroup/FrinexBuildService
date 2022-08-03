@@ -89,11 +89,11 @@ output_config() {
     echo "graph_title Frinex Tomcat $1 Activity"
     echo "graph_category frinex"
     # echo "graph_total total $1 Activity"
-    echo "$1.difference-total-totalParticipantsSeen.label total-totalParticipantsSeen"
-    echo "$1.difference-total-totalDeploymentsAccessed.label total-totalDeploymentsAccessed"
-    echo "$1.difference-total-totalPageLoads.label total-totalPageLoads"
-    echo "$1.difference-total-totalStimulusResponses.label total-totalStimulusResponses"
-    echo "$1.difference-total-totalMediaResponses.label total-totalMediaResponses"
+    echo "total-totalParticipantsSeen.label total-totalParticipantsSeen"
+    echo "total-totalDeploymentsAccessed.label total-totalDeploymentsAccessed"
+    echo "total-totalPageLoads.label total-totalPageLoads"
+    echo "total-totalStimulusResponses.label total-totalStimulusResponses"
+    echo "total-totalMediaResponses.label total-totalMediaResponses"
     grep "\-admin" $dataDirectory/$1.difference.tmp | sed "s/.value//g" | awk '{print $1 ".label " $1}'
 }
 
