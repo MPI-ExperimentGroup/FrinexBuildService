@@ -81,6 +81,10 @@ output_config() {
             echo "$fileName-$graphType.draw AREASTACK"
         done
     done
+    echo "multigraph $1_activity"
+    echo "graph_title Frinex Tomcat $1 Activity"
+    echo "graph_category frinex"
+    cat $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label" $1}'
 }
 
 output_values() {
@@ -94,6 +98,8 @@ output_values() {
             grep $graphType $filePath | sed "s/$graphType/$fileName-$graphType/g"
         done
     done
+    echo "multigraph $1_activity"
+    cat $dataDirectory/$1.difference
 }
 
 output_usage() {
