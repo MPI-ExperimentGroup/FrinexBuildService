@@ -95,8 +95,8 @@ output_config() {
 output_difference() {
     # diff the previous to values and generate the change per period graphs
     echo "multigraph $1_activity"
-    difference=$(diff --suppress-common-lines -y $dataDirectory/$1.previous $dataDirectory/$1.values.tmp | awk '{print $1, " ", $5-$2}')
-    echo $difference
+    difference="$(diff --suppress-common-lines -y $dataDirectory/$1.previous $dataDirectory/$1.values.tmp | awk '{print $1, " ", $5-$2}')"
+    echo "$difference"
     # generate totals for each type
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
