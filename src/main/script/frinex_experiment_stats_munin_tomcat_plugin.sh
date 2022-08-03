@@ -60,7 +60,7 @@ update_stats() {
         mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
         mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
         # TODO: diff the previous to values and generate the change per period graphs
-        diff --suppress-common-lines -y $dataDirectory/$hoststring.previous $dataDirectory/$hoststring.values | awk '{print $1 " " $4-$2}' > $dataDirectory/$hoststring.difference
+        diff --suppress-common-lines -y $dataDirectory/$hoststring.previous $dataDirectory/$hoststring.values | awk '{print $1, " ", $5-$2}' > $dataDirectory/$hoststring.difference
         # keep the current as the next prevous values
         cp -f $dataDirectory/$hoststring.values $dataDirectory/$hoststring.previous
         rm $dataDirectory/$hoststring.lock
@@ -84,7 +84,7 @@ output_config() {
     echo "multigraph $1_activity"
     echo "graph_title Frinex Tomcat $1 Activity"
     echo "graph_category frinex"
-    grep "-admin" $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label" $1}'
+    cat $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label" $1}'
 }
 
 output_values() {
@@ -99,7 +99,7 @@ output_values() {
         done
     done
     echo "multigraph $1_activity"
-    grep "-admin" $dataDirectory/$1.difference
+    cat $dataDirectory/$1.difference
 }
 
 output_usage() {
