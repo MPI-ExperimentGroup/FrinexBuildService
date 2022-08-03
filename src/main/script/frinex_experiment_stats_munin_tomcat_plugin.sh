@@ -88,7 +88,7 @@ output_config() {
     echo "multigraph $1_activity"
     echo "graph_title Frinex Tomcat $1 Activity"
     echo "graph_category frinex"
-    echo "graph_total total $1 Activity"
+    # echo "graph_total total $1 Activity"
     grep "\-admin" $dataDirectory/$1.difference.tmp | sed "s/.value//g" | awk '{print $1 ".label " $1}'
 }
 
