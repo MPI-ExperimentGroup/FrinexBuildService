@@ -91,7 +91,7 @@ output_config() {
     echo "graph_title Frinex Tomcat $1 Activity"
     echo "graph_category frinex"
     echo "graph_total total $1 Activity"
-    grep "-admin" $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label " $1}'
+    grep "\-admin" $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label " $1}'
 }
 
 output_values() {
