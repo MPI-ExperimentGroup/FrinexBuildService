@@ -84,7 +84,7 @@ output_config() {
     echo "multigraph $1_activity"
     echo "graph_title Frinex Tomcat $1 Activity"
     echo "graph_category frinex"
-    cat $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label" $1}'
+    grep "-admin" $dataDirectory/$1.difference | sed "s/.value//g" | awk '{print $1 ".label" $1}'
 }
 
 output_values() {
@@ -99,7 +99,7 @@ output_values() {
         done
     done
     echo "multigraph $1_activity"
-    cat $dataDirectory/$1.difference
+    grep "-admin" $dataDirectory/$1.difference
 }
 
 output_usage() {
