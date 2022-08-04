@@ -54,7 +54,7 @@ update_stats() {
             if [[ $usageStatsResult == *"\"totalPageLoads\""* ]]; then
                 echo $usageStatsResult | sed 's/[:]/.value /g' | sed 's/[,]/\n/g' | sed 's/[\{\}"]//g' | sed 's/null/U/g' > $dataDirectory/$experimentName-admin
             fi
-            echo "http://$hoststring/$experimentName-admin/public_quick_stats: $usageStatsResult" >> $dataDirectory/$hoststring.log
+            # echo "http://$hoststring/$experimentName-admin/public_quick_stats: $usageStatsResult" >> $dataDirectory/$hoststring.log
         done
         output_values $hoststring > $dataDirectory/$hoststring.values.tmp
         output_difference $hoststring > $dataDirectory/$hoststring.difference.tmp
