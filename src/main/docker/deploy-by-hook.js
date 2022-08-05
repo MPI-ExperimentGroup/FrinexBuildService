@@ -409,16 +409,16 @@ function updateServicesJson() {
 function triggerProxyUpdate() {
     // triger the proxy to reaload the service list by calling the proxyUpdateTrigger URL
     console.log("proxyUpdateTrigger (" + new Date().toISOString() + "): " + proxyUpdateTrigger);
-    got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
-        console.log("proxyUpdateTrigger (response): " + response.statusCode);
-    }).catch(error => {
-        console.log("proxyUpdateTrigger (error): " + error.message);
-    });
     // log the services that were up at the time of the proxyUpdateTrigger
     const servicesLogFileName = targetDirectory + "/proxyUpdateTrigger.log";
     const servicesDockerString = "date >> " + servicesLogFileName + "; sudo docker service ls | grep -E \"_admin|_web\" >> " + servicesLogFileName + ";";
     console.log(servicesDockerString);
     child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
+    got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
+        console.log("proxyUpdateTrigger (response): " + response.statusCode);
+    }).catch(error => {
+        console.log("proxyUpdateTrigger (error): " + error.message);
+    });
 }
 
 function deployDockerService(currentEntry, warFileName, serviceName) {
