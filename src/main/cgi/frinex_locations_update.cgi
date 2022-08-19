@@ -47,9 +47,9 @@ echo "$serviceList" \
 echo "$serviceList" \
     | grep -E "_admin|_web" \
     | grep -E "_staging" \
-    | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
-    | sed 's/_staging_web {/ {/g' \
-    | sed 's/_staging_admin {/-admin {/g' \
+    | awk '{print "location /" $2 "X {\n proxy_pass http://" $1 "/" $2 ";\n proxy_set_header X-Forwarded-Prefix /" $2 "X;\n}\n"}' \
+    | sed 's/_staging_webX//g' \
+    | sed 's/_staging_adminX/-admin/g' \
     > /usr/local/apache2/htdocs/frinex_staging_locations.txt
 
 echo "$serviceList" \
