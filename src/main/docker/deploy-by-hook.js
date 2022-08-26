@@ -406,6 +406,20 @@ function updateServicesJson() {
     }
 }
 
+function waitingServiceStart() {
+    if (deploymentType.includes('docker')) {
+        updateServicesJson();
+        // check if all the services have started up
+        console.log("checkServicesStatus");
+        const servicesJsonFileName = targetDirectory + "/services.json";
+        const contents = readFileSync(servicesJsonFileName, 'utf8');
+        const serviceStarting = contents.includes("\"0/");
+        return serviceStarting;
+    } else {
+        return false;
+    }
+}
+
 function triggerProxyUpdate() {
     // triger the proxy to reaload the service list by calling the proxyUpdateTrigger URL
     console.log("proxyUpdateTrigger (" + new Date().toISOString() + "): " + proxyUpdateTrigger);
@@ -1720,6 +1734,9 @@ function moveIncomingToQueued() {
                         console.error(reason);
                     }*/
                     hasDoneBackup = true;
+                    setTimeout(moveIncomingToQueued, 3000);
+                } else if (waitingServiceStart()) {
+                    console.log('waiting on services to start');
                     setTimeout(moveIncomingToQueued, 3000);
                 } else {
                     // we allow the process to exit here if there are no files
