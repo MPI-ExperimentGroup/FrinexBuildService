@@ -412,7 +412,7 @@ function waitingServiceStart() {
         // check if all the services have started up
         console.log("checkServicesStatus");
         const servicesJsonFileName = targetDirectory + "/services.json";
-        const contents = readFileSync(servicesJsonFileName, 'utf8');
+        const contents = fs.readFileSync(servicesJsonFileName, 'utf8');
         const serviceStarting = contents.includes("\"0/");
         return serviceStarting;
     } else {
