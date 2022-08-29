@@ -233,7 +233,7 @@ function unDeploy(currentEntry) {
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
     }
-    console.log(dockerString);
+    // console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("staging frinex-gui undeploy finished");
@@ -279,7 +279,7 @@ function unDeploy(currentEntry) {
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + '"';
     }
-    console.log(dockerString);
+    // console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("staging frinex-admin undeploy finished");
@@ -329,7 +329,7 @@ function unDeploy(currentEntry) {
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
             + '"';
     }
-    console.log(dockerString);
+    // console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-gui undeploy finished");
@@ -379,7 +379,7 @@ function unDeploy(currentEntry) {
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + '"';
     }
-    console.log(dockerString);
+    // console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("production frinex-admin undeploy finished");
@@ -401,7 +401,7 @@ function updateServicesJson() {
         console.log("updateServicesJson");
         const servicesJsonFileName = targetDirectory + "/services.json";
         const servicesDockerString = "sudo docker service ls | grep -E \"_admin|_web\" | sed 's/->8080\\/tcp//g' | sed 's/[*:]//g' | awk '{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \\\"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' > " + servicesJsonFileName + ";";
-        console.log(servicesDockerString);
+        // console.log(servicesDockerString);
         child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
     }
 }
@@ -426,7 +426,7 @@ function triggerProxyUpdate() {
     // log the services that were up at the time of the proxyUpdateTrigger
     const servicesLogFileName = targetDirectory + "/proxyUpdateTrigger.log";
     const servicesDockerString = "date >> " + servicesLogFileName + "; sudo docker service ls | grep -E \"_admin|_web\" >> " + servicesLogFileName + ";";
-    console.log(servicesDockerString);
+    // console.log(servicesDockerString);
     child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
     got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
         console.log("proxyUpdateTrigger (response): " + response.statusCode);
@@ -570,7 +570,7 @@ function deployStagingGui(currentEntry) {
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
-        console.log(dockerString);
+        // console.log(dockerString);
         child_process.exec(dockerString, (error, stdout, stderr) => {
             // gtwBuildingCount--;
             if (error) {
@@ -720,7 +720,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + '"';
-        console.log(dockerString);
+        // console.log(dockerString);
         try {
             child_process.execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
@@ -920,7 +920,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/production-building/'
                         //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + '"';
-                    console.log(dockerString);
+                    // console.log(dockerString);
                     child_process.exec(dockerString, (error, stdout, stderr) => {
                         // gtwBuildingCount--;
                         if (error) {
@@ -1082,7 +1082,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + '"';
-        console.log(dockerString);
+        // console.log(dockerString);
         try {
             // after the log has been written replace the token with the admin password
             child_process.execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
@@ -1171,7 +1171,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-ios.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.*;'
             + '"';
-        console.log(dockerString);
+        // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
     } catch (reason) {
         console.error(reason);
@@ -1253,7 +1253,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-linux-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_*.zip;'
             + '"';
-        console.log(dockerString);
+        // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         //resultString += "built&nbsp;";
     } catch (reason) {
@@ -1924,7 +1924,7 @@ function convertJsonToXml() {
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;";'
         + ' fi;';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".txt";
-    console.log(dockerString);
+    // console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("convert JSON to XML finished");
@@ -1976,7 +1976,7 @@ function updateDocumentation() {
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
         + ' chmod a+rwx ' + targetDirectory + '/frinex.xsd'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;"';
-    console.log(dockerString);
+    // console.log(dockerString);
     try {
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         console.log("update_schema_docs finished");
@@ -1989,7 +1989,7 @@ function updateDocumentation() {
 function prepareImageList() {
     // generate a searchable list of frinex versions
     var dockerString = "sudo docker image ls | grep frinexapps-jdk | awk 'NR>0 {print $2 \",\"}'"
-    console.log(dockerString);
+    // console.log(dockerString);
     try {
         child_process.exec(dockerString, (error, stdout, stderr) => {
             if (error) {
