@@ -1719,7 +1719,7 @@ function moveIncomingToQueued() {
                     }
                 }
                 if (hasProcessingFiles === true) {
-                    console.log('moveIncomingToQueued: hasProcessingFiles');
+                    // console.log('moveIncomingToQueued: ' + hasProcessingFiles);
                     //fs.writeSync(resultsFile, "<div>has more files in processing</div>");
                     prepareForProcessing();
                     setTimeout(moveIncomingToQueued, 3000);
