@@ -1863,7 +1863,7 @@ function moveIncomingToQueued() {
                             //if (fs.existsSync(targetDirectory + "/" + currentName)) {
                             // todo: consider if this agressive removal is always wanted
                             // todo: we might want this agressive target experiment name directory removal to prevent old output being served out
-                            //    fs.rmdirSync(targetDirectory + "/" + currentName, { recursive: true });
+                            //    fs.rmSync(targetDirectory + "/" + currentName, { recursive: true });
                             //}
                             // Reverted to sync method when copying files to prevent premature usage by later stages and duplicate later stages while the file move is in process.
                             fs.renameSync(incomingFile, queuedFile);
@@ -2112,7 +2112,7 @@ function deleteOldProcessing() {
     var processingList = fs.readdirSync(processingDirectory);
     for (var currentDirectory of processingList) {
         var currentDirectoryPath = path.resolve(processingDirectory, currentDirectory);
-        fs.rmdirSync(currentDirectoryPath, { recursive: true, force: true });
+        fs.rmSync(currentDirectoryPath, { recursive: true, force: true });
         console.log('deleted processing: ' + currentDirectory);
     }
     // clean up any static files from before the restart
@@ -2123,7 +2123,7 @@ function deleteOldProcessing() {
         } else {
             var currentDirectoryPath = path.resolve(staticFilesDirectory, currentDirectory);
             console.log('deleting static files: ' + currentDirectory);
-            fs.rmdirSync(currentDirectoryPath, { recursive: true });
+            fs.rmSync(currentDirectoryPath, { recursive: true });
             if (fs.existsSync(incomingDirectory + '/commits/' + currentDirectory + ".xml.commit")) {
                 console.log('deleting stray commit info file: ' + currentDirectory + ".xml.commit");
                 fs.unlinkSync(incomingDirectory + '/commits/' + currentDirectory + ".xml.commit");
