@@ -452,7 +452,7 @@ function deployDockerService(currentEntry, warFileName, serviceName) {
         + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
     try {
-        console.log(serviceSetupString);
+        // console.log(serviceSetupString);
         child_process.execSync(serviceSetupString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
