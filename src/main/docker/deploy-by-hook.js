@@ -429,9 +429,9 @@ function triggerProxyUpdate() {
     // console.log(servicesDockerString);
     child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
     got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
-        console.log("proxyUpdateTrigger (response): " + response.statusCode);
+        console.log("proxyUpdateTrigger response (" + new Date().toISOString() + "): " + response.statusCode);
     }).catch(error => {
-        console.log("proxyUpdateTrigger (error): " + error.message);
+        console.log("proxyUpdateTrigger error (" + new Date().toISOString() + "): " + error.message);
     });
 }
 
