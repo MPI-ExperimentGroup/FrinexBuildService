@@ -608,6 +608,9 @@ function deployStagingGui(currentEntry) {
                     }
                     // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
                     deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
+                } else if (currentEntry.state === "debug") {
+                    // the admin will be built with additional logging in the docker service while android and desktop versions are skipped
+                    deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
                 } else {
                     if (fs.existsSync(stagingConfigFile)) {
                         fs.unlinkSync(stagingConfigFile);
