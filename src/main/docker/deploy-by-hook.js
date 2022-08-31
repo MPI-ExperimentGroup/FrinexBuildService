@@ -578,7 +578,9 @@ function deployStagingGui(currentEntry) {
                 console.error(`deployStagingGui error: ${error}`);
             }
             console.log(`deployStagingGui stdout: ${stdout}`);
-            console.error(`deployStagingGui stderr: ${stderr}`);
+            if (stderr) {
+                console.error(`deployStagingGui stderr: ${stderr}`);
+            }
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
                 if (deploymentType.includes('docker')) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_staging_web.war', currentEntry.buildName + '_staging_web');
