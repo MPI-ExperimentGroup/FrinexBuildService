@@ -435,13 +435,13 @@ function triggerProxyUpdate() {
     });
 }
 
-function deployDockerService(currentEntry, warFileName, serviceName) {
+function deployDockerService(currentEntry, warFileName, serviceName, contextPath) {
     //const warFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + warFileName;
     const dockerFilePath = protectedDirectory + "/" + currentEntry.buildName + "/" + serviceName + ".Docker";
     fs.writeFileSync(dockerFilePath,
         "FROM openjdk:11\n"
         + "COPY " + warFileName + " /" + warFileName + "\n"
-        + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + currentEntry.buildName + '-admin' + "\""
+        + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + serviceName + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
         + ((currentEntry.state === "debug") ? ', \"--trace\"]\n' : ']\n')
         // TODO: it should not be necessary to do a service start, but this needs to be tested 
@@ -584,7 +584,7 @@ function deployStagingGui(currentEntry) {
             }
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
                 if (deploymentType.includes('docker')) {
-                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_web.war', currentEntry.buildName + '_staging_web');
+                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_web.war', currentEntry.buildName + '_staging_web', currentEntry.buildName);
                 }
                 console.log("deployStagingGui finished");
                 var browseLabel = ((currentEntry.state === "staging" || currentEntry.state === "production")) ? "browse" : currentEntry.state;
@@ -732,7 +732,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             child_process.execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
                 if (deploymentType.includes('docker')) {
-                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war', currentEntry.buildName + '_staging_admin');
+                    deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war', currentEntry.buildName + '_staging_admin', currentEntry.buildName + '-admin');
                 }
                 console.log("frinex-admin finished");
                 var browseLabel = ((currentEntry.state === "staging" || currentEntry.state === "production")) ? "browse" : currentEntry.state;
@@ -938,7 +938,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
                             if (deploymentType.includes('docker')) {
-                                deployDockerService(currentEntry, currentEntry.buildName + '_production_web.war', currentEntry.buildName + '_production_web');
+                                deployDockerService(currentEntry, currentEntry.buildName + '_production_web.war', currentEntry.buildName + '_production_web', currentEntry.buildName);
                             }
                             console.log("deployProductionGui finished: " + currentEntry.buildName);
                             storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer : productionServerUrl) + '/' + currentEntry.buildName + '">browse</a>', "production", "web", false, false, true, new Date().getTime() - stageStartTime);
@@ -1096,7 +1096,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             child_process.execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 if (deploymentType.includes('docker') && (currentEntry.productionServer == null || currentEntry.productionServer.length == 0)) {
-                    deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war', currentEntry.buildName + '_production_admin');
+                    deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war', currentEntry.buildName + '_production_admin', currentEntry.buildName + '-admin');
                 }
                 console.log("frinex-admin finished");
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">log</a>&nbsp;<a href="/cgi/experiment_access.cgi?' + currentEntry.buildName + '">access</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar">download</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer : productionServerUrl) + '/' + currentEntry.buildName + '-admin">browse</a>&nbsp;<a href="' + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ? currentEntry.productionServer : productionServerUrl) + '/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "production", "admin", false, false, true, new Date().getTime() - stageStartTime);
