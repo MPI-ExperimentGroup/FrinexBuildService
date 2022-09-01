@@ -441,8 +441,8 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
     fs.writeFileSync(dockerFilePath,
         "FROM openjdk:11\n"
         + "COPY " + warFileName + " /" + warFileName + "\n"
-        + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
-        // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
+        // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
+        + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
         + ((currentEntry.state === "debug") ? ', \"--trace\"]\n' : ']\n')
         // TODO: it should not be necessary to do a service start, but this needs to be tested 
         // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
