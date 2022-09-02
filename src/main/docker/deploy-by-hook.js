@@ -572,7 +572,7 @@ function deployStagingGui(currentEntry) {
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
-        // console.log(dockerString);
+        console.log(dockerString);
         child_process.exec(dockerString, (error, stdout, stderr) => {
             // gtwBuildingCount--;
             if (error) {
