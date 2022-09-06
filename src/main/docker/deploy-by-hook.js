@@ -82,6 +82,7 @@ const buildStatisticsFileName = targetDirectory + "/buildstats.json";
 var buildStatisticsJson = {};
 var availableImageList = "";
 var hasDoneBackup = false;
+var waitingServiceCounter = 0;
 // var gtwBuildingCount = 0; // gtwBuildingCount is used to limit the GWT builds to about one at a time, while the rest of the build stages can be in parallel
 
 function startResult() {
@@ -407,10 +408,11 @@ function updateServicesJson() {
 }
 
 function waitingServiceStart() {
-    if (deploymentType.includes('docker')) {
+    if (deploymentType.includes('docker') && waitingServiceCounter < 10) {
+        waitingServiceCounter++;
         updateServicesJson();
         // check if all the services have started up
-        console.log("checkServicesStatus");
+        console.log("checkServicesStatus: " + waitingServiceCounter);
         const servicesJsonFileName = targetDirectory + "/services.json";
         const contents = fs.readFileSync(servicesJsonFileName, 'utf8');
         const serviceStarting = contents.includes("\"0/");
