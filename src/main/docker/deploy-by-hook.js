@@ -688,6 +688,8 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images do not need this
             + " sed -i 's|experiment.destinationServerUrl}/manager/text|experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+            // using sed to replace the depricated DB URL in very old build images like 1.3-audiofix
+            + " sed -i 's|localhost:5432|" + stagingDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
