@@ -61,8 +61,11 @@ echo "$serviceList" \
 echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 for runningWar in $(curl -k -s https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g")
 do
-    if [[ ${serviceList} != *$runningWar"_staging"* ]]; then
-        echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n\nlocation /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
+    if [[ ${serviceList} != *$runningWar"_staging_web"* ]]; then
+        echo -e "location /$runningWar {\n proxy_pass https://tomcatstaging/$runningWar;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
+    fi
+    if [[ ${serviceList} != *$runningWar"_staging_admin"* ]]; then
+        echo -e "location /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
     fi
 done
 
