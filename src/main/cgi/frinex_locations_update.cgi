@@ -26,9 +26,10 @@
 
 echo "Content-type: text/json"
 echo ''
-
+# this | grep -v -E " 0/" \ is there to bypas docker when the services have not come up, if they are runing on tomcat they will be sent there
 serviceList="$(sudo docker service ls \
     | grep -E "8080/tcp" \
+    | grep -v -E " 0/" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
 echo "$serviceList" \
