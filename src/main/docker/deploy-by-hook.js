@@ -1926,7 +1926,8 @@ function convertJsonToXml() {
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
         // we use beta in this case because stable currently does not support all the features required such as locales
-        + ' frinexapps-jdk:beta /bin/bash -c "mvn exec:exec'
+        // now we are using alpha because that validates redirectToURL for metadata presenters
+        + ' frinexapps-jdk:alpha /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
