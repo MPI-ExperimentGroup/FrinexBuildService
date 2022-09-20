@@ -86,6 +86,9 @@ else
     # move the old logs out of the way, note that this could overwrite old out of the way logs from the same date
     docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --user root --name frinexbuild-moveoldlogs frinexbuild:latest bash -c \
       "mkdir artifacts/logs-$(date +%F)/; mv artifacts/git-*.txt artifacts/json_to_xml.txt artifacts/update_schema_docs.txt artifacts/logs-$(date +%F)/; echo \"The build process will create an index page and replace this message when the build process starts. <br /><a href=\"cgi/request_build.cgi\">trigger an empty build process</a>\" > /FrinexBuildService/artifacts/index.html; chmod -R ug+rwx /FrinexBuildService/artifacts/index.html; chown -R frinex:www-data /FrinexBuildService/artifacts/index.html";
+    # iterate the git checkout directories and reset them in case they were damaged in an unexpected shutdown
+    docker run -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name frinexbuild-reset-git-co frinexbuild:latest bash -c \
+      "cd /FrinexBuildService/git-checkedout/; for checkoutDirectory in /FrinexBuildService/git-checkedout/*/ ; do; cd $checkoutDirectory; pwd; rm .git/index.lock; git restore .; done;";
     # -v $workingDir/BackupFiles:/BackupFiles
     # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
 
