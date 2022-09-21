@@ -735,7 +735,8 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
         try {
             child_process.execSync(dockerString, { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
-                if (deploymentType.includes('docker')) {
+                // The 1.3-audiofix build image is so old that it cannot be run in the Docker swarm. If future support is needed then the stable image should instead be used to build 1.3-audiofix admin applications
+                if (deploymentType.includes('docker') && currentEntry.frinexVersion !== "1.3-audiofix") {
                     deployDockerService(currentEntry, currentEntry.buildName + '_staging_admin.war', currentEntry.buildName + '_staging_admin', currentEntry.buildName + '-admin');
                 }
                 console.log("frinex-admin finished");
@@ -1099,7 +1100,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             // after the log has been written replace the token with the admin password
             child_process.execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
-                if (deploymentType.includes('docker') && (currentEntry.productionServer == null || currentEntry.productionServer.length == 0)) {
+                // The 1.3-audiofix build image is so old that it cannot be run in the Docker swarm. If future support is needed then the stable image should instead be used to build 1.3-audiofix admin applications
+                if (deploymentType.includes('docker') && (currentEntry.productionServer == null || currentEntry.productionServer.length == 0) && currentEntry.frinexVersion !== "1.3-audiofix") {
                     deployDockerService(currentEntry, currentEntry.buildName + '_production_admin.war', currentEntry.buildName + '_production_admin', currentEntry.buildName + '-admin');
                 }
                 console.log("frinex-admin finished");
@@ -1924,7 +1926,8 @@ function convertJsonToXml() {
         + ' -v m2Directory:/maven/.m2/'
         + ' -w /ExperimentTemplate/ExperimentDesigner'
         // we use beta in this case because stable currently does not support all the features required such as locales
-        + ' frinexapps-jdk:beta /bin/bash -c "mvn exec:exec'
+        // now we are using alpha because that validates redirectToURL for metadata presenters
+        + ' frinexapps-jdk:alpha /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
