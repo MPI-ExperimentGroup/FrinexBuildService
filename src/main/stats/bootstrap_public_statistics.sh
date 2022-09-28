@@ -26,7 +26,14 @@ export PGPASSFILE
 postgresCommand="/Applications/Postgres.app/Contents/Versions/9.4/bin/psql -p5432"
 
 echo "{";
-$postgresCommand postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'" | while read -a currentexperiment ; do
+isFirstEntry=true;
+# $postgresCommand postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'" | while read -a currentexperiment ; do
+for currentexperiment in $($postgresCommand postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'");
+do 
+    if [ "$isFirstEntry" = false ] ; then
+      echo "},";
+    fi
+    isFirstEntry=false;
     echo '"'$currentexperiment'": {'
     $postgresCommand $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) || '\",' from screen_data";
     $postgresCommand $currentexperiment --no-align -t -c "select '\"totalDeploymentsAccessed\":\"' || count(distinct tag_value) || '\",' from tag_data where event_tag = 'compileDate'";
@@ -38,9 +45,10 @@ $postgresCommand postgres --no-align -t -c "select datname from pg_database wher
     echo "],";
     echo '"sessionFirstAndLastSeen": [';
     $postgresCommand $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data where submit_date is not null group by user_id order by min(submit_date) asc" | sed "$ s|\],[[:space:]]*$|]|g";
-    echo "]},";
+    echo "],";
     echo '"frinexVersion": {';
     $postgresCommand $currentexperiment --no-align -t -c "select '\"' || tag_value || '\": { \"first_use\": \"' || min(tag_date) || '\", \"last_use\": \"' || max(tag_date) || '\", \"page_loads\": ' || count(tag_value) || ', \"distinct_users\": ' || count(distinct(user_id)) || '},'  from tag_data where event_tag = 'projectVersion' group by tag_value order by min(tag_value) asc" | sed "$ s|\},[[:space:]]*$|}|g";
-    echo "},";
+    echo "}";
 done
+echo "}";
 echo "}";
