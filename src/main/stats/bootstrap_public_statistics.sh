@@ -19,22 +19,28 @@
 # @since 2 March, 2021 16:40 PM (creation date)
 # @author Peter Withers <peter.withers@mpi.nl>
 
+PGPASSFILE=/FrinexBuildService/frinex_db_user_authentication
+export PGPASSFILE
+
+# postgresCommand="PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d"
+postgresCommand="/Applications/Postgres.app/Contents/Versions/9.4/bin/psql -p5432"
+
 echo "{";
-'/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres'" | while read -a currentexperiment ; do
+$postgresCommand postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'" | while read -a currentexperiment ; do
     echo '"'$currentexperiment'": {'
-    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) || '\",' from screen_data";
-    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '\"totalDeploymentsAccessed\":\"' || count(distinct tag_value) || '\",' from tag_data where event_tag = 'compileDate'";
-    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '\"totalParticipantsSeen\":\"' || count(distinct user_id) || '\",' from participant";
-    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) || '\",' from participant";
-    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) || '\",' from participant";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) || '\",' from screen_data";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"totalDeploymentsAccessed\":\"' || count(distinct tag_value) || '\",' from tag_data where event_tag = 'compileDate'";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"totalParticipantsSeen\":\"' || count(distinct user_id) || '\",' from participant";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) || '\",' from participant";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) || '\",' from participant";
     echo '"participantsFirstAndLastSeen": [';
-    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant group by user_id order by min(submit_date) asc";
+    $postgresCommand $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant group by user_id order by min(submit_date) asc";
     echo "],";
     echo '"sessionFirstAndLastSeen": [';
-    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc";
+    $postgresCommand $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc" | sed "$ s|\],[[:space:]]*$|]|g";
     echo "]},";
     echo '"frinexVersion": {';
-    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '\"' || tag_value || '\": { \"first_use\": \"' || min(tag_date) || '\", \"last_use\": \"' || max(tag_date) || '\", \"page_loads\": ' || count(tag_value) || '\", \"distinct_users\": ' || count(distinct(user_id)) || '},'  from tag_data where event_tag = 'projectVersion' group by tag_value order by min(tag_value) asc";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"' || tag_value || '\": { \"first_use\": \"' || min(tag_date) || '\", \"last_use\": \"' || max(tag_date) || '\", \"page_loads\": ' || count(tag_value) || '\", \"distinct_users\": ' || count(distinct(user_id)) || '},'  from tag_data where event_tag = 'projectVersion' group by tag_value order by min(tag_value) asc";
     echo "},";
 done
 echo "}";
