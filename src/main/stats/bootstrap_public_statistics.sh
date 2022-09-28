@@ -33,5 +33,8 @@ echo "{";
     echo '"sessionFirstAndLastSeen": [';
     '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc";
     echo "]},";
+    echo '"frinexVersion": {';
+    '/Applications/Postgres.app/Contents/Versions/9.4/bin'/psql -p5432 $currentexperiment --no-align -t -c "select '\"' || tag_value || '\": { \"first_use\": \"' || min(tag_date) || '\", \"last_use\": \"' || max(tag_date) || '\", \"page_loads\": ' || count(tag_value) || '\", \"distinct_users\": ' || count(distinct(user_id)) || '},'  from tag_data where event_tag = 'projectVersion' group by tag_value order by min(tag_value) asc";
+    echo "},";
 done
 echo "}";
