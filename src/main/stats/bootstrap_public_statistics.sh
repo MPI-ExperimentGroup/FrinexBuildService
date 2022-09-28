@@ -40,6 +40,9 @@ do
     $postgresCommand $currentexperiment --no-align -t -c "select '\"totalParticipantsSeen\":\"' || count(distinct user_id) || '\",' from participant";
     $postgresCommand $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) || '\",' from participant";
     $postgresCommand $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) || '\",' from participant";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"totalPageLoads\":\"' || count(distinct tag_date) || '\",' from tag_data where event_tag = 'compileDate'";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"totalStimulusResponses\":\"' || count(distinct concat(tag_date, user_id, event_ms)) || '\",' from stimulus_response";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"totalMediaResponses\":\"' || count(id) || '\",' from audio_data";
     echo '"participantsFirstAndLastSeen": [';
     $postgresCommand $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant where submit_date is not null group by user_id order by min(submit_date) asc" | sed "$ s|\],[[:space:]]*$|]|g";
     echo "],";
