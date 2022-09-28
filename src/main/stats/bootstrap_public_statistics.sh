@@ -34,13 +34,13 @@ $postgresCommand postgres --no-align -t -c "select datname from pg_database wher
     $postgresCommand $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) || '\",' from participant";
     $postgresCommand $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) || '\",' from participant";
     echo '"participantsFirstAndLastSeen": [';
-    $postgresCommand $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant group by user_id order by min(submit_date) asc";
+    $postgresCommand $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant where submit_date is not null group by user_id order by min(submit_date) asc" | sed "$ s|\],[[:space:]]*$|]|g";
     echo "],";
     echo '"sessionFirstAndLastSeen": [';
-    $postgresCommand $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data group by user_id order by min(submit_date) asc" | sed "$ s|\],[[:space:]]*$|]|g";
+    $postgresCommand $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from tag_data where submit_date is not null group by user_id order by min(submit_date) asc" | sed "$ s|\],[[:space:]]*$|]|g";
     echo "]},";
     echo '"frinexVersion": {';
-    $postgresCommand $currentexperiment --no-align -t -c "select '\"' || tag_value || '\": { \"first_use\": \"' || min(tag_date) || '\", \"last_use\": \"' || max(tag_date) || '\", \"page_loads\": ' || count(tag_value) || '\", \"distinct_users\": ' || count(distinct(user_id)) || '},'  from tag_data where event_tag = 'projectVersion' group by tag_value order by min(tag_value) asc";
+    $postgresCommand $currentexperiment --no-align -t -c "select '\"' || tag_value || '\": { \"first_use\": \"' || min(tag_date) || '\", \"last_use\": \"' || max(tag_date) || '\", \"page_loads\": ' || count(tag_value) || ', \"distinct_users\": ' || count(distinct(user_id)) || '},'  from tag_data where event_tag = 'projectVersion' group by tag_value order by min(tag_value) asc" | sed "$ s|\},[[:space:]]*$|}|g";
     echo "},";
 done
 echo "}";
