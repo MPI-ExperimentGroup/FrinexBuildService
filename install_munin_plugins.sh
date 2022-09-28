@@ -129,6 +129,9 @@ else
     # boot strap the experiment stats plugin data directly from postgres
     docker run -v /srv/frinex_munin_data/stats:/frinex_munin_stats -it --rm --name bootstrap_munin_stats frinex_db_manager:latest bash /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 
+    # generate the JSON file containing experiment stats directly from postgres for use in the build server pages
+    docker run -v buildServerTarget:/FrinexBuildService/artifacts -it --rm --name bootstrap_public_stats frinex_db_manager:latest bash -c "/FrinexBuildService/stats/bootstrap_public_statistics.sh >> /FrinexBuildService/artifacts/staging_public_stats.json"
+
     # please note that the following needs to be added to /etc/munin/plugin-conf.d/munin-node
     #   [frinex_*]
     #   group docker

@@ -22,8 +22,8 @@
 PGPASSFILE=/FrinexBuildService/frinex_db_user_authentication
 export PGPASSFILE
 
-# postgresCommand="PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d"
-postgresCommand="/Applications/Postgres.app/Contents/Versions/9.4/bin/psql -p5432"
+postgresCommand="PGPASSWORD=$databasePass psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d"
+# postgresCommand="/Applications/Postgres.app/Contents/Versions/9.4/bin/psql -p5432"
 
 echo "{";
 isFirstEntry=true;
