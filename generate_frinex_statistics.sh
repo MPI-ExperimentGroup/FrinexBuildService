@@ -33,5 +33,5 @@ else
     docker run -v buildServerTarget:/FrinexBuildService/artifacts -it --rm --name bootstrap_public_stats frinex_db_manager:latest bash -c "/FrinexBuildService/stats/bootstrap_public_statistics.sh > /FrinexBuildService/artifacts/staging_public_stats.json"
 
     # generate the XML element usage stats file
-    docker run -v buildServerTarget:/FrinexBuildService/artifacts -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name frinex_usage_stats frinexbuild:latest bash -c "grep -c '<preventWindowClose' git-checkedout/*/*.xml | grep -v ':0$' > /FrinexBuildService/artifacts/frinex_usage_stats.json"
+    docker run -v buildServerTarget:/FrinexBuildService/artifacts -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name frinex_usage_stats frinexbuild:latest bash -c "for frinexElement in '<addMediaTrigger' '<addRecorderDtmfTrigger' '<addTimerTrigger' '<evaluatePause' '<pauseMedia' '<playMedia' '<resetTrigger' '<startFrameRateTimer' '<startTimer' '<triggerDefinition' '<triggerMatching' '<addFrameTimeTrigger' '<pause'; do echo "\"$frinexElement\"": {\"; grep -c $frinexElement git-checkedout/*/*.xml | grep -v ':0$' | sed 's|git-checkedout/|}, {\"repository\": \"|g' | sed 's|/|\", \"experiment\": \"|g' | sed 's|.xml:|\", \"usage\": |g'; echo '}'; done; > /FrinexBuildService/artifacts/frinex_usage_stats.json"
 fi;
