@@ -250,7 +250,7 @@ function doUpdate() {
                         }
                         updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
                         // the path -admin/actuator/health is for spring boot 2.3.0
-                        $.getJSON(window.location.protocol + '//' + window.location.hostname + ':' + val.port + '/' + key + '/actuator/health', (function (experimentName, cellStyle) {
+                        $.getJSON(window.location.protocol + '//' + window.location.hostname + ':' + val.port + '/' + key.replace("_staging", "").replace("_production", "").replace("_admin", "-admin") + '/actuator/health', (function (experimentName, cellStyle) {
                             return function (data) {
                                 serviceStatusHealth[experimentName + deploymentStage] = '';
                                 $.each(data, function (key, val) {
