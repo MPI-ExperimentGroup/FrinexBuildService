@@ -42,7 +42,8 @@ update_stats() {
     | grep -E "$1_admin" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
-    | awk '{print ":" $4 "/" $1}')
+    | awk '{print ":" $4 "/" $1}'
+    | sed "s|_staging||g" | sed "s|_production||g" | sed "s|_admin|-admin|g" | sed "s|_web||g")
     do
         experimentAdminName=$(cut -d'/' -f2 <<< $currentUrl)
         #echo $experimentAdminName
