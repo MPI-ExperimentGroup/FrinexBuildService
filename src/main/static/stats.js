@@ -23,7 +23,7 @@
  */
 
 
-$.getJSON('staging_public_stats.json', (function (experimentName) {
+$.getJSON('../staging_public_stats.json', (function (experimentName) {
     return function (data) {
         $.each(data[experimentName], function (key, value) {
             $("#resultsTable").append("<tr><td>" + key + "</td><td>" + value + "</td></tr>")
