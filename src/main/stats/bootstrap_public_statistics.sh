@@ -33,8 +33,8 @@ do
     if [ "$isFirstEntry" = false ] ; then
       echo "},";
     fi
-    experimentName=${currentexperiment%_db};
-    experimentName=${experimentName#frinex_};
+    experimentName=${currentexperiment%"_db"};
+    experimentName=${experimentName#"frinex_"};
     isFirstEntry=false;
     echo '"'$experimentName'": {'
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) || '\",' from screen_data";
