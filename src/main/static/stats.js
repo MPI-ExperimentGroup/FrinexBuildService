@@ -32,6 +32,8 @@ function loadStats(experimentList) {
                         $.each(data[experimentName].frinexVersion, function (key, value) {
                             $("#resultsTable").append("<tr><td>" + statFile + "</td><td>" + experimentName + "</td><td>" + key + "</td><td>" + value.first_use + "</td><td>" + value.last_use + "</td><td>" + value.page_loads + "</td></tr>")
                         });
+                    } else {
+                        $("#resultsTable").append("<tr><td>" + statFile + "</td><td>" + experimentName + "</td><td>Not Found</td><td></td><td></td><td></td></tr>")
                     }
                 });
             };
