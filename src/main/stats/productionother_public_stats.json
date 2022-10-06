@@ -1,5 +1,5 @@
 {
-    "frinex_mpisentencemonitoring": {
+    "mpisentencemonitoring": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -15,7 +15,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpimaximalspeechrate": {
+    "mpimaximalspeechrate": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -31,7 +31,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpirhymes": {
+    "mpirhymes": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -47,7 +47,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_group_example": {
+    "group_example": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -63,7 +63,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiselfpacedreading": {
+    "mpiselfpacedreading": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -79,7 +79,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpistairs4words2": {
+    "mpistairs4words2": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -95,7 +95,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpipicturenaming": {
+    "mpipicturenaming": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -111,7 +111,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_thijs_test": {
+    "thijs_test": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -127,7 +127,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiauchoicereactiontime": {
+    "mpiauchoicereactiontime": {
     "firstDeploymentAccessed":"2022-09-06 11:37:24.766",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"42",
@@ -228,7 +228,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 11:37:24.462", "last_use": "2022-09-15 14:13:49.263", "page_loads": 42, "distinct_users": 42}
     }
     },
-    "frinex_bq4_customisable_electron": {
+    "bq4_customisable_electron": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -244,7 +244,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpibq5bfi2": {
+    "mpibq5bfi2": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -260,7 +260,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_timestudy_mpilettercomparison_newtimers": {
+    "timestudy_mpilettercomparison_newtimers": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -276,7 +276,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpinonwordmonitoring": {
+    "mpinonwordmonitoring": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -292,7 +292,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpisentencegeneration": {
+    "mpisentencegeneration": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -308,7 +308,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpivisimplereactiontime": {
+    "mpivisimplereactiontime": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -324,7 +324,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpimicrophonetest": {
+    "mpimicrophonetest": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -340,7 +340,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpioneminutereading": {
+    "mpioneminutereading": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -356,7 +356,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiidioms": {
+    "mpiidioms": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -372,7 +372,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiflamingo": {
+    "mpiflamingo": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -388,7 +388,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpikonopka": {
+    "mpikonopka": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -404,7 +404,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpidemographics": {
+    "mpidemographics": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -420,7 +420,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiwerkwoorden": {
+    "mpiwerkwoorden": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -436,7 +436,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpilettercomparison": {
+    "mpilettercomparison": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -452,7 +452,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiverbalfluency": {
+    "mpiverbalfluency": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -468,7 +468,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpigrammaticalgendercues1": {
+    "mpigrammaticalgendercues1": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -484,7 +484,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_timestudy_mpiausimplereactiontime_newtimers": {
+    "timestudy_mpiausimplereactiontime_newtimers": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -500,7 +500,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiwoordenschattest": {
+    "mpiwoordenschattest": {
     "firstDeploymentAccessed":"2022-09-28 09:13:03.715",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"2",
@@ -521,7 +521,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-28 09:13:03.49", "last_use": "2022-09-28 09:14:43.33", "page_loads": 2, "distinct_users": 2}
     }
     },
-    "frinex_mpispontaneousspeech": {
+    "mpispontaneousspeech": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -537,7 +537,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiprescriptivegrammar": {
+    "mpiprescriptivegrammar": {
     "firstDeploymentAccessed":"2022-09-06 11:41:30.334",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"44",
@@ -643,7 +643,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 11:41:30.033", "last_use": "2022-09-28 09:24:48.781", "page_loads": 45, "distinct_users": 45}
     }
     },
-    "frinex_mpimars": {
+    "mpimars": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -659,7 +659,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpivichoicereactiontime": {
+    "mpivichoicereactiontime": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -675,7 +675,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpidaivt": {
+    "mpidaivt": {
     "firstDeploymentAccessed":"2022-09-06 11:29:26.951",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"43",
@@ -778,7 +778,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 11:29:26.66", "last_use": "2022-09-15 14:02:49.26", "page_loads": 43, "distinct_users": 43}
     }
     },
-    "frinex_mpilexicaldecision": {
+    "mpilexicaldecision": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -794,7 +794,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpigrammaticalgendercues2": {
+    "mpigrammaticalgendercues2": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -810,7 +810,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiantonymsproduction": {
+    "mpiantonymsproduction": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -826,7 +826,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_french_audio_example": {
+    "french_audio_example": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -842,7 +842,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiquestionsdemographic": {
+    "mpiquestionsdemographic": {
     "firstDeploymentAccessed":"2022-09-06 09:41:42.566",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"53",
@@ -965,7 +965,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 09:41:42.368", "last_use": "2022-10-04 13:04:09.759", "page_loads": 55, "distinct_users": 53}
     }
     },
-    "frinex_mpidigitspan": {
+    "mpidigitspan": {
     "firstDeploymentAccessed":"2022-09-06 09:55:08.836",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"6",
@@ -994,7 +994,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 09:55:08.687", "last_use": "2022-10-04 13:13:02.52", "page_loads": 8, "distinct_users": 6}
     }
     },
-    "frinex_mpicorsi": {
+    "mpicorsi": {
     "firstDeploymentAccessed":"2022-09-06 09:43:06.309",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"5",
@@ -1021,7 +1021,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 09:43:06.111", "last_use": "2022-10-04 13:05:09.85", "page_loads": 11, "distinct_users": 5}
     }
     },
-    "frinex_mpirapidautomatizednaming": {
+    "mpirapidautomatizednaming": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -1037,7 +1037,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpispellingtest": {
+    "mpispellingtest": {
     "firstDeploymentAccessed":"2022-09-06 11:45:41.811",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"42",
@@ -1138,7 +1138,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 11:45:41.501", "last_use": "2022-09-15 14:24:46.659", "page_loads": 42, "distinct_users": 42}
     }
     },
-    "frinex_uppercasetest": {
+    "uppercasetest": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -1154,7 +1154,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpiauteurstest": {
+    "mpiauteurstest": {
     "firstDeploymentAccessed":"2022-09-06 11:52:05.966",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"42",
@@ -1255,7 +1255,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 11:52:05.665", "last_use": "2022-09-15 14:32:59.323", "page_loads": 42, "distinct_users": 42}
     }
     },
-    "frinex_mpiwords2phrases": {
+    "mpiwords2phrases": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -1271,7 +1271,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_idlas_de_customisable_electron": {
+    "idlas_de_customisable_electron": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
@@ -1287,7 +1287,7 @@
     "frinexVersion": {
     }
     },
-    "frinex_mpicategorisation": {
+    "mpicategorisation": {
     "firstDeploymentAccessed":"2022-09-06 11:47:13.394",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"42",
@@ -1388,7 +1388,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 11:47:13.091", "last_use": "2022-09-15 14:27:36.372", "page_loads": 42, "distinct_users": 42}
     }
     },
-    "frinex_mpiausimplereactiontime": {
+    "mpiausimplereactiontime": {
     "firstDeploymentAccessed":"2022-09-06 11:34:05.176",
     "totalDeploymentsAccessed":"1",
     "totalParticipantsSeen":"43",
@@ -1491,7 +1491,7 @@
     "1.4.2996-stable": { "first_use": "2022-09-06 11:34:04.874", "last_use": "2022-09-15 14:11:40.179", "page_loads": 43, "distinct_users": 43}
     }
     },
-    "frinex_mpiquestionnairehealth": {
+    "mpiquestionnairehealth": {
     
     "totalDeploymentsAccessed":"0",
     "totalParticipantsSeen":"0",
