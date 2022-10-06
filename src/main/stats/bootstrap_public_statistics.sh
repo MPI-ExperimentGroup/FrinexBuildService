@@ -33,8 +33,10 @@ do
     if [ "$isFirstEntry" = false ] ; then
       echo "},";
     fi
+    experimentName=${currentexperiment%_db};
+    experimentName=${experimentName#frinex_};
     isFirstEntry=false;
-    echo '"'${${currentexperiment%_db}#frinex_}'": {'
+    echo '"'$experimentName'": {'
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '\"firstDeploymentAccessed\":\"' || min(submit_date) || '\",' from screen_data";
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '\"totalDeploymentsAccessed\":\"' || count(distinct tag_value) || '\",' from tag_data where event_tag = 'compileDate'";
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '\"totalParticipantsSeen\":\"' || count(distinct user_id) || '\",' from participant";

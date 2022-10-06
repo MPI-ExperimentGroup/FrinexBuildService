@@ -23,7 +23,7 @@
  */
 
 function loadStats(experimentList) {
-    var statFileArray = ['productionBQ4_public_stats', 'productionBQ4pre2022-08-26_public_stats', 'production_public_stats'];
+    var statFileArray = ['staging_public_stats', 'productionBQ4_public_stats', 'productionBQ4pre2022-08-26_public_stats', 'production_public_stats'];
     statFileArray.forEach(function (statFile, index) {
         $.getJSON('../' + statFile + '.json', (function (statFile, experimentList) {
             return function (data) {
