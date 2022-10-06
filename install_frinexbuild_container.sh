@@ -56,6 +56,7 @@ else
     # create the frinex_db_manager bridge network 
     docker network create frinex_db_manager_net
 
+    # read -p "Press enter to restart frinex_db_manager"
     # This step is not needed in non swarm installations
     # remove the old frinex_db_manager
     docker stop frinex_db_manager 
@@ -70,12 +71,14 @@ else
     # This step is not needed in non swarm installations
     # build the frinex_listing_provider
     docker build --rm -f docker/frinex_listing_provider.Dockerfile -t frinex_listing_provider:latest .
+    # read -p "Press enter to restart frinex_listing_provider"
     # remove the old frinex_listing_provider
     docker stop frinex_listing_provider 
     docker container rm frinex_listing_provider 
     # start the frinex_listing_provider
     docker run --restart unless-stopped --name frinex_listing_provider --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
 
+    # read -p "Press enter to restart frinexbuild"
     # remove the old frinexbuild
     docker stop frinexbuild 
     docker container rm frinexbuild 
