@@ -22,11 +22,31 @@
  * @author Peter Withers <peter.withers@mpi.nl>
  */
 
+function loadStats(experimentList) {
+    var statFileArray = ['productionBQ4_public_stats', 'productionBQ4pre2022-08-26_public_stats', 'production_public_stats'];
+    statFileArray.forEach(function (statFile, index) {
+        $.getJSON('../' + statFile + '.json', (function (statFile, experimentList) {
+            return function (data) {
+                experimentList.forEach(function (experimentName, index) {
+                    if (data.includes(experimentName)) {
+                        $.each(data[experimentName].frinexVersion, function (key, value) {
+                            $("#resultsTable").append("<tr><td>" + statFile + "</td><td>" + experimentName + "</td><td>" + key + "</td><td>" + value + "</td></tr>")
+                        });
+                    }
+                });
+            };
+        }(statFile, experimentList)));
+    });
+}
 
-$.getJSON('../staging_public_stats.json', (function (experimentName) {
-    return function (data) {
-        $.each(data[experimentName], function (key, value) {
-            $("#resultsTable").append("<tr><td>" + key + "</td><td>" + value + "</td></tr>")
-        });
-    };
-}('frinex_with_simulus_example')));
+function loadUnkownBQ4() {
+    loadStats(['ausimplereactiontime_bq4_timestudy', 'visimplereactiontime_bq4_timestudy', 'picturenaming_bq4_timestudy', 'sentencegeneration_bq4_timestudy', 'sentencemonitoring_bq4_timestudy', 'werkwoorden_bq4_timestudy']);
+}
+
+function loadSession1BQ4() {
+    loadStats(['s3ausimplereactiontime', 's2visimplereactiontime', 's2picturenaming', 's3sentencegeneration', 's3sentencemonitoring', 's2werkwoorden']);
+}
+
+function loadSession2BQ4() {
+    loadStats(['mpiausimplereactiontime', 'mpivisimplereactiontime', 'mpipicturenaming', 'mpisentencegeneration', 'mpisentencemonitoring', 'mpiwerkwoorden']);
+}
