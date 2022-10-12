@@ -154,7 +154,7 @@ health_of_services() {
     | grep -E "$1" \
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
-    | awk '{print ":" $4 "/" $1}'
+    | awk '{print ":" $4 "/" $1}' \
     | sed "s|_staging||g" | sed "s|_production||g" | sed "s|_admin|-admin|g" | sed "s|_web||g")
     do
         healthResult=$(curl -k --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' http://$hoststring$currentUrl/actuator/health)
