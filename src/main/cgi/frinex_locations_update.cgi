@@ -49,7 +49,7 @@ echo "$serviceList" \
 echo "$serviceList" \
     | grep -E "_admin|_web" \
     | grep -E "_staging" \
-    | awk '{print "location /" $2 "X {\n proxy_pass http://" $1 "/" $2 "X;\nproxy_http_version 1.1;\nproxy_set_header Upgrade $http_upgrade;\nproxy_set_header Connection \"Upgrade\";\nproxy_set_header Host $host;}\n"}' \
+    | awk '{print "location /" $2 "X {\n proxy_pass http://" $1 "/" $2 "X;\n proxy_http_version 1.1;\n proxy_set_header Upgrade $http_upgrade;\n proxy_set_header Connection \"Upgrade\";\n proxy_set_header Host $host;\n}\n"}' \
     | sed 's/_staging_webX//g' \
     | sed 's/_staging_adminX/-admin/g' \
     > /usr/local/apache2/htdocs/frinex_staging_locations.txt
