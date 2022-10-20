@@ -590,7 +590,8 @@ function deployStagingGui(currentEntry) {
                 }
                 console.log("deployStagingGui finished");
                 var browseLabel = ((currentEntry.state === "staging" || currentEntry.state === "production")) ? "browse" : currentEntry.state;
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt?' + new Date().getTime() + '">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;<a href="' + stagingServerUrl + '/' + currentEntry.buildName + '">' + browseLabel + '</a>&nbsp;<a href="' + stagingServerUrl + '/' + currentEntry.buildName + '/TestingFrame.html">robot</a>', "staging", "web", false, false, true, new Date().getTime() - stageStartTime);
+                var browseLink = (currentEntry.isWebApp) ? '<a href="' + stagingServerUrl + '/' + currentEntry.buildName + '">' + browseLabel + '</a>&nbsp;<a href="' + stagingServerUrl + '/' + currentEntry.buildName + '/TestingFrame.html">robot</a>' : '';
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt?' + new Date().getTime() + '">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;' + browseLink, "staging", "web", false, false, true, new Date().getTime() - stageStartTime);
                 var buildArtifactsJson = { artifacts: {} };
                 const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
                 if (currentEntry.state === "staging" || currentEntry.state === "production") {
