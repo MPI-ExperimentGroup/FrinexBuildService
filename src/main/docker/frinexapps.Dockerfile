@@ -58,7 +58,7 @@ RUN /android-sdk/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD
 #RUN apt-get -y install git node.js npm mono-devel
 #RUN npm config set strict-ssl false # todo: remove this stale ssl work around 
 RUN npm install npm -g # update npm
-RUN npm install -g cordova@10.0.0
+RUN npm install -g cordova@11.0.0
 #RUN npm install -g electron-forge asar
 #RUN electron-forge init init-setup-project
 #RUN cd init-setup-project \
