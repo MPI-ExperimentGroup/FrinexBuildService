@@ -55,6 +55,11 @@
     tr:hover {
         background-color: #3f51b521;
     }
+
+    #proxy_reload {
+        border: red 1px;
+        padding: 5px;
+    }
 </style>
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
 <span id='buildLabel'>Build Host</span>
@@ -66,7 +71,9 @@
 <span style="display: none;" id="buildInProgress">build in progress</span><span style="display: none;"
     id="buildProcessFinished">build process finished <button onclick="triggerBuild();">update</button></span>
 <br /><br />
-<a href="https://lux26.mpi.nl/cgi-bin/get_config.cgi">Force Proxy Reload (for use when you get a 502 error)</a>
+<a href="http://frinexbuild.mpi.nl/docs/git_setup.html">Set up your GIT repository to build experiments</a>
+<br /><br />
+<span class="proxy_reload"><a href="https://lux26.mpi.nl/cgi-bin/get_config.cgi">Force Proxy Reload (for use when you get a 502 error)</a></span>
 <br /><br />
 <a href='frinex.html'>Current XML Documentation</a>&nbsp;
 <a href='frinex.xsd'>Current XML Schema</a><br />
