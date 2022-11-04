@@ -58,8 +58,6 @@ RUN cd /ExperimentTemplate \
     && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
     && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
 
-RUN cat /ExperimentTemplate/gwt-cordova/pom.xml
-
 RUN mkdir /ExperimentTemplate/target
 
 # make the .m2 directory that will later be a volume
