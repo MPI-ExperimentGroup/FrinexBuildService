@@ -30,7 +30,7 @@ RUN apt-get -y install unzip zip build-essential imagemagick nodejs vim file
 # set up gradle manually so we get a more recent version
 ENV PATH=${PATH}:/opt/gradle/bin
 RUN mkdir /opt/gradle \
-    && wget https://services.gradle.org/distributions/gradle-7.4.2-bin.zip \
+    && wget https://services.gradle.org/distributions/gradle-7.5.1-bin.zip \
     && unzip -d /opt/gradle gradle-*-bin.zip \
     && mv /opt/gradle/gradle-*/bin /opt/gradle/ \
     && mv /opt/gradle/gradle-*/lib /opt/gradle/ \
