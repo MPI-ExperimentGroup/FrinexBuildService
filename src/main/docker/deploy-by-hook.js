@@ -536,7 +536,7 @@ function deployStagingGui(currentEntry) {
             + ' -DversionCheck.buildType=' + 'stable'
             // TODO: usage of currentEntry.stagingServer is not implemented for targeting tomcat deployments nor undeployments, it is currently only used to tell the GUI application where its URL is for websockets and mobile apps
             + ((currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0) ?
-                ' -Dexperiment.destinationServer=' + currentEntry.stagingServer.replace(/^https?:\/\//, '')
+                ' -Dexperiment.destinationServer=' + currentEntry.stagingServer
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.stagingServer
                 + ' -Dexperiment.groupsSocketUrl=ws://' + currentEntry.stagingServer.replace(/^https?:\/\//, '')
                 : ' -Dexperiment.destinationServer=' + stagingServer
