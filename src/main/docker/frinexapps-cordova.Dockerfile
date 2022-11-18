@@ -39,7 +39,8 @@ RUN mkdir /opt/gradle \
 ENV ANDROID_VERSION=32 \
     ANDROID_SDK_ROOT=/android-sdk \
     ANDROID_HOME=/android-sdk \
-    ANDROID_BUILD_TOOLS_VERSION=32.0.0
+    ANDROID_BUILD_TOOLS_VERSION=30.0.3
+    # ANDROID_BUILD_TOOLS_VERSION=32.0.0
 ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/cmdline-tools
 # the listing of commandlinetools can be found here https://developer.android.com/studio#command-tools
 RUN mkdir /android-sdk \
