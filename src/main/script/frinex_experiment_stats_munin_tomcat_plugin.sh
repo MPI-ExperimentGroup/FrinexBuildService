@@ -73,19 +73,19 @@ update_stats() {
 }
 
 output_config() {
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
-    do
-        echo "multigraph $1_$graphType"
-        echo "graph_title Frinex Tomcat $1 $graphType"
-        echo "graph_category frinex"
-        echo "graph_total total $1 $graphType"
-        echo "graph_args --no-legend"        
-        for filePath in $dataDirectory/*-admin; do
-            fileName=${filePath#"$dataDirectory/"}
-            echo "$fileName-$graphType.label $fileName"
-            echo "$fileName-$graphType.draw AREASTACK"
-        done
-    done
+    # for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    # do
+    #     echo "multigraph $1_$graphType"
+    #     echo "graph_title Frinex Tomcat $1 $graphType"
+    #     echo "graph_category frinex"
+    #     echo "graph_total total $1 $graphType"
+    #     echo "graph_args --no-legend"        
+    #     for filePath in $dataDirectory/*-admin; do
+    #         fileName=${filePath#"$dataDirectory/"}
+    #         echo "$fileName-$graphType.label $fileName"
+    #         echo "$fileName-$graphType.draw AREASTACK"
+    #     done
+    # done
     echo "multigraph $1_activity"
     echo "graph_title Frinex Tomcat $1 Activity"
     echo "graph_category frinex"
@@ -113,14 +113,14 @@ output_difference() {
 output_values() {
     # TODO: cat and grep the values for the current grap from the temp files
     # TODO: If the plugin - for any reason - has no value to report, then it may send the value U for undefined. 
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
-    do
-        echo "multigraph $1_$graphType"
-        for filePath in $dataDirectory/*-admin; do
-            fileName=${filePath#"$dataDirectory/"}
-            grep $graphType $filePath | sed "s/$graphType/$fileName-$graphType/g"
-        done
-    done
+    # for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    # do
+    #     echo "multigraph $1_$graphType"
+    #     for filePath in $dataDirectory/*-admin; do
+    #         fileName=${filePath#"$dataDirectory/"}
+    #         grep $graphType $filePath | sed "s/$graphType/$fileName-$graphType/g"
+    #     done
+    # done
 }
 
 output_usage() {
