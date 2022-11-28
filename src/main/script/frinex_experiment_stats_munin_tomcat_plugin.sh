@@ -57,6 +57,7 @@ update_stats() {
             # echo "http://$hoststring/$experimentName-admin/public_quick_stats: $usageStatsResult" >> $dataDirectory/$hoststring.log
         done
         output_values $hoststring > $dataDirectory/$hoststring.values.tmp
+        output_totals $hoststring > $dataDirectory/$hoststring.totals.tmp
         output_difference $hoststring > $dataDirectory/$hoststring.difference.tmp
         output_config $hoststring > $dataDirectory/$hoststring.config.tmp
         # keep a dated copy to calculate the change per hour
@@ -65,6 +66,7 @@ update_stats() {
         # find $dataDirectory/$hoststring*.previous -mtime +1 -exec rm {} \;
         mv -f $dataDirectory/$hoststring.config.tmp $dataDirectory/$hoststring.config
         mv -f $dataDirectory/$hoststring.values.tmp $dataDirectory/$hoststring.values
+        mv -f $dataDirectory/$hoststring.totals.tmp $dataDirectory/$hoststring.totals
         mv -f $dataDirectory/$hoststring.difference.tmp $dataDirectory/$hoststring.difference
         # keep the current as the next prevous values
         cp -f $dataDirectory/$hoststring.values $dataDirectory/$hoststring.previous
@@ -86,16 +88,36 @@ output_config() {
     #         echo "$fileName-$graphType.draw AREASTACK"
     #     done
     # done
+    echo "multigraph $1_totals"
+    echo "graph_title Frinex Tomcat $1 Totals"
+    echo "graph_category frinex"
+    # echo "graph_total total $1 Activity"
+    echo "total-totalParticipantsSeen.label totalParticipantsSeen"
+    echo "total-totalDeploymentsAccessed.label totalDeploymentsAccessed"
+    echo "total-totalPageLoads.label totalPageLoads"
+    echo "total-totalStimulusResponses.label totalStimulusResponses"
+    echo "total-totalMediaResponses.label totalMediaResponses"
+    # grep "\-admin" $dataDirectory/$1.totals.tmp | sed "s/.value//g" | awk '{print $1 ".label " $1}'
     echo "multigraph $1_activity"
     echo "graph_title Frinex Tomcat $1 Activity"
     echo "graph_category frinex"
     # echo "graph_total total $1 Activity"
-    echo "total-totalParticipantsSeen.label total-totalParticipantsSeen"
-    echo "total-totalDeploymentsAccessed.label total-totalDeploymentsAccessed"
-    echo "total-totalPageLoads.label total-totalPageLoads"
-    echo "total-totalStimulusResponses.label total-totalStimulusResponses"
-    echo "total-totalMediaResponses.label total-totalMediaResponses"
-    grep "\-admin" $dataDirectory/$1.difference.tmp | sed "s/.value//g" | awk '{print $1 ".label " $1}'
+    echo "total-totalParticipantsSeen.label totalParticipantsSeen"
+    echo "total-totalDeploymentsAccessed.label totalDeploymentsAccessed"
+    echo "total-totalPageLoads.label totalPageLoads"
+    echo "total-totalStimulusResponses.label totalStimulusResponses"
+    echo "total-totalMediaResponses.label totalMediaResponses"
+    # grep "\-admin" $dataDirectory/$1.difference.tmp | sed "s/.value//g" | awk '{print $1 ".label " $1}'
+}
+
+output_totals() {
+    # sum the values and generate the totals graphs
+    echo "multigraph $1_totals"
+    # generate totals for each type
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    do
+        cat $dataDirectory/$1.values.tmp | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}'
+    done
 }
 
 output_difference() {
@@ -132,6 +154,8 @@ case $# in
     0)
         # touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
         # cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
+        touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.totals
+        cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.totals
         touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.difference
         cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.difference
         update_stats ${linkName#"frinex_experiment_stats_"}&
