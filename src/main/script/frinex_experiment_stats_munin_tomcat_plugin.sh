@@ -113,14 +113,14 @@ output_difference() {
 output_values() {
     # TODO: cat and grep the values for the current grap from the temp files
     # TODO: If the plugin - for any reason - has no value to report, then it may send the value U for undefined. 
-    # for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
-    # do
-    #     echo "multigraph $1_$graphType"
-    #     for filePath in $dataDirectory/*-admin; do
-    #         fileName=${filePath#"$dataDirectory/"}
-    #         grep $graphType $filePath | sed "s/$graphType/$fileName-$graphType/g"
-    #     done
-    # done
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    do
+        echo "multigraph $1_$graphType"
+        for filePath in $dataDirectory/*-admin; do
+            fileName=${filePath#"$dataDirectory/"}
+            grep $graphType $filePath | sed "s/$graphType/$fileName-$graphType/g"
+        done
+    done
 }
 
 output_usage() {
@@ -130,8 +130,8 @@ output_usage() {
 
 case $# in
     0)
-        touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
-        cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
+        # touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
+        # cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.values
         touch $dataDirectory/${linkName#"frinex_experiment_stats_"}.difference
         cat $dataDirectory/${linkName#"frinex_experiment_stats_"}.difference
         update_stats ${linkName#"frinex_experiment_stats_"}&
