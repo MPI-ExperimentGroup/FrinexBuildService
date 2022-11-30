@@ -31,7 +31,9 @@ RUN mkdir /FrinexBuildService/cgi
 COPY config/frinex_db_manager.conf  /FrinexBuildService/
 COPY cgi/frinex_db_manager.cgi  /FrinexBuildService/cgi/
 COPY stats/bootstrap_munin_statistics.sh  /FrinexBuildService/stats/
-COPY stats/bootstrap_public_statistics.sh  /FrinexBuildService/stats/
+COPY stats/bootstrap_public_statistics.sh  /FrinexBuildService/stats/bootstrap_public_staging_statistics.sh
+COPY stats/bootstrap_public_statistics.sh  /FrinexBuildService/stats/bootstrap_public_production_statistics.sh
+RUN sed -i "s|DatabaseStaging|DatabaseProduction|g" /FrinexBuildService/stats/bootstrap_public_production_statistics.sh
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 RUN sed -i "s|DatabaseStagingUrl|staging.example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi

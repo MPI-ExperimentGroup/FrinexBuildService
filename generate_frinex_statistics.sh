@@ -30,7 +30,9 @@ if ! grep -q $(hostname) config/publish.properties; then
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # generate the JSON file containing experiment stats directly from postgres for use in the build server pages
-    docker run -v buildServerTarget:/FrinexBuildService/artifacts -it --rm --name bootstrap_public_stats frinex_db_manager:latest bash -c "/FrinexBuildService/stats/bootstrap_public_statistics.sh > /FrinexBuildService/artifacts/staging_public_stats.json"
+    docker run -v buildServerTarget:/FrinexBuildService/artifacts -it --rm --name bootstrap_public_stats frinex_db_manager:latest bash -c "/FrinexBuildService/stats/bootstrap_public_staging_statistics.sh > /FrinexBuildService/artifacts/staging_public_stats.json"
+    
+    docker run -v buildServerTarget:/FrinexBuildService/artifacts -it --rm --name bootstrap_public_stats frinex_db_manager:latest bash -c "/FrinexBuildService/stats/bootstrap_public_production_statistics.sh > /FrinexBuildService/artifacts/production_public_stats.json"
 
     # copy the known statistics JSON files to the build server
     cat stats/productionother_public_stats.json | docker run -v buildServerTarget:/FrinexBuildService/artifacts --rm  -i --name productionother_public_stats frinexbuild:latest /bin/bash -c 'cat > /FrinexBuildService/artifacts/productionBQ4_public_stats.json'
