@@ -39,7 +39,7 @@ else
     # copy the known statistics JSON files to the build server
     cat stats/productionother_public_stats.json | docker run -v buildServerTarget:/FrinexBuildService/artifacts --rm  -i --name productionother_public_stats frinexbuild:latest /bin/bash -c 'cat > /FrinexBuildService/artifacts/productionBQ4_public_stats.json'
     cat stats/productionotherpre2022-08-26_public_stats.json | docker run -v buildServerTarget:/FrinexBuildService/artifacts --rm  -i --name productionBQ4pre2022-08-26_public_stats frinexbuild:latest /bin/bash -c 'cat > /FrinexBuildService/artifacts/productionBQ4pre2022-08-26_public_stats.json'
-    cat stats/production_public_stats.json | docker run -v buildServerTarget:/FrinexBuildService/artifacts --rm -i --name production_public_stats frinexbuild:latest /bin/bash -c 'cat > /FrinexBuildService/artifacts/production_public_stats.json'
+    # cat stats/production_public_stats.json | docker run -v buildServerTarget:/FrinexBuildService/artifacts --rm -i --name production_public_stats frinexbuild:latest /bin/bash -c 'cat > /FrinexBuildService/artifacts/production_public_stats.json'
 
     # generate the XML element usage stats file
     # also search for experiment that mention power supply or reload page because these warnings need to be made clear to the participants for more accurate timing
