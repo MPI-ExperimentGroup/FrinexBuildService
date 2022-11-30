@@ -34,6 +34,8 @@ else
     
     docker run -v buildServerTarget:/FrinexBuildService/artifacts -it --rm --name bootstrap_public_stats frinex_db_manager:latest bash -c "/FrinexBuildService/stats/bootstrap_public_production_statistics.sh > /FrinexBuildService/artifacts/production_public_stats.json"
 
+    #docker run -v buildServerTarget:/FrinexBuildService/artifacts -it --rm --name bootstrap_public_stats frinex_db_manager:latest bash -c "/FrinexBuildService/stats/bootstrap_florians_userids_statistics.sh > /FrinexBuildService/artifacts/bootstrap_florians_userids_statistics.json"
+
     # copy the known statistics JSON files to the build server
     cat stats/productionother_public_stats.json | docker run -v buildServerTarget:/FrinexBuildService/artifacts --rm  -i --name productionother_public_stats frinexbuild:latest /bin/bash -c 'cat > /FrinexBuildService/artifacts/productionBQ4_public_stats.json'
     cat stats/productionotherpre2022-08-26_public_stats.json | docker run -v buildServerTarget:/FrinexBuildService/artifacts --rm  -i --name productionBQ4pre2022-08-26_public_stats frinexbuild:latest /bin/bash -c 'cat > /FrinexBuildService/artifacts/productionBQ4pre2022-08-26_public_stats.json'
