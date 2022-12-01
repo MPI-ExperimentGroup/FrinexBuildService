@@ -514,7 +514,7 @@ function deployStagingGui(currentEntry) {
             + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
             //+ " sed -i 's/-Xmx1g/-Xmx4g/g' pom.xml;"
             // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images do not need this
-            + " sed -i 's|>\${experiment.destinationServerUrl}/manager/text|>https//:\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+            + " sed -i 's|experiment.destinationServerUrl}/manager/text|>experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ((currentEntry.state === "draft") ? " sed -i 's|<extraJvmArgs>|<draftCompile>true</draftCompile><style>DETAILED</style><extraJvmArgs>|g' pom.xml;" : '')
             + ((currentEntry.state === "draft") ? " sed -i 's|<source|<collapse-all-properties /><source|g' src/main/resources/nl/mpi/tg/eg/ExperimentTemplate.gwt.xml;" : '')
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
@@ -699,7 +699,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images do not need this
-            + " sed -i 's|>\${experiment.destinationServerUrl}/manager/text|>https//:\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+            + " sed -i 's|>\${experiment.destinationServerUrl}/manager/text|>https//:${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             // using sed to replace the depricated DB URL in very old build images like 1.3-audiofix
             + " sed -i 's|localhost:5432|" + stagingDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
