@@ -78,6 +78,10 @@ else
     # start the frinex_listing_provider
     docker run --restart unless-stopped --name frinex_listing_provider --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
 
+    read -p "Press enter to update the settings.xml"
+    # copy the maven settings to the .m2 directory that is a in volume and not the image used to perform the copy
+    cat $workingDir/src/main/config/settings.xml | docker run -v m2Directory:/maven/.m2/ -i frinexapps-jdk:alpha /bin/bash -c 'cat > /maven/.m2/settings.xml'
+
     read -p "Press enter to restart frinexbuild"
     # remove the old frinexbuild
     docker stop frinexbuild 
@@ -102,8 +106,4 @@ else
     # -v $workingDir/BackupFiles:/BackupFiles 
     # the -v m2Directory:/maven/.m2/ volume is not strictly needed in this container but it makes it easer to run docker purge without destroying the .m2/settings.xml etc
     # docker run  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinexbuild-temp frinexbuild:latest bash
-
-    read -p "Press enter to update the settings.xml"
-    # copy the maven settings to the .m2 directory that is a in volume and not the image used to perform the copy
-    cat $workingDir/src/main/config/settings.xml | docker run -v m2Directory:/maven/.m2/ -i frinexapps-jdk:alpha /bin/bash -c 'cat > /maven/.m2/settings.xml'
 fi;
