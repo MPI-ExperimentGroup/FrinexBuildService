@@ -105,5 +105,5 @@ else
 
     read -p "Press enter to update the settings.xml"
     # copy the maven settings to the .m2 directory that is a in volume and not the image used to perform the copy
-    cat $workingDir/src/main/config/settings.xml | docker run -v m2Directory:/maven/.m2/ -i frinexbuild:latest /bin/bash -c 'cat > /maven/.m2/settings.xml'
+    cat $workingDir/src/main/config/settings.xml | docker run -v m2Directory:/maven/.m2/ -i frinexapps-jdk:alpha /bin/bash -c 'cat > /maven/.m2/settings.xml'
 fi;
