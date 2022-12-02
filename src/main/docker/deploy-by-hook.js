@@ -217,6 +217,9 @@ function unDeploy(currentEntry) {
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps-jdk:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+            // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
+            + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+            + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -227,7 +230,7 @@ function unDeploy(currentEntry) {
             //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
-            + ' -Dexperiment.destinationServer=' + "https://" + stagingServer
+            + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
@@ -263,6 +266,9 @@ function unDeploy(currentEntry) {
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps-jdk:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
+            // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
+            + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+            + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -273,7 +279,7 @@ function unDeploy(currentEntry) {
             //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
             + ' -DversionCheck.buildType=' + 'stable'
-            + ' -Dexperiment.destinationServer=' + "https://" + stagingServer
+            + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
@@ -309,6 +315,9 @@ function unDeploy(currentEntry) {
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps-jdk:stable /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+            // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
+            + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+            + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -359,6 +368,9 @@ function unDeploy(currentEntry) {
             + ' -v buildServerTarget:' + targetDirectory
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps-jdk:stable /bin/bash -c "cd /ExperimentTemplate/registration;'
+            // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
+            + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+            + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
