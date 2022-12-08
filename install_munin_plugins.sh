@@ -126,6 +126,18 @@ else
     sudo chown root:root /usr/lib/munin/plugins/frinex_proxy_status_
     sudo ln -s /usr/lib/munin/plugins/frinex_proxy_status_ /etc/munin/plugins/frinex_proxy_status_tomcaturl_nginxurl_stagingorproduction
 
+    # install the experiment database statistics plugin
+    sudo mkdir -p /srv/frinex_munin_data/database_stats
+    cp script/frinex_experiment_database_plugin.sh /tmp/frinex_experiment_database_plugin.sh
+    chmod 777 /tmp/frinex_experiment_database_plugin.sh
+    sudo rm /usr/lib/munin/plugins/frinex_database_stats_
+    sudo mv /tmp/frinex_munin_proxy_status.sh /usr/lib/munin/plugins/frinex_database_stats_
+    sudo chmod 775 /usr/lib/munin/plugins/frinex_database_stats_
+    sudo chown root:root /usr/lib/munin/plugins/frinex_database_stats_
+    sudo ln -s /usr/lib/munin/plugins/frinex_database_stats_ /etc/munin/plugins/frinex_database_stats_staging
+    sudo ln -s /usr/lib/munin/plugins/frinex_database_stats_ /etc/munin/plugins/frinex_database_stats_production
+    # sudo ln -s /usr/lib/munin/plugins/frinex_database_stats_ /etc/munin/plugins/frinex_database_stats_localhost
+
     # boot strap the experiment stats plugin data directly from postgres
     docker run -v /srv/frinex_munin_data/stats:/frinex_munin_stats -it --rm --name bootstrap_munin_stats frinex_db_manager:latest bash /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 

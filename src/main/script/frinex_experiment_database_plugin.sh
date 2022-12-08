@@ -28,27 +28,28 @@ cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
 dataDirectory=/srv/frinex_munin_data/database_stats
+# dataDirectory=$scriptDir/database_stats
 # frinex_experiment_database_plugin.sh
 
 output_config() {
-    echo "multigraph database_totals"
-    echo "graph_title Frinex Database Totals"
+    echo "multigraph $1_database_totals"
+    echo "graph_title Frinex $1 Database Totals"
     echo "totalDeploymentsAccessed.label DeploymentsAccessed"
     echo "totalParticipantsSeen.label ParticipantsSeen"
     echo "totalPageLoads.label PageLoads"
     echo "totalStimulusResponses.label StimulusResponses"
     echo "totalMediaResponses.label MediaResponses"
 
-    echo "multigraph database_difference"
-    echo "graph_title Frinex Database Difference"
+    echo "multigraph $1_database_difference"
+    echo "graph_title Frinex $1 Database Difference"
     echo "totalDeploymentsAccessed.label DeploymentsAccessed"
     echo "totalParticipantsSeen.label ParticipantsSeen"
     echo "totalPageLoads.label PageLoads"
     echo "totalStimulusResponses.label StimulusResponses"
     echo "totalMediaResponses.label MediaResponses"
 
-    echo "multigraph raw_totals"
-    echo "graph_title Frinex Raw Totals"
+    echo "multigraph $1_raw_totals"
+    echo "graph_title Frinex $1 Raw Totals"
     echo "tag_data.label tag_data"
     echo "tag_pair_data.label tag_pair_data"
     echo "group_data.label group_data"
@@ -57,8 +58,8 @@ output_config() {
     echo "time_stamp.label time_stamp"
     echo "media_data.label media_data"
 
-    echo "multigraph raw_difference"
-    echo "graph_title Frinex Raw Difference"
+    echo "multigraph $1_raw_difference"
+    echo "graph_title Frinex $1 Raw Difference"
     echo "tag_data.label tag_data"
     echo "tag_pair_data.label tag_pair_data"
     echo "group_data.label group_data"
@@ -67,12 +68,81 @@ output_config() {
     echo "time_stamp.label time_stamp"
     echo "media_data.label media_data"
 
-    cat $dataDirectory/subgraphs.config
+    cat $dataDirectory/$1_subgraphs.config
+}
+
+run_localhost_queries() {
+    #postgresCommand="psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging"
+    postgresCommand="/Applications/Postgres.app/Contents/Versions/14/bin/psql -p5432"
+
+    for currentexperiment in $($postgresCommand -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'");
+    do 
+        experimentName=${currentexperiment%"_db"};
+        experimentName=${experimentName#"frinex_"};
+        echo -n $experimentName'.totalDeploymentsAccessed.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct tag_value) from tag_data where event_tag = 'compileDate'";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.totalParticipantsSeen.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct user_id) from participant";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.totalPageLoads.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct tag_date) from tag_data where event_tag = 'compileDate'";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.totalStimulusResponses.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.totalMediaResponses.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.tag_data.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from tag_data";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.tag_pair_data.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from tag_pair_data";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.group_data.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from group_data";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.screen_data.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from screen_data";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.stimulus_response.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from stimulus_response";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'.time_stamp.value '
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from time_stamp";
+    done
+}
+
+output_totals() {
+    # sum the values and generate the totals graphs
+    echo "multigraph $1_database_totals"
+    # generate totals for each type
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    do
+        cat $dataDirectory/query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+    done
+    echo "multigraph $1_raw_totals"
+    # generate totals for each type
+    for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data
+    do
+        cat $dataDirectory/query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+    done
 }
 
 output_values() {
-    cat $dataDirectory/graphs.values
-    cat $dataDirectory/subgraphs.values
+    case $1 in
+        production)
+            ;;
+        staging)
+            ;;
+        *)
+            run_localhost_queries > $dataDirectory/query.values
+            ;;
+    esac
+    output_totals
+    # cat $dataDirectory/graphs.values
+    # cat $dataDirectory/subgraphs.values
 }
 
 output_usage() {
@@ -82,12 +152,12 @@ output_usage() {
 
 case $# in
     0)
-        output_values
+        output_values ${linkName#"frinex_database_stats_"}
         ;;
     1)
         case $1 in
             config)
-                output_config
+                output_config ${linkName#"frinex_database_stats_"}
                 ;;
             *)
                 output_usage
