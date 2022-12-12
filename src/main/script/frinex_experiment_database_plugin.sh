@@ -68,12 +68,17 @@ output_config() {
     echo "time_stamp.label time_stamp"
     echo "media_data.label media_data"
 
-    cat $dataDirectory/$1_subgraphs.config
+    # TODO: add subgraphs to allow inspection of individual experiment stats
+    # cat $dataDirectory/$1_subgraphs.config
 }
 
 run_localhost_queries() {
-    #postgresCommand="psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging"
-    postgresCommand="/Applications/Postgres.app/Contents/Versions/14/bin/psql -p5432"
+    # CREATE ROLE munin_db_user WITH LOGIN PASSWORD 'ChangeThis459847';
+    # ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO munin_db_user;
+    # GRANT SELECT ON ALL TABLES IN SCHEMA public TO munin_db_user;
+    postgresCommand="psql -p5432 -U munin_db_user"
+    # postgresCommand="psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging"
+    # postgresCommand="/Applications/Postgres.app/Contents/Versions/14/bin/psql -p5432"
 
     for currentexperiment in $($postgresCommand -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'");
     do 
