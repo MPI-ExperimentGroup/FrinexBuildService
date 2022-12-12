@@ -33,6 +33,7 @@ dataDirectory=/srv/frinex_munin_data/database_stats
 
 output_config() {
     echo "multigraph $1_database_totals"
+    echo "graph_category frinex"
     echo "graph_title Frinex $1 Database Totals"
     echo "totalDeploymentsAccessed.label DeploymentsAccessed"
     echo "totalParticipantsSeen.label ParticipantsSeen"
@@ -41,6 +42,7 @@ output_config() {
     echo "totalMediaResponses.label MediaResponses"
 
     echo "multigraph $1_database_difference"
+    echo "graph_category frinex"
     echo "graph_title Frinex $1 Database Difference"
     echo "totalDeploymentsAccessed.label DeploymentsAccessed"
     echo "totalParticipantsSeen.label ParticipantsSeen"
@@ -49,6 +51,7 @@ output_config() {
     echo "totalMediaResponses.label MediaResponses"
 
     echo "multigraph $1_raw_totals"
+    echo "graph_category frinex"
     echo "graph_title Frinex $1 Raw Totals"
     echo "tag_data.label tag_data"
     echo "tag_pair_data.label tag_pair_data"
@@ -59,6 +62,7 @@ output_config() {
     echo "media_data.label media_data"
 
     echo "multigraph $1_raw_difference"
+    echo "graph_category frinex"
     echo "graph_title Frinex $1 Raw Difference"
     echo "tag_data.label tag_data"
     echo "tag_pair_data.label tag_pair_data"
@@ -135,7 +139,27 @@ output_totals() {
     done
 }
 
+output_difference() {
+    # diff the previous to values and generate the change per period graphs
+    echo "multigraph $1_database_totals"
+    difference="$(diff --suppress-common-lines -y $dataDirectory/query.previous $dataDirectory/query.values | awk '{print $1, " ", $5-$2}')"
+    echo "multigraph $1_database_difference"
+    # generate difference for each type
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    do
+        echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+    done
+    echo "multigraph $1_raw_difference"
+    # generate difference for each type
+    for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data
+    do
+        echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+    done
+}
+
 output_values() {
+    touch $dataDirectory/query.previous
+    touch $dataDirectory/query.values
     case $1 in
         production)
             ;;
@@ -146,6 +170,9 @@ output_values() {
             ;;
     esac
     output_totals $1
+    output_difference $1
+    # keep the current as the next prevous values
+    cp -f $dataDirectory/query.values $dataDirectory/query.previous
     # cat $dataDirectory/graphs.values
     # cat $dataDirectory/subgraphs.values
 }
