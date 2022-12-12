@@ -100,37 +100,37 @@ run_queries() {
         experimentName=${currentexperiment%"_db"};
         experimentName=${experimentName#"frinex_"};
         echo -n $experimentName'.totalDeploymentsAccessed.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct tag_value) from tag_data where event_tag = 'compileDate'";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct tag_value) from tag_data where event_tag = 'compileDate'";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.totalParticipantsSeen.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct user_id) from participant";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct user_id) from participant";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.totalPageLoads.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct tag_date) from tag_data where event_tag = 'compileDate'";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct tag_date) from tag_data where event_tag = 'compileDate'";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.totalStimulusResponses.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.totalMediaResponses.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.tag_data.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from tag_data";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from tag_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.tag_pair_data.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from tag_pair_data";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from tag_pair_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.group_data.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from group_data";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from group_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.screen_data.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from screen_data";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from screen_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.stimulus_response.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from stimulus_response";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from stimulus_response";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'.time_stamp.value '
-        PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from time_stamp";
+        PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from time_stamp";
     done
 }
 
