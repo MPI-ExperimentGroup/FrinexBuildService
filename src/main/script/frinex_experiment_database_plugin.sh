@@ -141,7 +141,6 @@ output_totals() {
 
 output_difference() {
     # diff the previous to values and generate the change per period graphs
-    echo "multigraph $1_database_totals"
     difference="$(diff --suppress-common-lines -y $dataDirectory/query.previous $dataDirectory/query.values | awk '{print $1, " ", $5-$2}')"
     echo "multigraph $1_database_difference"
     # generate difference for each type
