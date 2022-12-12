@@ -76,14 +76,25 @@ output_config() {
     # cat $dataDirectory/$1_subgraphs.config
 }
 
-run_localhost_queries() {
+run_queries() {
     # CREATE ROLE munin_db_user WITH LOGIN PASSWORD 'ChangeThis459847';
     # ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO munin_db_user;
     # GRANT SELECT ON ALL TABLES IN SCHEMA public TO munin_db_user;
-    postgresCommand="psql -p5432 -U munin_db_user"
+    # postgresCommand="psql -p5432 -U munin_db_user"
     # postgresCommand="psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging"
     # postgresCommand="/Applications/Postgres.app/Contents/Versions/14/bin/psql -p5432"
-
+    case $1 in
+        production)
+            postgresCommand="psql -p5434 -U munin_db_user"
+            ;;
+        staging)
+            postgresCommand="psql -p5433 -U munin_db_user"
+            ;;
+        *)
+            postgresCommand="psql -p5432 -U munin_db_user"
+            ;;
+    esac
+    
     for currentexperiment in $($postgresCommand -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'");
     do 
         experimentName=${currentexperiment%"_db"};
@@ -129,19 +140,19 @@ output_totals() {
     # generate totals for each type
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
     do
-        cat $dataDirectory/query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+        cat $dataDirectory/$1_query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
     done
     echo "multigraph $1_raw_totals"
     # generate totals for each type
     for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data
     do
-        cat $dataDirectory/query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+        cat $dataDirectory/$1_query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
     done
 }
 
 output_difference() {
     # diff the previous to values and generate the change per period graphs
-    difference="$(diff --suppress-common-lines -y $dataDirectory/query.previous $dataDirectory/query.values | awk '{print $1, " ", $5-$2}')"
+    difference="$(diff --suppress-common-lines -y $dataDirectory/$1_query.previous $dataDirectory/$1_query.values | awk '{print $1, " ", $5-$2}')"
     echo "multigraph $1_database_difference"
     # generate difference for each type
     for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
@@ -157,21 +168,21 @@ output_difference() {
 }
 
 output_values() {
-    touch $dataDirectory/query.previous
-    touch $dataDirectory/query.values
+    touch $dataDirectory/$1_query.previous
+    touch $dataDirectory/$1_query.values
     case $1 in
         production)
             ;;
         staging)
             ;;
         *)
-            run_localhost_queries > $dataDirectory/query.values
+            run_queries $1 > $dataDirectory/$1_query.values
             ;;
     esac
     output_totals $1
     output_difference $1
     # keep the current as the next prevous values
-    cp -f $dataDirectory/query.values $dataDirectory/query.previous
+    cp -f $dataDirectory/$1_query.values $dataDirectory/$1_query.previous
     # cat $dataDirectory/graphs.values
     # cat $dataDirectory/subgraphs.values
 }
