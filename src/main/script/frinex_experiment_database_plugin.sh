@@ -140,7 +140,7 @@ output_values() {
             run_localhost_queries > $dataDirectory/query.values
             ;;
     esac
-    output_totals
+    output_totals $1
     # cat $dataDirectory/graphs.values
     # cat $dataDirectory/subgraphs.values
 }
@@ -150,6 +150,7 @@ output_usage() {
     printf >&2 "Usage: %s [config]\n" ${0##*/}
 }
 
+linkName=$(basename $0)
 case $# in
     0)
         output_values ${linkName#"frinex_database_stats_"}
