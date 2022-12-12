@@ -179,8 +179,10 @@ output_values() {
             run_queries $1 > $dataDirectory/$1_query.values
             ;;
     esac
-    output_totals $1
-    output_difference $1
+    output_totals $1 > $dataDirectory/$1_totals.values
+    output_difference $1 > $dataDirectory/$1_difference.values
+    cat $dataDirectory/$1_totals.values
+    cat $dataDirectory/$1_difference.values
     # keep the current as the next prevous values
     cp -f $dataDirectory/$1_query.values $dataDirectory/$1_query.previous
     # cat $dataDirectory/graphs.values
