@@ -35,42 +35,42 @@ output_config() {
     echo "multigraph $1_database_totals"
     echo "graph_category frinex"
     echo "graph_title Frinex $1 Database Totals"
-    echo "totalDeploymentsAccessed.label DeploymentsAccessed"
-    echo "totalParticipantsSeen.label ParticipantsSeen"
-    echo "totalPageLoads.label PageLoads"
-    echo "totalStimulusResponses.label StimulusResponses"
-    echo "totalMediaResponses.label MediaResponses"
+    echo "$1_DeploymentsAccessed.label DeploymentsAccessed"
+    echo "$1_ParticipantsSeen.label ParticipantsSeen"
+    echo "$1_PageLoads.label PageLoads"
+    echo "$1_StimulusResponses.label StimulusResponses"
+    echo "$1_MediaResponses.label MediaResponses"
 
     echo "multigraph $1_database_difference"
     echo "graph_category frinex"
     echo "graph_title Frinex $1 Database Difference"
-    echo "totalDeploymentsAccessed.label DeploymentsAccessed"
-    echo "totalParticipantsSeen.label ParticipantsSeen"
-    echo "totalPageLoads.label PageLoads"
-    echo "totalStimulusResponses.label StimulusResponses"
-    echo "totalMediaResponses.label MediaResponses"
+    echo "$1_DeploymentsAccessed.label DeploymentsAccessed"
+    echo "$1_ParticipantsSeen.label ParticipantsSeen"
+    echo "$1_PageLoads.label PageLoads"
+    echo "$1_StimulusResponses.label StimulusResponses"
+    echo "$1_MediaResponses.label MediaResponses"
 
     echo "multigraph $1_raw_totals"
     echo "graph_category frinex"
     echo "graph_title Frinex $1 Raw Totals"
-    echo "tag_data.label tag_data"
-    echo "tag_pair_data.label tag_pair_data"
-    echo "group_data.label group_data"
-    echo "screen_data.label screen_data"
-    echo "stimulus_response.label stimulus_response"
-    echo "time_stamp.label time_stamp"
-    echo "media_data.label media_data"
+    echo "$1_tag_data.label tag_data"
+    echo "$1_tag_pair_data.label tag_pair_data"
+    echo "$1_group_data.label group_data"
+    echo "$1_screen_data.label screen_data"
+    echo "$1_stimulus_response.label stimulus_response"
+    echo "$1_time_stamp.label time_stamp"
+    echo "$1_media_data.label media_data"
 
     echo "multigraph $1_raw_difference"
     echo "graph_category frinex"
     echo "graph_title Frinex $1 Raw Difference"
-    echo "tag_data.label tag_data"
-    echo "tag_pair_data.label tag_pair_data"
-    echo "group_data.label group_data"
-    echo "screen_data.label screen_data"
-    echo "stimulus_response.label stimulus_response"
-    echo "time_stamp.label time_stamp"
-    echo "media_data.label media_data"
+    echo "$1_tag_data.label tag_data"
+    echo "$1_tag_pair_data.label tag_pair_data"
+    echo "$1_group_data.label group_data"
+    echo "$1_screen_data.label screen_data"
+    echo "$1_stimulus_response.label stimulus_response"
+    echo "$1_time_stamp.label time_stamp"
+    echo "$1_media_data.label media_data"
 
     # TODO: add subgraphs to allow inspection of individual experiment stats
     # cat $dataDirectory/$1_subgraphs.config
@@ -97,38 +97,41 @@ run_queries() {
     do 
         experimentName=${currentexperiment%"_db"};
         experimentName=${experimentName#"frinex_"};
-        echo -n $experimentName'.totalDeploymentsAccessed.value '
+        echo -n $experimentName'_DeploymentsAccessed.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct tag_value) from tag_data where event_tag = 'compileDate'";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.totalParticipantsSeen.value '
+        echo -n $experimentName'_ParticipantsSeen.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct user_id) from participant";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.totalPageLoads.value '
+        echo -n $experimentName'_PageLoads.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct tag_date) from tag_data where event_tag = 'compileDate'";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.totalStimulusResponses.value '
+        echo -n $experimentName'_StimulusResponses.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.totalMediaResponses.value '
+        echo -n $experimentName'_MediaResponses.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.tag_data.value '
+        echo -n $experimentName'_tag_data.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from tag_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.tag_pair_data.value '
+        echo -n $experimentName'_tag_pair_data.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from tag_pair_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.group_data.value '
+        echo -n $experimentName'_group_data.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from group_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.screen_data.value '
+        echo -n $experimentName'_screen_data.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from screen_data";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.stimulus_response.value '
+        echo -n $experimentName'_stimulus_response.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from stimulus_response";
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
-        echo -n $experimentName'.time_stamp.value '
+        echo -n $experimentName'_time_stamp.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from time_stamp";
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'_media_data.value '
+        $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
     done
 }
 
@@ -136,15 +139,15 @@ output_totals() {
     # sum the values and generate the totals graphs
     echo "multigraph $1_database_totals"
     # generate totals for each type
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    for graphType in ParticipantsSeen DeploymentsAccessed PageLoads StimulusResponses MediaResponses
     do
-        cat $dataDirectory/$1_query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+        cat $dataDirectory/$1_query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$1_$graphType'_total.value " sum}'
     done
     echo "multigraph $1_raw_totals"
     # generate totals for each type
     for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data
     do
-        cat $dataDirectory/$1_query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+        cat $dataDirectory/$1_query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$1_$graphType'_total.value " sum}'
     done
 }
 
@@ -153,15 +156,15 @@ output_difference() {
     difference="$(diff --suppress-common-lines -y $dataDirectory/$1_query.previous $dataDirectory/$1_query.values | awk '{print $1, " ", $5-$2}')"
     echo "multigraph $1_database_difference"
     # generate difference for each type
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    for graphType in ParticipantsSeen DeploymentsAccessed PageLoads StimulusResponses MediaResponses
     do
-        echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+        echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$1_$graphType'_diff.value " sum}'
     done
     echo "multigraph $1_raw_difference"
     # generate difference for each type
     for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data
     do
-        echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$graphType'.value " sum}'
+        echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$1_$graphType'_diff.value " sum}'
     done
 }
 
