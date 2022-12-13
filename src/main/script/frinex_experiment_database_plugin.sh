@@ -35,42 +35,42 @@ output_config() {
     echo "multigraph $1_database_totals"
     echo "graph_category frinex"
     echo "graph_title Frinex $1 Database Totals"
-    echo "$1_DeploymentsAccessed.label DeploymentsAccessed"
-    echo "$1_ParticipantsSeen.label ParticipantsSeen"
-    echo "$1_PageLoads.label PageLoads"
-    echo "$1_StimulusResponses.label StimulusResponses"
-    echo "$1_MediaResponses.label MediaResponses"
+    echo "$1_DeploymentsAccessed_total.label DeploymentsAccessed"
+    echo "$1_ParticipantsSeen_total.label ParticipantsSeen"
+    echo "$1_PageLoads_total.label PageLoads"
+    echo "$1_StimulusResponses_total.label StimulusResponses"
+    echo "$1_MediaResponses_total.label MediaResponses"
 
     echo "multigraph $1_database_difference"
     echo "graph_category frinex"
     echo "graph_title Frinex $1 Database Difference"
-    echo "$1_DeploymentsAccessed.label DeploymentsAccessed"
-    echo "$1_ParticipantsSeen.label ParticipantsSeen"
-    echo "$1_PageLoads.label PageLoads"
-    echo "$1_StimulusResponses.label StimulusResponses"
-    echo "$1_MediaResponses.label MediaResponses"
+    echo "$1_DeploymentsAccessed_diff.label DeploymentsAccessed"
+    echo "$1_ParticipantsSeen_diff.label ParticipantsSeen"
+    echo "$1_PageLoads_diff.label PageLoads"
+    echo "$1_StimulusResponses_diff.label StimulusResponses"
+    echo "$1_MediaResponses_diff.label MediaResponses"
 
     echo "multigraph $1_raw_totals"
     echo "graph_category frinex"
     echo "graph_title Frinex $1 Raw Totals"
-    echo "$1_tag_data.label tag_data"
-    echo "$1_tag_pair_data.label tag_pair_data"
-    echo "$1_group_data.label group_data"
-    echo "$1_screen_data.label screen_data"
-    echo "$1_stimulus_response.label stimulus_response"
-    echo "$1_time_stamp.label time_stamp"
-    echo "$1_media_data.label media_data"
+    echo "$1_tag_data_total.label tag_data"
+    echo "$1_tag_pair_data_total.label tag_pair_data"
+    echo "$1_group_data_total.label group_data"
+    echo "$1_screen_data_total.label screen_data"
+    echo "$1_stimulus_response_total.label stimulus_response"
+    echo "$1_time_stamp_total.label time_stamp"
+    echo "$1_media_data_total.label media_data"
 
     echo "multigraph $1_raw_difference"
     echo "graph_category frinex"
     echo "graph_title Frinex $1 Raw Difference"
-    echo "$1_tag_data.label tag_data"
-    echo "$1_tag_pair_data.label tag_pair_data"
-    echo "$1_group_data.label group_data"
-    echo "$1_screen_data.label screen_data"
-    echo "$1_stimulus_response.label stimulus_response"
-    echo "$1_time_stamp.label time_stamp"
-    echo "$1_media_data.label media_data"
+    echo "$1_tag_data_diff.label tag_data"
+    echo "$1_tag_pair_data_diff.label tag_pair_data"
+    echo "$1_group_data_diff.label group_data"
+    echo "$1_screen_data_diff.label screen_data"
+    echo "$1_stimulus_response_diff.label stimulus_response"
+    echo "$1_time_stamp_diff.label time_stamp"
+    echo "$1_media_data_diff.label media_data"
 
     # TODO: add subgraphs to allow inspection of individual experiment stats
     # cat $dataDirectory/$1_subgraphs.config
@@ -168,18 +168,24 @@ output_difference() {
     done
 }
 
-output_values() {
+update_data() {
     touch $dataDirectory/$1_query.previous
     touch $dataDirectory/$1_query.values
     run_queries $1 > $dataDirectory/$1_query.values
-    output_totals $1 > $dataDirectory/$1_totals.values
-    output_difference $1 > $dataDirectory/$1_difference.values
-    cat $dataDirectory/$1_totals.values
-    cat $dataDirectory/$1_difference.values
+    output_totals $1 > $dataDirectory/$1_totals.values.tmp
+    output_difference $1 > $dataDirectory/$1_difference.values.tmp
+    mv $dataDirectory/$1_totals.values.tmp $dataDirectory/$1_totals.values
+    mv $dataDirectory/$1_difference.values.tmp $dataDirectory/$1_difference.values
     # keep the current as the next prevous values
     cp -f $dataDirectory/$1_query.values $dataDirectory/$1_query.previous
     # cat $dataDirectory/graphs.values
     # cat $dataDirectory/subgraphs.values
+}
+
+output_values() {
+    cat $dataDirectory/$1_totals.values
+    cat $dataDirectory/$1_difference.values
+    ( update_data $1; ) &
 }
 
 output_usage() {
