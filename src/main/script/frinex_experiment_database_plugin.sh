@@ -169,23 +169,30 @@ output_difference() {
 }
 
 update_data() {
-    touch $dataDirectory/$1_query.previous
-    touch $dataDirectory/$1_query.values
-    run_queries $1 > $dataDirectory/$1_query.values
-    output_totals $1 > $dataDirectory/$1_totals.values.tmp
-    output_difference $1 > $dataDirectory/$1_difference.values.tmp
-    mv $dataDirectory/$1_totals.values.tmp $dataDirectory/$1_totals.values
-    mv $dataDirectory/$1_difference.values.tmp $dataDirectory/$1_difference.values
-    # keep the current as the next prevous values
-    cp -f $dataDirectory/$1_query.values $dataDirectory/$1_query.previous
-    # cat $dataDirectory/graphs.values
-    # cat $dataDirectory/subgraphs.values
+    lockFile=$dataDirectory/$1_lock_file.pid
+    if [ -e $lockFile ]; then
+        # cat $lockFile >> $dataDirectory/$1_lock_file.log
+    else 
+        echo $BASHPID > $lockFile
+        touch $dataDirectory/$1_query.previous
+        touch $dataDirectory/$1_query.values
+        run_queries $1 > $dataDirectory/$1_query.values
+        output_totals $1 > $dataDirectory/$1_totals.values.tmp
+        output_difference $1 > $dataDirectory/$1_difference.values.tmp
+        mv $dataDirectory/$1_totals.values.tmp $dataDirectory/$1_totals.values
+        mv $dataDirectory/$1_difference.values.tmp $dataDirectory/$1_difference.values
+        # keep the current as the next prevous values
+        cp -f $dataDirectory/$1_query.values $dataDirectory/$1_query.previous
+        # cat $dataDirectory/graphs.values
+        # cat $dataDirectory/subgraphs.values
+        rm $lockFile
+    fi
 }
 
 output_values() {
     cat $dataDirectory/$1_totals.values
     cat $dataDirectory/$1_difference.values
-    ( update_data $1; ) &
+    (nohup nice $0 update)&
 }
 
 output_usage() {
@@ -202,6 +209,9 @@ case $# in
         case $1 in
             config)
                 output_config ${linkName#"frinex_database_stats_"}
+                ;;
+            update)
+                update_data ${linkName#"frinex_database_stats_"}
                 ;;
             *)
                 output_usage
