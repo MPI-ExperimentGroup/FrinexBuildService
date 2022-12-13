@@ -132,6 +132,8 @@ run_queries() {
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'_media_data.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
+        # TODO: add a query for the metadata table
+        # TODO: consolidate these separate DB connections into a single DB connection for speed etc.
     done
 }
 
