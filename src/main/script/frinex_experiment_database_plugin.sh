@@ -170,9 +170,7 @@ output_difference() {
 
 update_data() {
     lockFile=$dataDirectory/$1_lock_file.pid
-    if [ -e $lockFile ]; then
-        # cat $lockFile >> $dataDirectory/$1_lock_file.log
-    else 
+    if [ ! -e $lockFile ]; then
         echo $BASHPID > $lockFile
         touch $dataDirectory/$1_query.previous
         touch $dataDirectory/$1_query.values
