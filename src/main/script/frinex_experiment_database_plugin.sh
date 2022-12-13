@@ -190,7 +190,7 @@ update_data() {
 output_values() {
     cat $dataDirectory/$1_totals.values
     cat $dataDirectory/$1_difference.values
-    (nohup nice $0 update)&
+    (nohup nice $0 update > $dataDirectory/$1_update.log)&
 }
 
 output_usage() {
