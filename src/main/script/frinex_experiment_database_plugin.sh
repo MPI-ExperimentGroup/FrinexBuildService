@@ -217,6 +217,10 @@ update_data() {
         cp -f $dataDirectory/$1_query.values $dataDirectory/$1_query.previous
         # cat $dataDirectory/graphs.values
         # cat $dataDirectory/subgraphs.values
+
+        # delay for 15 minutes while the lock file is in place to reduce the queries per hour
+        sleep 15m
+
         rm $lockFile
     fi
 }
@@ -246,9 +250,18 @@ case $# in
                 update_data ${linkName#"frinex_database_stats_"}
                 ;;
             test)
+# sudo munin-run frinex_database_stats_production test
+# real	1m50.964s
+# user	0m15.423s
+# sys	0m20.800s
                 time run_queries ${linkName#"frinex_database_stats_"}
                 ;;
             test2)
+# Note that this time might be due to supsequent queries not completing for a given database when one table is not present which would produce incompete results
+# sudo munin-run frinex_database_stats_production test2
+# real	0m43.864s
+# user	0m1.851s
+# sys	0m2.317s
                 time run_queries_union ${linkName#"frinex_database_stats_"}
                 ;;
             *)
