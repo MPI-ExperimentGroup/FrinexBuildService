@@ -137,6 +137,38 @@ run_queries() {
     done
 }
 
+run_queries_union() {
+    case $1 in
+        production)
+            postgresCommand="psql -p5434"
+            ;;
+        staging)
+            postgresCommand="psql -p5433"
+            ;;
+        *)
+            postgresCommand="psql -p5432"
+            ;;
+    esac
+    
+    for currentexperiment in $($postgresCommand -U munin_db_user -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'");
+    do 
+        experimentName=${currentexperiment%"_db"};
+        experimentName=${experimentName#"frinex_"};
+        $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '"$experimentName"_DeploymentsAccessed.value ' ||  count(distinct tag_value) from tag_data where event_tag = 'compileDate'\
+        union select '"$experimentName"_ParticipantsSeen.value ' || count(distinct user_id) from participant \
+        union select '"$experimentName"_PageLoads.value ' || count(distinct tag_date) from tag_data where event_tag = 'compileDate' \
+        union select '"$experimentName"_StimulusResponses.value ' || count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response \
+        union select '"$experimentName"_MediaResponses.value ' || count(id) from audio_data \
+        union select '"$experimentName"_tag_data.value ' || count(id) from tag_data \
+        union select '"$experimentName"_tag_pair_data.value ' ||  count(id) from tag_pair_data \
+        union select '"$experimentName"_group_data.value ' ||  count(id) from group_data \
+        union select '"$experimentName"_screen_data.value ' || count(id) from screen_data \
+        union select '"$experimentName"_stimulus_response.value ' || count(id) from stimulus_response \
+        union select '"$experimentName"_time_stamp.value ' || count(id) from time_stamp \
+        union select '"$experimentName"_media_data.value ' || count(id) from audio_data";
+    done
+}
+
 output_totals() {
     # sum the values and generate the totals graphs
     echo "multigraph $1_database_totals"
@@ -192,7 +224,7 @@ update_data() {
 output_values() {
     cat $dataDirectory/$1_totals.values
     cat $dataDirectory/$1_difference.values
-    (nohup nice $0 update > $dataDirectory/$1_update.log)&
+    ($0 update &> $dataDirectory/$1_update.log)&
 }
 
 output_usage() {
@@ -212,6 +244,12 @@ case $# in
                 ;;
             update)
                 update_data ${linkName#"frinex_database_stats_"}
+                ;;
+            test)
+                time run_queries ${linkName#"frinex_database_stats_"}
+                ;;
+            test2)
+                time run_queries_union ${linkName#"frinex_database_stats_"}
                 ;;
             *)
                 output_usage
