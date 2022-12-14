@@ -218,8 +218,8 @@ update_data() {
         # cat $dataDirectory/graphs.values
         # cat $dataDirectory/subgraphs.values
 
-        # delay for 15 minutes while the lock file is in place to reduce the queries per hour
-        sleep 15m
+        # delay for 30 minutes while the lock file is in place to reduce the queries per hour
+        sleep 30m
 
         rm $lockFile
     fi
