@@ -900,6 +900,12 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' -w /ExperimentTemplate frinexapps-jdk:'
                         + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
                         + ' /bin/bash -c "cd /ExperimentTemplate/gwt-cordova;'
+                        // delete all test frames.html and other test html that should not make it to production
+                        + ' rm /ExperimentTemplate/gwt-cordova/src/main/webapp/*.html;'
+                        + ' rm /ExperimentTemplate/gwt-cordova/src/main/webapp/*.js;'
+                        + ' rm /ExperimentTemplate/gwt-cordova/src/main/webapp/*.css;'
+                        // remove all console.log|error statments that should not make it to production
+                        + " sed -i 's|console\.[el][^;]*;||g' gwt-cordova/src/main/html/index.html gwt-cordova/src/main/java/nl/mpi/tg/eg/experiment/*/*.java gwt-cordova/src/main/java/nl/mpi/tg/eg/experiment/client/*/*.java;"
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
                         + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
