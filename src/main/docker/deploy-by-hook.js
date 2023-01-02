@@ -905,7 +905,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' rm /ExperimentTemplate/gwt-cordova/src/main/webapp/*.js;'
                         + ' rm /ExperimentTemplate/gwt-cordova/src/main/webapp/*.css;'
                         // remove all console.log|error statments that should not make it to production
-                        + " sed -i 's|console\.[el][^;]*;||g' gwt-cordova/src/main/html/index.html gwt-cordova/src/main/java/nl/mpi/tg/eg/experiment/*/*.java gwt-cordova/src/main/java/nl/mpi/tg/eg/experiment/client/*/*.java;"
+                        + " sed -i 's|console\.[el][^;]*;||g' /ExperimentTemplate/gwt-cordova/src/main/html/index.html /ExperimentTemplate/gwt-cordova/src/main/java/nl/mpi/tg/eg/experiment/*/*.java /ExperimentTemplate/gwt-cordova/src/main/java/nl/mpi/tg/eg/experiment/client/*/*.java;"
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
                         + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
