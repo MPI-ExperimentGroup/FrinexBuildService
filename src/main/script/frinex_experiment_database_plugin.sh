@@ -206,15 +206,14 @@ update_data() {
     lockFile=$dataDirectory/$1_lock_file.pid
     if [ ! -e $lockFile ]; then
         echo $BASHPID > $lockFile
-        touch $dataDirectory/$1_query.previous
         touch $dataDirectory/$1_query.values
-        run_queries $1 > $dataDirectory/$1_query.values
+        # keep the previous values to use in producing the difference
+        cp -f $dataDirectory/$1_query.values $dataDirectory/$1_query.previous
+        run_queries $1 | sort > $dataDirectory/$1_query.values
         output_totals $1 > $dataDirectory/$1_totals.values.tmp
         output_difference $1 > $dataDirectory/$1_difference.values.tmp
         mv $dataDirectory/$1_totals.values.tmp $dataDirectory/$1_totals.values
         mv $dataDirectory/$1_difference.values.tmp $dataDirectory/$1_difference.values
-        # keep the current as the next prevous values
-        cp -f $dataDirectory/$1_query.values $dataDirectory/$1_query.previous
         # cat $dataDirectory/graphs.values
         # cat $dataDirectory/subgraphs.values
 
