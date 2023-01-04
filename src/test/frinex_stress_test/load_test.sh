@@ -4,8 +4,8 @@ date
 for i in {1..600}; do
     # one participant per second for 10 minutes 60x10, which if completed in that 10 minutes should be a similar rate to 86400 participants in 24 hours
     echo $i
-    time ./stress_participant.sh&
+    time ./load_participant.sh&
     sleep 1
-    pidof stress_participant.sh | wc -w
+    pidof load_participant.sh | wc -w
     pidof curl | wc -w
 done
