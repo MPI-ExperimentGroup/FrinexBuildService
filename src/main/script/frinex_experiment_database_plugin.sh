@@ -253,6 +253,11 @@ case $# in
 # real	1m50.964s
 # user	0m15.423s
 # sys	0m20.800s
+
+# sudo munin-run frinex_database_stats_frinexbq4 test
+# real	0m7.501s
+# user	0m2.387s
+# sys	0m2.048s
                 time run_queries ${linkName#"frinex_database_stats_"}
                 ;;
             test2)
@@ -261,6 +266,12 @@ case $# in
 # real	0m43.864s
 # user	0m1.851s
 # sys	0m2.317s
+
+# Note that this server does not have any missing tables due to all experimenta being relatively recent
+# sudo munin-run frinex_database_stats_frinexbq4 test2
+# real	0m1.249s
+# user	0m0.257s
+# sys	0m0.278s
                 time run_queries_union ${linkName#"frinex_database_stats_"}
                 ;;
             *)
