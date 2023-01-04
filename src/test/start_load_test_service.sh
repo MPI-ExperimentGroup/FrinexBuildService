@@ -31,7 +31,7 @@ scriptDir=$(pwd -P)
 docker build --no-cache -f frinex_load_test.Dockerfile -t DockerRegistry/frinex_load_test:latest .
 docker push DockerRegistry/frinex_load_test:latest
 
-docker service create --name frinex_load_test --mode replicated-job --replicas 1 DockerRegistry/frinex_load_test:latest bash "/frinex_load_test/load_test.sh"
+docker service create --name frinex_load_test --mode replicated-job --replicas 1 DockerRegistry/frinex_load_test:latest bash "/frinex_load_test/load_test.sh&"
 
 docker service logs -f frinex_load_test
 
