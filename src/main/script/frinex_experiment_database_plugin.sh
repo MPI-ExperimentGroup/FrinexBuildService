@@ -74,6 +74,34 @@ output_config() {
     echo "$1_media_data_diff.label media_data"
     echo "$1_metadata_diff.label metadata"
 
+    echo "multigraph $1_raw_counters"
+    echo "graph_category frinex"
+    echo "graph_title Frinex $1 Raw Counters"
+    echo "$1_tag_data_counter.label tag_data"
+    echo "$1_tag_data_counter.type COUNTER"
+    echo "$1_tag_data_counter.graph_period minute hour"
+    echo "$1_tag_pair_data_counter.label tag_pair_data"
+    echo "$1_tag_pair_data_counter.type COUNTER"
+    echo "$1_tag_pair_data_counter.graph_period minute hour"
+    echo "$1_group_data_counter.label group_data"
+    echo "$1_group_data_counter.type COUNTER"
+    echo "$1_group_data_counter.graph_period minute hour"
+    echo "$1_screen_data_counter.label screen_data"
+    echo "$1_screen_data_counter.type COUNTER"
+    echo "$1_screen_data_counter.graph_period minute hour"
+    echo "$1_stimulus_response_counter.label stimulus_response"
+    echo "$1_stimulus_response_counter.type COUNTER"
+    echo "$1_stimulus_response_counter.graph_period minute hour"
+    echo "$1_time_stamp_counter.label time_stamp"
+    echo "$1_time_stamp_counter.type COUNTER"
+    echo "$1_time_stamp_counter.graph_period minute hour"
+    echo "$1_media_data_counter.label media_data"
+    echo "$1_media_data_counter.type COUNTER"
+    echo "$1_media_data_counter.graph_period minute hour"
+    echo "$1_metadata_counter.label metadata"
+    echo "$1_metadata_counter.type COUNTER"
+    echo "$1_metadata_counter.graph_period minute hour"
+
     # TODO: add subgraphs to allow inspection of individual experiment stats
     # cat $dataDirectory/$1_subgraphs.config
 }
@@ -232,6 +260,7 @@ update_data() {
 output_values() {
     cat $dataDirectory/$1_totals.values
     cat $dataDirectory/$1_difference.values
+    cat $dataDirectory/$1_totals.values | sed "s|total|counter|g"
     ($0 update &> $dataDirectory/$1_update.log)&
 }
 
