@@ -60,6 +60,7 @@ output_config() {
     echo "$1_stimulus_response_total.label stimulus_response"
     echo "$1_time_stamp_total.label time_stamp"
     echo "$1_media_data_total.label media_data"
+    echo "$1_metadata_total.label metadata"
 
     echo "multigraph $1_raw_difference"
     echo "graph_category frinex"
@@ -71,6 +72,7 @@ output_config() {
     echo "$1_stimulus_response_diff.label stimulus_response"
     echo "$1_time_stamp_diff.label time_stamp"
     echo "$1_media_data_diff.label media_data"
+    echo "$1_metadata_diff.label metadata"
 
     # TODO: add subgraphs to allow inspection of individual experiment stats
     # cat $dataDirectory/$1_subgraphs.config
@@ -132,7 +134,9 @@ run_queries() {
         echo "" # if the table does not exist then we miss the new line which breaks the next query output
         echo -n $experimentName'_media_data.value '
         $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
-        # TODO: add a query for the metadata table
+        echo "" # if the table does not exist then we miss the new line which breaks the next query output
+        echo -n $experimentName'_metadata.value '
+        $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from participant";
         # TODO: consolidate these separate DB connections into a single DB connection for speed etc.
     done
 }
@@ -165,7 +169,8 @@ run_queries_union() {
         union select '"$experimentName"_screen_data.value ' || count(id) from screen_data \
         union select '"$experimentName"_stimulus_response.value ' || count(id) from stimulus_response \
         union select '"$experimentName"_time_stamp.value ' || count(id) from time_stamp \
-        union select '"$experimentName"_media_data.value ' || count(id) from audio_data";
+        union select '"$experimentName"_media_data.value ' || count(id) from audio_data \
+        union select '"$experimentName"_metadata.value ' || count(id) from participant";
     done
 }
 
