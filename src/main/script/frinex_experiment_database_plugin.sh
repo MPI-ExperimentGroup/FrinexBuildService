@@ -212,7 +212,7 @@ output_totals() {
     done
     echo "multigraph $1_raw_totals"
     # generate totals for each type
-    for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data
+    for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data metadata
     do
         cat $dataDirectory/$1_query.values | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$1_$graphType'_total.value " sum}'
     done
@@ -229,7 +229,7 @@ output_difference() {
     done
     echo "multigraph $1_raw_difference"
     # generate difference for each type
-    for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data
+    for graphType in tag_data tag_pair_data group_data screen_data stimulus_response time_stamp media_data metadata
     do
         echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "'$1_$graphType'_diff.value " sum}'
     done
