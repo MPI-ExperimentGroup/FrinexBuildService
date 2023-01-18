@@ -66,7 +66,7 @@ else
 
     # This step is not needed in non swarm installations
     # start the frinex_db_manager in the bridge network
-    docker run --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
+    docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
 
     # This step is not needed in non swarm installations
     # build the frinex_listing_provider
@@ -76,7 +76,7 @@ else
     docker stop frinex_listing_provider 
     docker container rm frinex_listing_provider 
     # start the frinex_listing_provider
-    docker run --restart unless-stopped --name frinex_listing_provider --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
+    docker run --cpus=".5" --restart unless-stopped --name frinex_listing_provider --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
 
     read -p "Press enter to update the settings.xml"
     # copy the maven settings to the .m2 directory that is a in volume and not the image used to perform the copy
@@ -100,7 +100,7 @@ else
     # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
 
     # start the frinexbuild container with access to /var/run/docker.sock so that it can create sibling containers of frinexapps
-    docker run --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+    docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
     # in non swarm installations the frinex_db_manager_net is excluded as follows
     #docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v wizardExperiments:/FrinexBuildService/wizard-experiments -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
     # -v $workingDir/BackupFiles:/BackupFiles 
