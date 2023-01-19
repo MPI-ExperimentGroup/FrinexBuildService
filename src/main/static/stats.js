@@ -60,7 +60,7 @@ function experimentsPerYear() {
                             if ($("#" + statFile + "_" + year).length === 0) {
                                 $("#" + statFile + "Totals").append("<tr><td>" + statFile + "</td><td>" + year + "</td><td id='" + statFile + "_" + year + "'>0</td></tr>");
                             }
-                            $("#" + statFile + "_" + year).text(parseInt($("#" + statFile + "Year" + year).text()) + 1);
+                            $("#" + statFile + "_" + year).text(parseInt($("#" + statFile + "_" + year).text()) + 1);
                         }
                     }
                 });
