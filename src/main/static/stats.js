@@ -45,13 +45,15 @@ function experimentsPerYear() {
     var statFileArray = ['staging_public_stats', 'productionBQ4_public_stats', 'productionBQ4pre2022-08-26_public_stats', 'production_public_stats'];
     statFileArray.forEach(function (statFile, index) {
         $("#experimentTotals").append("<table id='" + statFile + "Totals'><tr><td>" + statFile + " Totals</td><td>Year</td><td>Total</td></tr></table>");
+        $("#experimentTotals").append("<table><tr><td>" + statFile + " Excluded</td><td id='" + statFile + "_excluded'>0</td></tr></table>");
         $("#experimentCounts").append("<table id='" + statFile + "Counts'><tr><td>" + statFile + " Counts</td><td>Experiment</td><td>firstParticipantSeen</td><td>lastParticipantSeen</td><td>totalParticipantsSeen</td><td>totalPageLoads</td></tr></table>");
+
         $.getJSON('../' + statFile + '.json', (function (statFile) {
             return function (data) {
                 $.each(data, function (key, value) {
                     if (value.firstParticipantSeen) {
-                        $("#" + statFile + "Counts").append("<tr><td>" + statFile + "</td><td>" + key + "</td><td>" + value.firstParticipantSeen.substring(0,4) + "</td><td>" + value.lastParticipantSeen.substring(0,4) + "</td><td>" + value.totalParticipantsSeen + "</td><td>" + value.totalPageLoads + "</td></tr>")
-                        for (year = parseInt(value.firstParticipantSeen.substring(0,4)); year <= parseInt(value.lastParticipantSeen.substring(0,4)); year++) {                
+                        $("#" + statFile + "Counts").append("<tr><td>" + statFile + "</td><td>" + key + "</td><td>" + value.firstParticipantSeen.substring(0, 4) + "</td><td>" + value.lastParticipantSeen.substring(0, 4) + "</td><td>" + value.totalParticipantsSeen + "</td><td>" + value.totalPageLoads + "</td></tr>")
+                        for (year = parseInt(value.firstParticipantSeen.substring(0, 4)); year <= parseInt(value.lastParticipantSeen.substring(0, 4)); year++) {
                             console.log(statFile);
                             console.log(key);
                             console.log(year);
@@ -62,6 +64,8 @@ function experimentsPerYear() {
                             }
                             $("#" + statFile + "_" + year).text(parseInt($("#" + statFile + "_" + year).text()) + 1);
                         }
+                    } else {
+                        $("#" + statFile + "_excluded").text(parseInt($("#" + statFile + "_excluded").text()) + 1);
                     }
                 });
             };
