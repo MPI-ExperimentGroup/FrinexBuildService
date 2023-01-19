@@ -41,6 +41,34 @@ function loadStats(experimentList) {
     });
 }
 
+function experimentsPerYear() {
+    var statFileArray = ['staging_public_stats', 'productionBQ4_public_stats', 'productionBQ4pre2022-08-26_public_stats', 'production_public_stats'];
+    statFileArray.forEach(function (statFile, index) {
+        $("#experimentTotals").append("<table id='" + statFile + "Totals'><tr><td>" + statFile + " Totals</td><td>Year</td><td>Total</td></tr></table>");
+        $("#experimentCounts").append("<table id='" + statFile + "Counts'><tr><td>" + statFile + " Counts</td><td>Experiment</td><td>firstParticipantSeen</td><td>lastParticipantSeen</td><td>totalParticipantsSeen</td><td>totalPageLoads</td></tr></table>");
+        $.getJSON('../' + statFile + '.json', (function (statFile) {
+            return function (data) {
+                $.each(data, function (key, value) {
+                    if (value.firstParticipantSeen) {
+                        $("#" + statFile + "Counts").append("<tr><td>" + statFile + "</td><td>" + key + "</td><td>" + value.firstParticipantSeen.substring(0,4) + "</td><td>" + value.lastParticipantSeen.substring(0,4) + "</td><td>" + value.totalParticipantsSeen + "</td><td>" + value.totalPageLoads + "</td></tr>")
+                        for (year = parseInt(value.firstParticipantSeen.substring(0,4)); year <= parseInt(value.lastParticipantSeen.substring(0,4)); year++) {                
+                            console.log(statFile);
+                            console.log(key);
+                            console.log(year);
+                            console.log(value.firstParticipantSeen);
+                            console.log(value.lastParticipantSeen);
+                            if ($("#" + statFile + "_" + year).length === 0) {
+                                $("#" + statFile + "Totals").append("<tr><td>" + statFile + "</td><td>" + year + "</td><td id='" + statFile + "_" + year + "'>0</td></tr>");
+                            }
+                            $("#" + statFile + "_" + year).text(parseInt($("#" + statFile + "Year" + year).text()) + 1);
+                        }
+                    }
+                });
+            };
+        }(statFile)));
+    });
+}
+
 function loadUnkownBQ4() {
     loadStats(['ausimplereactiontime_bq4_timestudy', 'visimplereactiontime_bq4_timestudy', 'picturenaming_bq4_timestudy', 'sentencegeneration_bq4_timestudy', 'sentencemonitoring_bq4_timestudy', 'werkwoorden_bq4_timestudy']);
 }

@@ -45,10 +45,13 @@
 </head>
 
 <body>
+    <button onclick="experimentsPerYear()">Experiments Per Year</button>
     <button onclick="loadUnkownBQ4()">loadUnkownBQ4</button>
     <button onclick="loadSession1BQ4()">loadSession1BQ4</button>
     <button onclick="loadSession2BQ4()">loadSession2BQ4</button>
     <br />
+    <dif id="experimentTotals" /> 
+    <dif id="experimentCounts" /> 
     <table id="resultsTable">
         <tr><td>Server</td><td>Experiment Name</td><td>Frinex Version</td><td>First Use</td><td>Last Use</td><td>Distinct Users</td><td>Page Loads</td></tr>
     </table>
