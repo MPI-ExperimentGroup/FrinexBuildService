@@ -229,7 +229,7 @@ function unDeploy(currentEntry) {
             + ' -Dexperiment.webservice=' + configServer
             //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
-            + ' -DversionCheck.buildType=' + 'stable'
+            // + ' -DversionCheck.buildType=' + 'stable'
             + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -278,7 +278,7 @@ function unDeploy(currentEntry) {
             + ' -Dexperiment.webservice=' + configServer
             //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
-            + ' -DversionCheck.buildType=' + 'stable'
+            // + ' -DversionCheck.buildType=' + 'stable'
             + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
@@ -327,7 +327,7 @@ function unDeploy(currentEntry) {
             + ' -Dexperiment.webservice=' + configServer
             //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
-            + ' -DversionCheck.buildType=' + 'stable'
+            // + ' -DversionCheck.buildType=' + 'stable'
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
                 ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
@@ -380,7 +380,7 @@ function unDeploy(currentEntry) {
             + ' -Dexperiment.webservice=' + configServer
             //+ ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
-            + ' -DversionCheck.buildType=' + 'stable'
+            // + ' -DversionCheck.buildType=' + 'stable'
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
                 ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
@@ -548,7 +548,7 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.webservice=' + configServer
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
-            + ' -DversionCheck.buildType=' + 'stable'
+            // + ' -DversionCheck.buildType=' + 'stable'
             // TODO: usage of currentEntry.stagingServer is not implemented for targeting tomcat deployments nor undeployments, it is currently only used to tell the GUI application where its URL is for websockets and mobile apps
             + ((currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0) ?
                 ' -Dexperiment.destinationServer=' + currentEntry.stagingServer.replace(/^https?:\/\//, '')
@@ -734,7 +734,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -Dexperiment.artifactsJsonDirectory=' + targetDirectory + '/' + currentEntry.buildName + '/'
             + ' -DversionCheck.allowSnapshots=' + 'false'
-            + ' -DversionCheck.buildType=' + 'stable'
+            // + ' -DversionCheck.buildType=' + 'stable'
             + ' -Dexperiment.destinationServer=' + stagingServer
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
@@ -924,7 +924,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' -Dexperiment.webservice=' + configServer
                         + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
                         + ' -DversionCheck.allowSnapshots=' + 'false'
-                        + ' -DversionCheck.buildType=' + 'stable'
+                        // + ' -DversionCheck.buildType=' + 'stable'
                         + ' -Dexperiment.configuration.defaultLocale=' + currentEntry.defaultLocale
                         + ' -Dexperiment.configuration.availableLocales=' + currentEntry.availableLocales
                         + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
@@ -1101,7 +1101,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/production-building'
             + ' -Dexperiment.artifactsJsonDirectory=' + targetDirectory + '/' + currentEntry.buildName + '/'
             + ' -DversionCheck.allowSnapshots=' + 'false'
-            + ' -DversionCheck.buildType=' + 'stable'
+            // + ' -DversionCheck.buildType=' + 'stable'
             // only use a token for the admin password here so that the passwords do not get stored in the logs
             + ' -Dexperiment.configuration.admin.password=_admin_password_'
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
