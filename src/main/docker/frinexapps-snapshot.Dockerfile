@@ -28,17 +28,23 @@ RUN cd /ExperimentTemplate \
     && git checkout pom.xml */pom.xml \
     && git pull
 
+RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
+RUN sed -i 's|<versionCheck.buildType>testing</versionCheck.buildType>|<versionCheck.buildType>snapshot</versionCheck.buildType>|g' /ExperimentTemplate/pom.xml
+
 RUN cd /ExperimentTemplate \
-    && sed -i '/war/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all gwt-cordova)'-stable/}' gwt-cordova/pom.xml
+    && sed -i '/war/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all gwt-cordova)'-snapshot/}' gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/Frinex Experiment Designer/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all ExperimentDesigner)'-stable/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
+    && sed -i '/Frinex Experiment Designer/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all ExperimentDesigner)'-snapshot/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-admin/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all registration)'-stable/}' /ExperimentTemplate/registration/pom.xml
+    && sed -i '/frinex-admin/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all registration)'-snapshot/}' /ExperimentTemplate/registration/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/common/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all common)'-stable/}' /ExperimentTemplate/common/pom.xml /ExperimentTemplate/registration/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml 
+    && sed -i '/common/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all common)'-snapshot/}' /ExperimentTemplate/common/pom.xml /ExperimentTemplate/registration/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
-    && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
+    && sed -i '/frinex-experiment-designer/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all ExperimentDesigner)'-snapshot/}' /ExperimentTemplate/gwt-cordova/pom.xml
+RUN cd /ExperimentTemplate \
+    && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-snapshot/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
+    && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-snapshot/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
+
 RUN cd /ExperimentTemplate \
     && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=alloptions
 RUN cd /ExperimentTemplate/gwt-cordova \
