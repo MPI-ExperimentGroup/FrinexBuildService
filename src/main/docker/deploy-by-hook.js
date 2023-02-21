@@ -1113,6 +1113,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 // the db host so that it defaults to the value in the pom.xml which is localhost:5432
                 // otherwise it could be done with:
                 //  + ' -Dexperiment.configuration.db.host=' + properties.get(currentEntry.productionServer.replace(/^https?:\/\//, '') + '.dbHost')
+                // as an exception to this when the standard production server is specified we still need to set the db.host from the configuration file
+                + ((currentEntry.productionServer.includes(productionServer)) ? ' -Dexperiment.configuration.db.host=' + productionDbHost : '')
                 : ' -Dexperiment.destinationServer=' + productionServer
                 + ' -Dexperiment.destinationServerUrl=' + productionServerUrl
                 + ' -Dexperiment.groupsSocketUrl=' + productionGroupsSocketUrl
