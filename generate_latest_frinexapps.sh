@@ -49,5 +49,6 @@ else
         # make sure the local .m2 directory has the latest jar files.
         docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:latest /bin/bash -c "mvn install -gs /maven/.m2/settings.xml"
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "chown frinex:www-data /FrinexBuildService/artifacts/*.xsd; chown frinex:www-data /FrinexBuildService/artifacts/*.html;"
+        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "sed -i \"s|webjars/jquery/jquery.min.js|/lib/jquery.min.js|g\" /FrinexBuildService/artifacts/latest.html;"
     fi;
 fi;

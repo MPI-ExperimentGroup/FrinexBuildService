@@ -35,6 +35,7 @@ else
         # make the snapshot XSD available by version number and alpha so that they can be used by frinex builds with frinexVersion
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:snapshot /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/snapshot.xsd"
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:snapshot /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/snapshot.html"
+        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "sed -i \"s|webjars/jquery/jquery.min.js|/lib/jquery.min.js|g\" /FrinexBuildService/artifacts/snapshot.html;"
         # make sure the local .m2 directory has the snapshot jar files.
         docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:snapshot /bin/bash -c "mvn install -pl -gwt-cordova,-registration -gs /maven/.m2/settings.xml"
         # report the version that has been built

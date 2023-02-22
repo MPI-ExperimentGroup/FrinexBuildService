@@ -45,7 +45,11 @@ RUN mkdir /FrinexBuildService/incoming/static/
 RUN mkdir /FrinexBuildService/artifacts
 RUN mkdir /FrinexBuildService/protected
 RUN mkdir /FrinexBuildService/docs
+RUN mkdir /FrinexBuildService/lib
 RUN mkdir /FrinexBuildService/cgi
+# make the current version of jquery and chartjs available for the documentation and stats pages
+RUN curl -o /FrinexBuildService/lib/jquery.min.js https://code.jquery.com/jquery-3.6.3.min.js
+RUN curl -o /FrinexBuildService/lib/Chart.js https://cdnjs.com/libraries/Chart.js
 COPY docker/frinex-git-server.conf  /FrinexBuildService/
 COPY docker/git_setup.html /FrinexBuildService/docs/
 COPY uml/overview.html /FrinexBuildService/docs/
