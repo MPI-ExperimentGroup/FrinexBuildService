@@ -739,6 +739,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + ' -Dexperiment.groupsSocketUrl=' + stagingGroupsSocketUrl
             + ' -Dexperiment.configuration.db.host=' + stagingDbHost
+            + ' -Dexperiment.configuration.admin.allowDelete=' + ((currentEntry.allowDelete != null) ? currentEntry.allowDelete : 'false')
             // admin login for staging is taken from the settings.xml rather than the publish.properties
             // + ' -Dexperiment.configuration.admin.password=' + stagingAdminToken
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
@@ -1104,6 +1105,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             // + ' -DversionCheck.buildType=' + 'stable'
             // only use a token for the admin password here so that the passwords do not get stored in the logs
             + ' -Dexperiment.configuration.admin.password=_admin_password_'
+            + ' -Dexperiment.configuration.admin.allowDelete=' + ((currentEntry.allowDelete != null) ? currentEntry.allowDelete : 'false')
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
                 ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
                 + ' -Dexperiment.destinationServerUrl=' + currentEntry.productionServer
