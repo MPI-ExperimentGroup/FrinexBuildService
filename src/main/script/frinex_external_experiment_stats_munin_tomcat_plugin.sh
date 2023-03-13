@@ -81,6 +81,7 @@ update_stats() {
 output_config() {
     echo "graph_title Frinex External $1"
     echo "graph_category frinex"
+    # todo: add totalDeletionEvents
     for labelName in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses; do
         echo "$labelName.label $labelName"
     done

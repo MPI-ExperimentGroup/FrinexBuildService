@@ -45,6 +45,7 @@ do
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '\"totalPageLoads\":\"' || count(distinct tag_date) || '\",' from tag_data where event_tag = 'compileDate'";
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '\"totalStimulusResponses\":\"' || count(distinct concat(tag_date, user_id, event_ms)) || '\",' from stimulus_response";
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '\"totalMediaResponses\":\"' || count(id) || '\",' from audio_data";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '\"totalDeletionEvents\":\"' || count(id) || '\",' from data_deletion_log";
     echo '"participantsFirstAndLastSeen": [';
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select '[\"' || min(submit_date) || '\",\"' || max(submit_date) || '\"],' from participant where submit_date is not null group by user_id order by min(submit_date) asc" | sed "$ s|\],[[:space:]]*$|]|g";
     echo "],";

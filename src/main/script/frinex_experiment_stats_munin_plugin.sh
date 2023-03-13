@@ -31,7 +31,7 @@ dataDirectory=/srv/frinex_munin_data/stats
 
 invalidate_stats() {
     for filePath in $dataDirectory/*_admin; do
-        echo -en "totalParticipantsSeen.value U\ntotalDeploymentsAccessed.value U\ntotalPageLoads.value U\ntotalStimulusResponses.value U\ntotalMediaResponses.value U\n" > $filePath
+        echo -en "totalParticipantsSeen.value U\ntotalDeploymentsAccessed.value U\ntotalPageLoads.value U\ntotalStimulusResponses.value U\ntotalMediaResponses.value U\ntotalDeletionEvents.value U\n" > $filePath 
     done
 }
 
@@ -69,7 +69,7 @@ update_stats() {
 output_config() {
     for deployemntType in staging production
     do
-        for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+        for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
         do
             echo "multigraph $deployemntType$graphType"
             echo "graph_title Frinex Docker $deployemntType $graphType"

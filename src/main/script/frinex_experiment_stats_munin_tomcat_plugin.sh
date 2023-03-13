@@ -97,6 +97,7 @@ output_config() {
     echo "total-totalPageLoads.label totalPageLoads"
     echo "total-totalStimulusResponses.label totalStimulusResponses"
     echo "total-totalMediaResponses.label totalMediaResponses"
+    echo "total-totalDeletionEvents.label totalDeletionEvents"
     # grep "\-admin" $dataDirectory/$1.totals.tmp | sed "s/.value//g" | awk '{print $1 ".label " $1}'
     echo "multigraph $1_activity"
     echo "graph_title Frinex Tomcat $1 Activity"
@@ -107,6 +108,7 @@ output_config() {
     echo "total-totalPageLoads.label totalPageLoads"
     echo "total-totalStimulusResponses.label totalStimulusResponses"
     echo "total-totalMediaResponses.label totalMediaResponses"
+    echo "total-totalDeletionEvents.label totalDeletionEvents"
     # grep "\-admin" $dataDirectory/$1.difference.tmp | sed "s/.value//g" | awk '{print $1 ".label " $1}'
 }
 
@@ -114,7 +116,7 @@ output_totals() {
     # sum the values and generate the totals graphs
     echo "multigraph $1_totals"
     # generate totals for each type
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
     do
         cat $dataDirectory/$1.values.tmp | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}'
     done
@@ -126,7 +128,7 @@ output_difference() {
     difference="$(diff --suppress-common-lines -y $dataDirectory/$1.previous $dataDirectory/$1.values.tmp | awk '{print $1, " ", $5-$2}')"
     echo "$difference"
     # generate totals for each type
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
     do
         echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}'
     done
@@ -135,7 +137,7 @@ output_difference() {
 output_values() {
     # TODO: cat and grep the values for the current grap from the temp files
     # TODO: If the plugin - for any reason - has no value to report, then it may send the value U for undefined. 
-    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
     do
         echo "multigraph $1_$graphType"
         for filePath in $dataDirectory/*-admin; do

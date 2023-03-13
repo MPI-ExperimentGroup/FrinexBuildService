@@ -37,6 +37,7 @@ run_queries() {
     PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalParticipantsSeen.value ' || count(distinct user_id) from participant" >> $outputFile;
     PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalStimulusResponses.value ' || count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response" >> $outputFile;
     PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalMediaResponses.value ' || count (id) from audio_data" >> $outputFile;
+    PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select 'totalDeletionEvents.value ' || count (id) from data_deletion_log" >> $outputFile;
     #PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"firstParticipantSeen\":\"' || min(submit_date) from participant";
     #PGPASSWORD=$databasePass psql -h $databaseUrl -p $databasePort -U ${currentExperimentUser} -d $currentexperiment --no-align -t -c "select '\"lastParticipantSeen\":\"' || max(submit_date) from participant";
     #echo '"participantsFirstAndLastSeen": [';
