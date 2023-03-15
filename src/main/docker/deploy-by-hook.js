@@ -609,7 +609,7 @@ function deployStagingGui(currentEntry) {
                 console.error(`deployStagingGui stderr: ${stderr}`);
             }
             if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_web.war")) {
-                if (deploymentType.includes('docker')) {
+                if (currentEntry.isWebApp && deploymentType.includes('docker')) {
                     deployDockerService(currentEntry, currentEntry.buildName + '_staging_web.war', currentEntry.buildName + '_staging_web', currentEntry.buildName);
                 }
                 console.log("deployStagingGui finished");
@@ -978,7 +978,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         console.log(`deployProductionGui stdout: ${stdout}`);
                         console.error(`deployProductionGui stderr: ${stderr}`);
                         if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_web.war")) {
-                            if (deploymentType.includes('docker')) {
+                            if (currentEntry.isWebApp && deploymentType.includes('docker')) {
                                 deployDockerService(currentEntry, currentEntry.buildName + '_production_web.war', currentEntry.buildName + '_production_web', currentEntry.buildName);
                             }
                             console.log("deployProductionGui finished: " + currentEntry.buildName);
