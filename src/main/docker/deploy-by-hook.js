@@ -848,7 +848,8 @@ function deployProductionGui(currentEntry, retryCounter) {
                 // gtwBuildingCount--;
             }).catch(error => {
                 console.log(error.message);
-                if (typeof error.response !== 'undefined' && error.response.statusCode !== 404) {
+                // if currentEntry.isWebApp is false then the GUI will not be deployed, so we allow the admin to be updated in the next steps
+                if (currentEntry.isWebApp && typeof error.response !== 'undefined' && error.response.statusCode !== 404) {
                     console.log("existing frinex-gui production unknown, aborting build: " + currentEntry.buildName);
                     if (fs.existsSync(productionQueuedFile)) {
                         if (retryCounter > 0) {
