@@ -1995,6 +1995,7 @@ function convertJsonToXml() {
         // now we are using alpha because that validates redirectToURL for metadata presenters
         + ' frinexapps-jdk:alpha /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
+        + ' -DskipTests'
         + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
@@ -2047,6 +2048,7 @@ function updateDocumentation() {
         + ' -w /ExperimentTemplate/ExperimentDesigner'
         + ' frinexapps-jdk:stable /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
+        + ' -DskipTests'
         + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
