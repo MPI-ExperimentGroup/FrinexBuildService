@@ -71,15 +71,15 @@ RUN cd /ExperimentTemplate \
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
-RUN cd /ExperimentTemplate \
-    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example
+# RUN cd /ExperimentTemplate \
+#     && mvn clean install -Dgwt.draftCompile=true -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example
 RUN mkdir /target
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
     && convert -gravity center -size 512x513 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
+    && mvn clean install -Dgwt.draftCompile=true -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example
 RUN mkdir /test_data_electron \
     && mkdir /test_data_electron/with_stimulus_example \
     && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron/with_stimulus_example/ \
@@ -94,7 +94,7 @@ RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
     && convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
+    && mvn clean install -Dgwt.draftCompile=true -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
 RUN mkdir /test_data_electron/rosselfieldkit \
     && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron/rosselfieldkit/ \
     && cp /ExperimentTemplate/gwt-cordova/target/rosselfieldkit*-electron.zip /test_data_electron/rosselfieldkit/
