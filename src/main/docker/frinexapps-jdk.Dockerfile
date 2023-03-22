@@ -67,7 +67,7 @@ RUN mkdir /maven/.m2
 RUN cd /ExperimentTemplate \
     && mvn clean install -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 RUN cd /ExperimentTemplate \
-    && mvn clean install -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=alloptions
+    && mvn clean install -Dgwt.draftCompile=true -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150 -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=alloptions
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
