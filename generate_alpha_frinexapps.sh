@@ -53,7 +53,7 @@ else
         cat $workingDir/src/main/config/settings.xml | docker run -v m2Directory:/maven/.m2/ -i frinexapps-jdk:alpha /bin/bash -c 'cat > /maven/.m2/settings.xml'
 
         # make sure the local .m2 directory has the alpha jar files. In this case we just install AdaptiveVocabularyAssessmentModule which will also install frinex common and the parent pom, because compiling the GWT component is not needed here
-        docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "mvn install -gs /maven/.m2/settings.xml"
+        docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "mvn install -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150 -gs /maven/.m2/settings.xml"
         echo "frinexapps-jdk ok"
 
         # prepare the corova and electron test build files
