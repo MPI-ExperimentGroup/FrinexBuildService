@@ -1994,7 +1994,7 @@ function convertJsonToXml() {
         // we use beta in this case because stable currently does not support all the features required such as locales
         // now we are using alpha because that validates redirectToURL for metadata presenters
         // 2023-04-13 we are now back to beta because the above changes have been promoted
-        + ' frinexapps-jdk:beta /bin/bash -c "mvn exec:exec'
+        + ' frinexapps-jdk:alpha /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
         + ' -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150'
