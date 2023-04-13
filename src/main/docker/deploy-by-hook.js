@@ -534,7 +534,7 @@ function deployStagingGui(currentEntry) {
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
             + ' mvn clean '
-            + ((currentEntry.isWebApp && deploymentType.includes('tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((currentEntry.isWebApp && (deploymentType.includes('staging_tomcat') || ( /* limiting tomcat deployments to when a server is specified */ currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0))) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -722,7 +722,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
             + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + ' mvn clean compile ' // the target 'compile' is used to cause compilation errors to show up before all the effort/time of the full build process
-            + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('staging_tomcat') || ( /* limiting tomcat deployments to when a server is specified */ currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0)) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
@@ -1993,7 +1993,8 @@ function convertJsonToXml() {
         + ' -w /ExperimentTemplate/ExperimentDesigner'
         // we use beta in this case because stable currently does not support all the features required such as locales
         // now we are using alpha because that validates redirectToURL for metadata presenters
-        + ' frinexapps-jdk:alpha /bin/bash -c "mvn exec:exec'
+        // 2023-04-13 we are now back to beta because the above changes have been promoted
+        + ' frinexapps-jdk:beta /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
         + ' -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150'
