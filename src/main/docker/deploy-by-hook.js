@@ -714,7 +714,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
             + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
-            // using sed to replace the depricated DB URL in very old build images like 1.3-audiofix
+            // using sed to replace the deprecated DB URL in very old build images like 1.3-audiofix
             + " sed -i 's|localhost:5432|" + stagingDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
@@ -1080,8 +1080,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -w /ExperimentTemplate frinexapps-jdk:'
             + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
-            // using sed to replace the depricated DB URL in very old build images like 1.3-audiofix
-            + " sed -i 's|localhost:5432|" + productionDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"            
+            // using sed to replace the deprecated DB URL in very old build images like 1.3-audiofix
+            + " sed -i 's|localhost:5432|" + productionDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
