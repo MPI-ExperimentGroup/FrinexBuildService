@@ -508,7 +508,7 @@ function deployStagingGui(currentEntry) {
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_web';
         var dockerString = 'sudo docker container rm -f ' + buildContainerName
-            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " &> /dev/null;"// + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + 'sudo docker run'
             + ' --rm '
             + buildContainerOptions
@@ -543,6 +543,7 @@ function deployStagingGui(currentEntry) {
             + ((currentEntry.state === "debug") ? ' -Dgwt.draftCompile=true -Dgwt.style=DETAILED -Dgwt.extraJvmArgs="-Xmx1024m"' : '')
             // + ' -Dgwt.extraJvmArgs="-Xmx8g"'
             // + ' -Dgwt.localWorkers=12'
+            + ' -Dgwt.logLevel=WARN' // ERROR, WARN, INFO, TRACE, DEBUG, SPAM or ALL (defaults to INFO)
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
