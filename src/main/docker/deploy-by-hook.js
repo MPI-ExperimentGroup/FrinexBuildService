@@ -697,7 +697,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_staging_admin';
         var dockerString = 'sudo docker container rm -f ' + buildContainerName
-            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + " &> /dev/null;"//+ " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
             + buildContainerOptions
@@ -887,7 +887,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                     //  terminate existing docker containers by name 
                     var buildContainerName = currentEntry.buildName + '_production_web';
                     var dockerString = 'sudo docker container rm -f ' + buildContainerName
-                        + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' &> /dev/null;'//+ " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + 'sudo docker run'
                         + ' --rm '
                         + buildContainerOptions
@@ -1066,7 +1066,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
         //  terminate existing docker containers by name 
         var buildContainerName = currentEntry.buildName + '_production_admin';
         var dockerString = 'sudo docker container rm -f ' + buildContainerName
-            + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' &> /dev/null;'//+ " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + 'sudo docker run'
             + ' --rm '
             + buildContainerOptions
