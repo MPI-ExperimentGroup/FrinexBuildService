@@ -543,7 +543,7 @@ function deployStagingGui(currentEntry) {
             + ((currentEntry.state === "debug") ? ' -Dgwt.draftCompile=true -Dgwt.style=DETAILED -Dgwt.extraJvmArgs="-Xmx1024m"' : '')
             // + ' -Dgwt.extraJvmArgs="-Xmx8g"'
             // + ' -Dgwt.localWorkers=12'
-            + ' -Dgwt.logLevel=WARN' // ERROR, WARN, INFO, TRACE, DEBUG, SPAM or ALL (defaults to INFO)
+            + ' -q -Dgwt.logLevel=ERROR' // ERROR, WARN, INFO, TRACE, DEBUG, SPAM or ALL (defaults to INFO)
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
