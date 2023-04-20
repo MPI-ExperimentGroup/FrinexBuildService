@@ -1207,7 +1207,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
         storeResult(currentEntry.buildName, "building " + resultString, stage, "android", false, true, false);
         // the mvn target directory is not in the docker volume so that the build process does not cause redundant file synchronisation across the docker volume.
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_cordova'
-            + ' &> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
+            + ' &> /dev/null;'// ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_cordova --rm '
             + buildContainerOptions
             + ' -v processingDirectory:/FrinexBuildService/processing'
@@ -1286,7 +1286,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
         resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_electron.txt?" + new Date().getTime() + '">log</a>&nbsp;';
         storeResult(currentEntry.buildName, "building " + resultString, stage, "desktop", false, true, false);
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_electron'
-            + ' &> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' &> /dev/null;'// ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + 'sudo docker run --name ' + currentEntry.buildName + '_' + stage + '_electron --rm '
             + buildContainerOptions
             + ' -v processingDirectory:/FrinexBuildService/processing'
