@@ -598,6 +598,7 @@ function deployStagingGui(currentEntry) {
             //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/staging-building/'
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + ' echo "build complete" &>> ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
         child_process.exec(dockerString, (error, stdout, stderr) => {
@@ -721,7 +722,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
-            + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
+            // + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + ' mvn clean compile ' // the target 'compile' is used to cause compilation errors to show up before all the effort/time of the full build process
             + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('staging_tomcat') || ( /* limiting tomcat deployments to when a server is specified */ currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0)) ? 'tomcat7:undeploy tomcat7:redeploy' : 'tomcat7:undeploy package')
             //+ 'package'
@@ -759,6 +760,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' chmod a+rwx ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + ' echo "build complete" &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + '"';
         console.log(dockerString);
         try {
