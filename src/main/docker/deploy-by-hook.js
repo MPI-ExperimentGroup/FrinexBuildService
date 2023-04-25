@@ -543,7 +543,7 @@ function deployStagingGui(currentEntry) {
             + ((currentEntry.state === "debug") ? ' -Dgwt.draftCompile=true -Dgwt.style=DETAILED -Dgwt.extraJvmArgs="-Xmx1024m"' : '')
             // + ' -Dgwt.extraJvmArgs="-Xmx8g"'
             // + ' -Dgwt.localWorkers=12'
-            + ' -q -Dgwt.logLevel=ERROR' // ERROR, WARN, INFO, TRACE, DEBUG, SPAM or ALL (defaults to INFO)
+            + ' -q -Dgwt.logLevel=WARN' // ERROR, WARN, INFO, TRACE, DEBUG, SPAM or ALL (defaults to INFO)
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
@@ -729,6 +729,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -DskipTests'
             + ' -Dlog4j2.version=2.17.2'
             //+ ' -pl frinex-admin'
+            + ' -q' // quiet output
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
@@ -922,6 +923,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' -DskipTests'
                         + ' -Dlog4j2.version=2.17.2'
                         //+ ' -pl gwt-cordova'
+                        + ' -q -Dgwt.logLevel=WARN' // ERROR, WARN, INFO, TRACE, DEBUG, SPAM or ALL (defaults to INFO)
                         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
                         + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
                         + ' -Dexperiment.webservice=' + configServer
@@ -1098,6 +1100,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -DskipTests'
             + ' -Dlog4j2.version=2.17.2'
             //+ ' -pl frinex-admin'
+            + ' -q' // quiet output
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
