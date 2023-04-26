@@ -36,16 +36,17 @@ RUN mkdir /opt/gradle \
     && mv /opt/gradle/gradle-*/lib /opt/gradle/ \
     && rm gradle-*-bin.zip
 
-ENV ANDROID_VERSION=32 \
+ENV ANDROID_VERSION=33 \
     ANDROID_SDK_ROOT=/android-sdk \
     ANDROID_HOME=/android-sdk \
-    ANDROID_BUILD_TOOLS_VERSION=30.0.3
+    ANDROID_BUILD_TOOLS_VERSION=34.0.0 rc3
+    # ANDROID_BUILD_TOOLS_VERSION=30.0.3
     # ANDROID_BUILD_TOOLS_VERSION=32.0.0
 ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/cmdline-tools
 # the listing of commandlinetools can be found here https://developer.android.com/studio#command-tools
 RUN mkdir /android-sdk \
     && cd /android-sdk \
-    && curl -o cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip"
+    && curl -o cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip"
 #    && curl -o sdk-tools.zip "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" \
 RUN mkdir /android-sdk/cmdline-tools \
     && unzip -d /android-sdk/cmdline-tools /android-sdk/cmdline-tools.zip \
