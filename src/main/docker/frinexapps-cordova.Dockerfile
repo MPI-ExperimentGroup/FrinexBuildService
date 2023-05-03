@@ -59,7 +59,7 @@ RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager \
     "platforms;android-${ANDROID_VERSION}"
     #  "platform-tools" \
 RUN npm install npm -g # update npm
-RUN npm install -g cordova@11.0.0
+RUN npm install -g cordova@11.1.0
 # rolled back to version 10 to address the admin connection issues
 # RUN npm install -g cordova@10.0.0
 # rolling back to 11 because the connection issues with the admin was due to invalid server certificates
