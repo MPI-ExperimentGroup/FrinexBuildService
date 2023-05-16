@@ -69,7 +69,7 @@ RUN git clone https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
 COPY android-keys/frinex-build.json /android-keys/
 COPY android-keys/frinex-cordova.jks /android-keys/
-COPY corova-plugins/cordova-plugin-local-notifications /cordova-plugin-local-notifications
+COPY corova-plugins /corova-plugins
 
 COPY test_data_cordova /test_data_cordova
 
