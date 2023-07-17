@@ -49,6 +49,8 @@ do
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from screen_data";
     echo -n $experimentName'.stimulus_response.value '
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from stimulus_response";
+    echo -n $experimentName'.stimulus_response_distinct.value '
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
     echo -n $experimentName'.time_stamp.value '
     PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from time_stamp";
     echo -n $experimentName'.totalDeletionEvents.value '
