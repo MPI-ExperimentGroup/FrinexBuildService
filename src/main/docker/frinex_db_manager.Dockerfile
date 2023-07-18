@@ -35,6 +35,7 @@ COPY stats/cronjob_munin_statistics.sh /FrinexBuildService/stats/cronjob_munin_s
 COPY stats/cronjob_munin_statistics.sh /FrinexBuildService/stats/cronjob_munin_production_statistics.sh
 COPY stats/bootstrap_public_statistics.sh  /FrinexBuildService/stats/bootstrap_public_staging_statistics.sh
 COPY stats/bootstrap_public_statistics.sh  /FrinexBuildService/stats/bootstrap_public_production_statistics.sh
+COPY script/run_munin_statistics.sh /FrinexBuildService/stats/run_munin_statistics.sh
 RUN sed -i "s|DatabaseStaging|DatabaseProduction|g" /FrinexBuildService/stats/*_*_production_statistics.sh
 RUN sed -i "s|db_manager_frinex_staging|db_manager_frinex_production|g" /FrinexBuildService/stats/*_*_production_statistics.sh
 #COPY stats/bootstrap_florians_userids_statistics.sh /FrinexBuildService/stats/
