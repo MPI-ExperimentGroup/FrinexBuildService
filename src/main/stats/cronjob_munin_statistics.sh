@@ -22,37 +22,37 @@
 PGPASSFILE=/FrinexBuildService/frinex_db_user_authentication
 export PGPASSFILE
 
-postgresCommand="psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging"
+postgresCommand="psql -h DatabaseStagingUrl -p DatabaseStagingPort"
 # postgresCommand="/Applications/Postgres.app/Contents/Versions/14/bin/psql -p5432"
 
-for currentexperiment in $($postgresCommand -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'");
+for currentexperiment in $($postgresCommand -U db_manager_frinex_staging -d postgres --no-align -t -c "select datname from pg_database where datistemplate = false and datname != 'postgres' and datname like 'frinex_%_db'");
 do 
     experimentName=${currentexperiment%"_db"};
     experimentName=${experimentName#"frinex_"};
     echo -n $experimentName'.totalDeploymentsAccessed.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct tag_value) from tag_data where event_tag = 'compileDate'";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct tag_value) from tag_data where event_tag = 'compileDate'";
     echo -n $experimentName'.totalParticipantsSeen.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct user_id) from participant";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct user_id) from participant";
     echo -n $experimentName'.totalPageLoads.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct tag_date) from tag_data where event_tag = 'compileDate'";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct tag_date) from tag_data where event_tag = 'compileDate'";
     echo -n $experimentName'.totalStimulusResponses.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
     echo -n $experimentName'.totalMediaResponses.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from audio_data";
     echo -n $experimentName'.tag_data.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from tag_data";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from tag_data";
     echo -n $experimentName'.tag_pair_data.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from tag_pair_data";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from tag_pair_data";
     echo -n $experimentName'.group_data.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from group_data";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from group_data";
     echo -n $experimentName'.screen_data.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from screen_data";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from screen_data";
     echo -n $experimentName'.stimulus_response.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from stimulus_response";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from stimulus_response";
     echo -n $experimentName'.stimulus_response_distinct.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(distinct concat(tag_date, user_id, event_ms)) from stimulus_response";
     echo -n $experimentName'.time_stamp.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from time_stamp";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from time_stamp";
     echo -n $experimentName'.totalDeletionEvents.value '
-    PGPASSWORD='DatabaseStagingPass' $postgresCommand -d $currentexperiment --no-align -t -c "select count(id) from data_deletion_log";
+    PGPASSWORD='DatabaseStagingPass' $postgresCommand -U ${currentexperiment%_db}"_user" -d $currentexperiment --no-align -t -c "select count(id) from data_deletion_log";
 done
