@@ -549,6 +549,7 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.webservice=' + configServer
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
+            + ' -Dexperiment.configuration.informReadyUrl=' + proxyUpdateTrigger
             // + ' -DversionCheck.buildType=' + 'stable'
             // TODO: usage of currentEntry.stagingServer is not implemented for targeting tomcat deployments nor undeployments, it is currently only used to tell the GUI application where its URL is for websockets and mobile apps
             + ((currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0) ?
@@ -748,6 +749,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
+            + ' -Dexperiment.configuration.informReadyUrl=' + proxyUpdateTrigger
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
             // + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
