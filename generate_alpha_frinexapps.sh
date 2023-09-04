@@ -76,6 +76,11 @@ else
             echo "frinexapps-electron ok"
         fi
 
+        # update the frinex_examples
+        docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming --w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "cp -r ExperimentDesigner/src/main/resources/examples/* /FrinexBuildService/git-checkedout/frinex_examples/; cp -r /FrinexBuildService/git-checkedout/frinex_examples/* /FrinexBuildService/incoming/;"
+        # curl cgi/request_build.cgi
+        echo "frinex_examples ok"
+
         # remove the corova and electron test build files
         rm -r $workingDir/src/main/test_data_cordova
         rm -r $workingDir/src/main/test_data_electron
