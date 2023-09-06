@@ -77,7 +77,7 @@ else
         fi
 
         # update the frinex_examples
-        docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "cp -r ExperimentDesigner/src/main/resources/examples/* /FrinexBuildService/git-checkedout/frinex_examples/; cp -r /FrinexBuildService/git-checkedout/frinex_examples/* /FrinexBuildService/incoming/; chown -R frinex:www-data /FrinexBuildService/git-checkedout/frinex_examples;chown -R frinex:www-data /FrinexBuildService/incoming;"
+        docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "cp -r ExperimentDesigner/src/main/resources/examples/* /FrinexBuildService/git-checkedout/frinex_examples/; cp -r /FrinexBuildService/git-checkedout/frinex_examples/*.xml /FrinexBuildService/incoming/commits/;chmod -R a+rw /FrinexBuildService/incoming/commits/*" # chown -R frinex:www-data /FrinexBuildService/git-checkedout/frinex_examples;chown -R frinex:www-data /FrinexBuildService/incoming;"
         # curl cgi/request_build.cgi
         echo "frinex_examples ok"
 
