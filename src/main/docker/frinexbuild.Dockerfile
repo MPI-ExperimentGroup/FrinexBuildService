@@ -30,7 +30,9 @@ RUN apk add --no-cache \
   bash \
   rsync \
   zip \
-  zgrep \
+  gzip \
+  rsync \
+  openssh
   sudo
 RUN git config --global user.name "Frinex Build Service"
 RUN git config --global user.email "noone@frinexbuild.mpi.nl"
