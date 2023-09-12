@@ -77,9 +77,7 @@ else
         fi
 
         # update the frinex_examples
-        docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "mkdir /FrinexBuildService/git-checkedout/frinex_examples/; cp -r ExperimentDesigner/src/main/resources/examples/* /FrinexBuildService/git-checkedout/frinex_examples/; cp -r /FrinexBuildService/git-checkedout/frinex_examples/*.xml /FrinexBuildService/incoming/commits/;chmod -R a+rw /FrinexBuildService/incoming/commits/*" # chown -R frinex:www-data /FrinexBuildService/git-checkedout/frinex_examples;chown -R frinex:www-data /FrinexBuildService/incoming;"
-        # curl cgi/request_build.cgi
-        echo "frinex_examples ok"
+        $workingDir/update_frinex_examples.sh "alpha"
 
         # remove the corova and electron test build files
         rm -r $workingDir/src/main/test_data_cordova

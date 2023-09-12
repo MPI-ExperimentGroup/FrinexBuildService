@@ -41,5 +41,8 @@ else
         # report the version that has been built
         latestVersion=$(docker run --rm -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:snapshot /bin/bash -c "cat /ExperimentTemplate/gwt-cordova.version")
         echo "the latest snapshot now is $latestVersion"
+
+        # update the frinex_examples
+        $workingDir/update_frinex_examples.sh "snapshot"
     fi;
 fi;
