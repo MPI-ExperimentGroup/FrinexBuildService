@@ -33,6 +33,18 @@ else
     echo "update requested for $1 examples"
     # TODO: check for changes and always update examples using $1 version
     # update the frinex_examples
-    docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "git pull; mkdir -p /FrinexBuildService/git-checkedout/frinex_examples/; diff -q ExperimentDesigner/src/main/resources/examples/ /FrinexBuildService/git-checkedout/frinex_examples/ | grep -Ei '.xml' | sed -e \"s|.*ExperimentDesigner/src/main/resources/examples/||g\" | sed -e \"s/.xml .*//g\"; cp -r ExperimentDesigner/src/main/resources/examples/* /FrinexBuildService/git-checkedout/frinex_examples/; cp -r /FrinexBuildService/git-checkedout/frinex_examples/*.xml /FrinexBuildService/incoming/commits/;chmod -R a+rw /FrinexBuildService/incoming/commits/*" # chown -R frinex:www-data /FrinexBuildService/git-checkedout/frinex_examples;chown -R frinex:www-data /FrinexBuildService/incoming;"
+    docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "\
+    git pull; \
+    mkdir -p /FrinexBuildService/git-checkedout/frinex_examples/; \
+    for configFile in $(diff -q ExperimentDesigner/src/main/resources/examples/ /FrinexBuildService/git-checkedout/frinex_examples/ | grep -Ei '.xml' | sed -e \"s|.*ExperimentDesigner/src/main/resources/examples/||g\" | sed -e \"s/.xml .*//g\"); \
+    do \
+        cp -rfu ExperimentDesigner/src/main/resources/examples/$configFile.xml /FrinexBuildService/git-checkedout/frinex_examples/; \
+        cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/$configFile.xml /FrinexBuildService/incoming/commits/; \
+        cp -rfu ExperimentDesigner/src/main/resources/examples/$configFile/ /FrinexBuildService/git-checkedout/frinex_examples/; \
+        cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/$configFile/ /FrinexBuildService/incoming/commits/; \
+    done; \
+    chmod -R a+rw /FrinexBuildService/incoming/commits/* \
+    ls /FrinexBuildService/git-checkedout/frinex_examples/ \
+    ls /FrinexBuildService/incoming/commits/;" \"
     echo "frinex_examples ok, to trigger the examples to be built browse to /cgi/request_build.cgi, requires log in."
 fi;
