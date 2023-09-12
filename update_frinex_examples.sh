@@ -36,11 +36,11 @@ else
     docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "\
     git pull; \
     mkdir -p /FrinexBuildService/git-checkedout/frinex_examples/; \
-    for configFile in $(diff -q ExperimentDesigner/src/main/resources/examples/ /FrinexBuildService/git-checkedout/frinex_examples/ | grep -Ei '.xml' | sed -e \"s|.*ExperimentDesigner/src/main/resources/examples/||g\" | sed -e \"s/.xml .*//g\"); \
+    for configFile in $(diff -q /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/ /FrinexBuildService/git-checkedout/frinex_examples/ | grep -Ei '.xml' | sed -e \"s|.*ExperimentDesigner/src/main/resources/examples/||g\" | sed -e \"s/.xml .*//g\"); \
     do \
-        cp -rfu ExperimentDesigner/src/main/resources/examples/$configFile.xml /FrinexBuildService/git-checkedout/frinex_examples/; \
+        cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/$configFile.xml /FrinexBuildService/git-checkedout/frinex_examples/; \
         cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/$configFile.xml /FrinexBuildService/incoming/commits/; \
-        cp -rfu ExperimentDesigner/src/main/resources/examples/$configFile/ /FrinexBuildService/git-checkedout/frinex_examples/; \
+        cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/$configFile/ /FrinexBuildService/git-checkedout/frinex_examples/; \
         cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/$configFile/ /FrinexBuildService/incoming/commits/; \
     done; \
     chmod -R a+rw /FrinexBuildService/incoming/commits/*; \
