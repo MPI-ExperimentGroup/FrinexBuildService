@@ -43,8 +43,8 @@ else
         cp -rfu ExperimentDesigner/src/main/resources/examples/$configFile/ /FrinexBuildService/git-checkedout/frinex_examples/; \
         cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/$configFile/ /FrinexBuildService/incoming/commits/; \
     done; \
-    chmod -R a+rw /FrinexBuildService/incoming/commits/* \
-    ls /FrinexBuildService/git-checkedout/frinex_examples/ \
-    ls /FrinexBuildService/incoming/commits/;" \"
+    chmod -R a+rw /FrinexBuildService/incoming/commits/*; \
+    ls /FrinexBuildService/git-checkedout/frinex_examples/; \
+    ls /FrinexBuildService/incoming/commits/;" \";
     echo "frinex_examples ok, to trigger the examples to be built browse to /cgi/request_build.cgi, requires log in."
 fi;
