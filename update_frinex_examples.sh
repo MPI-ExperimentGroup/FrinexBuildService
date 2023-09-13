@@ -36,7 +36,7 @@ else
     docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "\
     git pull --no-rebase; \
     mkdir -p /FrinexBuildService/git-checkedout/frinex_examples/; \
-    for configFile in \$(diff -q /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/ /FrinexBuildService/git-checkedout/frinex_examples/ | grep -Ei '.xml' | sed -e 's_.*ExperimentDesigner/src/main/resources/examples/__g' | sed -e 's/.xml .*//g'); \
+    for configFile in \$(diff -q /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/ /FrinexBuildService/git-checkedout/frinex_examples/ | grep -Ei '.xml' | sed -e 's_.*ExperimentDesigner/src/main/resources/examples/__g' | sed -e 's/.xml.*//g' | sed -e 's/[^a-z0-9_]//g'); \
     do \
         echo \$configFile.xml
         cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/\$configFile.xml /FrinexBuildService/git-checkedout/frinex_examples/; \
