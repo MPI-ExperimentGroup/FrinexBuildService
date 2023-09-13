@@ -38,10 +38,10 @@ else
     mkdir -p /FrinexBuildService/git-checkedout/frinex_examples/; \
     for configFile in \$(diff -q /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/ /FrinexBuildService/git-checkedout/frinex_examples/ | grep -Ei '.xml' | sed -e 's_.*ExperimentDesigner/src/main/resources/examples/__g' | sed -e 's/.xml .*//g'); \
     do \
-        cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/$configFile.xml /FrinexBuildService/git-checkedout/frinex_examples/; \
-        cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/$configFile.xml /FrinexBuildService/incoming/commits/; \
-        cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/$configFile/ /FrinexBuildService/git-checkedout/frinex_examples/; \
-        cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/$configFile/ /FrinexBuildService/incoming/commits/; \
+        cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/\$configFile.xml /FrinexBuildService/git-checkedout/frinex_examples/; \
+        cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/\$configFile.xml /FrinexBuildService/incoming/commits/; \
+        cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/\$configFile/ /FrinexBuildService/git-checkedout/frinex_examples/; \
+        cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/\$configFile/ /FrinexBuildService/incoming/commits/; \
     done; \
     chmod -R a+rw /FrinexBuildService/incoming/commits; \
     echo 'frinex_examples:'; \
