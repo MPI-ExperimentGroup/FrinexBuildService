@@ -45,7 +45,7 @@ else
         cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/\$configFile/ /FrinexBuildService/incoming/commits/; \
         echo '{\"repository\": \"/git/frinex_examples.git\", \"user\": \"Frinex\"}' > /FrinexBuildService/incoming/commits/\$configFile.commit;
     done; \
-    chmod -R a+rw /FrinexBuildService/incoming/commits; \
+    chmod -R a+rwx /FrinexBuildService/incoming/commits; \
     echo 'frinex_examples:'; \
     ls -l /FrinexBuildService/git-checkedout/frinex_examples/; \
     echo 'commits:'; \
