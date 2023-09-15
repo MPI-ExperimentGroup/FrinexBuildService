@@ -42,7 +42,7 @@ else
         cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/\$configFile.xml /FrinexBuildService/git-checkedout/frinex_examples/; \
         cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/\$configFile.xml /FrinexBuildService/incoming/commits/; \
         cp -rfu /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/\$configFile/ /FrinexBuildService/git-checkedout/frinex_examples/; \
-        cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/\$configFile/ /FrinexBuildService/incoming/commits/; \
+        cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/\$configFile/ /FrinexBuildService/incoming/static/; \
         echo '{\"repository\": \"/git/frinex_examples.git\", \"user\": \"Frinex\"}' > /FrinexBuildService/incoming/commits/\$configFile.commit;
     done; \
     chmod -R a+rwx /FrinexBuildService/incoming/commits; \
