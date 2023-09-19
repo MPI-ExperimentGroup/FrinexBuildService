@@ -45,10 +45,10 @@ else
         cp -rfu /FrinexBuildService/git-checkedout/frinex_examples/\$configFile/ /FrinexBuildService/incoming/static/; \
         echo '{\"repository\": \"/git/frinex_examples.git\", \"user\": \"Frinex system\"}' > /FrinexBuildService/incoming/commits/\$configFile.xml.commit;
     done; \
-    chmod -R a+rwx /FrinexBuildService/incoming/commits; \
+    chmod -R a+rwx /FrinexBuildService/incoming/; \
     echo 'frinex_examples:'; \
     ls -l /FrinexBuildService/git-checkedout/frinex_examples/; \
     echo 'commits:'; \
-    ls -l /FrinexBuildService/incoming/commits/;";
+    ls -l /FrinexBuildService/incoming/*;";
     echo "frinex_examples ok, to trigger the examples to be built browse to /cgi/request_build.cgi, requires log in."
 fi;
