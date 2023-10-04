@@ -669,12 +669,12 @@ function deployStagingGui(currentEntry) {
                 fs.unlinkSync(electronSetupFile);
             }
             /* this file is deleted at the start of the admin build process
-            var cordovaZipFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '-frinex-gui-stable-cordova.zip');
+            var cordovaZipFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '-frinex-gui-*-cordova.zip');
             if (fs.existsSync(cordovaZipFile)) {
                 fs.unlinkSync(cordovaZipFile);
             }*/
             /* this file is deleted at the start of the admin build process
-            var electronZipFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '-frinex-gui-stable-electron.zip');
+            var electronZipFile = path.resolve(processingDirectory + '/staging-building', currentEntry.buildName + '-frinex-gui-*-electron.zip');
             if (fs.existsSync(electronZipFile)) {
                 fs.unlinkSync(electronZipFile);
             }*/
@@ -721,8 +721,8 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + " sed -i 's|localhost:5432|" + stagingDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
             + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
-            + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
-            + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
+            + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-cordova.zip;'
+            + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-electron.zip;'
             // + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + ' mvn clean compile ' // the target 'compile' is used to cause compilation errors to show up before all the effort/time of the full build process
             + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('staging_tomcat') || ( /* limiting tomcat deployments to when a server is specified */ currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0)) ? 'tomcat7:undeploy tomcat7:redeploy' : 'tomcat7:undeploy package')
