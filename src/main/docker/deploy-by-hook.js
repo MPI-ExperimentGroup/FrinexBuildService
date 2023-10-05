@@ -2059,6 +2059,7 @@ function updateDocumentation() {
         + ' frinexapps-jdk:stable /bin/bash -c "mvn exec:exec'
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
+        + ' -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150'
         + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
