@@ -35,5 +35,5 @@ echo "$keepList"
 excludeList=$(docker image ls | grep -E "$keepList" | awk '{print $3}' | sort | uniq | tr '\n' '|' | sed -E "s/\|$//g")
 echo "$excludeList"
 
-deleteList=$(docker image ls | grep -vE "1.3-audiofix|stable_20|beta_20|$excludeList" | awk '{print $2}' | sort | uniq)
+deleteList=$(docker image ls | grep "frinexapps" | grep -vE "1.3-audiofix|stable_20|beta_20|$excludeList" | awk '{print $2}' | sort | uniq)
 echo "$deleteList"
