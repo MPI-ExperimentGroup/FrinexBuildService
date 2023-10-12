@@ -32,6 +32,8 @@ echo "$keepList"
 
 # TODO: grep the docker image ls minus the exclude list and remove the remaining images after warning the user
 
-docker image ls | grep -E "$keepList" | awk '{print $3}' | sort | uniq
+excludeList=$(docker image ls | grep -E "$keepList" | awk '{print $3}' | sort | uniq | tr '\n' '|' | sed -E "s/\|$//g")
+echo "$excludeList"
 
-echo $excludeList
+deleteList=$(docker image ls | grep -vE "1.3-audiofix|stable_20|beta_20|$excludeList" | awk '{print $2}' | sort | uniq)
+echo "$deleteList"
