@@ -24,7 +24,14 @@
 
 
 # search through all staging web war files extracting a list of Frinex versions in use
-keepList=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -it --name frinex-images-cleanup frinexbuild:latest bash -c "(for warFile in artifacts/*/*_staging_web.war;do unzip -p \$warFile version.json | grep projectVersion; done;) | sort | uniq | sed \"s/projectVersion:'/-e \\\"/g\" | sed \"s/',//g\" | tr '\n' '\" '")
-echo $keepList
+inUseList=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -it --name frinex-images-cleanup frinexbuild:latest bash -c "(for warFile in artifacts/*/*_staging_web.war;do unzip -p \$warFile version.json | grep projectVersion; done;) | sort | uniq | tr '\n' ' '")
+echo $inUseList
+
+keepList=$(echo "$inUseList" | sed "s/projectVersion:'/-e \"/g" | sed "s/',/\"/g")
+echo "$keepList"
 
 # TODO: grep the docker image ls minus the exclude list and remove the remaining images after warning the user
+
+docker image ls | grep - -s $keepList | awk '{print $4}' | sort | uniq
+
+echo $excludeList
