@@ -571,7 +571,7 @@ function deployStagingGui(currentEntry) {
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             //+ ' free -h &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;'
             // skipping electron and cordova if this is a draft build
-            + ((currentEntry.state === "draft") ? "" : ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-*-cordova.zip /FrinexBuildService/processing/staging-building/'
+            + ((currentEntry.state === "draft" || currentEntry.frinexVersion === "snapshot") ? "" : ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-*-cordova.zip /FrinexBuildService/processing/staging-building/'
                 + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
                 + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-*-electron.zip /FrinexBuildService/processing/staging-building/'
                 + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
