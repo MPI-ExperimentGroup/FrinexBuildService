@@ -38,6 +38,7 @@ else
 
     # start the frinexwizard container
     docker run --restart unless-stopped -dit --name frinexwizard -v m2Directory:/maven/.m2/ -v WizardTemplates:/ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/ -v wizardExperiments:/FrinexBuildService/wizard-experiments -v incomingDirectory:/FrinexBuildService/incoming -v buildServerTarget:/FrinexBuildService/artifacts -p 7070:8080 frinexwizard:latest
+    docker container logs -f frinexwizard
 fi;
 
 # docker run -it --name frinexwizard bash
