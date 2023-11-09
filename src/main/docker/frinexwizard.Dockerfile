@@ -67,7 +67,7 @@ RUN /FrinexWizardUtils/filter_config_files.sh
 RUN cd /ExperimentTemplate/ExperimentDesigner \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
-RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-1.5-testing-SNAPSHOT.war /frinexwizard.war
+RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-*.*-testing-SNAPSHOT.war /frinexwizard.war
 
 #CMD ["java", "-Dlogging.level.org.springframework=TRACE", "-jar", "/frinexwizard.war"]
 #CMD ["java", "-Dlogging.level.org.springframework=DEBUG", "-jar", "/frinexwizard.war"]
