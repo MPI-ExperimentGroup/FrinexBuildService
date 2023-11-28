@@ -49,8 +49,9 @@ do
     echo "Pending deletion:"
     docker image ls | grep $imageName
     read -p "Delete $imageName? (y/n))" -n 1 -r
+    echo
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
-        echo "mock delete"
+        docker image rm $imageName
     fi
 done
