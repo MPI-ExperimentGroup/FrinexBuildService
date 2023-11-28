@@ -41,3 +41,16 @@ echo "$excludeList"
 echo "deleteList:"
 deleteList=$(docker image ls | grep "frinexapps" | grep -vE "1.3-audiofix|stable_20|beta_20|$excludeList" | awk '{print $3}' | sort | uniq)
 echo "$deleteList"
+
+for imageName in $deleteList
+do
+    echo "Known versions that are in use:"
+    echo "$inUseList"
+    echo "Pending deletion:"
+    docker image ls | grep $imageName
+    read -p "Delete $imageName? (y/n))" -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        echo "mock delete"
+    fi
+done
