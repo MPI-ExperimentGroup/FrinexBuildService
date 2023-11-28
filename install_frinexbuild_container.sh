@@ -64,7 +64,7 @@ else
     cat $workingDir/src/main/config/settings.xml | docker run -v m2Directory:/maven/.m2/ -i frinexapps-jdk:alpha /bin/bash -c 'cat > /maven/.m2/settings.xml'
 
     # start the images that have been built by this script
-    bash $(dirname "$0")/start_frinexbuild_container.sh
+    bash $workingDir/start_frinexbuild_container.sh
 
     # refresh the shared scipts used by sysadmin to maintain the running frinex system
     cp $workingDir/clean_frinex_docker.sh /FrinexScripts/
