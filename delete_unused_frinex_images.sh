@@ -25,15 +25,19 @@
 
 # search through all staging web war files extracting a list of Frinex versions in use
 inUseList=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -it --name frinex-images-cleanup frinexbuild:latest bash -c "(for warFile in artifacts/*/*_staging_web.war;do unzip -p \$warFile version.json | grep projectVersion; done;) | sort | uniq | tr '\n' ' '")
+echo "inUseList:"
 echo "$inUseList"
 
 keepList=$(echo "$inUseList" | sed "s/projectVersion:'/|/g" | sed -E "s/', *//g" | sed -E "s/^ *\|//g")
+echo "keepList:"
 echo "$keepList"
 
 # TODO: grep the docker image ls minus the exclude list and remove the remaining images after warning the user
 
 excludeList=$(docker image ls | grep -E "$keepList" | awk '{print $3}' | sort | uniq | tr '\n' '|' | sed -E "s/\|$//g")
+echo "excludeList:"
 echo "$excludeList"
 
+echo "deleteList:"
 deleteList=$(docker image ls | grep "frinexapps" | grep -vE "1.3-audiofix|stable_20|beta_20|$excludeList" | awk '{print $3}' | sort | uniq)
 echo "$deleteList"
