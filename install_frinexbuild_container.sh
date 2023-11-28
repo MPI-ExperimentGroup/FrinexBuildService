@@ -67,9 +67,10 @@ else
     bash $(dirname "$0")/start_frinexbuild_container.sh
 
     # refresh the shared scipts used by sysadmin to maintain the running frinex system
-    cp $(dirname "$0")/clean_frinex_docker.sh /FrinexScripts/
-    cp $(dirname "$0")/start_frinexbuild_container.sh /FrinexScripts/
-    cp $(dirname "$0")/start_registry_container.sh /FrinexScripts/
-    cp $(dirname "$0")/delete_unused_frinex_images.sh /FrinexScripts/
-    cp $(dirname "$0")/README.md /FrinexScripts/
+    cp $workingDir/clean_frinex_docker.sh /FrinexScripts/
+    cp $workingDir/start_frinexbuild_container.sh /FrinexScripts/
+    cp $workingDir/start_registry_container.sh /FrinexScripts/
+    cp $workingDir/delete_unused_frinex_images.sh /FrinexScripts/
+    cp $workingDir/README.md /FrinexScripts/
+    chmod a+rx /FrinexScripts/*.sh
 fi;
