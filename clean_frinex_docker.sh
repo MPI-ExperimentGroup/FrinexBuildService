@@ -24,7 +24,6 @@
 
 cd $(dirname "$0")
 workingDir=$(pwd -P)
-cd $(dirname "$0")/src/main/config
 
 # clean up volumes
 docker volume rm $(docker volume ls | grep -v "gitRepositories" | grep -v "gitCheckedout" | grep -v "protectedDirectory" | grep -v "registry_certs" | grep -v "m2Directory" | grep -v "buildServerTarget" | grep -v "frinexDockerRegistry" | awk 'NR>1 {print $2}')
