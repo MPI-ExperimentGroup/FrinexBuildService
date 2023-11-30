@@ -34,7 +34,7 @@ else
     # TODO: check for changes and always update examples using $1 version
     # update the frinex_examples
     docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout -v incomingDirectory:/FrinexBuildService/incoming -w /ExperimentTemplate frinexapps-jdk:alpha /bin/bash -c "\
-    git pull --no-rebase; \
+    git checkout ExperimentDesigner/pom.xml; git pull --no-rebase; \
     mkdir -p /FrinexBuildService/git-checkedout/frinex_examples/; \
     for configFile in \$(diff -q /ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/ /FrinexBuildService/git-checkedout/frinex_examples/ | grep -Ei '.xml' | sed -e 's_.*ExperimentDesigner/src/main/resources/examples/__g' | sed -e 's/.xml.*//g' | sed -e 's/[^a-z0-9_]//g'); \
     do \
