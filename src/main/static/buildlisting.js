@@ -217,6 +217,16 @@ function doUpdate() {
         } else {
             document.getElementById('buildLabel').innerHTML = data.buildHost;
         }
+        if (typeof data.stagingServerStatus === 'undefined' || data.stagingServerStatus === null) {
+            document.getElementById('stagingServerStatus').innerHTML = '';
+        } else {
+            document.getElementById('stagingServerStatus').innerHTML = data.stagingServerStatus;
+        }
+        if (typeof data.productionServerStatus === 'undefined' || data.productionServerStatus === null) {
+            document.getElementById('productionServerStatus').innerHTML = '';
+        } else {
+            document.getElementById('productionServerStatus').innerHTML = data.productionServerStatus;
+        }
         doSort();
         clearTimeout(updateTimer);
         if (data.building) {

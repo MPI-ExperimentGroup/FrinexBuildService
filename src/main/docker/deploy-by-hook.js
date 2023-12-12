@@ -2081,6 +2081,19 @@ function updateDocumentation() {
     };
 }
 
+function checkServerCertificates() {
+    var sslChecker = require("ssl-checker")
+    sslChecker(stagingServerUrl, 'GET', 443).then(result => {
+        console.log(stagingServerUrl + " : " + result);
+        buildHistoryJson.stagingServerStatus = stagingServerUrl + " certificate " + result.valid_to;
+    });
+    sslChecker(productionServerUrl, 'GET', 443).then(result => {
+        console.log(productionServerUrl + " : " + result);
+        buildHistoryJson.productionServerStatus = productionServerUrl + " certificate " + result.valid_to;
+    }
+    );
+}
+
 function prepareImageList() {
     // generate a searchable list of frinex versions
     var dockerString = "sudo docker image ls | grep frinexapps-jdk | awk 'NR>0 {print $2 \",\"}'"
@@ -2179,6 +2192,9 @@ function prepareBuildHistory() {
             // remember the last free disk
             buildHistoryJson.diskFree = buildHistoryJsonTemp.diskFree;
             buildHistoryJson.diskTotal = buildHistoryJsonTemp.diskTotal;
+            // remember the last server certificate status
+            buildHistoryJson.stagingServerStatus = buildHistoryJsonTemp.stagingServerStatus;
+            buildHistoryJson.productionServerStatus = buildHistoryJsonTemp.productionServerStatus;
             // request the current free disk
             diskSpace('/').then((info) => {
                 buildHistoryJson.diskFree = info.free;
@@ -2231,6 +2247,7 @@ function deleteOldProcessing() {
     }
     prepareBuildHistory();
     prepareImageList();
+    checkServerCertificates();
 }
 
 /* /maven/.m2 is not mounted on the build container
