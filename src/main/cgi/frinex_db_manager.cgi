@@ -79,7 +79,6 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
                 echo "Status: 400 Failed CREATE DATABASE: $appNameInternal $messageString"
                 echo ''
             fi
-            
             grant=$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;")
             messageString="$messageString\n$grant"
             if [ "$grant" != "GRANT" ]
@@ -116,7 +115,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
                 echo "Status: 400 Failed CREATE DATABASE: $appNameInternal $messageString"
                 echo ''
             fi
-            grant==$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;")
+            grant=$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;")
             messageString="$messageString\n$grant"
             if [ "$grant" != "GRANT" ]
             then
