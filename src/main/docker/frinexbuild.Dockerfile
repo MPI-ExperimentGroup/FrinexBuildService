@@ -26,6 +26,7 @@ RUN apk add --no-cache \
   git-daemon \
   npm \
   docker \
+  libcurl \
   curl \
   bash \
   rsync \
