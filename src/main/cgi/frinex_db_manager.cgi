@@ -55,25 +55,25 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
         messageString="appNameInternal: $appNameInternal"
         # create the experiment DB on staging
         if [ "$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
-            messageString=$messageString"\nDatabase already exists\n"
+            messageString="$messageString\nDatabase already exists\n"
             alterRole=$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'DatabaseStagingPass';")
-            messageString=$alterRole
+            messageString="$messageString\n$alterRole"
             if [ "$alterRole" != "ALTER ROLE" ]
             then
                 echo "Status: 400 Failed ALTER ROLE: $appNameInternal $messageString"
                 echo ''
             fi
         else
-            messageString=$messageString"\nDatabase being created\n"
+            messageString="$messageString\nDatabase being created\n"
             createRole=$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'DatabaseStagingPass';")
-            messageString=$createRole
+            messageString="$messageString\n$createRole"
             if [ "$createRole" != "CREATE ROLE" ]
             then
                 echo "Status: 400 Failed CREATE ROLE: $appNameInternal $messageString"
                 echo ''
             fi
             createDatabase=$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;")
-            messageString=$createDatabase
+            messageString="$messageString\n$createDatabase"
             if [ "$createDatabase" != "CREATE DATABASE" ]
             then
                 echo "Status: 400 Failed CREATE DATABASE: $appNameInternal $messageString"
@@ -81,7 +81,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
             fi
             
             grant=$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;")
-            messageString=$grant
+            messageString="$messageString\n$grant"
             if [ "$grant" != "GRANT" ]
             then
                 echo "Status: 400 Failed GRANT: $appNameInternal $messageString"
@@ -91,7 +91,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
         # create the experiment DB on production
         if [ "$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='frinex_${appNameInternal}_db'" )" = '1' ]; then
             alterRole=$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres -tAc "ALTER USER frinex_${appNameInternal}_user WITH PASSWORD 'DatabaseProductionPass';")
-            messageString=$alterRole
+            messageString="$messageString\n$alterRole"
             if [ "$alterRole" != "ALTER ROLE" ]
             then
                 echo "Status: 400 Failed ALTER ROLE: $appNameInternal $messageString"
@@ -103,21 +103,21 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
         else
             # echo "Database being created"
             createRole=$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres -tAc "CREATE USER frinex_${appNameInternal}_user WITH PASSWORD 'DatabaseProductionPass';")
-            messageString=$createRole
+            messageString="$messageString\n$createRole"
             if [ "$createRole" != "CREATE ROLE" ]
             then
                 echo "Status: 400 Failed CREATE ROLE: $appNameInternal $messageString"
                 echo ''
             fi
             createDatabase=$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres -tAc "CREATE DATABASE frinex_${appNameInternal}_db;")
-            messageString=$createDatabase
+            messageString="$messageString\n$createDatabase"
             if [ "$createDatabase" != "CREATE DATABASE" ]
             then
                 echo "Status: 400 Failed CREATE DATABASE: $appNameInternal $messageString"
                 echo ''
             fi
             grant==$(psql -h DatabaseProductionUrl -p DatabaseProductionPort -U db_manager_frinex_production -d postgres -tAc "GRANT ALL PRIVILEGES ON DATABASE frinex_${appNameInternal}_db to frinex_${appNameInternal}_user;")
-            messageString=$grant
+            messageString="$messageString\n$grant"
             if [ "$grant" != "GRANT" ]
             then
                 echo "Status: 400 Failed GRANT: $appNameInternal $messageString"
