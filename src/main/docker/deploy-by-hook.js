@@ -2084,11 +2084,11 @@ function updateDocumentation() {
 function checkServerCertificates() {
     var sslChecker = require("ssl-checker")
     sslChecker(stagingServerUrl, 'GET', 443).then(result => {
-        console.log(stagingServerUrl + " : " + result);
+        console.log("checkServerCertificates\n" + stagingServerUrl + " : " + result);
         buildHistoryJson.stagingServerStatus = stagingServerUrl + " certificate " + result.valid_to;
     });
     sslChecker(productionServerUrl, 'GET', 443).then(result => {
-        console.log(productionServerUrl + " : " + result);
+        console.log("checkServerCertificates\n" + productionServerUrl + " : " + result);
         buildHistoryJson.productionServerStatus = productionServerUrl + " certificate " + result.valid_to;
     }
     );
