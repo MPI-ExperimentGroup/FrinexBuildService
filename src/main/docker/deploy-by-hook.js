@@ -2086,13 +2086,15 @@ function updateDocumentation() {
 function checkServerCertificates() {
     buildHistoryJson.certificateStatus = "";
     certificateCheckList.split(",").forEach(function (checkItem) {
-        sslChecker(checkItem.split(",")[0], 'GET', checkItem.split(",")[1]).then(result => {
-            console.log("checkServerCertificates\n" + checkItem.split(",")[0] + " : ");
+        certificateUrl = checkItem.split(",")[0];
+        certificatePort = checkItem.split(",")[1];
+        sslChecker(certificateUrl, 'GET', certificatePort).then(result => {
+            console.log("checkServerCertificates\n" + checkItem + " : ");
             console.log(result);
-            buildHistoryJson.certificateStatus += checkItem.split(",")[0] + " certificate " + result.daysRemaining + " days remaining<br>";
+            buildHistoryJson.certificateStatus += checkItem + " certificate " + result.daysRemaining + " days remaining<br>";
         }).catch(error => {
-            console.log("checkServerCertificates\n" + checkItem.split(",")[0] + " : " + error.message);
-            buildHistoryJson.certificateStatus += checkItem.split(",")[0] + " certificate error<br>";
+            console.log("checkServerCertificates\n" + checkItem + " : " + error.message);
+            buildHistoryJson.certificateStatus += checkItem + " certificate error<br>";
         });
     });
 }
