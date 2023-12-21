@@ -53,6 +53,7 @@ const dockerServiceOptions = properties.get('dockerservice.serviceOptions');
 const buildContainerOptions = properties.get('settings.buildContainerOptions');
 const taskContainerOptions = properties.get('settings.taskContainerOptions');
 const listingDirectory = properties.get('settings.listingDirectory');
+const certificateCheckList = properties.get('settings.certificateCheckList');
 const incomingDirectory = properties.get('settings.incomingDirectory');
 const processingDirectory = properties.get('settings.processingDirectory');
 const buildHost = properties.get('settings.buildHost');
@@ -2084,20 +2085,14 @@ function updateDocumentation() {
 
 function checkServerCertificates() {
     buildHistoryJson.certificateStatus = "";
-    // TODO: also check the certificate of the ActiveDirectory server
-    sslChecker(stagingServerUrl, 'GET', 443).then(result => {
-        console.log("checkServerCertificates\n" + stagingServerUrl + " : " + result);
-        buildHistoryJson.certificateStatus += stagingServerUrl + " certificate " + result.valid_to + "<br>";
-    }).catch(error => {
-        console.log("checkServerCertificates\n" + stagingServerUrl + " : " + error.message);
-        buildHistoryJson.certificateStatus += stagingServerUrl + " certificate error<br>";
-    });
-    sslChecker(productionServerUrl, 'GET', 443).then(result => {
-        console.log("checkServerCertificates\n" + productionServerUrl + " : " + result);
-        buildHistoryJson.certificateStatus += productionServerUrl + " certificate " + result.valid_to + "<br>";
-    }).catch(error => {
-        console.log("checkServerCertificates\n" + productionServerUrl + " : " + error.message);
-        buildHistoryJson.certificateStatus += productionServerUrl + " certificate error<br>";
+    certificateCheckList.split(",").forEach(function (certificateUrl) {
+        sslChecker(certificateUrl, 'GET', 443).then(result => {
+            console.log("checkServerCertificates\n" + certificateUrl + " : " + result);
+            buildHistoryJson.certificateStatus += certificateUrl + " certificate " + result.valid_to + "<br>";
+        }).catch(error => {
+            console.log("checkServerCertificates\n" + certificateUrl + " : " + error.message);
+            buildHistoryJson.certificateStatus += certificateUrl + " certificate error<br>";
+        });
     });
 }
 
