@@ -2087,12 +2087,17 @@ function checkServerCertificates() {
     sslChecker(stagingServerUrl, 'GET', 443).then(result => {
         console.log("checkServerCertificates\n" + stagingServerUrl + " : " + result);
         buildHistoryJson.stagingServerStatus = stagingServerUrl + " certificate " + result.valid_to;
+    }).catch(error => {
+        console.log("checkServerCertificates\n" + stagingServerUrl + " : " + error.message);
+        buildHistoryJson.stagingServerStatus = stagingServerUrl + " certificate unknown";
     });
     sslChecker(productionServerUrl, 'GET', 443).then(result => {
         console.log("checkServerCertificates\n" + productionServerUrl + " : " + result);
         buildHistoryJson.productionServerStatus = productionServerUrl + " certificate " + result.valid_to;
-    }
-    );
+    }).catch(error => {
+        console.log("checkServerCertificates\n" + productionServerUrl + " : " + error.message);
+        buildHistoryJson.productionServerStatus = productionServerUrl + " certificate unknown";
+    });
 }
 
 function prepareImageList() {
