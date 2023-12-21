@@ -217,15 +217,10 @@ function doUpdate() {
         } else {
             document.getElementById('buildLabel').innerHTML = data.buildHost;
         }
-        if (typeof data.stagingServerStatus === 'undefined' || data.stagingServerStatus === null) {
-            document.getElementById('stagingServerStatus').innerHTML = '';
+        if (typeof data.certificateStatus === 'undefined' || data.certificateStatus === null) {
+            document.getElementById('certificateStatus').innerHTML = '';
         } else {
-            document.getElementById('stagingServerStatus').innerHTML = data.stagingServerStatus;
-        }
-        if (typeof data.productionServerStatus === 'undefined' || data.productionServerStatus === null) {
-            document.getElementById('productionServerStatus').innerHTML = '';
-        } else {
-            document.getElementById('productionServerStatus').innerHTML = data.productionServerStatus;
+            document.getElementById('certificateStatus').innerHTML = data.certificateStatus;
         }
         doSort();
         clearTimeout(updateTimer);

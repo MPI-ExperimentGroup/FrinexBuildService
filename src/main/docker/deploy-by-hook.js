@@ -2083,20 +2083,21 @@ function updateDocumentation() {
 }
 
 function checkServerCertificates() {
+    buildHistoryJson.certificateStatus = "";
     // TODO: also check the certificate of the ActiveDirectory server
     sslChecker(stagingServerUrl, 'GET', 443).then(result => {
         console.log("checkServerCertificates\n" + stagingServerUrl + " : " + result);
-        buildHistoryJson.stagingServerStatus = stagingServerUrl + " certificate " + result.valid_to;
+        buildHistoryJson.certificateStatus += stagingServerUrl + " certificate " + result.valid_to + "<br>";
     }).catch(error => {
         console.log("checkServerCertificates\n" + stagingServerUrl + " : " + error.message);
-        buildHistoryJson.stagingServerStatus = stagingServerUrl + " certificate unknown";
+        buildHistoryJson.certificateStatus += stagingServerUrl + " certificate error<br>";
     });
     sslChecker(productionServerUrl, 'GET', 443).then(result => {
         console.log("checkServerCertificates\n" + productionServerUrl + " : " + result);
-        buildHistoryJson.productionServerStatus = productionServerUrl + " certificate " + result.valid_to;
+        buildHistoryJson.certificateStatus += productionServerUrl + " certificate " + result.valid_to + "<br>";
     }).catch(error => {
         console.log("checkServerCertificates\n" + productionServerUrl + " : " + error.message);
-        buildHistoryJson.productionServerStatus = productionServerUrl + " certificate unknown";
+        buildHistoryJson.certificateStatus += productionServerUrl + " certificate error<br>";
     });
 }
 
@@ -2199,8 +2200,7 @@ function prepareBuildHistory() {
             buildHistoryJson.diskFree = buildHistoryJsonTemp.diskFree;
             buildHistoryJson.diskTotal = buildHistoryJsonTemp.diskTotal;
             // remember the last server certificate status
-            buildHistoryJson.stagingServerStatus = buildHistoryJsonTemp.stagingServerStatus;
-            buildHistoryJson.productionServerStatus = buildHistoryJsonTemp.productionServerStatus;
+            buildHistoryJson.certificateStatus = buildHistoryJsonTemp.certificateStatus;
             // request the current free disk
             diskSpace('/').then((info) => {
                 buildHistoryJson.diskFree = info.free;
