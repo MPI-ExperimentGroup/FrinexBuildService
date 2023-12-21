@@ -43,6 +43,7 @@ import path from 'path';
 import os from 'os';
 import diskSpace from 'check-disk-space';
 import generatePassword from 'omgopass';
+import sslChecker from 'ssl-checker';
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
@@ -2082,7 +2083,7 @@ function updateDocumentation() {
 }
 
 function checkServerCertificates() {
-    var sslChecker = require("ssl-checker")
+    // TODO: also check the certificate of the ActiveDirectory server
     sslChecker(stagingServerUrl, 'GET', 443).then(result => {
         console.log("checkServerCertificates\n" + stagingServerUrl + " : " + result);
         buildHistoryJson.stagingServerStatus = stagingServerUrl + " certificate " + result.valid_to;
