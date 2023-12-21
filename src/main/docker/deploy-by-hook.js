@@ -2091,10 +2091,10 @@ function checkServerCertificates() {
         sslChecker(certificateUrl, 'GET', certificatePort).then(result => {
             console.log("checkServerCertificates\n" + checkItem + " : ");
             console.log(result);
-            buildHistoryJson.certificateStatus += checkItem + " certificate " + result.daysRemaining + " days remaining<br>";
+            buildHistoryJson.certificateStatus += certificateUrl + " certificate " + result.daysRemaining + " days remaining<br>";
         }).catch(error => {
             console.log("checkServerCertificates\n" + checkItem + " : " + error.message);
-            buildHistoryJson.certificateStatus += checkItem + " certificate error<br>";
+            buildHistoryJson.certificateStatus += certificateUrl + " certificate error<br>";
         });
     });
 }
