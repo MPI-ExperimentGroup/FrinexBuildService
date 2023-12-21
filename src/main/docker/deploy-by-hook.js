@@ -2085,11 +2085,13 @@ function updateDocumentation() {
 
 function checkServerCertificates() {
     buildHistoryJson.certificateStatus = "";
-    certificateCheckList.split(",").forEach(function (certificateUrl) {
-        sslChecker(certificateUrl, 'GET', 443).then(result => {
+    certificateCheckList.split(",").forEach(function (checkItem) {
+        certificateUrl = checkItem.split(",")[0];
+        certificatePort = checkItem.split(",")[1];
+        sslChecker(certificateUrl, 'GET', certificatePort).then(result => {
             console.log("checkServerCertificates\n" + certificateUrl + " : ");
             console.log(result);
-            buildHistoryJson.certificateStatus += certificateUrl + " certificate " + result.validTo + "<br>";
+            buildHistoryJson.certificateStatus += certificateUrl + " certificate " + result.daysRemaining + " days remaining<br>";
         }).catch(error => {
             console.log("checkServerCertificates\n" + certificateUrl + " : " + error.message);
             buildHistoryJson.certificateStatus += certificateUrl + " certificate error<br>";
