@@ -2086,8 +2086,8 @@ function updateDocumentation() {
 function checkServerCertificates() {
     buildHistoryJson.certificateStatus = "";
     certificateCheckList.split(",").forEach(function (checkItem) {
-        certificateUrl = checkItem.split(":")[0];
-        certificatePort = checkItem.split(":")[1];
+        var certificateUrl = checkItem.split(":")[0];
+        var certificatePort = checkItem.split(":")[1];
         sslChecker(certificateUrl, 'GET', certificatePort).then(result => {
             console.log("checkServerCertificates\n" + checkItem + " : ");
             console.log(result);
