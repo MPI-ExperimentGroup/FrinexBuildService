@@ -471,6 +471,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
     try {
         // console.log(serviceSetupString);
+        // TODO: this need not be a syncronous step only the update and trigger need to be done in a result promise
         child_process.execSync(serviceSetupString, { stdio: [0, 1, 2] });
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
