@@ -2089,7 +2089,7 @@ function checkServerCertificates() {
     certificateCheckList.split(",").forEach(function (checkItem) {
         var certificateUrl = checkItem.split(":")[0];
         var certificatePort = checkItem.split(":")[1];
-        sslChecker(certificateUrl, 'HEAD', certificatePort).then(result => {
+        sslChecker(certificateUrl, { method: "HEAD", port: certificatePort }).then(result => {
             console.log("checkServerCertificates\n" + checkItem + " : ");
             console.log(result);
             buildHistoryJson.certificateStatus += checkItem + " certificate " + result.daysRemaining + " days remaining<br>";
