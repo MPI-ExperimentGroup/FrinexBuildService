@@ -29,7 +29,8 @@ mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_
 
 # make sure we have the dependencies built
 cd /ExperimentTemplate/
-mvn install -gs /maven/.m2/settings.xml -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true
+mvn install -gs -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true
+# /maven/.m2/settings.xml
 
 # start a file listing all of the successfully compiled templates
 echo "{" > /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/templates.json
@@ -47,7 +48,8 @@ for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesi
     if [ ! -f /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml ]; then
         # TODO: we might not want draftCompile when this is in production
         cd /ExperimentTemplate/gwt-cordova
-        mvn clean install -gs /maven/.m2/settings.xml -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.path=$templateDirectory -Dexperiment.configuration.name=$templateName
+        mvn clean install -gs -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.path=$templateDirectory -Dexperiment.configuration.name=$templateName
+        # /maven/.m2/settings.xml
         mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName
         cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/ExperimentTemplate /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
         #cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/opus-recorder /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
