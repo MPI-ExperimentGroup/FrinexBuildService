@@ -68,6 +68,7 @@ RUN apt update && apt install yarn
 RUN git clone https://github.com/electron-userland/electron-webpack-quick-start.git
 RUN cd electron-webpack-quick-start \
     && yarn \
+    && yarn upgrade --latest \
     && yarn dist
 RUN cd electron-webpack-quick-start \
     && yarn dist --win portable
