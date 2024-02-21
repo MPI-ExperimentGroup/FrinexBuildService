@@ -86,10 +86,10 @@ RUN cd /test_data_electron/with_stimulus_example \
     && stat /test_data_electron/with_stimulus_example/with_stimulus_example-win32-x64.zip \
     && stat /test_data_electron/with_stimulus_example/with_stimulus_example-darwin-x64.zip
 
-RUN cd /test_data_electron/rosselfieldkit \
-    && bash /test_data_electron/rosselfieldkit/setup-electron.sh \
-    && stat /test_data_electron/rosselfieldkit/rosselfieldkit-win32-x64.zip \
-    && stat /test_data_electron/rosselfieldkit/rosselfieldkit-darwin-x64.zip
+# RUN cd /test_data_electron/rosselfieldkit \
+#     && bash /test_data_electron/rosselfieldkit/setup-electron.sh \
+#     && stat /test_data_electron/rosselfieldkit/rosselfieldkit-win32-x64.zip \
+#     && stat /test_data_electron/rosselfieldkit/rosselfieldkit-darwin-x64.zip
 
 # clean out the static directory to prevent these files being used in the automated builds
 RUN rm -r /test_data_electron
