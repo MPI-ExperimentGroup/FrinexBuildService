@@ -84,5 +84,9 @@ else
         rm -r $workingDir/src/main/test_data_cordova
         rm -r $workingDir/src/main/test_data_electron
 
+        # remove any unused images and unused docker files
+        $workingDir/delete_unused_frinex_images.sh
+        $workingDir/clean_frinex_docker.sh
+
     fi;
 fi;
