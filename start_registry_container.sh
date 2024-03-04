@@ -34,6 +34,8 @@ echo "TODO: please update example.com to the relevant URI, then comment this lin
 
 docker stop registry
 docker container rm registry
+# delete the volume to prevent build up of unused files
+docker volume rm frinexDockerRegistry
 docker run -d \
    --restart=always \
    --name registry \
@@ -45,3 +47,10 @@ docker run -d \
    -e REGISTRY_HTTP_TLS_KEY=/certs/example.com.key \
    -p 443:443 \
    registry:2
+
+for currentService in $(sudo docker service ls | grep -E "_staging|_production" | grep -E "_admin|_web" | awk '{print $5}')
+do
+   echo $currentService
+   # push each web and admin service image currently in used to the empty registry so that they can be accessed by the swarm nodes
+   sudo docker push $currentService
+done
