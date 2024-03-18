@@ -48,7 +48,7 @@ for templatePath in $(grep -l "<templateInfo" /ExperimentTemplate/ExperimentDesi
     if [ ! -f /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/$templateName.xml ]; then
         # TODO: we might not want draftCompile when this is in production
         cd /ExperimentTemplate/gwt-cordova
-        mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.style=DETAILED -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.path=$templateDirectory -Dexperiment.configuration.name=$templateName -Dexperiment.registrationUrl=
+        mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dgwt.style=DETAILED -Dgwt.draftCompile=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.path=$templateDirectory -Dexperiment.configuration.name=$templateName -Dexperiment.registrationUrl=./compiled_templates/$templateName/ -Dexperiment.destinationServerUrl=./compiled_templates/$templateName
         # -gs /maven/.m2/settings.xml
         mkdir /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName
         cp -r /ExperimentTemplate/gwt-cordova/target/$templateName-frinex-gui-*-testing-SNAPSHOT/ExperimentTemplate /ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/$templateName/
