@@ -28,7 +28,7 @@ inUseList=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -
 echo "inUseList:"
 echo "$inUseList"
 
-keepList=$(echo "$inUseList" | sed "s/projectVersion:'/|/g" | sed "s/-stable'/-/g" | sed -E "s/', *//g" | sed -E "s/^ *\|//g")
+keepList=$(echo "$inUseList" | sed "s/projectVersion:'/|/g" | sed "s/-stable'/-'/g" | sed -E "s/', *//g" | sed -E "s/^ *\|//g")
 echo "keepList:"
 echo "$keepList"
 
