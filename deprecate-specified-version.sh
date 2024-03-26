@@ -26,13 +26,24 @@ cd $(dirname "$0")
 workingDir=$(pwd -P)
 cd $(dirname "$0")/src/main/
 
-check that the properties to be used match the current machine
+# check that the properties to be used match the current machine
 if ! grep -q $(hostname) config/publish.properties; then 
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     read -p "Enter Frinex Version x.x.xxxx: " imageName
     if [[ "$imageName" =~ ^[0-9]{1}\.[0-9]{1}\.[0-9]{4}$ ]]; then
         echo "Valid Frinex Version $imageName"
+        docker image ls | grep $imageName
+
+        # make a deprecated tag for the jdk image
+        docker tag frinexapps-jdk:$imageName-stable frinexapps-jdk:$imageName-deprecated
+    
+        # make a deprecated tag for the cordova image
+        docker tag frinexapps-cordova:$imageName-stable frinexapps-cordova:$imageName-deprecated
+    
+        # make a deprecated tag for the electron image
+        docker tag frinexapps-electron:$imageName-stable frinexapps-electron:$imageName-deprecated
+    
         docker image ls | grep $imageName
     else
         echo "Invalid Frinex Version $imageName"
