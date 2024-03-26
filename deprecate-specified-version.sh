@@ -51,6 +51,12 @@ else
         docker image rm frinexapps-electron:$imageName-stable
     
         docker image ls | grep $imageName
+
+        # rename the XSD and HTML documentation from stable to deprecated
+        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "ls /FrinexBuildService/artifacts/$imageName*"
+        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "mv /FrinexBuildService/artifacts/$imageName-stable.xsd /FrinexBuildService/artifacts/$imageName-deprecated.xsd"
+        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "mv /FrinexBuildService/artifacts/$imageName-stable.html /FrinexBuildService/artifacts/$imageName-deprecated.html"
+        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:stable /bin/bash -c "ls /FrinexBuildService/artifacts/$imageName*"
     else
         echo "Invalid Frinex Version $imageName"
     fi
