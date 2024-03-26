@@ -38,17 +38,17 @@ else
         # make a deprecated tag for the jdk image
         docker tag frinexapps-jdk:$imageName-stable frinexapps-jdk:$imageName-deprecated
         # remove the stable tag
-        docker tag rm frinexapps-jdk:$imageName-stable
+        docker image rm frinexapps-jdk:$imageName-stable
     
         # make a deprecated tag for the cordova image
         docker tag frinexapps-cordova:$imageName-stable frinexapps-cordova:$imageName-deprecated
         # remove the stable tag
-        docker tag rm frinexapps-cordova:$imageName-stable
+        docker image rm frinexapps-cordova:$imageName-stable
     
         # make a deprecated tag for the electron image
         docker tag frinexapps-electron:$imageName-stable frinexapps-electron:$imageName-deprecated
         # remove the stable tag
-        docker tag rm frinexapps-electron:$imageName-stable
+        docker image rm frinexapps-electron:$imageName-stable
     
         docker image ls | grep $imageName
     else
