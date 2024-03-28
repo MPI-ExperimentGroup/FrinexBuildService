@@ -31,7 +31,7 @@ sudo docker service ls \
     | grep -E "_production" \
     | grep -E "8080/tcp" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g' \
-    | awk '{print "location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
+    | awk '{print "location /" $2 " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade $http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host $http_host;";\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
     | sed 's/_production_web {/ {/g' \
     | sed 's/_production_admin {/-admin {/g'
     # | sed 's/_staging_web/_staging_web staging/g' \

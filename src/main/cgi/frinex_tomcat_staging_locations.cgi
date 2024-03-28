@@ -31,6 +31,10 @@ curl -k -s https://tomcatstaging/running_experiments.json | grep -E "\"" | sed "
 do
     if [[ ${runningServices} != *$runningWar"_staging"* ]];then
         echo "location /$runningWar {"
+        echo " proxy_http_version 1.1;"
+        echo " proxy_set_header Upgrade $http_upgrade;"
+        echo " proxy_set_header Connection \"upgrade\";"
+        echo " proxy_set_header Host $http_host;"
         echo " proxy_pass https://tomcatstaging/$runningWar;"
         echo "}"
         echo ""
