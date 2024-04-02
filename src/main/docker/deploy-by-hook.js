@@ -205,7 +205,7 @@ function unDeploy(currentEntry) {
         dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_web && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + "\n"
     }
-    if (deploymentType.includes('tomcat')) {
+    if (deploymentType.includes('staging_tomcat')) {
         var buildContainerName = currentEntry.buildName + '_undeploy';
         dockerString += 'sudo docker container rm -f ' + buildContainerName
             + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -255,7 +255,7 @@ function unDeploy(currentEntry) {
         dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_admin && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_admin' + "\n"
     }
-    if (deploymentType.includes('tomcat')) {
+    if (deploymentType.includes('staging_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
             + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + 'sudo docker run'
@@ -304,7 +304,7 @@ function unDeploy(currentEntry) {
         dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_web && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_web' + "\n"
     }
-    if (deploymentType.includes('tomcat')) {
+    if (deploymentType.includes('production_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
             + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
             + 'sudo docker run'
@@ -357,7 +357,7 @@ function unDeploy(currentEntry) {
         dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_admin && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_admin' + "\n"
     }
-    if (deploymentType.includes('tomcat')) {
+    if (deploymentType.includes('production_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
             + " &> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + 'sudo docker run'
@@ -924,7 +924,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
                         + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
                         + ' mvn clean '
-                        + ((currentEntry.isWebApp && deploymentType.includes('tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+                        + ((currentEntry.isWebApp && deploymentType.includes('production_tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
                         //+ 'package'
                         + ' -gs /maven/.m2/settings.xml'
                         + ' -DskipTests'
@@ -1101,7 +1101,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
-            + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
+            + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('production_tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
