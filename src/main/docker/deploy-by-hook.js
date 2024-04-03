@@ -464,8 +464,8 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
         , { mode: 0o755 });
     const serviceSetupString = "cd " + protectedDirectory + "/" + currentEntry.buildName + "\n"
-        // 2024-04-03 removed the --no-cache since it probably isn't needed because the WAR file mtime should have changed and using the cache should speed up builds 
-        + "sudo docker build -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":stable .\n"
+        // 2024-04-03 removing the --no-cache does not have much affect on the build times so we keep it in. Although it probably isn't needed because the WAR file mtime should have changed.
+        + "sudo docker build --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":stable .\n"
         // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
