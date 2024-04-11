@@ -437,18 +437,19 @@ function waitingServiceStart() {
 }
 
 function triggerProxyUpdate() {
+    // 2023-04-11 The proxy is no longer triggered here because the tomcat applications tell nginx to restart and this change is now in the stable version
     // triger the proxy to reaload the service list by calling the proxyUpdateTrigger URL
-    console.log("proxyUpdateTrigger (" + new Date().toISOString() + "): " + proxyUpdateTrigger);
+    // console.log("proxyUpdateTrigger (" + new Date().toISOString() + "): " + proxyUpdateTrigger);
     // log the services that were up at the time of the proxyUpdateTrigger
-    const servicesLogFileName = targetDirectory + "/proxyUpdateTrigger.log";
-    const servicesDockerString = "date >> " + servicesLogFileName + "; sudo docker service ls | grep -E \"_admin|_web\" >> " + servicesLogFileName + ";";
+    // const servicesLogFileName = targetDirectory + "/proxyUpdateTrigger.log";
+    // const servicesDockerString = "date >> " + servicesLogFileName + "; sudo docker service ls | grep -E \"_admin|_web\" >> " + servicesLogFileName + ";";
     // console.log(servicesDockerString);
-    child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
-    got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
-        console.log("proxyUpdateTrigger response (" + new Date().toISOString() + "): " + response.statusCode);
-    }).catch(error => {
-        console.log("proxyUpdateTrigger error (" + new Date().toISOString() + "): " + error.message);
-    });
+    // child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
+    // got.get(proxyUpdateTrigger, { timeout: { request: 3000 }, https: { rejectUnauthorized: false } }).then(response => { //responseType: 'text/html', 
+    //     console.log("proxyUpdateTrigger response (" + new Date().toISOString() + "): " + response.statusCode);
+    // }).catch(error => {
+    //     console.log("proxyUpdateTrigger error (" + new Date().toISOString() + "): " + error.message);
+    // });
 }
 
 function deployDockerService(currentEntry, warFileName, serviceName, contextPath) {
