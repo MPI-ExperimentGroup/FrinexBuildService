@@ -34,6 +34,7 @@ else
     do
         echo $currentService
         # update each web and admin service with the following parameters
-        sudo docker service update --limit-cpu=".5" --limit-memory=256m $currentService
+        # using --force to free all memory by triggering a restart of each service
+	    sudo docker service update --force --replicas=1 --limit-cpu="2.0" --limit-memory=1024m $currentService
     done
 fi;
