@@ -72,7 +72,7 @@ echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 
 experimentList="$(ls /FrinexBuildService/protected/*/*.war | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.war//g')"
 echo "$experimentList" > /usr/local/apache2/htdocs/frinex_all_experiments.txt
-echo "$serviceList" | awk '{print "$2\n"}' > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
+echo "$serviceList" | awk '{print $2}' > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
 comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apache2/htdocs/frinex_runnning_experiments.txt > /usr/local/apache2/htdocs/frinex_stopped_experiments.txt
 
 echo '{"status": "ok"}'
