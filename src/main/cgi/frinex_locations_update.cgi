@@ -32,9 +32,6 @@ serviceList="$(sudo docker service ls \
     | grep -v -E " 0/" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
-experimentList="$(ls /FrinexBuildService/protected/*/*.war | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.war//g')"
-echo "experimentList=$experimentList\nserviceList=$serviceList"> /usr/local/apache2/htdocs/frinex_stopped_experiments.txt
-
 echo "$serviceList" \
     | grep -E "_admin|_web" \
     | grep -E "_production" \
@@ -72,5 +69,10 @@ echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 #         echo -e "location /$runningWar-admin {\n proxy_pass https://tomcatstaging/$runningWar-admin;\n}\n" >> /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 #     fi
 # done
+
+experimentList="$(ls /FrinexBuildService/protected/*/*.war | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.war//g')"
+echo "$experimentList" > /usr/local/apache2/htdocs/frinex_all_experiments.txt
+echo "$serviceList" | awk '{print "$2\n"}' > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
+comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apache2/htdocs/frinex_runnning_experiments.txt > /usr/local/apache2/htdocs/frinex_stopped_experiments.txt
 
 echo '{"status": "ok"}'
