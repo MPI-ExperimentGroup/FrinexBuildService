@@ -16,3 +16,6 @@
 #sudo docker service create --name with_stimulus_example_staging_admin --replicas=1 --limit-cpu="2.0" --limit-memory=2048m -d -p 8080 lux27.mpi.nl/with_stimulus_example_staging_admin:stable;
 
 # TODO: when an experiment has been resurrected a record can be sent to the screen views table about the restart which can also update the lastParticipantSeen date
+# https://<frinexbuild>:8010/cgi-bin/frinex_restart_experient.cgi
+# http://<frinexbuild>:8010/frinex_stopped_experiments.txt
+# http://<frinexbuild>:8010/frinex_restart_experient.log
