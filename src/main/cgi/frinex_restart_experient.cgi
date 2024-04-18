@@ -23,4 +23,6 @@
 #
 
 # This script restarts experiment services when accessed by a user via nginx
+echo "Content-type: text/html"
+echo ''
 echo "$date, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
