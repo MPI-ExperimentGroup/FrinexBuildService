@@ -44,7 +44,7 @@ read -p "Press enter to restart frinex_listing_provider"
 docker stop frinex_listing_provider 
 docker container rm frinex_listing_provider 
 # start the frinex_listing_provider
-docker run --cpus=".5" --restart unless-stopped --name frinex_listing_provider --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
+docker run --cpus=".5" --restart unless-stopped --name frinex_listing_provider -v protectedDirectory:/FrinexBuildService/protected --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
 
 read -p "Press enter to restart frinexbuild"
 # remove the old frinexbuild
