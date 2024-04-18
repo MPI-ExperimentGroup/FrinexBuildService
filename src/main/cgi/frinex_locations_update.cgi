@@ -32,7 +32,7 @@ serviceList="$(sudo docker service ls \
     | grep -v -E " 0/" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
-experimentList="$(ls protected/*/*.war | sed 's|^protected/[^/]*/||g' | sed 's/\.war//g')"
+experimentList="$(ls /FrinexBuildService/protected/*/*.war | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.war//g')"
 echo "experimentList=$experimentList\nserviceList=$serviceList"> /usr/local/apache2/htdocs/frinex_stopped_experiments.txt
 
 echo "$serviceList" \
