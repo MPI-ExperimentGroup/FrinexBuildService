@@ -75,6 +75,6 @@ echo "$experimentList" | sort > /usr/local/apache2/htdocs/frinex_all_experiments
 echo "$serviceList" | awk '{print $2}' | sort > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
 comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apache2/htdocs/frinex_runnning_experiments.txt > /usr/local/apache2/htdocs/frinex_stopped_experiments.txt
 
-awk 'BEGIN {print "location ^~ ("} { print $0; p="|" } END { print ") {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$1;\n}\n" }' /usr/local/apache2/htdocs/frinex_stopped_experiments.txt > /usr/local/apache2/htdocs/frinex_stopped_locations.txt
+awk 'BEGIN { ORS="|" print "location ^~ ("} {print $0;} END {print ") {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$1;\n}\n"}' /usr/local/apache2/htdocs/frinex_stopped_experiments.txt > /usr/local/apache2/htdocs/frinex_stopped_locations.txt
 
 echo '{"status": "ok"}'
