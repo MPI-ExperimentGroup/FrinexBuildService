@@ -90,17 +90,15 @@ comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apach
 # done;
 
 cat /usr/local/apache2/htdocs/frinex_stopped_experiments.txt \
-    | grep -E "_admin|_web" \
-    | grep -E "_staging" \
-    | awk '{print "location /" $0 " {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$0;\n}\n"}' \
+    | grep -E "_staging_admin|_staging_web" \
+    | awk '{print "location /" $0 " {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?" $0 ";\n}\n"}' \
     | sed 's/_staging_web {/ {/g' \
     | sed 's/_staging_admin {/-admin {/g' \
     > /usr/local/apache2/htdocs/frinex_stopped_staging.txt
 
 cat /usr/local/apache2/htdocs/frinex_stopped_experiments.txt \
-    | grep -E "_admin|_web" \
-    | grep -E "_production" \
-    | awk '{print "location /" $0 " {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$0;\n}\n"}' \
+    | grep -E "_production_admin|_production_web" \
+    | awk '{print "location /" $0 " {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?" $0 ";\n}\n"}' \
     | sed 's/_production_web {/ {/g' \
     | sed 's/_production_admin {/-admin {/g' \
     > /usr/local/apache2/htdocs/frinex_stopped_production.txt
