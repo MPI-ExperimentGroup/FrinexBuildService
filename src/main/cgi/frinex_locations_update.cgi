@@ -75,6 +75,18 @@ echo "$experimentList" | sort > /usr/local/apache2/htdocs/frinex_all_experiments
 echo "$serviceList" | awk '{print $2}' | sort > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
 comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apache2/htdocs/frinex_runnning_experiments.txt | sed 's/_admin$/-admin/g' | sed 's/_web$//g' > /usr/local/apache2/htdocs/frinex_stopped_experiments.txt
 #  | sed 's/_production_admin/_production-admin/g' | sed 's/_staging_admin/_staging-admin/g'
-awk 'BEGIN {printf "location ^~ ("} {printf $0 "|"} END {printf ") {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$1;\n}\n"}' /usr/local/apache2/htdocs/frinex_stopped_experiments.txt | sed 's/||/|/g' | sed 's/(|/(/g' | sed 's/|)/)/g' > /usr/local/apache2/htdocs/frinex_stopped_locations.txt
+# awk 'BEGIN {printf "location ^~ ("} {printf $0 "|"} END {printf ") {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$1;\n}\n"}' /usr/local/apache2/htdocs/frinex_stopped_experiments.txt | sed 's/||/|/g' | sed 's/(|/(/g' | sed 's/|)/)/g' > /usr/local/apache2/htdocs/frinex_stopped_locations.txt
+
+rm /usr/local/apache2/htdocs/frinex_stopped_staging.txt
+for serviceName in "$(cat /usr/local/apache2/htdocs/frinex_stopped_experiments.txt | grep -E "_staging")"; do
+    servicePath=$(echo $serviceName | sed 's/_staging_admin$/-admin/g' | sed 's/_staging_web$//g')
+    echo "location /$servicePath {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$serviceName;\n}\n" >> /usr/local/apache2/htdocs/frinex_stopped_staging.txt
+done;
+
+rm /usr/local/apache2/htdocs/frinex_stopped_production.txt
+for serviceName in "$(cat /usr/local/apache2/htdocs/frinex_stopped_experiments.txt | grep -E "_production")"; do
+    servicePath=$(echo $serviceName | sed 's/_production_admin$/-admin/g' | sed 's/_production_web$//g')
+    echo "location /$servicePath {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$serviceName;\n}\n" >> /usr/local/apache2/htdocs/frinex_stopped_production.txt
+done;
 
 echo '{"status": "ok"}'
