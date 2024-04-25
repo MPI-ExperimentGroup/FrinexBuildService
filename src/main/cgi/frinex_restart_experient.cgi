@@ -25,5 +25,6 @@
 # This script restarts experiment services when accessed by a user via nginx
 echo "Content-type: text/html"
 echo ''
-echo "$(date), $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_]+).*/\1/p')
+echo "$(date), $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
 echo "Restarting the application, please reload this page in a few minutes"
