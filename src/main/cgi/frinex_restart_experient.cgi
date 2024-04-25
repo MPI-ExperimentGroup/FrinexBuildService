@@ -27,4 +27,9 @@ echo "Content-type: text/html"
 echo ''
 cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_]+).*/\1/p')
 echo "$(date), $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
-echo "Restarting the application, please reload this page in a few minutes"
+if [ -f /FrinexBuildService/protected/$cleanedInput/$cleanedInput.war ]; then
+    echo "Restarting  $cleanedInput, please reload this page in a few minutes"
+    # docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
+else
+   echo "The experiment $cleanedInput does not exist."
+fi
