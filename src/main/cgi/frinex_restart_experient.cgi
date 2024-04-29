@@ -25,7 +25,7 @@
 # This script restarts experiment services when accessed by a user via nginx
 echo "Content-type: text/html"
 echo ''
-cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_]+).*/\1/p')
+cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_-]+).*/\1/p')
 if [ -f /FrinexBuildService/protected/$cleanedInput/$cleanedInput.war ]; then
     if  [[ $QUERY_STRING == /actuator* ]] || [[ $QUERY_STRING == /health* ]] ;
     then
