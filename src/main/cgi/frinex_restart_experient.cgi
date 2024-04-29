@@ -31,6 +31,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
     if  [[ $QUERY_STRING == */actuator/health ]] || [[ $QUERY_STRING == */health ]] ;
     then
         echo "{"status":"sleeping"}"
+        echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     else
         echo "Restarting  $cleanedInput, please reload this page in a few minutes"
         echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
