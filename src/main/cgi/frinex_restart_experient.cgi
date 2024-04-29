@@ -26,10 +26,16 @@
 echo "Content-type: text/html"
 echo ''
 cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_]+).*/\1/p')
-echo "$(date), $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
 if [ -f /FrinexBuildService/protected/$cleanedInput/$cleanedInput.war ]; then
-    echo "Restarting  $cleanedInput, please reload this page in a few minutes"
-    # docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
+    if  [[ $QUERY_STRING == /actuator* ]] || [[ $QUERY_STRING == /health* ]] ;
+    then
+        echo "{"status":"sleeping"}"
+    else
+        echo "Restarting  $cleanedInput, please reload this page in a few minutes"
+        echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        # docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
+    fi
 else
-   echo "The experiment $cleanedInput does not exist."
+    echo "The experiment $cleanedInput does not exist."
+    echo "$(date), not found, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
 fi
