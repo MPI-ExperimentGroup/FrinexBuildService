@@ -37,7 +37,8 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
         echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS"
         echo "dockerRegistry: DOCKER_REGISTRY"
-        echo "docker service create --name \"$cleanedInput DOCKER_SERVICE_OPTIONS\" -d -p 8080 \"DOCKER_REGISTRY/$cleanedInput:stable\n\""
+        echo "docker service create --name \"$cleanedInput\" DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable"
+        # echo "<script>location.reload()</script>"
     fi
 else
     echo "The experiment $cleanedInput does not exist."
