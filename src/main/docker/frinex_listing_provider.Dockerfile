@@ -36,8 +36,8 @@ COPY cgi/frinex_production_locations.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_tomcat_staging_locations.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_restart_experient.cgi /FrinexBuildService/cgi/
 COPY config/frinex_db_manager.conf  /FrinexBuildService/
-RUN sed -i "s|DOCKER_SERVICE_OPTIONS|$(grep serviceOptions config/publish.properties | sed \"s/serviceOptions[ ]*=[ ]*//g\")|g" cgi/frinex_restart_experient.cgi
-RUN sed -i "s|DOCKER_REGISTRY|$(grep dockerRegistry config/publish.properties | sed \"s/dockerRegistry[ ]*=[ ]*//g\")|g" cgi/frinex_restart_experient.cgi
+RUN sed -i "s/DOCKER_SERVICE_OPTIONS/$(grep serviceOptions config/publish.properties | sed \"s/serviceOptions[ ]*=[ ]*//g\")/g" cgi/frinex_restart_experient.cgi
+RUN sed -i "s/DOCKER_REGISTRY/$(grep dockerRegistry config/publish.properties | sed \"s/dockerRegistry[ ]*=[ ]*//g\")/g" cgi/frinex_restart_experient.cgi
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
