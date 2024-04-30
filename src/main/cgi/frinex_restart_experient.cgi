@@ -37,7 +37,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
         echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS;"
         echo "dockerRegistry: DOCKER_REGISTRY;"
-        docker service create --name "$cleanedInput" DOCKER_SERVICE_OPTIONS -d -p 8080 "DOCKER_REGISTRY/$cleanedInput:stable"
+        sudo docker service create --name "$cleanedInput" DOCKER_SERVICE_OPTIONS -d -p 8080 "DOCKER_REGISTRY/$cleanedInput:stable"
         # echo "<script>location.reload()</script>"
     fi
 else
