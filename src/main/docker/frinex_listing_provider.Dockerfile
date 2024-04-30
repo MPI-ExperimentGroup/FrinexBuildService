@@ -37,8 +37,8 @@ COPY cgi/frinex_tomcat_staging_locations.cgi  /FrinexBuildService/cgi/
 COPY cgi/frinex_restart_experient.cgi /FrinexBuildService/cgi/
 COPY config/frinex_db_manager.conf  /FrinexBuildService/
 COPY config/publish.properties /FrinexBuildService/
-RUN serviceOptions=$(grep serviceOptions /FrinexBuildService/publish.properties | sed "s/serviceOptions[ ]*=[ ]*//g"); sed -i "s/DOCKER_SERVICE_OPTIONS/$serviceOptions/g" /FrinexBuildService/frinex_restart_experient.cgi
-RUN dockerRegistry=$(grep dockerRegistry /FrinexBuildService/publish.properties | sed "s/dockerRegistry[ ]*=[ ]*//g"); sed -i "s/DOCKER_REGISTRY/$dockerRegistry/g" /FrinexBuildService/frinex_restart_experient.cgi
+RUN serviceOptions=$(grep serviceOptions /FrinexBuildService/publish.properties | sed "s/serviceOptions[ ]*=[ ]*//g"); echo "$serviceOptions"; sed -i "s/DOCKER_SERVICE_OPTIONS/$serviceOptions/g" /FrinexBuildService/frinex_restart_experient.cgi
+RUN dockerRegistry=$(grep dockerRegistry /FrinexBuildService/publish.properties | sed "s/dockerRegistry[ ]*=[ ]*//g"); echo "$dockerRegistry"; sed -i "s/DOCKER_REGISTRY/$dockerRegistry/g" /FrinexBuildService/frinex_restart_experient.cgi
 RUN rm /FrinexBuildService/publish.properties
 RUN cat cgi/frinex_restart_experient.cgi
 # make sure the mod_cgi module is loaded by httpd
