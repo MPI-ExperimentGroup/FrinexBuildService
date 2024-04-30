@@ -40,7 +40,7 @@ COPY config/publish.properties /FrinexBuildService/
 RUN serviceOptions=$(grep serviceOptions /FrinexBuildService/publish.properties | sed "s/serviceOptions[ ]*=[ ]*//g"); echo "$serviceOptions"; sed -i "s/DOCKER_SERVICE_OPTIONS/$serviceOptions/g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN dockerRegistry=$(grep dockerRegistry /FrinexBuildService/publish.properties | sed "s/dockerRegistry[ ]*=[ ]*//g"); echo "$dockerRegistry"; sed -i "s/DOCKER_REGISTRY/$dockerRegistry/g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN rm /FrinexBuildService/publish.properties
-RUN cat cgi/frinex_restart_experient.cgi
+RUN cat /FrinexBuildService/cgi/frinex_restart_experient.cgi
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
