@@ -89,18 +89,19 @@ comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apach
 #     echo "location /$servicePath {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$serviceName;\n}\n" >> /usr/local/apache2/htdocs/frinex_stopped_production.txt
 # done;
 
+# note that these locations use a trailing /  so that partial matches do not match an experiment with a shorter name
 cat /usr/local/apache2/htdocs/frinex_stopped_experiments.txt \
     | grep -E "_staging_admin|_staging_web" \
     | awk '{print "location /" $0 " {\nproxy_pass http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?" $0 "&;\n}\n"}' \
-    | sed 's/_staging_web {/ {/g' \
-    | sed 's/_staging_admin {/-admin {/g' \
+    | sed 's|_staging_web {|/ {|g' \
+    | sed 's|_staging_admin {|-admin/ {|g' \
     > /usr/local/apache2/htdocs/frinex_stopped_staging.txt
 
 cat /usr/local/apache2/htdocs/frinex_stopped_experiments.txt \
     | grep -E "_production_admin|_production_web" \
     | awk '{print "location /" $0 " {\nproxy_pass http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?" $0 "&;\n}\n"}' \
-    | sed 's/_production_web {/ {/g' \
-    | sed 's/_production_admin {/-admin {/g' \
+    | sed 's|_production_web {|/ {/g' \
+    | sed 's|_production_admin {|-admin/ {|g' \
     > /usr/local/apache2/htdocs/frinex_stopped_production.txt
 
 echo '{"status": "ok"}'
