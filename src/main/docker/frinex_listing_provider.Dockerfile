@@ -45,7 +45,7 @@ RUN cat /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
-RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-z0-9-_]+( --[a-z-]+=[a-z0-9.]+)* -d -p 8080 [a-zA-Z0-9-_.]+/[a-z0-9-_]+:stable' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name ^[a-z0-9-_]+( --[a-z-]+=[a-z0-9.]+)* -d -p 8080 [a-zA-Z0-9-_.]+/[a-z0-9-_]+:stable$' >> /etc/sudoers
 RUN chown -R www-data:daemon /FrinexBuildService
 RUN chown -R www-data:daemon /usr/local/apache2/htdocs/
 RUN chmod -R ug+rwx /FrinexBuildService
