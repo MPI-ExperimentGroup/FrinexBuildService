@@ -45,6 +45,22 @@ RUN cat /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
+
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker build --no-cache -f /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_staging_web.Docker -t [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_web\:stable /FrinexBuildService/protected/[a-z0-9-_]*' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker build --no-cache -f /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_staging_admin.Docker -t [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_admin\:stable /FrinexBuildService/protected/[a-z0-9-_]*' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker build --no-cache -f /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_production_web.Docker -t [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_web\:stable /FrinexBuildService/protected/[a-z0-9-_]*' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker build --no-cache -f /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_production_admin.Docker -t [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_admin\:stable /FrinexBuildService/protected/[a-z0-9-_]*' >> /etc/sudoers
+
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker push [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_web\:stable' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker push [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_admin\:stable' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker push [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_web\:stable' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker push [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_admin\:stable' >> /etc/sudoers
+
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service rm [a-z0-9-_]*_staging_web' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service rm [a-z0-9-_]*_staging_admin' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service rm [a-z0-9-_]*_production_web' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service rm [a-z0-9-_]*_production_admin' >> /etc/sudoers
+
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-z0-9-_]*_staging_web  --replicas=[0-9]* --limit-cpu=[0-9.]* --limit-memory=[0-9]*m -d -p 8080 [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_web\:stable' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-z0-9-_]*_staging_admin  --replicas=[0-9]* --limit-cpu=[0-9.]* --limit-memory=[0-9]*m -d -p 8080 [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_admin\:stable' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-z0-9-_]*_production_web  --replicas=[0-9]* --limit-cpu=[0-9.]* --limit-memory=[0-9]*m -d -p 8080 [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_web\:stable' >> /etc/sudoers
