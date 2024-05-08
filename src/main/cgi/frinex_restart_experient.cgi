@@ -27,7 +27,7 @@ echo "Content-type: text/html"
 echo ''
 cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_]+).*/\1/p')
 experimentDirectory=$(echo "$cleanedInput" | sed 's/_production_web$//g'| sed 's/_production_admin$//g' | sed 's/_staging_web$//g'| sed 's/_staging_admin$//g')
-if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Dockerfile ]; then
+if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker ]; then
     if  [ "$QUERY_STRING" == "$cleanedInput&actuator/health" ] || [ "$QUERY_STRING" == "$cleanedInput&health" ] ;
     then
         echo "{"status":"sleeping"}"
