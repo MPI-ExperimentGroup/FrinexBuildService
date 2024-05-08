@@ -46,13 +46,13 @@ RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_mod
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create minimal (_staging_web|_staging_admin|_production_web|_production_admin)' >> /etc/sudoers
-RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create minimal2 [a-z0-9-_:space:]+(_staging_web|_staging_admin|_production_web|_production_admin)' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create minimal2 [a-z0-9-_ ]+(_staging_web|_staging_admin|_production_web|_production_admin)' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create minimal3 ^[a-z0-9-_]+(_staging_web|_staging_admin|_production_web|_production_admin)$' >> /etc/sudoers
 # RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create minimal4 ^[a-z0-9-_]+(_staging_web|_staging_admin|_production_web|_production_admin)\:stable$' >> /etc/sudoers
 # RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create minimal5 ^[a-z0-9-_]+:space:(_staging_web|_staging_admin|_production_web|_production_admin):space:\:stable$' >> /etc/sudoers
 # RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name ^(_staging_web|_staging_admin|_production_web|_production_admin)$:stable' >> /etc/sudoers
 # RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name ^[a-zA-Z0-9\-_.]+/[a-z0-9\-_]+(_staging_web|_staging_admin|_production_web|_production_admin)$:stable' >> /etc/sudoers
-RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-z0-9-_]+(_staging_web|_staging_admin|_production_web|_production_admin)(:space:--[a-z-]+=[a-z0-9.]+)* -d -p 8080 [a-zA-Z0-9-_.]+/[a-z0-9-_]+(_staging_web|_staging_admin|_production_web|_production_admin)\:stable' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-z0-9-_]+(_staging_web|_staging_admin|_production_web|_production_admin)(:space:--[a-z-]+\=[a-z0-9.]+)* -d -p 8080 [a-zA-Z0-9-_.]+/[a-z0-9-_]+(_staging_web|_staging_admin|_production_web|_production_admin)\:stable' >> /etc/sudoers
 RUN chown -R www-data:daemon /FrinexBuildService
 RUN chown -R www-data:daemon /usr/local/apache2/htdocs/
 RUN chmod -R ug+rwx /FrinexBuildService
