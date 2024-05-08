@@ -35,9 +35,16 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
     else
         echo "Restarting  $cleanedInput, please reload this page in a few minutes"
         echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
-        echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS;"
-        echo "dockerRegistry: DOCKER_REGISTRY;"
-        sudo docker service create --name "$cleanedInput" DOCKER_SERVICE_OPTIONS -d -p 8080 "DOCKER_REGISTRY/$cleanedInput:stable"
+        # echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS;"
+        # echo "dockerRegistry: DOCKER_REGISTRY;"
+        echo "building"
+        sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory
+        echo "pushing"
+        sudo docker push DOCKER_REGISTRY/$cleanedInput:stable
+        echo "cleaning up"
+        sudo docker service rm $cleanedInput
+        echo "starting"
+        sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable
         # echo "<script>location.reload()</script>"
     fi
 else
