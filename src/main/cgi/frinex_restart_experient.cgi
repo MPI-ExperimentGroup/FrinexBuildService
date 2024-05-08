@@ -38,7 +38,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
         # echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS;"
         # echo "dockerRegistry: DOCKER_REGISTRY;"
         echo "Building<br>"
-        sudo docker build --no-cache -f $cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "Pushing<br>"
         sudo docker push DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "Cleaning up<br>"
