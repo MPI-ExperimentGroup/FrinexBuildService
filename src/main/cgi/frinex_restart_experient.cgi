@@ -38,13 +38,13 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
         # echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS;"
         # echo "dockerRegistry: DOCKER_REGISTRY;"
         echo "building<br>"
-        sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "pushing<br>"
-        sudo docker push DOCKER_REGISTRY/$cleanedInput:stable >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        sudo docker push DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "cleaning up<br>"
-        sudo docker service rm $cleanedInput >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "starting<br>"
-        sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "ready, please reload this page<br>"
         # echo "<script>location.reload()</script>"
     fi
