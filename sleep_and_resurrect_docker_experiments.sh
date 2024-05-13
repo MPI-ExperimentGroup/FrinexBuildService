@@ -24,14 +24,17 @@
 serviceNameArray=$(docker service ls --format '{{.Name}}' | grep -E "_staging|_production|_web$|_admin$")
 
 for serviceName in $serviceNameArray; do
-    echo "serviceName $serviceName"
+    # echo "serviceName $serviceName"
     updatedAt=$(docker service inspect --format '{{.UpdatedAt}}'  "$serviceName")
-    echo "updatedAt $updatedAt"
+    # echo "updatedAt $updatedAt"
     # note that this ignores the seconds already passed in the current day by rounding it to YYYYMMDD
     secondsSince1970=$(date +%s -d "${updatedAt:0:10}")
-    echo "secondsSince1970 $secondsSince1970"
+    # echo "secondsSince1970 $secondsSince1970"
     daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
-    echo "daysSinceStarted $daysSinceStarted"
+    # echo "daysSinceStarted $daysSinceStarted"
+    if (( $daysSinceStarted > 24 )); then
+        echo "targeted for shutdown: $serviceName"
+    fi
 done
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
