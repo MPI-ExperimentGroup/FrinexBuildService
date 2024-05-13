@@ -20,6 +20,19 @@
 # http://<frinexbuild>:8010/frinex_stopped_experiments.txt
 # http://<frinexbuild>/frinex_restart_experient.log
 
-serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
-echo "$serviceByMemory"
-echo "$serviceByMemory" | sed -n '2 p'
+
+serviceNameArray=$(docker service ls --format '{{.Name}}' | grep -E "_staging|_production|_web$|_admin$")
+
+for serviceName in "$serviceNameArray"; do
+    echo "$serviceName"
+    updatedAt=$(docker service inspect --format '{{.UpdatedAt}}'  "$serviceName")
+    echo "$updatedAt"
+    secondsSince1970=$(echo "$updatedAt" | date +%s -d -)
+    echo $secondsSince1970
+    daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
+    echo $daysSinceStarted
+done
+
+# serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
+# echo "$serviceByMemory"
+# echo "$serviceByMemory" | sed -n '2 p'
