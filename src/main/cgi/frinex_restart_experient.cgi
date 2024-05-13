@@ -31,7 +31,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
     if  [ "$QUERY_STRING" == "$cleanedInput&actuator/health" ] || [ "$QUERY_STRING" == "$cleanedInput&health" ] ;
     then
         echo "{"status":"sleeping"}"
-        echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        # echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     else
         echo "Restarting  $cleanedInput<br>"
         echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
