@@ -45,9 +45,10 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
         sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "Starting<br>"
         sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-        echo "Ready, please reload this page in a few minutes<br>"
-        # echo "<script>location.reload()</script>"
+        echo "Proxy update<br>"
         curl PROXY_UPDATE_TRIGGER  &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        echo "Done, please reload this page in a few minutes<br>"
+        # echo "<script>location.reload()</script>"
     fi
 else
     echo "The experiment $cleanedInput does not exist."
