@@ -19,3 +19,7 @@
 # https://<frinexbuild>/cgi-bin/frinex_restart_experient.cgi
 # http://<frinexbuild>:8010/frinex_stopped_experiments.txt
 # http://<frinexbuild>/frinex_restart_experient.log
+
+serviceByMemory=$(docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" | sort -k 3 -h -r)
+echo "$serviceByMemory"
+echo "$serviceByMemory" | sed -n '2 p'
