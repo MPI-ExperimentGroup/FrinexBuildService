@@ -23,7 +23,7 @@
 
 serviceNameArray=$(docker service ls --format '{{.Name}}' | grep -E "_staging|_production|_web$|_admin$")
 
-for serviceName in "$serviceNameArray"; do
+for serviceName in $serviceNameArray; do
     echo "serviceName $serviceName"
     updatedAt=$(docker service inspect --format '{{.UpdatedAt}}'  "$serviceName")
     echo "updatedAt $updatedAt"
