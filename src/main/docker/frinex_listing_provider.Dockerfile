@@ -39,6 +39,7 @@ COPY config/frinex_db_manager.conf  /FrinexBuildService/
 COPY config/publish.properties /FrinexBuildService/
 RUN serviceOptions=$(grep serviceOptions /FrinexBuildService/publish.properties | sed "s/serviceOptions[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s/DOCKER_SERVICE_OPTIONS/$serviceOptions/g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN dockerRegistry=$(grep dockerRegistry /FrinexBuildService/publish.properties | sed "s/dockerRegistry[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s/DOCKER_REGISTRY/$dockerRegistry/g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
+RUN proxyUpdateTrigger=$(grep proxyUpdateTrigger /FrinexBuildService/publish.properties | sed "s/proxyUpdateTrigger[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s/PROXY_UPDATE_TRIGGER/$proxyUpdateTrigger/g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN rm /FrinexBuildService/publish.properties
 RUN cat /FrinexBuildService/cgi/frinex_restart_experient.cgi
 # make sure the mod_cgi module is loaded by httpd
