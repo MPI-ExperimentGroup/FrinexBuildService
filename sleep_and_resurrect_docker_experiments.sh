@@ -35,7 +35,6 @@ for serviceName in $serviceNameArray; do
     if (( $daysSinceStarted > 24 )); then
         echo "targeted for shutdown: $serviceName"
         docker service rm $serviceName
-        exit
     fi
 done
 
