@@ -45,6 +45,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
         sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "Starting<br>"
         sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        sleep 60 # wait around for old verions before manually reloading the proxy
         echo "Proxy update<br>"
         curl PROXY_UPDATE_TRIGGER  &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "Done, please reload this page in a few minutes<br>"
