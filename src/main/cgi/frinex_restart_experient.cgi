@@ -50,8 +50,10 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
             echo "FROM eclipse-temurin:21-jdk-alpine" > /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Dockerfile
             echo "COPY $cleanedInput.war /$cleanedInput.war" >> /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Dockerfile
             echo "CMD [\"java\", \"-jar\", \"/$cleanedInput.war\", \"--server.servlet.context-path=/$comparisonServiceName\", \"--server.forward-headers-strategy=FRAMEWORK\"]" >> /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Dockerfile
-            chmod a+rwx /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Dockerfile
+            # chmod a+rwx /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Dockerfile
+            cat /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             cat /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Dockerfile &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            ls -l /FrinexBuildService/protected/$experimentDirectory/ &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Building<br>"
             sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Dockerfile -t DOCKER_REGISTRY/$comparisonServiceName:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
