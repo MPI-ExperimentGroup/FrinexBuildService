@@ -21,7 +21,7 @@
 # http://<frinexbuild>/frinex_restart_experient.log
 
 
-serviceNameArray=$(docker service ls --format '{{.Name}}' | grep -E "_staging|_production|_web$|_admin$")
+serviceNameArray=$(docker service ls --format '{{.Name}}' | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$")
 
 for serviceName in $serviceNameArray; do
     # echo "serviceName $serviceName"
