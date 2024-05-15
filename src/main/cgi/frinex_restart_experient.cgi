@@ -35,10 +35,11 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
         serviceStatus=$(sudo docker service ls | grep $cleanedInput | awk '{print $3}')
         # publishedPort=$(docker service ls | grep $cleanedInput | awk '{print $6}')
         echo "serviceStatus: $serviceStatus<br>"
+        # echo "publishedPort: $publishedPort<br>"
         if [ "$serviceStatus" == "replicated" ]; then
             echo "Proxy update<br>"
             curl PROXY_UPDATE_TRIGGER  &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            echo "Done, please reload this page in a few minutes<br>"
+            echo "Please reload this page in a few minutes<br>"
         else 
             echo "Restarting  $cleanedInput<br>"
             echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
@@ -52,7 +53,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
             sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Starting<br>"
             sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            echo "Done, please reload this page in a few minutes<br>"
+            echo "Please reload this page in a few minutes<br>"
             # echo "<script>location.reload()</script>"
         fi
     fi
