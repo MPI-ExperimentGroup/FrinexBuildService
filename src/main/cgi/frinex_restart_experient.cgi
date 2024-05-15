@@ -32,9 +32,9 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
         echo "{"status":"sleeping"}"
         # echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     else
-        serviceStatus=$(docker service ls | grep $cleanedInput | awk '{print $3}')
+        serviceStatus=$(sudo docker service ls | grep $cleanedInput | awk '{print $3}')
         # publishedPort=$(docker service ls | grep $cleanedInput | awk '{print $6}')
-        echo "serviceStatus: $serviceStatus"
+        echo "serviceStatus: $serviceStatus<br>"
         if [ "$serviceStatus" == "replicated" ]; then
             echo "Proxy update<br>"
             curl PROXY_UPDATE_TRIGGER  &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
