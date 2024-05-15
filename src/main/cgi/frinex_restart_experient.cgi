@@ -28,28 +28,33 @@ echo ''
 cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_]+).*/\1/p')
 experimentDirectory=$(echo "$cleanedInput" | sed 's/_production_web$//g'| sed 's/_production_admin$//g' | sed 's/_staging_web$//g'| sed 's/_staging_admin$//g')
 if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker ]; then
-    if  [ "$QUERY_STRING" == "$cleanedInput&actuator/health" ] || [ "$QUERY_STRING" == "$cleanedInput&health" ] ;
-    then
+    if  [ "$QUERY_STRING" == "$cleanedInput&actuator/health" ] || [ "$QUERY_STRING" == "$cleanedInput&health" ]; then
         echo "{"status":"sleeping"}"
         # echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     else
-        echo "Restarting  $cleanedInput<br>"
-        echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
-        # echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS;"
-        # echo "dockerRegistry: DOCKER_REGISTRY;"
-        echo "Building<br>"
-        sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-        echo "Pushing<br>"
-        sudo docker push DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-        echo "Cleaning up<br>"
-        sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-        echo "Starting<br>"
-        sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-        sleep 15 # wait around for old verions before manually reloading the proxy
-        echo "Proxy update<br>"
-        curl PROXY_UPDATE_TRIGGER  &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-        echo "Done, please reload this page in a few minutes<br>"
-        # echo "<script>location.reload()</script>"
+        serviceStatus=$(docker service ls | grep $cleanedInput | awk '{print $3}')
+        # publishedPort=$(docker service ls | grep $cleanedInput | awk '{print $6}')
+        echo "serviceStatus: $serviceStatus"
+        if [ "$serviceStatus" == "replicated" ]; then
+            echo "Proxy update<br>"
+            curl PROXY_UPDATE_TRIGGER  &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            echo "Done, please reload this page in a few minutes<br>"
+        else 
+            echo "Restarting  $cleanedInput<br>"
+            echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS;"
+            # echo "dockerRegistry: DOCKER_REGISTRY;"
+            echo "Building<br>"
+            sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            echo "Pushing<br>"
+            sudo docker push DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            echo "Cleaning up<br>"
+            sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            echo "Starting<br>"
+            sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            echo "Done, please reload this page in a few minutes<br>"
+            # echo "<script>location.reload()</script>"
+        fi
     fi
 else
     echo "The experiment $cleanedInput does not exist."
