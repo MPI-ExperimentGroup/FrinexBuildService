@@ -47,9 +47,10 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
             # echo "dockerRegistry: DOCKER_REGISTRY;"
             # build an alternative service to compare memory usage
             comparisonServiceName=$(echo "$cleanedInput" | sed 's/_production_web$/_alpine_production_web/g'| sed 's/_production_admin$/_alpine_production_admin/g' | sed 's/_staging_web$/_alpine_staging_web/g'| sed 's/_staging_admin$/_alpine_staging_admin/g')
+            comparisonContextPath=$(echo "$cleanedInput" | sed 's/_production_web$/_alpine/g'| sed 's/_production_admin$/_alpine-admin/g' | sed 's/_staging_web$/_alpine/g'| sed 's/_staging_admin$/_alpine-admin/g')
             echo "FROM eclipse-temurin:21-jdk-alpine" > /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker
             echo "COPY $cleanedInput.war /$cleanedInput.war" >> /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker
-            echo "CMD [\"java\", \"-jar\", \"/$cleanedInput.war\", \"--server.servlet.context-path=/$comparisonServiceName\", \"--server.forward-headers-strategy=FRAMEWORK\"]" >> /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker
+            echo "CMD [\"java\", \"-jar\", \"/$cleanedInput.war\", \"--server.servlet.context-path=/$comparisonContextPath\", \"--server.forward-headers-strategy=FRAMEWORK\"]" >> /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker
             # chmod a+rwx /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             cat /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             cat /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
