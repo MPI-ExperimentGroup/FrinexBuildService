@@ -41,6 +41,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
             curl PROXY_UPDATE_TRIGGER  &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Please reload this page in a few minutes<br>"
             echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
+            # todo: it is still possible for the participant to get stuck if they reload at the moment they can get a 502 error, so it might be best to use JS to ping the URL and wait for the service to be responding before allowing the button to be clicked
         else 
             echo "Restarting  $cleanedInput<br>"
             echo "$(date), restarting, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
