@@ -456,7 +456,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
     //const warFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + warFileName;
     const dockerFilePath = protectedDirectory + "/" + currentEntry.buildName + "/" + serviceName + ".Docker";
     fs.writeFileSync(dockerFilePath,
-        "FROM openjdk:11\n"
+        "FROM eclipse-temurin:21-jdk-alpine\n"
         + "COPY " + warFileName + " /" + warFileName + "\n"
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
