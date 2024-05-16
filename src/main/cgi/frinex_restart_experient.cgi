@@ -48,27 +48,28 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
             # echo "dockerServiceOptions: DOCKER_SERVICE_OPTIONS;"
             # echo "dockerRegistry: DOCKER_REGISTRY;"
             # build an alternative service to compare memory usage
-            comparisonServiceName=$(echo "$cleanedInput" | sed 's/_production_web$/_alpine_production_web/g'| sed 's/_production_admin$/_alpine_production_admin/g' | sed 's/_staging_web$/_alpine_staging_web/g'| sed 's/_staging_admin$/_alpine_staging_admin/g')
-            comparisonContextPath=$(echo "$cleanedInput" | sed 's/_production_web$/_alpine/g'| sed 's/_production_admin$/_alpine-admin/g' | sed 's/_staging_web$/_alpine/g'| sed 's/_staging_admin$/_alpine-admin/g')
-            echo "FROM eclipse-temurin:21-jdk-alpine" > /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker
-            echo "COPY $cleanedInput.war /$cleanedInput.war" >> /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker
-            echo "CMD [\"java\", \"-jar\", \"/$cleanedInput.war\", \"--server.servlet.context-path=/$comparisonContextPath\", \"--server.forward-headers-strategy=FRAMEWORK\"]" >> /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker
+            # comparisonServiceName=$(echo "$cleanedInput" | sed 's/_production_web$/_alpine_production_web/g'| sed 's/_production_admin$/_alpine_production_admin/g' | sed 's/_staging_web$/_alpine_staging_web/g'| sed 's/_staging_admin$/_alpine_staging_admin/g')
+            # comparisonContextPath=$(echo "$cleanedInput" | sed 's/_production_web$/_alpine/g'| sed 's/_production_admin$/_alpine-admin/g' | sed 's/_staging_web$/_alpine/g'| sed 's/_staging_admin$/_alpine-admin/g')
+            contextPath=$(echo "$cleanedInput" | sed 's/_production_web$//g'| sed 's/_production_admin$/-admin/g' | sed 's/_staging_web$//g'| sed 's/_staging_admin$/-admin/g')
+            echo "FROM eclipse-temurin:21-jdk-alpine" > /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
+            echo "COPY $cleanedInput.war /$cleanedInput.war" >> /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
+            echo "CMD [\"java\", \"-jar\", \"/$cleanedInput.war\", \"--server.servlet.context-path=/$contextPath\", \"--server.forward-headers-strategy=FRAMEWORK\"]" >> /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
             # chmod a+rwx /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            cat /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            cat /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            ls -l /FrinexBuildService/protected/$experimentDirectory/ &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # cat /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # cat /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # ls -l /FrinexBuildService/protected/$experimentDirectory/ &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Building<br>"
             sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker -t DOCKER_REGISTRY/$comparisonServiceName:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker -t DOCKER_REGISTRY/$comparisonServiceName:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Pushing<br>"
             sudo docker push DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            sudo docker push DOCKER_REGISTRY/$comparisonServiceName:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # sudo docker push DOCKER_REGISTRY/$comparisonServiceName:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Cleaning up<br>"
             sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            sudo docker service rm $comparisonServiceName &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # sudo docker service rm $comparisonServiceName &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Starting<br>"
             sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            sudo docker service create --name $comparisonServiceName DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$comparisonServiceName:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # sudo docker service create --name $comparisonServiceName DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$comparisonServiceName:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Please reload this page in a few minutes<br>"
             echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
         fi
