@@ -70,7 +70,7 @@ echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 #     fi
 # done
 
-experimentList="$(ls /FrinexBuildService/protected/*/*.Docker | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.Docker//g')"
+experimentList="$(ls /FrinexBuildService/protected/*/*.war | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.war//g')"
 echo "$experimentList" | sort > /usr/local/apache2/htdocs/frinex_all_experiments.txt
 echo "$serviceList" | awk '{print $2}' | sort > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
 comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apache2/htdocs/frinex_runnning_experiments.txt > /usr/local/apache2/htdocs/frinex_stopped_experiments.txt
