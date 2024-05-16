@@ -41,3 +41,7 @@ done
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
 # echo "$serviceByMemory"
 # echo "$serviceByMemory" | sed -n '2 p'
+
+
+# the following lines are intended to test the server load by starting up all sleeping experiments, use with caution
+# for experimentUrl in $(curl http://frinexbuild.mpi.nl:8010/frinex_stopped_experiments.txt); do curl http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$experimentUrl; done;
