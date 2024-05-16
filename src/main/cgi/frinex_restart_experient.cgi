@@ -70,9 +70,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker 
             sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             sudo docker service create --name $comparisonServiceName DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$comparisonServiceName:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Please reload this page in a few minutes<br>"
-            # todo: this does not reload with the full path of the request and that is probably required
-            echo "<a href="$cleanedInput">reload</a>"
-            # echo "<script>location.reload()</script>"
+            echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
         fi
     fi
 else
