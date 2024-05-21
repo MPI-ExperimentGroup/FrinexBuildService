@@ -34,7 +34,14 @@ for serviceName in $serviceNameArray; do
     # echo "daysSinceStarted $daysSinceStarted"
     if (( $daysSinceStarted > 24 )); then
         echo "targeted for shutdown: $serviceName"
+        # servicePortNumber= TODO: get the port number of the admin service for this experiment
+        # if $(curl http://localhost:$servicePortNumber/with_stimulus_example_alpine-admin/public_usage_stats | grep -qE 'sessionFirstAndLastSeen.*(2024).*\]\]'); then 
+        #     echo 'recent use detected'; 
+        # else
+        #     echo 'can be terminated';
+        # TODO: terminate both the admin and web services for this experiment
         docker service rm $serviceName
+        # fi
     fi
 done
 
@@ -46,3 +53,14 @@ done
 # the following lines are intended to test the server load by starting up all sleeping experiments, use with caution
 # for experimentUrl in $(curl http://frinexbuild.mpi.nl:8010/frinex_stopped_experiments.txt | grep production); do curl http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$experimentUrl; done;
 # for experimentUrl in $(curl http://frinexbuild.mpi.nl:8010/frinex_stopped_experiments.txt | grep staging); do curl http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$experimentUrl; done;
+
+# terminate services that have failed to start up
+# docker service ls | grep 0/1 | wc -l
+# for deadService in $(docker service ls | grep 0/1 | awk '{print $2}'); do docker service rm $deadService; done
+# docker service ls | grep 0/1 | wc -l
+
+
+# https://frinexstaging.mpi.nl/with_stimulus_example_alpine-admin/public_usage_stats
+# lastParticipantSeen":"2024-04-02T15:05:52.655+00:00
+# "sessionFirstAndLastSeen":[["2018-12-28T19:12:52.045+00:00","2018-12-28T19:25:07.795+00:00"],["2018-12-28T19:25:16.781+00:00","2018-12-28T19:27:15.160+00:00"],["2019-01-02T10:31:22.599+00:00","2019-01-07T15:36:14.095+00:00"],["2019-01-02T10:42:18.978+00:00","2019-01-02T10:42:18.992+00:00"],["2019-01-02T10:42:30.815+00:00","2019-01-02T10:43:04.294+00:00"],["2019-01-02T13:50:44.599+00:00","2019-01-07T15:29:54.444+00:00"],["2019-01-07T15:52:14.906+00:00","2019-01-07T15:56:20.583+00:00"],["2019-01-07T15:58:36.405+00:00","2019-01-07T16:00:05.042+00:00"],["2019-01-07T16:19:24.023+00:00","2019-01-17T08:55:30.653+00:00"],["2019-01-07T16:56:09.141+00:00","2019-01-07T16:56:09.155+00:00"],["2019-01-08T16:44:59.789+00:00","2019-01-14T13:18:03.2
+# $(curl https://frinexstaging.mpi.nl/with_stimulus_example_alpine-admin/public_usage_stats | grep -E 'sessionFirstAndLastSeen.*(2024).*\]\]')
