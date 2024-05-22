@@ -22,8 +22,13 @@
 
 
 serviceNameArray=$(docker service ls --format '{{.Name}}' | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$")
+totalConsidered=0
+canBeTerminated=0
+hasRecentUse=0
 
+recentUseDates="2024"
 for serviceName in $serviceNameArray; do
+    ((totalConsidered++))
     # echo "serviceName $serviceName"
     updatedAt=$(docker service inspect --format '{{.UpdatedAt}}'  "$serviceName")
     # echo "updatedAt $updatedAt"
@@ -34,16 +39,26 @@ for serviceName in $serviceNameArray; do
     # echo "daysSinceStarted $daysSinceStarted"
     if (( $daysSinceStarted > 24 )); then
         echo "targeted for shutdown: $serviceName"
-        # servicePortNumber= TODO: get the port number of the admin service for this experiment
-        # if $(curl http://localhost:$servicePortNumber/with_stimulus_example_alpine-admin/public_usage_stats | grep -qE 'sessionFirstAndLastSeen.*(2024).*\]\]'); then 
-        #     echo 'recent use detected'; 
-        # else
-        #     echo 'can be terminated';
-        # TODO: terminate both the admin and web services for this experiment
-        docker service rm $serviceName
-        # fi
+        adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
+        echo "adminServiceNamen: $adminServiceName"
+        servicePortNumber=$(docker service inspect with_stimulus_example_staging_web  --format "{{.Endpoint.Ports}}" | awk '{print $4}')
+        echo "servicePortNumber: $servicePortNumber"
+        if $(curl http://localhost:$servicePortNumber/$adminServiceName/public_usage_stats | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
+            ((hasRecentUse++))
+            echo 'recent use detected'; 
+        else
+            ((canBeTerminated++))
+            echo 'can be terminated';
+            # terminate both the admin and web services for this experiment
+            webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
+            # docker service rm $serviceName
+        fi
     fi
 done
+
+echo "totalConsidered: $totalConsidered"
+echo "canBeTerminated: $canBeTerminated"
+echo "hasRecentUse: $hasRecentUse"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
 # echo "$serviceByMemory"
