@@ -21,7 +21,7 @@
 # http://<frinexbuild>/frinex_restart_experient.log
 
 
-serviceNameArray=$(docker service ls --format '{{.Name}}' | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$")
+serviceNameArray=$(sudo docker service ls --format '{{.Name}}' | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$")
 totalConsidered=0
 canBeTerminated=0
 hasRecentUse=0
@@ -30,7 +30,7 @@ recentUseDates="2024"
 for serviceName in $serviceNameArray; do
     ((totalConsidered++))
     echo "serviceName $serviceName"
-    updatedAt=$(docker service inspect --format '{{.UpdatedAt}}'  "$serviceName")
+    updatedAt=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName")
     echo "updatedAt $updatedAt"
     # note that this ignores the seconds already passed in the current day by rounding it to YYYYMMDD
     secondsSince1970=$(date +%s -d "${updatedAt:0:10}")
@@ -41,7 +41,7 @@ for serviceName in $serviceNameArray; do
         echo "targeted for shutdown: $serviceName"
         adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
         echo "adminServiceNamen: $adminServiceName"
-        servicePortNumber=$(docker service inspect with_stimulus_example_staging_web  --format "{{.Endpoint.Ports}}" | awk '{print $4}')
+        servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
         echo "servicePortNumber: $servicePortNumber"
         if $(curl http://localhost:$servicePortNumber/$adminServiceName/public_usage_stats | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
             ((hasRecentUse++))
