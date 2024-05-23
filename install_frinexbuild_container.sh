@@ -71,6 +71,7 @@ else
     cp $workingDir/start_frinexbuild_container.sh /FrinexScripts/
     cp $workingDir/start_registry_container.sh /FrinexScripts/
     cp $workingDir/delete_unused_frinex_images.sh /FrinexScripts/
+    cp $workingDir/manage_experiment_services.sh /FrinexScripts/
     cp $workingDir/README.md /FrinexScripts/
     chmod a+rx /FrinexScripts/*.sh
 fi;
