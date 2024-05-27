@@ -40,12 +40,15 @@ for serviceName in $serviceNameArray; do
     if (( $daysSinceStarted > 1 )); then
         echo "targeted for shutdown: $serviceName"
         adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
-        echo "adminServiceNamen: $adminServiceName"
+        adminContextPath=$(echo "$serviceName" | sed 's/_staging_web$|_staging_admin$|_production_web$|_production_admin$/-admin/g')
+        experimentArtifactsDirectory=$(echo "$serviceName" | sed 's/_staging_web$|_staging_admin$|_production_web$|_production_admin$//g')
+        echo "adminServiceName: $adminServiceName"
+        echo "adminContextPath: $adminContextPath"
         servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
         echo "servicePortNumber: $servicePortNumber"
-        curl http://frinexbuild:$servicePortNumber/$serviceNameArray-admin/public_usage_stats /FrinexBuildService/artifacts/$serviceNameArray/$cleanedInput-public_usage_stats.json
-        cat /FrinexBuildService/artifacts/$serviceNameArray/$cleanedInput-public_usage_stats.json
-        if $(cat /FrinexBuildService/artifacts/$serviceNameArray/$cleanedInput-public_usage_stats.json | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
+        curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+        cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+        if $(cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
             ((hasRecentUse++))
             echo 'recent use detected'; 
         else
