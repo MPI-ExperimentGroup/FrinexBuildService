@@ -46,6 +46,14 @@ docker container rm frinex_listing_provider
 # start the frinex_listing_provider
 docker run --cpus=".5" --restart unless-stopped --name frinex_listing_provider -v protectedDirectory:/FrinexBuildService/protected --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -d -p 8010:80 frinex_listing_provider:latest
 
+read -p "Press enter to restart frinex_service_manager"
+# remove the old frinex_service_manager
+docker stop frinex_service_manager 
+docker container rm frinex_service_manager 
+# start the frinex_service_manager
+# TODO: once per hour is probably a bit too often unless we are also generating munin stats
+docker run --cpus=".5" --restart unless-stopped -v buildServerTarget:/FrinexBuildService/artifacts --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -dit --name frinex_service_manager frinex_listing_provider:latest bash -c "while true; do /FrinexBuildService/sleep_and_resurrect_docker_experiments.sh; sleep 1h; done;"
+
 read -p "Press enter to restart frinexbuild"
 # remove the old frinexbuild
 docker stop frinexbuild 
