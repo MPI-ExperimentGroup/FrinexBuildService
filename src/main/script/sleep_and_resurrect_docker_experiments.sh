@@ -50,7 +50,7 @@ for serviceName in $serviceNameArray; do
         curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
         cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
         echo ""
-        if $(cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
+        if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'; then 
             ((hasRecentUse++))
             echo 'recent use detected'; 
         else
