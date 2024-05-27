@@ -43,8 +43,9 @@ for serviceName in $serviceNameArray; do
         echo "adminServiceNamen: $adminServiceName"
         servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
         echo "servicePortNumber: $servicePortNumber"
-        curl http://frinexbuild:$servicePortNumber/$experimentDirectory-admin/public_usage_stats /FrinexBuildService/artifacts/$experimentDirectory/$cleanedInput-public_usage_stats.json
-        if $(cat /FrinexBuildService/artifacts/$experimentDirectory/$cleanedInput-public_usage_stats.json | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
+        curl http://frinexbuild:$servicePortNumber/$serviceNameArray-admin/public_usage_stats /FrinexBuildService/artifacts/$serviceNameArray/$cleanedInput-public_usage_stats.json
+        cat /FrinexBuildService/artifacts/$serviceNameArray/$cleanedInput-public_usage_stats.json
+        if $(cat /FrinexBuildService/artifacts/$serviceNameArray/$cleanedInput-public_usage_stats.json | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
             ((hasRecentUse++))
             echo 'recent use detected'; 
         else
