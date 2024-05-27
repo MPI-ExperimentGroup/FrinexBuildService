@@ -40,10 +40,11 @@ for serviceName in $serviceNameArray; do
     if (( $daysSinceStarted > 1 )); then
         echo "targeted for shutdown: $serviceName"
         adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
-        adminContextPath=$(echo "$serviceName" | sed 's/_staging_web$|_staging_admin$|_production_web$|_production_admin$/-admin/g')
-        experimentArtifactsDirectory=$(echo "$serviceName" | sed 's/_staging_web$|_staging_admin$|_production_web$|_production_admin$//g')
+        adminContextPath=$(echo "$serviceName" | sed 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
+        experimentArtifactsDirectory=$(echo "$serviceName" | sed 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
         echo "adminServiceName: $adminServiceName"
         echo "adminContextPath: $adminContextPath"
+        echo "artifactsDirectory: $experimentArtifactsDirectory"
         servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
         echo "servicePortNumber: $servicePortNumber"
         curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
