@@ -37,13 +37,14 @@ for serviceName in $serviceNameArray; do
     # echo "secondsSince1970 $secondsSince1970"
     daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
     echo "daysSinceStarted $daysSinceStarted"
-    if (( $daysSinceStarted > 24 )); then
+    if (( $daysSinceStarted > 1 )); then
         echo "targeted for shutdown: $serviceName"
         adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
         echo "adminServiceNamen: $adminServiceName"
         servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
         echo "servicePortNumber: $servicePortNumber"
-        if $(curl http://localhost:$servicePortNumber/$adminServiceName/public_usage_stats | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
+        curl http://frinexbuild:$servicePortNumber/$experimentDirectory-admin/public_usage_stats /FrinexBuildService/artifacts/$experimentDirectory/$cleanedInput-public_usage_stats.json
+        if $(cat /FrinexBuildService/artifacts/$experimentDirectory/$cleanedInput-public_usage_stats.json | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
             ((hasRecentUse++))
             echo 'recent use detected'; 
         else
@@ -51,6 +52,8 @@ for serviceName in $serviceNameArray; do
             echo 'can be terminated';
             # terminate both the admin and web services for this experiment
             webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
+            echo "adminServiceName: $adminServiceName"
+            echo "webServiceName: $webServiceName"
             # docker service rm $serviceName
         fi
     fi
