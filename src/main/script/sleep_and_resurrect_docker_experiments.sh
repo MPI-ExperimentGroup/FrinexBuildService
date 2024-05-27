@@ -33,13 +33,17 @@ for serviceName in $serviceNameArray; do
     echo "serviceName $serviceName"
     updatedAt=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName")
     echo "updatedAt $updatedAt"
-    # note that this ignores the seconds already passed in the current day by rounding it to YYYYMMDD
-    secondsSince1970=$(date +%s -d "${updatedAt:0:10}")
+    # note that this ignores the seconds already passed in the current minute by rounding it to YYYYMMDD HH:MM
+    secondsSince1970=$(date +%s -d "${updatedAt:0:16}")
     # echo "secondsSince1970 $secondsSince1970"
     daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
+    hoursSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60))
+    minutesSinceStarted=$((($(date +%s) - $secondsSince1970)/60))
     echo "daysSinceStarted $daysSinceStarted"
-    if (( $daysSinceStarted > 1 )); then
-        echo "targeted for shutdown: $serviceName"
+    echo "hoursSinceStarted $hoursSinceStarted"
+    echo "minutesSinceStarted $minutesSinceStarted"
+    if (( $hoursSinceStarted > 1 )); then
+        echo "considering: $serviceName"
         adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
         adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
         experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
