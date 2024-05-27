@@ -50,6 +50,7 @@ for serviceName in $serviceNameArray; do
         curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
         cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
         echo ""
+        echo ""
         if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
             ((hasRecentUse++))
             echo 'recent use detected'; 
@@ -59,8 +60,9 @@ for serviceName in $serviceNameArray; do
             # terminate both the admin and web services for this experiment
             webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
             echo "adminServiceName: $adminServiceName"
+            dudo docker service rm "$adminServiceName"
             echo "webServiceName: $webServiceName"
-            # docker service rm $serviceName
+            sudo docker service rm "$webServiceName"
         fi
     fi
     echo ""
