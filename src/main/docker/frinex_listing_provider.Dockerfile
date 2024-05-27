@@ -69,11 +69,11 @@ RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-z0-9-_]*_production_admin  --replicas=[0-9]* --limit-cpu=[0-9.]* --limit-memory=[0-9]*m -d -p 8080 [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_admin\:stable' >> /etc/sudoers
 #RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-z0-9-_]+(_staging_web|_staging_admin|_production_web|_production_admin)( --[a-z-]+\=[a-z0-9.]+)* -d -p 8080 [a-zA-Z0-9-_.]+/[a-z0-9-_]+(_staging_web|_staging_admin|_production_web|_production_admin)\:stable' >> /etc/sudoers
 
-RUN echo "www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Name}}" >> /etc/sudoers
-RUN echo "www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]}} [a-z0-9-_]*_staging_web" >> /etc/sudoers
-RUN echo "www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]}} [a-z0-9-_]*_staging_admin" >> /etc/sudoers
-RUN echo "www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]}} [a-z0-9-_]*_production_web" >> /etc/sudoers
-RUN echo "www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]}} [a-z0-9-_]*_production_admin" >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Name}}' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]}} [a-z0-9-_]*_staging_web' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]}} [a-z0-9-_]*_staging_admin' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]}} [a-z0-9-_]*_production_web' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]}} [a-z0-9-_]*_production_admin' >> /etc/sudoers
 
 RUN chown -R www-data:daemon /FrinexBuildService
 RUN chown -R www-data:daemon /usr/local/apache2/htdocs/
