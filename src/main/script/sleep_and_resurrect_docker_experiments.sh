@@ -60,7 +60,7 @@ for serviceName in $serviceNameArray; do
             # terminate both the admin and web services for this experiment
             webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
             echo "adminServiceName: $adminServiceName"
-            dudo docker service rm "$adminServiceName"
+            sudo docker service rm "$adminServiceName"
             echo "webServiceName: $webServiceName"
             sudo docker service rm "$webServiceName"
         fi
