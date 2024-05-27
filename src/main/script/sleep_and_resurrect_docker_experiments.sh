@@ -40,8 +40,8 @@ for serviceName in $serviceNameArray; do
     if (( $daysSinceStarted > 1 )); then
         echo "targeted for shutdown: $serviceName"
         adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
-        adminContextPath=$(echo "$serviceName" | sed 's/(_staging_web|_staging_admin|_production_web|_production_admin)/-admin/g')
-        experimentArtifactsDirectory=$(echo "$serviceName" | sed 's/(_staging_web|_staging_admin|_production_web|_production_admin)//g')
+        adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
+        experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
         echo "adminServiceName: $adminServiceName"
         echo "adminContextPath: $adminContextPath"
         echo "artifactsDirectory: $experimentArtifactsDirectory"
