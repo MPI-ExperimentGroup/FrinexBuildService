@@ -49,6 +49,7 @@ for serviceName in $serviceNameArray; do
         echo "servicePortNumber: $servicePortNumber"
         curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
         cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+        echo ""
         if $(cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE 'sessionFirstAndLastSeen.*($recentUseDates).*\]\]'); then 
             ((hasRecentUse++))
             echo 'recent use detected'; 
@@ -62,6 +63,7 @@ for serviceName in $serviceNameArray; do
             # docker service rm $serviceName
         fi
     fi
+    echo ""
 done
 
 echo "totalConsidered: $totalConsidered"
