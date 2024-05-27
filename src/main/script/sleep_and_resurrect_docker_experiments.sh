@@ -21,7 +21,8 @@
 # http://<frinexbuild>/frinex_restart_experient.log
 
 
-serviceNameArray=$(sudo docker service ls --format '{{.Name}}' | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$")
+serviceNameArray=$(sudo docker service ls --format '{{.Name}}' | grep -E "_staging_admin$|_production_admin$")
+#  | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$"
 totalConsidered=0
 canBeTerminated=0
 hasRecentUse=0
