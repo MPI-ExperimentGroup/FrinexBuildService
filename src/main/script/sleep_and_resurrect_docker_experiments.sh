@@ -53,13 +53,13 @@ for serviceName in $serviceNameArray; do
         echo "artifactsDirectory: $experimentArtifactsDirectory"
         servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
         echo "servicePortNumber: $servicePortNumber"
-        if [[ -z "$servicePortNumber" ]]; then
+        if [[ "$servicePortNumber" ]]; then
             curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
         else
             echo "servicePortNumber not found so using the last known public_usage_stats"
         fi
-        cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
-        echo ""
+        # cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+        # echo ""
         echo ""
         if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
             ((hasRecentUse++))
