@@ -29,7 +29,10 @@ recentyStarted=0
 unusedNewHealthy=0
 
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
-recentUseDates="$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
+recentUseDates="2024-01|2024-02|2024-03|2024-04|2024-05|2024-06"
+# TODO: busybox date does not allow subtract month
+#"$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
+echo "recentUseDates $recentUseDates"
 for serviceName in $serviceNameArray; do
     ((totalConsidered++))
     echo "serviceName $serviceName"
