@@ -88,6 +88,8 @@ for serviceName in $serviceNameArray; do
                 sudo docker service rm "$webServiceName"
             fi
         fi
+    else
+        echo 'recenty started, waiting for startup'; 
     fi
     echo ""
 done
