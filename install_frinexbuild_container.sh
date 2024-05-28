@@ -33,6 +33,8 @@ else
     # get the latest version of this repository
     git pull
 
+    docker system prune
+    
     # build the frinexbuild dockerfile
     docker build --no-cache -f docker/frinexbuild.Dockerfile -t frinexbuild:latest .
 
