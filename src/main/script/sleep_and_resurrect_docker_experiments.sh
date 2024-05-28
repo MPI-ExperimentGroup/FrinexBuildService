@@ -27,7 +27,8 @@ totalConsidered=0
 canBeTerminated=0
 hasRecentUse=0
 
-recentUseDates="2024"
+# experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
+recentUseDates="$(date -d "$(date +%Y-%m-1) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -0 month" +%Y-%m)"
 for serviceName in $serviceNameArray; do
     ((totalConsidered++))
     echo "serviceName $serviceName"
@@ -52,22 +53,40 @@ for serviceName in $serviceNameArray; do
         echo "artifactsDirectory: $experimentArtifactsDirectory"
         servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
         echo "servicePortNumber: $servicePortNumber"
-        curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+        if [[ -z "$servicePortNumber" ]]; then
+            curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+        else
+            echo "servicePortNumber not found so using the last known public_usage_stats"
+        fi
         cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
         echo ""
         echo ""
         if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
             ((hasRecentUse++))
-            echo 'recent use detected'; 
+            echo 'recent use detected';
         else
-            ((canBeTerminated++))
-            echo 'can be terminated';
-            # terminate both the admin and web services for this experiment
+            # this section will terminate both the admin and web services for this experiment
             webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
-            echo "adminServiceName: $adminServiceName"
-            sudo docker service rm "$adminServiceName"
-            echo "webServiceName: $webServiceName"
-            sudo docker service rm "$webServiceName"
+            # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
+            if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen"; then
+                if (( $daysSinceStarted < 14 )); then 
+                    echo 'recenty started, unused but healthy'; 
+                else
+                    echo 'no recent use so can be terminated';
+                    ((canBeTerminated++))
+                    echo "adminServiceName: $adminServiceName"
+                    sudo docker service rm "$adminServiceName"
+                    echo "webServiceName: $webServiceName"
+                    sudo docker service rm "$webServiceName"
+                fi
+            else
+                ((canBeTerminated++))
+                echo 'broken so can be terminated';
+                echo "adminServiceName: $adminServiceName"
+                sudo docker service rm "$adminServiceName"
+                echo "webServiceName: $webServiceName"
+                sudo docker service rm "$webServiceName"
+            fi
         fi
     fi
     echo ""
