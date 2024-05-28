@@ -41,6 +41,7 @@ for serviceName in $serviceNameArray; do
     # echo "secondsSince1970 $secondsSince1970"
     if [[ ! "$secondsSince1970" ]]; then
         ((recentyStarted++))
+        echo ""
         echo 'recenty started, date not found'; 
     else
         daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
@@ -80,27 +81,27 @@ for serviceName in $serviceNameArray; do
                     #     echo 'recenty started, unused but healthy'; 
                     #     echo ""
                     # else
-                        echo 'no recent use so can be terminated';
                         ((canBeTerminated++))
-                        echo ""
                         # echo "adminServiceName: $adminServiceName"
                         sudo docker service rm "$adminServiceName"
                         # echo "webServiceName: $webServiceName"
                         sudo docker service rm "$webServiceName"
+                        echo ""
+                        echo 'no recent use so can be terminated';
                     # fi
                 else
                     ((canBeTerminated++))
-                    echo ""
-                    echo 'broken so can be terminated';
-                    echo ""
                     # echo "adminServiceName: $adminServiceName"
                     sudo docker service rm "$adminServiceName"
                     # echo "webServiceName: $webServiceName"
                     sudo docker service rm "$webServiceName"
+                    echo ""
+                    echo 'broken so can be terminated';
                 fi
             fi
         else
             ((recentyStarted++))
+            echo ""
             echo 'recenty started, waiting for startup'; 
         fi
     fi
@@ -108,6 +109,7 @@ for serviceName in $serviceNameArray; do
 done
 
 date
+echo ""
 echo "totalConsidered: $totalConsidered"
 echo "canBeTerminated: $canBeTerminated"
 echo "recentyStarted: $recentyStarted"
