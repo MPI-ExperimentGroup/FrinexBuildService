@@ -29,7 +29,7 @@ recentyStarted=0
 unusedNewHealthy=0
 
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
-recentUseDates="$(date -d "$(date +%Y-%m-1) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -0 month" +%Y-%m)"
+recentUseDates="$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
 for serviceName in $serviceNameArray; do
     ((totalConsidered++))
     echo "serviceName $serviceName"
@@ -98,6 +98,7 @@ for serviceName in $serviceNameArray; do
             ((recentyStarted++))
             echo 'recenty started, waiting for startup'; 
         fi
+    fi
     echo ""
 done
 
