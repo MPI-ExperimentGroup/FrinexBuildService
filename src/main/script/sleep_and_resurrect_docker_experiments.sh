@@ -20,12 +20,13 @@
 # http://<frinexbuild>:8010/frinex_stopped_experiments.txt
 # http://<frinexbuild>/frinex_restart_experient.log
 
-
-serviceNameArray=$(sudo docker service ls --format '{{.Name}}' | grep -E "_staging_admin$|_production_admin$")
-#  | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$"
+# make a list of all experiments that are running even if only the web or admin service is running
+serviceNameArray=$(sudo docker service ls --format '{{.Name}}' | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$" | sed 's/_web$/_admin/g' | sort | uniq)
 totalConsidered=0
 canBeTerminated=0
 hasRecentUse=0
+recentyStarted=0
+unusedNewHealthy=0
 
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
 recentUseDates="$(date -d "$(date +%Y-%m-1) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-1) -0 month" +%Y-%m)"
@@ -43,7 +44,7 @@ for serviceName in $serviceNameArray; do
     echo "daysSinceStarted $daysSinceStarted"
     echo "hoursSinceStarted $hoursSinceStarted"
     echo "minutesSinceStarted $minutesSinceStarted"
-    if (( $hoursSinceStarted > 1 )); then
+    if (( $minutesSinceStarted > 60 )); then
         echo "considering: $serviceName"
         adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
         adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
@@ -70,25 +71,27 @@ for serviceName in $serviceNameArray; do
             # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
             if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen"; then
                 if (( $daysSinceStarted < 14 )); then 
+                    ((unusedNewHealthy++))
                     echo 'recenty started, unused but healthy'; 
                 else
                     echo 'no recent use so can be terminated';
                     ((canBeTerminated++))
-                    echo "adminServiceName: $adminServiceName"
+                    # echo "adminServiceName: $adminServiceName"
                     sudo docker service rm "$adminServiceName"
-                    echo "webServiceName: $webServiceName"
+                    # echo "webServiceName: $webServiceName"
                     sudo docker service rm "$webServiceName"
                 fi
             else
                 ((canBeTerminated++))
                 echo 'broken so can be terminated';
-                echo "adminServiceName: $adminServiceName"
+                # echo "adminServiceName: $adminServiceName"
                 sudo docker service rm "$adminServiceName"
-                echo "webServiceName: $webServiceName"
+                # echo "webServiceName: $webServiceName"
                 sudo docker service rm "$webServiceName"
             fi
         fi
     else
+        ((recentyStarted++))
         echo 'recenty started, waiting for startup'; 
     fi
     echo ""
@@ -96,6 +99,8 @@ done
 
 echo "totalConsidered: $totalConsidered"
 echo "canBeTerminated: $canBeTerminated"
+echo "recentyStarted: $recentyStarted"
+echo "unusedNewHealthy: $unusedNewHealthy"
 echo "hasRecentUse: $hasRecentUse"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
