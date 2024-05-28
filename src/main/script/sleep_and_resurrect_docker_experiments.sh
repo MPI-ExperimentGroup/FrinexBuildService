@@ -78,9 +78,11 @@ for serviceName in $serviceNameArray; do
                     # if (( $daysSinceStarted < 14 )); then 
                     #     ((unusedNewHealthy++))
                     #     echo 'recenty started, unused but healthy'; 
+                    #     echo ""
                     # else
                         echo 'no recent use so can be terminated';
                         ((canBeTerminated++))
+                        echo ""
                         # echo "adminServiceName: $adminServiceName"
                         sudo docker service rm "$adminServiceName"
                         # echo "webServiceName: $webServiceName"
@@ -88,7 +90,9 @@ for serviceName in $serviceNameArray; do
                     # fi
                 else
                     ((canBeTerminated++))
+                    echo ""
                     echo 'broken so can be terminated';
+                    echo ""
                     # echo "adminServiceName: $adminServiceName"
                     sudo docker service rm "$adminServiceName"
                     # echo "webServiceName: $webServiceName"
@@ -103,6 +107,7 @@ for serviceName in $serviceNameArray; do
     echo ""
 done
 
+date
 echo "totalConsidered: $totalConsidered"
 echo "canBeTerminated: $canBeTerminated"
 echo "recentyStarted: $recentyStarted"
