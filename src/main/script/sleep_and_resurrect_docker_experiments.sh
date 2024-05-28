@@ -38,62 +38,66 @@ for serviceName in $serviceNameArray; do
     # note that this ignores the seconds already passed in the current minute by rounding it to YYYYMMDD HH:MM
     secondsSince1970=$(date +%s -d "${updatedAt:0:16}")
     # echo "secondsSince1970 $secondsSince1970"
-    daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
-    hoursSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60))
-    minutesSinceStarted=$((($(date +%s) - $secondsSince1970)/60))
-    echo "daysSinceStarted $daysSinceStarted"
-    echo "hoursSinceStarted $hoursSinceStarted"
-    echo "minutesSinceStarted $minutesSinceStarted"
-    if (( $minutesSinceStarted > 60 )); then
-        echo "considering: $serviceName"
-        adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
-        adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
-        experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
-        echo "adminServiceName: $adminServiceName"
-        echo "adminContextPath: $adminContextPath"
-        echo "artifactsDirectory: $experimentArtifactsDirectory"
-        servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
-        echo "servicePortNumber: $servicePortNumber"
-        if [[ "$servicePortNumber" ]]; then
-            curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
-        else
-            echo "servicePortNumber not found so using the last known public_usage_stats"
-        fi
-        # cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
-        # echo ""
-        echo ""
-        if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
-            ((hasRecentUse++))
-            echo 'recent use detected';
-        else
-            # this section will terminate both the admin and web services for this experiment
-            webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
-            # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
-            if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen"; then
-                if (( $daysSinceStarted < 14 )); then 
-                    ((unusedNewHealthy++))
-                    echo 'recenty started, unused but healthy'; 
+    if [[ ! "$secondsSince1970" ]]; then
+        ((recentyStarted++))
+        echo 'recenty started, date not found'; 
+    else
+        daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
+        hoursSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60))
+        minutesSinceStarted=$((($(date +%s) - $secondsSince1970)/60))
+        echo "daysSinceStarted $daysSinceStarted"
+        echo "hoursSinceStarted $hoursSinceStarted"
+        echo "minutesSinceStarted $minutesSinceStarted"
+        if (( $minutesSinceStarted > 60 )); then
+            echo "considering: $serviceName"
+            adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
+            adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
+            experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
+            echo "adminServiceName: $adminServiceName"
+            echo "adminContextPath: $adminContextPath"
+            echo "artifactsDirectory: $experimentArtifactsDirectory"
+            servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
+            echo "servicePortNumber: $servicePortNumber"
+            if [[ "$servicePortNumber" ]]; then
+                curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+            else
+                echo "servicePortNumber not found so using the last known public_usage_stats"
+            fi
+            # cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+            # echo ""
+            echo ""
+            if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
+                ((hasRecentUse++))
+                echo 'recent use detected';
+            else
+                # this section will terminate both the admin and web services for this experiment
+                webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
+                # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
+                if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen"; then
+                    if (( $daysSinceStarted < 14 )); then 
+                        ((unusedNewHealthy++))
+                        echo 'recenty started, unused but healthy'; 
+                    else
+                        echo 'no recent use so can be terminated';
+                        ((canBeTerminated++))
+                        # echo "adminServiceName: $adminServiceName"
+                        sudo docker service rm "$adminServiceName"
+                        # echo "webServiceName: $webServiceName"
+                        sudo docker service rm "$webServiceName"
+                    fi
                 else
-                    echo 'no recent use so can be terminated';
                     ((canBeTerminated++))
+                    echo 'broken so can be terminated';
                     # echo "adminServiceName: $adminServiceName"
                     sudo docker service rm "$adminServiceName"
                     # echo "webServiceName: $webServiceName"
                     sudo docker service rm "$webServiceName"
                 fi
-            else
-                ((canBeTerminated++))
-                echo 'broken so can be terminated';
-                # echo "adminServiceName: $adminServiceName"
-                sudo docker service rm "$adminServiceName"
-                # echo "webServiceName: $webServiceName"
-                sudo docker service rm "$webServiceName"
             fi
+        else
+            ((recentyStarted++))
+            echo 'recenty started, waiting for startup'; 
         fi
-    else
-        ((recentyStarted++))
-        echo 'recenty started, waiting for startup'; 
-    fi
     echo ""
 done
 
