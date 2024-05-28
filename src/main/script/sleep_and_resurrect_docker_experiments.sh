@@ -29,9 +29,7 @@ recentyStarted=0
 unusedNewHealthy=0
 
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
-recentUseDates="2024-01|2024-02|2024-03|2024-04|2024-05|2024-06"
-# TODO: busybox date does not allow subtract month
-#"$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
+recentUseDates="$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
 echo "recentUseDates $recentUseDates"
 for serviceName in $serviceNameArray; do
     ((totalConsidered++))
@@ -77,17 +75,17 @@ for serviceName in $serviceNameArray; do
                 webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
                 # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
                 if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen"; then
-                    if (( $daysSinceStarted < 14 )); then 
-                        ((unusedNewHealthy++))
-                        echo 'recenty started, unused but healthy'; 
-                    else
+                    # if (( $daysSinceStarted < 14 )); then 
+                    #     ((unusedNewHealthy++))
+                    #     echo 'recenty started, unused but healthy'; 
+                    # else
                         echo 'no recent use so can be terminated';
                         ((canBeTerminated++))
                         # echo "adminServiceName: $adminServiceName"
                         sudo docker service rm "$adminServiceName"
                         # echo "webServiceName: $webServiceName"
                         sudo docker service rm "$webServiceName"
-                    fi
+                    # fi
                 else
                     ((canBeTerminated++))
                     echo 'broken so can be terminated';
