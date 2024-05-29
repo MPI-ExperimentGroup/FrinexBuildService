@@ -59,7 +59,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             # cat /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # ls -l /FrinexBuildService/protected/$experimentDirectory/ &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Building<br>"
-            sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            sudo docker build --no-cache --force-rm -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker -t DOCKER_REGISTRY/$cleanedInput:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker build --no-cache -f /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker -t DOCKER_REGISTRY/$comparisonServiceName:stable /FrinexBuildService/protected/$experimentDirectory &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Pushing<br>"
             sudo docker push DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
