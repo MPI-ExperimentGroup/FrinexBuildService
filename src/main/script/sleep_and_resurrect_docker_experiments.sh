@@ -61,21 +61,23 @@ for serviceName in $serviceNameArray; do
             servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
             echo "servicePortNumber: $servicePortNumber"
             if [[ "$servicePortNumber" ]]; then
-                curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+                curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
             else
                 echo "servicePortNumber not found so using the last known public_usage_stats"
             fi
-            # cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+            # cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
             # echo ""
             echo ""
-            if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
+            if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
                 ((hasRecentUse++))
                 echo 'recent use detected';
+                mv /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
             else
                 # this section will terminate both the admin and web services for this experiment
                 webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
                 # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
-                if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json | grep -qE "sessionFirstAndLastSeen"; then
+                if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp | grep -qE "sessionFirstAndLastSeen"; then
+                    mv /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
                     # if (( $daysSinceStarted < 14 )); then 
                     #     ((unusedNewHealthy++))
                     #     echo 'recenty started, unused but healthy'; 
@@ -97,6 +99,7 @@ for serviceName in $serviceNameArray; do
                     sudo docker service rm "$webServiceName"
                     echo ""
                     echo 'broken so can be terminated';
+                    rm /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
                 fi
             fi
         else
