@@ -71,13 +71,13 @@ for serviceName in $serviceNameArray; do
             if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
                 ((hasRecentUse++))
                 echo 'recent use detected';
-                mv /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+                mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
             else
                 # this section will terminate both the admin and web services for this experiment
                 webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
                 # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
                 if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp | grep -qE "sessionFirstAndLastSeen"; then
-                    mv /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+                    mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
                     # if (( $daysSinceStarted < 14 )); then 
                     #     ((unusedNewHealthy++))
                     #     echo 'recenty started, unused but healthy'; 
