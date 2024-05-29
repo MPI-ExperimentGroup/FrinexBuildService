@@ -470,7 +470,8 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
-        + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n";
+        + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n"
+        + "sudo docker system prune -f\n";
     try {
         // console.log(serviceSetupString);
         // TODO: this need not be a syncronous step only the update and trigger need to be done in a result promise

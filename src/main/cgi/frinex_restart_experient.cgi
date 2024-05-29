@@ -69,6 +69,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             # sudo docker service rm $comparisonServiceName &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Starting<br>"
             sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            sudo docker system prune -f &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker service create --name $comparisonServiceName DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$comparisonServiceName:stable &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Please reload this page in a few minutes<br>"
             echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
