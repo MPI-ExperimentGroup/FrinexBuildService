@@ -202,8 +202,8 @@ function unDeploy(currentEntry) {
     // check if the deploymentType is tomcat vs docker and do the required undeployment process
     var dockerString = "";
     if (deploymentType.includes('docker')) {
-        dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_web && "
-        dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + "\n"
+        // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_web && "
+        dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + " || true\n"
     }
     if (deploymentType.includes('staging_tomcat')) {
         var buildContainerName = currentEntry.buildName + '_undeploy';
@@ -252,8 +252,8 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt?' + new Date().getTime() + '">undeploying</a>', "staging", "admin", false, true, false);
     var dockerString = "";
     if (deploymentType.includes('docker')) {
-        dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_admin && "
-        dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_admin' + "\n"
+        // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_admin && "
+        dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_admin' + " || true\n"
     }
     if (deploymentType.includes('staging_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
@@ -301,8 +301,8 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt?' + new Date().getTime() + '">undeploying</a>', "production", "web", false, true, false);
     var dockerString = "";
     if (deploymentType.includes('docker')) {
-        dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_web && "
-        dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_web' + "\n"
+        // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_web && "
+        dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_web' + " || true\n"
     }
     if (deploymentType.includes('production_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
@@ -354,8 +354,8 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">undeploying</a>', "production", "admin", false, true, false);
     var dockerString = "";
     if (deploymentType.includes('docker')) {
-        dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_admin && "
-        dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_admin' + "\n"
+        // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_admin && "
+        dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_admin' + " || true\n"
     }
     if (deploymentType.includes('production_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
@@ -469,7 +469,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "sudo docker build --force-rm --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":stable .\n"
         // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":stable \n"
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
-        + "sudo docker service rm " + serviceName + "\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
+        + "sudo docker service rm " + serviceName + " || true\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n"
         + "sudo docker system prune -f\n";
     try {
