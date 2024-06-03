@@ -78,11 +78,11 @@ for serviceName in $serviceNameArray; do
                 # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
                 if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp | grep -qE "sessionFirstAndLastSeen"; then
                     mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
-                    # if (( $daysSinceStarted < 14 )); then 
-                    #     ((unusedNewHealthy++))
-                    #     echo 'recenty started, unused but healthy'; 
-                    #     echo ""
-                    # else
+                    if (( $daysSinceStarted < 14 )); then 
+                        ((unusedNewHealthy++))
+                        echo 'recenty started, unused but healthy'; 
+                        echo ""
+                    else
                         ((canBeTerminated++))
                         # echo "adminServiceName: $adminServiceName"
                         sudo docker service rm "$adminServiceName"
@@ -90,7 +90,7 @@ for serviceName in $serviceNameArray; do
                         sudo docker service rm "$webServiceName"
                         echo ""
                         echo 'no recent use so can be terminated';
-                    # fi
+                    fi
                 else
                     ((canBeTerminated++))
                     # echo "adminServiceName: $adminServiceName"
