@@ -111,6 +111,10 @@ for serviceName in $serviceNameArray; do
     echo ""
 done
 
+if (( $canBeTerminated > 0 )); then
+    curl PROXY_UPDATE_TRIGGER
+fi
+
 date
 echo ""
 echo "totalConsidered: $totalConsidered"
