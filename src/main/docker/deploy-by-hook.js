@@ -605,7 +605,7 @@ function deployStagingGui(currentEntry) {
             //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/staging-building/'
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             // + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + " chmod a+rwx -R" + targetDirectory + "/" + currentEntry.buildName + "/"
+            + " chmod a+rwx -R" + targetDirectory + "/" + currentEntry.buildName + "/;"
             + ' echo "build complete" &>> ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
