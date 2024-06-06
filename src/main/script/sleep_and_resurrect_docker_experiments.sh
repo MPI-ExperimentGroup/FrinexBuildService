@@ -61,6 +61,8 @@ for serviceName in $serviceNameArray; do
             servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
             echo "servicePortNumber: $servicePortNumber"
             if [[ "$servicePortNumber" ]]; then
+                sudo chown -R frinex:www-data /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
+                chmod -R ug+rwx /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
                 curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
             else
                 echo "servicePortNumber not found so using the last known public_usage_stats"
