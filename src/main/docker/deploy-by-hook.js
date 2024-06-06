@@ -1734,7 +1734,7 @@ function checkForDuplicates(currentName) {
     if (experimentConfigCounter > 1) {
         //console.log(experimentConfigLocations);
         if (!fs.existsSync(targetDirectory + "/" + currentName)) {
-            fs.mkdirSync(targetDirectory + "/" + currentName, 0777);
+            fs.mkdirSync(targetDirectory + "/" + currentName);
             console.log(targetDirectory + "/" + currentName + " directory created");
         }
         const queuedConfigFile = fs.openSync(configErrorPath, "w");
@@ -1877,7 +1877,7 @@ function moveIncomingToQueued() {
                             fs.writeSync(resultsFile, "<div>initialise: '" + lowerCaseFileName + "'</div>");
                             console.log('initialise: ' + lowerCaseFileName);
                             if (!fs.existsSync(targetDirectory + "/" + currentName)) {
-                                fs.mkdirSync(targetDirectory + '/' + currentName, 0777);
+                                fs.mkdirSync(targetDirectory + '/' + currentName);
                             }
                             if (!fs.existsSync(protectedDirectory + "/" + currentName)) {
                                 fs.mkdirSync(protectedDirectory + '/' + currentName);
