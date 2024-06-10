@@ -62,7 +62,7 @@ for serviceName in $serviceNameArray; do
             echo "servicePortNumber: $servicePortNumber"
             if [[ "$servicePortNumber" ]]; then
                 sudo chown -R frinex:www-data /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
-                chmod -R ug+rwx /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
+                sudo chmod -R ug+rwx /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
                 curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
             else
                 echo "servicePortNumber not found so using the last known public_usage_stats"
