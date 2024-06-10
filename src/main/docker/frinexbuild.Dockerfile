@@ -19,7 +19,7 @@
 # @since 20 October 2020 08:48 AM (creation date)
 # @author Peter Withers <peter.withers@mpi.nl>
 #
-FROM httpd:3.20-alpine
+FROM httpd:alpine3.20
 RUN apk add --no-cache \
   git \
   git-gitweb \
