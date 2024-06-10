@@ -19,7 +19,7 @@
 # @since 15 Feb 2022 12:58 PM (creation date)
 # @author Peter Withers <peter.withers@mpi.nl>
 #
-FROM httpd:2.4-alpine
+FROM httpd:3.2-alpine
 RUN apk add --no-cache \
   curl \
   coreutils \
