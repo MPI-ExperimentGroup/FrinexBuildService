@@ -45,10 +45,10 @@ RUN sed -i "s|DatabaseStagingUrl|staging.example.com|g" /FrinexBuildService/cgi/
 RUN sed -i "s|DatabaseStagingPort|5433|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN sed -i "s|DatabaseProductionPort|5434|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
-RUN sed -i "s|DatabaseStagingUrl|staging.example.com|g" /FrinexBuildService/stats/*_*_staging_statistics.sh
-RUN sed -i "s|DatabaseStagingPort|5433|g" /FrinexBuildService/stats/*_*_staging_statistics.sh
-RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildService/stats/*_*_production_statistics.sh
-RUN sed -i "s|DatabaseProductionPort|5434|g" /FrinexBuildService/stats/*_*_production_statistics.sh
+RUN sed -i "s|DatabaseStagingUrl|staging.example.com|g" /FrinexBuildService/stats/*_*_staging_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
+RUN sed -i "s|DatabaseStagingPort|5433|g" /FrinexBuildService/stats/*_*_staging_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
+RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildService/stats/*_*_production_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
+RUN sed -i "s|DatabaseProductionPort|5434|g" /FrinexBuildService/stats/*_*_production_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 # TODO: the DatabaseProductionPass and DatabaseStagingPass are currently the same and should be changed
