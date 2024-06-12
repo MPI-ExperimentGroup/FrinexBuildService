@@ -52,8 +52,8 @@ RUN sed -i "s|DatabaseProductionPort|5434|g" /FrinexBuildService/stats/*_*_produ
 RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 # TODO: the DatabaseProductionPass and DatabaseStagingPass are currently the same and should be changed
-RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/stats/*_*_staging_statistics.sh
-RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/stats/*_*_production_statistics.sh
+RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/stats/*_*_staging_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
+RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/stats/*_*_production_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 #RUN sed -i "s|BuildServerUrl|http://example.com|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 #RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
