@@ -61,26 +61,53 @@
         padding: 5px;
     }
 
-    #aggregateRow,
+    /* #aggregateRow {
+        height: 1px;
+    }
+
     #aggregateStagingWeb,
+    #aggregateProductionAdmin,
+    #aggregateProductionWeb,
+    #aggregateProductionAdmin {
+        height: 1px;
+    } */
+
     #aggregateStagingWebServiceFail,
     #aggregateStagingWebServiceOK,
     #aggregateStagingWebProxyFail,
     #aggregateStagingWebProxy502,
     #aggregateStagingWebProxyOK,
-    
-    #aggregateStagingAdmin,
+
     #aggregateStagingAdminServiceFail,
     #aggregateStagingAdminServiceOK,
     #aggregateStagingAdminProxyFail,
     #aggregateStagingAdminProxy502,
-    #aggregateStagingAdminProxyOK,
-    
-    #aggregateProductionWeb,
-    #aggregateProductionAdmin {
-        height: 1px;
+    #aggregateStagingAdminProxyOK {
+        /* display: inline-block; */
+        height: 5px;
     }
-    
+
+    #aggregateStagingWebProxy502,
+    #aggregateStagingAdminProxy502 {
+        background-color: blue;
+        width: 5%;
+    }
+
+    #aggregateStagingWebServiceFail,
+    #aggregateStagingWebProxyFail,
+    #aggregateStagingAdminServiceFail,
+    #aggregateStagingAdminProxyFail {
+        background-color: red;
+        width: 40%;
+    }
+
+    #aggregateStagingWebServiceOK,
+    #aggregateStagingWebProxyOK,
+    #aggregateStagingAdminServiceOK,
+    #aggregateStagingAdminProxyOK {
+        background-color: green;
+        width: 55%;
+    }
 </style>
 <script src='lib/jquery.min.js'></script>
 <span id='buildLabel'>Build Host</span>
@@ -134,27 +161,27 @@ The latest alpha changes very frequently and is not usually recommended but can 
         <td></td>
         <td></td>
         <td></td>
-        <td><div id="aggregateStagingWeb">
-            <span id="aggregateStagingWebServiceFail"></span>
-            <span id="aggregateStagingWebServiceOK"></span>
-            <span id="aggregateStagingWebProxyFail"></span>
-            <span id="aggregateStagingWebProxy502"></span>
-            <span id="aggregateStagingWebProxyOK"></span>
-        </div></td>
+        <td id="aggregateStagingWeb">
+            <div id="aggregateStagingWebServiceFail"></div>
+            <div id="aggregateStagingWebServiceOK"></div>
+            <div id="aggregateStagingWebProxyFail"></div>
+            <div id="aggregateStagingWebProxy502"></div>
+            <div id="aggregateStagingWebProxyOK"></div>
+        </td>
         <td></td>
         <td></td>
-        <td><div id="aggregateStagingAdmin">
-            <span id="aggregateStagingAdminServiceFail"></span>
-            <span id="aggregateStagingAdminServiceOK"></span>
-            <span id="aggregateStagingAdminProxyFail"></span>
-            <span id="aggregateStagingAdminProxy502"></span>
-            <span id="aggregateStagingAdminProxyOK"></span>
-        </div></td>
+        <td id="aggregateStagingAdmin">
+            <div id="aggregateStagingAdminServiceFail"></div>
+            <div id="aggregateStagingAdminServiceOK"></div>
+            <div id="aggregateStagingAdminProxyFail"></div>
+            <div id="aggregateStagingAdminProxy502"></div>
+            <div id="aggregateStagingAdminProxyOK"></div>
+        </td>
         <td></td>
-        <td><div id="aggregateProductionWeb"></div></td>
+        <td id="aggregateProductionWeb"></td>
         <td></td>
         <td></td>
-        <td><div id="aggregateProductionAdmin"></div></td>
+        <td id="aggregateProductionAdmin"></td>
     </tr>
 </table>
 <a href='git-push-log.txt'>log</a>&nbsp;
