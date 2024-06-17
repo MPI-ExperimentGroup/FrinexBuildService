@@ -60,6 +60,27 @@
         border: red 1px solid;
         padding: 5px;
     }
+
+    #aggregateRow,
+    #aggregateStagingWeb,
+    #aggregateStagingWebServiceFail,
+    #aggregateStagingWebServiceOK,
+    #aggregateStagingWebProxyFail,
+    #aggregateStagingWebProxy502,
+    #aggregateStagingWebProxyOK,
+    
+    #aggregateStagingAdmin,
+    #aggregateStagingAdminServiceFail,
+    #aggregateStagingAdminServiceOK,
+    #aggregateStagingAdminProxyFail,
+    #aggregateStagingAdminProxy502,
+    #aggregateStagingAdminProxyOK,
+    
+    #aggregateProductionWeb,
+    #aggregateProductionAdmin {
+        height: 1px;
+    }
+    
 </style>
 <script src='lib/jquery.min.js'></script>
 <span id='buildLabel'>Build Host</span>
@@ -105,6 +126,35 @@ The latest alpha changes very frequently and is not usually recommended but can 
         <td><a href="#13">production mobile</a></td>
         <td><a href="#14">production desktop</a></td>
         <td><a href="#15">production admin</a></td>
+    </tr>
+    <tr id="aggregateRow">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><div id="aggregateStagingWeb">
+            <span id="aggregateStagingWebServiceFail"></span>
+            <span id="aggregateStagingWebServiceOK"></span>
+            <span id="aggregateStagingWebProxyFail"></span>
+            <span id="aggregateStagingWebProxy502"></span>
+            <span id="aggregateStagingWebProxyOK"></span>
+        </div></td>
+        <td></td>
+        <td></td>
+        <td><div id="aggregateStagingAdmin">
+            <span id="aggregateStagingAdminServiceFail"></span>
+            <span id="aggregateStagingAdminServiceOK"></span>
+            <span id="aggregateStagingAdminProxyFail"></span>
+            <span id="aggregateStagingAdminProxy502"></span>
+            <span id="aggregateStagingAdminProxyOK"></span>
+        </div></td>
+        <td></td>
+        <td><div id="aggregateProductionWeb"></div></td>
+        <td></td>
+        <td></td>
+        <td><div id="aggregateProductionAdmin"></div></td>
     </tr>
 </table>
 <a href='git-push-log.txt'>log</a>&nbsp;
