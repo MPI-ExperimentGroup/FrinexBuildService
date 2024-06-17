@@ -27,6 +27,17 @@ var applicationStatusReplicas = {};
 var serviceStatusHealth = {};
 var applicationStatusHealth = {};
 
+// var aggregateStagingWebServiceFail = [];
+// var aggregateStagingWebServiceOK = [];
+// var aggregateStagingWebProxyFail = [];
+// var aggregateStagingWebProxy502 = [];
+// var aggregateStagingWebProxyOK = [];
+// var aggregateStagingAdminServiceFail = [];
+// var aggregateStagingAdminServiceOK = [];
+// var aggregateStagingAdminProxyFail = [];
+// var aggregateStagingAdminProxy502 = [];
+// var aggregateStagingAdminProxyOK = [];
+
 function updateDeploymentStatus(keyString, cellString, cellStyle) {
     var experimentCell = document.getElementById(keyString + cellString);
     if (experimentCell) {
@@ -46,6 +57,21 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
             + ((applicationStatusHealth[keyString + cellString]) ? "proxy<br/>" + applicationStatusHealth[keyString + cellString] : "proxy: unknown");
     }
 }
+
+// function updateAggregateStatus() {
+//     var aggregateStagingWebServiceFailPercent = aggregateStagingWebServiceFail.length / (aggregateStagingWebServiceFail.length + aggregateStagingWebServiceOK.length) * 100;
+//     $("#aggregateStagingWebServiceFail").width(aggregateStagingWebServiceFailPercent + "%");
+//     // aggregateStagingWebServiceFail
+//     // aggregateStagingWebServiceOK
+//     // aggregateStagingWebProxyFail
+//     // aggregateStagingWebProxy502
+//     // aggregateStagingWebProxyOK
+//     // aggregateStagingAdminServiceFail
+//     // aggregateStagingAdminServiceOK
+//     // aggregateStagingAdminProxyFail
+//     // aggregateStagingAdminProxy502
+//     // aggregateStagingAdminProxyOK
+// }
 
 function doUpdate() {
     clearTimeout(updateTimer);
