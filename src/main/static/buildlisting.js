@@ -64,8 +64,8 @@ function updateAggregateStatus() {
     var aggregateProductionAdminServiceOK = 0;
     for (var key of Object.keys(applicationStatusReplicas)) {
         // isRunning = (serviceStatusHealth[key] !== '') ? 1 : 0;
-        serviceRunning = (serviceStatusHealth[keyString + cellString]) ? 1 : 0;
-        proxyRunning = applicationStatusHealth ? 1 : 0;
+        serviceRunning = (serviceStatusHealth[key]) ? 1 : 0;
+        proxyRunning = (applicationStatusHealth[key]) ? 1 : 0;
         if (key.includes("_staging_web")) {
             aggregateStagingWebServiceCount++;
             aggregateStagingWebServiceOK += serviceRunning;
