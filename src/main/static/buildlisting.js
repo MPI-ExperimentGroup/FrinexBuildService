@@ -62,6 +62,7 @@ function updateAggregateStatus() {
     var aggregateProductionWebServiceOK = 0;
     var aggregateProductionAdminServiceCount = 0;
     var aggregateProductionAdminServiceOK = 0;
+    var aggregateProductionAdminProxyOK = 0;
     for (var key of Object.keys(applicationStatusReplicas)) {
         // isRunning = (serviceStatusHealth[key] !== '') ? 1 : 0;
         serviceRunning = (serviceStatusHealth[key]) ? 1 : 0;
