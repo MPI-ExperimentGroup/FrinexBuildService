@@ -62,40 +62,38 @@ function updateAggregateStatus() {
     var aggregateProductionWebServiceOK = 0;
     var aggregateProductionAdminServiceCount = 0;
     var aggregateProductionAdminServiceOK = 0;
-    for (var key of Object.keys(serviceStatusHealth)) {
-        isRunning = (serviceStatusHealth[key] !== '') ? 1 : 0;
+    for (var key of Object.keys(applicationStatusReplicas)) {
+        // isRunning = (serviceStatusHealth[key] !== '') ? 1 : 0;
+        serviceRunning = (serviceStatusHealth[keyString + cellString]) ? 1 : 0;
+        proxyRunning = applicationStatusHealth ? 1 : 0;
         if (key.includes("_staging_web")) {
             aggregateStagingWebServiceCount++;
-            aggregateStagingWebServiceOK += isRunning;
+            aggregateStagingWebServiceOK += serviceRunning;
+            aggregateStagingWebProxyOK += proxyRunning;
         }
         if (key.includes("_staging_admin")) {
             aggregateStagingAdminServiceCount++;
-            aggregateStagingAdminServiceOK += isRunning;
+            aggregateStagingAdminServiceOK += serviceRunning;
+            aggregateStagingAdminProxyOK += proxyRunning;
         }
         if (key.includes("_production_web")) {
             aggregateProductionWebServiceCount++;
-            aggregateProductionWebServiceOK += isRunning;
+            aggregateProductionWebServiceOK += serviceRunning;
+            aggregateProductionWebProxyOK += proxyRunning;
         }
         if (key.includes("_production_admin")) {
             aggregateProductionAdminServiceCount++;
-            aggregateProductionAdminServiceOK += isRunning;
+            aggregateProductionAdminServiceOK += serviceRunning;
+            aggregateProductionAdminProxyOK += proxyRunning;
         }
     }
 
     $("#aggregateStagingWebServiceOK").width((aggregateStagingWebServiceOK / aggregateStagingWebServiceCount * 100) + "%");
+    $("#aggregateStagingWebProxyOK").width((aggregateStagingWebProxyOK / aggregateStagingWebServiceCount * 100) + "%");
     $("#aggregateStagingAdminServiceOK").width((aggregateStagingAdminServiceOK / aggregateStagingAdminServiceCount * 100) + "%");
-    $("#aggregateProductionWebServiceOK").width((aggregateStagingWebServiceOK / aggregateStagingWebServiceCount * 100) + "%");
-    $("#aggregateProductionAdminServiceOK").width((aggregateProductionAdminServiceOK / aggregateProductionAdminServiceCount * 100) + "%");
-    // aggregateStagingWebServiceFail
-    // aggregateStagingWebServiceOK
-    // aggregateStagingWebProxyFail
-    // aggregateStagingWebProxy502
-    // aggregateStagingWebProxyOK
-    // aggregateStagingAdminServiceFail
-    // aggregateStagingAdminServiceOK
-    // aggregateStagingAdminProxyFail
-    // aggregateStagingAdminProxy502
-    // aggregateStagingAdminProxyOK
+    $("#aggregateStagingAdminProxyOK").width((aggregateStagingAdminProxyOK / aggregateStagingAdminServiceCount * 100) + "%");
+    // $("#aggregateProductionWebServiceOK").width((aggregateStagingWebServiceOK / aggregateStagingWebServiceCount * 100) + "%");
+    // $("#aggregateProductionAdminServiceOK").width((aggregateProductionAdminServiceOK / aggregateProductionAdminServiceCount * 100) + "%");
 }
 
 function doUpdate() {
@@ -327,6 +325,26 @@ function doUpdate() {
                             /* .fail(function (jqxhr, textStatus, error) {
                                 serviceStatusHealth[experimentName + deploymentStage] += error + ': ' + jqxhr.status + ': ' + textStatus + '<br/>';
                             })*/;
+                        $.getJSON(((deploymentStage.includes("_staging_")) ? data.stagingServerUrl :
+                            (typeof data.table[experimentName]['_production_target'] !== 'undefined' && data.table[experimentName]['_production_target'].value != '')
+                                ? data.table[experimentName]['_production_target'].value
+                                : data.productionServerUrl)
+                            + '/' + experimentName + '/actuator/health', (function (experimentName, cellStyle) {
+                                return function (data) {
+                                    applicationStatusHealth[experimentName + deploymentStage] = '';
+                                    $.each(data, function (key, val) {
+                                        applicationStatusHealth[experimentName + deploymentStage] += key + ': ' + val + '<br/>';
+                                        if (key === 'status') {
+                                            if (val === 'UP') {
+                                                applicationStatus[experimentName + deploymentStage] = 'green';
+                                            } else {
+                                                applicationStatus[experimentName + deploymentStage] = 'red';
+                                            }
+                                            updateDeploymentStatus(experimentName, deploymentStage, cellStyle);
+                                        }
+                                    });
+                                };
+                            }(experimentName, data.table[experimentName][deploymentStage].style)));
                     }
                 });
             });
