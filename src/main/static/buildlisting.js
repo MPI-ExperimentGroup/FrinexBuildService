@@ -58,6 +58,10 @@ function updateAggregateStatus() {
     var aggregateStagingAdminProxyFail = 0;
     var aggregateStagingAdminProxy502 = 0;
     var aggregateStagingAdminProxyOK = 0;
+    var aggregateProductionWebServiceCount = 0;
+    var aggregateProductionWebServiceOK = 0;
+    var aggregateProductionAdminServiceCount = 0;
+    var aggregateProductionAdminServiceOK = 0;
     for (var key of Object.keys(serviceStatusHealth)) {
         isRunning = (serviceStatusHealth[key].inclues("UP")) ? 1 : 0;
         if (key.includes("_staging_web")) {
