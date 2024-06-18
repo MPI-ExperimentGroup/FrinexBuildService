@@ -60,6 +60,7 @@ function updateAggregateStatus() {
     var aggregateStagingAdminProxyOK = 0;
     var aggregateProductionWebServiceCount = 0;
     var aggregateProductionWebServiceOK = 0;
+    var aggregateProductionWebProxyOK = 0;
     var aggregateProductionAdminServiceCount = 0;
     var aggregateProductionAdminServiceOK = 0;
     var aggregateProductionAdminProxyOK = 0;
