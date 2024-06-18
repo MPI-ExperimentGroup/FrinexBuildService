@@ -62,25 +62,25 @@ function updateAggregateStatus() {
     var aggregateProductionWebServiceOK = 0;
     var aggregateProductionAdminServiceCount = 0;
     var aggregateProductionAdminServiceOK = 0;
-    for (var key of Object.keys(serviceStatusHealth)) {
-        isRunning = (serviceStatusHealth[key].inclues("UP")) ? 1 : 0;
-        if (key.includes("_staging_web")) {
-            aggregateStagingWebServiceCount++;
-            aggregateStagingWebServiceOK += isRunning;
-        }
-        if (key.includes("_staging_admin")) {
-            aggregateStagingAdminServiceCount++;
-            aggregateStagingAdminServiceOK += isRunning;
-        }
-        if (key.includes("_production_web")) {
-            aggregateProductionWebServiceCount++;
-            aggregateProductionWebServiceOK += isRunning;
-        }
-        if (key.includes("_production_admin")) {
-            aggregateProductionAdminServiceCount++;
-            aggregateProductionAdminServiceOK += isRunning;
-        }
-    }
+    // for (var key of Object.keys(serviceStatusHealth)) {
+    //     isRunning = (serviceStatusHealth[key].inclues("UP")) ? 1 : 0;
+    //     if (key.includes("_staging_web")) {
+    //         aggregateStagingWebServiceCount++;
+    //         aggregateStagingWebServiceOK += isRunning;
+    //     }
+    //     if (key.includes("_staging_admin")) {
+    //         aggregateStagingAdminServiceCount++;
+    //         aggregateStagingAdminServiceOK += isRunning;
+    //     }
+    //     if (key.includes("_production_web")) {
+    //         aggregateProductionWebServiceCount++;
+    //         aggregateProductionWebServiceOK += isRunning;
+    //     }
+    //     if (key.includes("_production_admin")) {
+    //         aggregateProductionAdminServiceCount++;
+    //         aggregateProductionAdminServiceOK += isRunning;
+    //     }
+    // }
 
     $("#aggregateStagingWebServiceOK").width((aggregateStagingWebServiceOK / aggregateStagingWebServiceCount * 100) + "%");
     $("#aggregateStagingAdminServiceOK").width((aggregateStagingAdminServiceOK / aggregateStagingAdminServiceCount * 100) + "%");
