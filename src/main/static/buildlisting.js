@@ -307,35 +307,12 @@ function doUpdate() {
                         //     }
                         // }
                         updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
-                        // the path -admin/actuator/health is for spring boot 2.3.0
-                        $.getJSON(window.location.protocol + '//' + window.location.hostname + ':' + val.port + '/' + key.replace("_staging", "").replace("_production", "").replace("_admin", "-admin").replace("_web", "") + '/actuator/health', (function (experimentName, cellStyle) {
-                            return function (data) {
-                                serviceStatusHealth[experimentName + deploymentStage] = '';
-                                $.each(data, function (key, val) {
-                                    serviceStatusHealth[experimentName + deploymentStage] += key + ': ' + val + '<br/>';
-                                    if (key === 'status') {
-                                        if (val === 'UP') {
-                                            applicationStatus[experimentName + deploymentStage] = 'green';
-                                        } else {
-                                            applicationStatus[experimentName + deploymentStage] = 'red';
-                                        }
-                                        updateDeploymentStatus(experimentName, deploymentStage, cellStyle);
-                                    }
-                                });
-                            };
-                        }(experimentName, data.table[experimentName][deploymentStage].style)))
-                            /* .fail(function (jqxhr, textStatus, error) {
-                                serviceStatusHealth[experimentName + deploymentStage] += error + ': ' + jqxhr.status + ': ' + textStatus + '<br/>';
-                            })*/;
-                        $.getJSON(((deploymentStage.includes("_staging_")) ? data.stagingServerUrl :
-                            (typeof data.table[experimentName]['_production_target'] !== 'undefined' && data.table[experimentName]['_production_target'].value != '')
-                                ? data.table[experimentName]['_production_target'].value
-                                : data.productionServerUrl)
-                            + '/' + experimentName + '/actuator/health', (function (experimentName, cellStyle) {
+                        if (!serviceStatusHealth[experimentName + deploymentStage]) {
+                            $.getJSON(window.location.protocol + '//' + window.location.hostname + ':' + val.port + '/' + key.replace("_staging", "").replace("_production", "").replace("_admin", "-admin").replace("_web", "") + '/actuator/health', (function (experimentName, cellStyle) {
                                 return function (data) {
-                                    applicationStatusHealth[experimentName + deploymentStage] = '';
+                                    serviceStatusHealth[experimentName + deploymentStage] = '';
                                     $.each(data, function (key, val) {
-                                        applicationStatusHealth[experimentName + deploymentStage] += key + ': ' + val + '<br/>';
+                                        serviceStatusHealth[experimentName + deploymentStage] += key + ': ' + val + '<br/>';
                                         if (key === 'status') {
                                             if (val === 'UP') {
                                                 applicationStatus[experimentName + deploymentStage] = 'green';
@@ -346,7 +323,33 @@ function doUpdate() {
                                         }
                                     });
                                 };
-                            }(experimentName, data.table[experimentName][deploymentStage].style)));
+                            }(experimentName, data.table[experimentName][deploymentStage].style)))
+                            /* .fail(function (jqxhr, textStatus, error) {
+                                serviceStatusHealth[experimentName + deploymentStage] += error + ': ' + jqxhr.status + ': ' + textStatus + '<br/>';
+                            })*/;
+                        }
+                        if (!applicationStatusHealth[experimentName + deploymentStage]) {
+                            $.getJSON(((deploymentStage.includes("_staging_")) ? data.stagingServerUrl :
+                                (typeof data.table[experimentName]['_production_target'] !== 'undefined' && data.table[experimentName]['_production_target'].value != '')
+                                    ? data.table[experimentName]['_production_target'].value
+                                    : data.productionServerUrl)
+                                + '/' + experimentName + '/actuator/health', (function (experimentName, cellStyle) {
+                                    return function (data) {
+                                        applicationStatusHealth[experimentName + deploymentStage] = '';
+                                        $.each(data, function (key, val) {
+                                            applicationStatusHealth[experimentName + deploymentStage] += key + ': ' + val + '<br/>';
+                                            if (key === 'status') {
+                                                if (val === 'UP') {
+                                                    applicationStatus[experimentName + deploymentStage] = 'green';
+                                                } else {
+                                                    applicationStatus[experimentName + deploymentStage] = 'red';
+                                                }
+                                                updateDeploymentStatus(experimentName, deploymentStage, cellStyle);
+                                            }
+                                        });
+                                    };
+                                }(experimentName, data.table[experimentName][deploymentStage].style)));
+                        }
                     }
                 });
             });
