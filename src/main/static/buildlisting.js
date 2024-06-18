@@ -296,7 +296,11 @@ function doUpdate() {
                                     }
                                 });
                             };
-                        }(experimentName, data.table[experimentName][deploymentStage].style)));
+                        }(experimentName, data.table[experimentName][deploymentStage].style)))
+                            .fail(function (jqxhr, textStatus, error) {
+                                console.log(textStatus);
+                                console.log(error);
+                            });
                     }
                 });
             });
