@@ -320,6 +320,7 @@ function doUpdate() {
                                                 applicationStatus[experimentName + deploymentStage] = 'red';
                                             }
                                             updateDeploymentStatus(experimentName, deploymentStage, cellStyle);
+                                            updateAggregateStatus();
                                         }
                                     });
                                 };
@@ -345,6 +346,7 @@ function doUpdate() {
                                                     applicationStatus[experimentName + deploymentStage] = 'red';
                                                 }
                                                 updateDeploymentStatus(experimentName, deploymentStage, cellStyle);
+                                                updateAggregateStatus();
                                             }
                                         });
                                     };
