@@ -27,17 +27,6 @@ var applicationStatusReplicas = {};
 var serviceStatusHealth = {};
 var applicationStatusHealth = {};
 
-// var aggregateStagingWebServiceFail = [];
-// var aggregateStagingWebServiceOK = [];
-// var aggregateStagingWebProxyFail = [];
-// var aggregateStagingWebProxy502 = [];
-// var aggregateStagingWebProxyOK = [];
-// var aggregateStagingAdminServiceFail = [];
-// var aggregateStagingAdminServiceOK = [];
-// var aggregateStagingAdminProxyFail = [];
-// var aggregateStagingAdminProxy502 = [];
-// var aggregateStagingAdminProxyOK = [];
-
 function updateDeploymentStatus(keyString, cellString, cellStyle) {
     var experimentCell = document.getElementById(keyString + cellString);
     if (experimentCell) {
@@ -58,26 +47,60 @@ function updateDeploymentStatus(keyString, cellString, cellStyle) {
     }
 }
 
-// function updateAggregateStatus() {
-//     var aggregateStagingWebServiceFailPercent = aggregateStagingWebServiceFail.length / (aggregateStagingWebServiceFail.length + aggregateStagingWebServiceOK.length) * 100;
-//     $("#aggregateStagingWebServiceFail").width(aggregateStagingWebServiceFailPercent + "%");
-//     // aggregateStagingWebServiceFail
-//     // aggregateStagingWebServiceOK
-//     // aggregateStagingWebProxyFail
-//     // aggregateStagingWebProxy502
-//     // aggregateStagingWebProxyOK
-//     // aggregateStagingAdminServiceFail
-//     // aggregateStagingAdminServiceOK
-//     // aggregateStagingAdminProxyFail
-//     // aggregateStagingAdminProxy502
-//     // aggregateStagingAdminProxyOK
-// }
+function updateAggregateStatus() {
+    var aggregateStagingWebServiceCount = 0;
+    var aggregateStagingWebServiceOK = 0;
+    var aggregateStagingWebProxyFail = 0;
+    var aggregateStagingWebProxy502 = 0;
+    var aggregateStagingWebProxyOK = 0;
+    var aggregateStagingAdminServiceCount = 0;
+    var aggregateStagingAdminServiceOK = 0;
+    var aggregateStagingAdminProxyFail = 0;
+    var aggregateStagingAdminProxy502 = 0;
+    var aggregateStagingAdminProxyOK = 0;
+    for (var key of Object.keys(serviceStatusHealth)) {
+        isRunning = (serviceStatusHealth[key].inclues("UP")) ? 1 : 0;
+        if (key.includes("_staging_web")) {
+            aggregateStagingWebServiceCount++;
+            aggregateStagingWebServiceOK += isRunning;
+        }
+        if (key.includes("_staging_admin")) {
+            aggregateStagingAdminServiceCount++;
+            aggregateStagingAdminServiceOK += isRunning;
+        }
+        if (key.includes("_production_web")) {
+            aggregateProductionWebServiceCount++;
+            aggregateProductionWebServiceOK += isRunning;
+        }
+        if (key.includes("_production_admin")) {
+            aggregateProductionAdminServiceCount++;
+            aggregateProductionAdminServiceOK += isRunning;
+        }
+    }
+
+    $("#aggregateStagingWebServiceOK").width((aggregateStagingWebServiceOK / aggregateStagingWebServiceCount * 100) + "%");
+    $("#aggregateStagingAdminServiceOK").width((aggregateStagingAdminServiceOK / aggregateStagingAdminServiceCount * 100) + "%");
+    $("#aggregateProductionWebServiceOK").width((aggregateStagingWebServiceOK / aggregateStagingWebServiceCount * 100) + "%");
+    $("#aggregateProductionAdminServiceOK").width((aggregateProductionAdminServiceOK / aggregateProductionAdminServiceCount * 100) + "%");
+    // aggregateStagingWebServiceFail
+    // aggregateStagingWebServiceOK
+    // aggregateStagingWebProxyFail
+    // aggregateStagingWebProxy502
+    // aggregateStagingWebProxyOK
+    // aggregateStagingAdminServiceFail
+    // aggregateStagingAdminServiceOK
+    // aggregateStagingAdminProxyFail
+    // aggregateStagingAdminProxy502
+    // aggregateStagingAdminProxyOK
+}
 
 function doUpdate() {
     clearTimeout(updateTimer);
     updateTimer = window.setTimeout(doUpdate, 60000);
     $.getJSON('buildhistory.json?' + new Date().getTime(), function (data) {
         //console.log(data);
+        // update the update aggregate status here before all the values start changing while the getJSON requests gradually return
+        updateAggregateStatus();
         for (var keyString in data.table) {
             //console.log(keyString);
             var experimentRow = document.getElementById(keyString + '_row');
@@ -269,16 +292,16 @@ function doUpdate() {
                     if (key.endsWith(deploymentStage)) {
                         const experimentName = key.replace(deploymentStage, "");
                         applicationStatusReplicas[key] = val.replicas;
-                        if (val.replicas.startsWith("0/")) {
-                            applicationStatus[key] = 'red';
-                        } else {
-                            const replicaParts = val.replicas.split("/");
-                            if (replicaParts[0] === replicaParts[1]) {
-                                applicationStatus[key] = 'green';
-                            } else {
-                                applicationStatus[key] = 'yellow';
-                            }
-                        }
+                        // if (val.replicas.startsWith("0/")) {
+                        //     applicationStatus[key] = 'red';
+                        // } else {
+                        //     const replicaParts = val.replicas.split("/");
+                        //     if (replicaParts[0] === replicaParts[1]) {
+                        //         applicationStatus[key] = 'green';
+                        //     } else {
+                        //         applicationStatus[key] = 'yellow';
+                        //     }
+                        // }
                         updateDeploymentStatus(experimentName, deploymentStage, data.table[experimentName][deploymentStage].style);
                         // the path -admin/actuator/health is for spring boot 2.3.0
                         $.getJSON(window.location.protocol + '//' + window.location.hostname + ':' + val.port + '/' + key.replace("_staging", "").replace("_production", "").replace("_admin", "-admin").replace("_web", "") + '/actuator/health', (function (experimentName, cellStyle) {
@@ -287,20 +310,19 @@ function doUpdate() {
                                 $.each(data, function (key, val) {
                                     serviceStatusHealth[experimentName + deploymentStage] += key + ': ' + val + '<br/>';
                                     if (key === 'status') {
-                                        if (val === 'UP') {
-                                            applicationStatus[experimentName + deploymentStage] = 'green';
-                                        } else {
-                                            applicationStatus[experimentName + deploymentStage] = 'red';
-                                        }
+                                        // if (val === 'UP') {
+                                        //     applicationStatus[experimentName + deploymentStage] = 'green';
+                                        // } else {
+                                        //     applicationStatus[experimentName + deploymentStage] = 'red';
+                                        // }
                                         updateDeploymentStatus(experimentName, deploymentStage, cellStyle);
                                     }
                                 });
                             };
                         }(experimentName, data.table[experimentName][deploymentStage].style)))
-                            .fail(function (jqxhr, textStatus, error) {
-                                console.log(textStatus);
-                                console.log(error);
-                            });
+                            /* .fail(function (jqxhr, textStatus, error) {
+                                serviceStatusHealth[experimentName + deploymentStage] += error + ': ' + jqxhr.status + ': ' + textStatus + '<br/>';
+                            })*/;
                     }
                 });
             });
