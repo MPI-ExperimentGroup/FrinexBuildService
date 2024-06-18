@@ -62,25 +62,25 @@ function updateAggregateStatus() {
     var aggregateProductionWebServiceOK = 0;
     var aggregateProductionAdminServiceCount = 0;
     var aggregateProductionAdminServiceOK = 0;
-    // for (var key of Object.keys(serviceStatusHealth)) {
-    //     isRunning = (serviceStatusHealth[key].inclues("UP")) ? 1 : 0;
-    //     if (key.includes("_staging_web")) {
-    //         aggregateStagingWebServiceCount++;
-    //         aggregateStagingWebServiceOK += isRunning;
-    //     }
-    //     if (key.includes("_staging_admin")) {
-    //         aggregateStagingAdminServiceCount++;
-    //         aggregateStagingAdminServiceOK += isRunning;
-    //     }
-    //     if (key.includes("_production_web")) {
-    //         aggregateProductionWebServiceCount++;
-    //         aggregateProductionWebServiceOK += isRunning;
-    //     }
-    //     if (key.includes("_production_admin")) {
-    //         aggregateProductionAdminServiceCount++;
-    //         aggregateProductionAdminServiceOK += isRunning;
-    //     }
-    // }
+    for (var key of Object.keys(serviceStatusHealth)) {
+        isRunning = (serviceStatusHealth[key] !== '') ? 1 : 0;
+        if (key.includes("_staging_web")) {
+            aggregateStagingWebServiceCount++;
+            aggregateStagingWebServiceOK += isRunning;
+        }
+        if (key.includes("_staging_admin")) {
+            aggregateStagingAdminServiceCount++;
+            aggregateStagingAdminServiceOK += isRunning;
+        }
+        if (key.includes("_production_web")) {
+            aggregateProductionWebServiceCount++;
+            aggregateProductionWebServiceOK += isRunning;
+        }
+        if (key.includes("_production_admin")) {
+            aggregateProductionAdminServiceCount++;
+            aggregateProductionAdminServiceOK += isRunning;
+        }
+    }
 
     $("#aggregateStagingWebServiceOK").width((aggregateStagingWebServiceOK / aggregateStagingWebServiceCount * 100) + "%");
     $("#aggregateStagingAdminServiceOK").width((aggregateStagingAdminServiceOK / aggregateStagingAdminServiceCount * 100) + "%");
@@ -121,105 +121,105 @@ function doUpdate() {
                 // check the spring health here and show http and db status via applicationStatus array
                 // getting the health of the experiment admin and web
                 // the path -admin/health is for spring boot 1.4.1
-                $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
-                    return function (data) {
-                        applicationStatusHealth[experimentName + '_staging_admin'] = '';
-                        $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_staging_admin'] += key + ': ' + val + '<br/>';
-                            if (key === 'status') {
-                                if (val === 'UP') {
-                                    applicationStatus[experimentName + '_staging_admin'] = 'yellow';
-                                } else {
-                                    applicationStatus[experimentName + '_staging_admin'] = 'red';
-                                }
-                                updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);
-                            }
-                        });
-                    };
-                }(keyString, data.table[keyString]['_staging_admin'].style)));
+                // $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
+                //     return function (data) {
+                //         applicationStatusHealth[experimentName + '_staging_admin'] = '';
+                //         $.each(data, function (key, val) {
+                //             applicationStatusHealth[experimentName + '_staging_admin'] += key + ': ' + val + '<br/>';
+                //             if (key === 'status') {
+                //                 if (val === 'UP') {
+                //                     applicationStatus[experimentName + '_staging_admin'] = 'yellow';
+                //                 } else {
+                //                     applicationStatus[experimentName + '_staging_admin'] = 'red';
+                //                 }
+                //                 updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);
+                //             }
+                //         });
+                //     };
+                // }(keyString, data.table[keyString]['_staging_admin'].style)));
                 // this request is for spring boot 1.4.1 and Frinex only had a single production server at that time, so we only check the default server here
-                $.getJSON(data.productionServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
-                    return function (data) {
-                        applicationStatusHealth[experimentName + '_production_admin'] = '';
-                        $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_production_admin'] += key + ': ' + val + '<br/>';
-                            if (key === 'status') {
-                                if (val === 'UP') {
-                                    applicationStatus[experimentName + '_production_admin'] = 'yellow';
-                                } else {
-                                    applicationStatus[experimentName + '_production_admin'] = 'red';
-                                }
-                                updateDeploymentStatus(experimentName, '_production_admin', cellStyle);
-                            }
-                        });
-                    };
-                }(keyString, data.table[keyString]['_production_admin'].style)));
+                // $.getJSON(data.productionServerUrl + '/' + keyString + '-admin/health', (function (experimentName, cellStyle) {
+                //     return function (data) {
+                //         applicationStatusHealth[experimentName + '_production_admin'] = '';
+                //         $.each(data, function (key, val) {
+                //             applicationStatusHealth[experimentName + '_production_admin'] += key + ': ' + val + '<br/>';
+                //             if (key === 'status') {
+                //                 if (val === 'UP') {
+                //                     applicationStatus[experimentName + '_production_admin'] = 'yellow';
+                //                 } else {
+                //                     applicationStatus[experimentName + '_production_admin'] = 'red';
+                //                 }
+                //                 updateDeploymentStatus(experimentName, '_production_admin', cellStyle);
+                //             }
+                //         });
+                //     };
+                // }(keyString, data.table[keyString]['_production_admin'].style)));
                 // the path -admin/actuator/health is for spring boot 2.3.0
-                $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
-                    return function (data) {
-                        applicationStatusHealth[experimentName + '_staging_admin'] = '';
-                        $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_staging_admin'] += key + ': ' + val + '<br/>';
-                            if (key === 'status') {
-                                if (val === 'UP') {
-                                    applicationStatus[experimentName + '_staging_admin'] = 'green';
-                                } else {
-                                    applicationStatus[experimentName + '_staging_admin'] = 'red';
-                                }
-                                updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);
-                            }
-                        });
-                    };
-                }(keyString, data.table[keyString]['_staging_admin'].style)));
-                $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
-                    return function (data) {
-                        applicationStatusHealth[experimentName + '_production_admin'] = '';
-                        $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_production_admin'] += key + ': ' + val + '<br/>';
-                            if (key === 'status') {
-                                if (val === 'UP') {
-                                    applicationStatus[experimentName + '_production_admin'] = 'green';
-                                } else {
-                                    applicationStatus[experimentName + '_production_admin'] = 'red';
-                                }
-                                updateDeploymentStatus(experimentName, '_production_admin', cellStyle);
-                            }
-                        });
-                    };
-                }(keyString, data.table[keyString]['_production_admin'].style)));
+                // $.getJSON(data.stagingServerUrl + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
+                //     return function (data) {
+                //         applicationStatusHealth[experimentName + '_staging_admin'] = '';
+                //         $.each(data, function (key, val) {
+                //             applicationStatusHealth[experimentName + '_staging_admin'] += key + ': ' + val + '<br/>';
+                //             if (key === 'status') {
+                //                 if (val === 'UP') {
+                //                     applicationStatus[experimentName + '_staging_admin'] = 'green';
+                //                 } else {
+                //                     applicationStatus[experimentName + '_staging_admin'] = 'red';
+                //                 }
+                //                 updateDeploymentStatus(experimentName, '_staging_admin', cellStyle);
+                //             }
+                //         });
+                //     };
+                // }(keyString, data.table[keyString]['_staging_admin'].style)));
+                // $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '-admin/actuator/health', (function (experimentName, cellStyle) {
+                //     return function (data) {
+                //         applicationStatusHealth[experimentName + '_production_admin'] = '';
+                //         $.each(data, function (key, val) {
+                //             applicationStatusHealth[experimentName + '_production_admin'] += key + ': ' + val + '<br/>';
+                //             if (key === 'status') {
+                //                 if (val === 'UP') {
+                //                     applicationStatus[experimentName + '_production_admin'] = 'green';
+                //                 } else {
+                //                     applicationStatus[experimentName + '_production_admin'] = 'red';
+                //                 }
+                //                 updateDeploymentStatus(experimentName, '_production_admin', cellStyle);
+                //             }
+                //         });
+                //     };
+                // }(keyString, data.table[keyString]['_production_admin'].style)));
                 // get the health of the GUI
-                $.getJSON(data.stagingServerUrl + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
-                    return function (data) {
-                        applicationStatusHealth[experimentName + '_staging_web'] = '';
-                        $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_staging_web'] += key + ': ' + val + '<br/>';
-                            if (key === 'status') {
-                                if (val === 'UP') {
-                                    applicationStatus[experimentName + '_staging_web'] = 'green';
-                                } else {
-                                    applicationStatus[experimentName + '_staging_web'] = 'red';
-                                }
-                                updateDeploymentStatus(experimentName, '_staging_web', cellStyle);
-                            }
-                        });
-                    };
-                }(keyString, data.table[keyString]['_staging_web'].style)));
-                $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
-                    return function (data) {
-                        applicationStatusHealth[experimentName + '_production_web'] = '';
-                        $.each(data, function (key, val) {
-                            applicationStatusHealth[experimentName + '_production_web'] += key + ': ' + val + '<br/>';
-                            if (key === 'status') {
-                                if (val === 'UP') {
-                                    applicationStatus[experimentName + '_production_web'] = 'green';
-                                } else {
-                                    applicationStatus[experimentName + '_production_web'] = 'red';
-                                }
-                                updateDeploymentStatus(experimentName, '_production_web', cellStyle);
-                            }
-                        });
-                    };
-                }(keyString, data.table[keyString]['_production_web'].style)));
+                // $.getJSON(data.stagingServerUrl + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
+                //     return function (data) {
+                //         applicationStatusHealth[experimentName + '_staging_web'] = '';
+                //         $.each(data, function (key, val) {
+                //             applicationStatusHealth[experimentName + '_staging_web'] += key + ': ' + val + '<br/>';
+                //             if (key === 'status') {
+                //                 if (val === 'UP') {
+                //                     applicationStatus[experimentName + '_staging_web'] = 'green';
+                //                 } else {
+                //                     applicationStatus[experimentName + '_staging_web'] = 'red';
+                //                 }
+                //                 updateDeploymentStatus(experimentName, '_staging_web', cellStyle);
+                //             }
+                //         });
+                //     };
+                // }(keyString, data.table[keyString]['_staging_web'].style)));
+                // $.getJSON(((typeof data.table[keyString]['_production_target'] !== 'undefined' && data.table[keyString]['_production_target'].value != '') ? data.table[keyString]['_production_target'].value : data.productionServerUrl) + '/' + keyString + '/actuator/health', (function (experimentName, cellStyle) {
+                //     return function (data) {
+                //         applicationStatusHealth[experimentName + '_production_web'] = '';
+                //         $.each(data, function (key, val) {
+                //             applicationStatusHealth[experimentName + '_production_web'] += key + ': ' + val + '<br/>';
+                //             if (key === 'status') {
+                //                 if (val === 'UP') {
+                //                     applicationStatus[experimentName + '_production_web'] = 'green';
+                //                 } else {
+                //                     applicationStatus[experimentName + '_production_web'] = 'red';
+                //                 }
+                //                 updateDeploymentStatus(experimentName, '_production_web', cellStyle);
+                //             }
+                //         });
+                //     };
+                // }(keyString, data.table[keyString]['_production_web'].style)));
             }
             // use the UTC date stored in a data attribute of the row to check if the row has changes before updating it
             if (data.table[keyString]['_date'].value !== experimentRow.dataset.lastchange) {
@@ -314,11 +314,11 @@ function doUpdate() {
                                 $.each(data, function (key, val) {
                                     serviceStatusHealth[experimentName + deploymentStage] += key + ': ' + val + '<br/>';
                                     if (key === 'status') {
-                                        // if (val === 'UP') {
-                                        //     applicationStatus[experimentName + deploymentStage] = 'green';
-                                        // } else {
-                                        //     applicationStatus[experimentName + deploymentStage] = 'red';
-                                        // }
+                                        if (val === 'UP') {
+                                            applicationStatus[experimentName + deploymentStage] = 'green';
+                                        } else {
+                                            applicationStatus[experimentName + deploymentStage] = 'red';
+                                        }
                                         updateDeploymentStatus(experimentName, deploymentStage, cellStyle);
                                     }
                                 });
