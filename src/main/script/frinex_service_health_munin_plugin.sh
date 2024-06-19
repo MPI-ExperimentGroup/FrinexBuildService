@@ -113,19 +113,23 @@ production_admin_values() {
 output_values() {
     case $1 in
         staging_web)
-            cat $dataDirectory/staging_web_values
+            # if the services.json cannot be found then all values will be 0
+            # If the plugin - for any reason - has no value to report, then it may send the value U for undefined. 
+            # therefore if the file contains "Total.value 0" then we can convert all 0 values to  U
+            # but for simplicity we are just converting all 0 values 
+            cat $dataDirectory/staging_web_values | sed 's/.value 0/.value U/g'
             { staging_web_values > $dataDirectory/staging_web_values.tmp; mv -f $dataDirectory/staging_web_values.tmp $dataDirectory/staging_web_values; }&
             ;;
         staging_admin)
-            cat $dataDirectory/staging_admin_values
+            cat $dataDirectory/staging_admin_values | sed 's/.value 0/.value U/g'
             { staging_admin_values > $dataDirectory/staging_admin_values.tmp; mv -f $dataDirectory/staging_admin_values.tmp $dataDirectory/staging_admin_values; }&
             ;;
         production_web)
-            cat $dataDirectory/production_web_values
+            cat $dataDirectory/production_web_values | sed 's/.value 0/.value U/g'
             { production_web_values > $dataDirectory/production_web_values.tmp; mv -f $dataDirectory/production_web_values.tmp $dataDirectory/production_web_values; }&
             ;;
         production_admin)
-            cat $dataDirectory/production_admin_values
+            cat $dataDirectory/production_admin_values | sed 's/.value 0/.value U/g'
             { production_admin_values > $dataDirectory/production_admin_values.tmp; mv -f $dataDirectory/production_admin_values.tmp $dataDirectory/production_admin_values; }&
             ;;
         *)
