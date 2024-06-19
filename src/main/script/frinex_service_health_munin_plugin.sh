@@ -190,6 +190,8 @@ health_of_proxy() {
         healthResult=$(curl --connect-timeout 1 --max-time 1 --fail-early -k --silent -H 'Content-Type: application/json' https://$currentUrl/actuator/health)
         if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
             healthCount=$[$healthCount +1]
+        else
+            echo "https://$currentUrl/actuator/health" >> $dataDirectory/failing_$(date +%F).log
         fi   
     done
     echo $healthCount
