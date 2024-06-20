@@ -53,10 +53,14 @@ for serviceName in $serviceNameArray; do
         if (( $minutesSinceStarted > 60 )); then
             echo "considering: $serviceName"
             adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
+            webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
             adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
+            webContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
             experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
             echo "adminServiceName: $adminServiceName"
             echo "adminContextPath: $adminContextPath"
+            echo "webServiceName: $webServiceName"
+            echo "webContextPath: $webContextPath"
             echo "artifactsDirectory: $experimentArtifactsDirectory"
             servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
             echo "servicePortNumber: $servicePortNumber"
@@ -76,7 +80,6 @@ for serviceName in $serviceNameArray; do
                 mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
             else
                 # this section will terminate both the admin and web services for this experiment
-                webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
                 # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
                 if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp | grep -qE "sessionFirstAndLastSeen"; then
                     mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
@@ -103,6 +106,18 @@ for serviceName in $serviceNameArray; do
                     echo 'broken so can be terminated';
                     rm /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
                 fi
+            fi
+            # if its not been shutdown then check the web component and kill if not healthy (we could "service update --force" but that might keep repeating)
+            webPortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $webServiceName | awk '{print $4}')
+            if [[ "$webPortNumber" ]]; then
+                healthResult=$(curl -k --silent -H 'Content-Type: application/json' https//frinexbuild:$servicePortNumber/$webContextPath/actuator/health)
+                if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
+                    echo "web component OK"
+                else
+                    sudo docker service rm "$webServiceName"
+                    echo ""
+                    echo 'web component broken so can be terminated';
+                fi   
             fi
         else
             ((recentyStarted++))
