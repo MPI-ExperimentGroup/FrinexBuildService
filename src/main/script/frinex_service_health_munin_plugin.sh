@@ -197,6 +197,7 @@ health_of_proxy() {
             healthCount=$[$healthCount +1]
         else
             echo "https://$currentUrl/actuator/health" >> $dataDirectory/failing_$(date +%F).log
+            echo $healthResult >> $dataDirectory/failing_$(date +%F).log
         fi   
     done
     echo $healthCount
