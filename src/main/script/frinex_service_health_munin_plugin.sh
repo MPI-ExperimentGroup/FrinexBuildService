@@ -133,7 +133,7 @@ output_values() {
             { production_admin_values > $dataDirectory/production_admin_values.tmp; mv -f $dataDirectory/production_admin_values.tmp $dataDirectory/production_admin_values; }&
             ;;
         *)
-            cat $dataDirectory/frinex_munin_all
+            cat $dataDirectory/frinex_munin_all | sed 's/.value 0/.value U/g'
             { { staging_web_values; staging_admin_values; production_web_values; production_admin_values; } > $dataDirectory/frinex_munin_all.tmp; mv -f $dataDirectory/frinex_munin_all.tmp $dataDirectory/frinex_munin_all; }&
             ;;
     esac
@@ -166,6 +166,7 @@ health_of_services() {
             healthCount=$[$healthCount +1]
         else
             echo "http://$hoststring$currentUrl/actuator/health" >> $dataDirectory/failing_$(date +%F).log
+            echo $healthResult >> $dataDirectory/failing_$(date +%F).log
         fi   
     done
     echo $healthCount
