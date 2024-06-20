@@ -78,8 +78,8 @@ for serviceName in $serviceNameArray; do
                 ((hasRecentUse++))
                 echo 'recent use detected';
                 mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
-                wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
-                echo "pingResult: $wakeResult"
+                # wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
+                # echo "wakeResult: $wakeResult"
             else
                 # this section will terminate both the admin and web services for this experiment
                 # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
@@ -89,8 +89,8 @@ for serviceName in $serviceNameArray; do
                         ((unusedNewHealthy++))
                         echo 'recenty started, unused but healthy'; 
                         echo ""
-                        wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
-                        echo "pingResult: $wakeResult"
+                        # wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
+                        # echo "wakeResult: $wakeResult"
                     else
                         ((canBeTerminated++))
                         # echo "adminServiceName: $adminServiceName"
@@ -118,6 +118,7 @@ for serviceName in $serviceNameArray; do
                 if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
                     echo "web component OK"
                 else
+                    echo "healthResult: $healthResult"
                     # sudo docker service rm "$webServiceName"
                     # sudo docker service update --force "$webServiceName"
                     echo ""
