@@ -114,7 +114,7 @@ for serviceName in $serviceNameArray; do
             # if its not been shutdown then check the web component and kill if not healthy (we could "service update --force" but that might keep repeating)
             webPortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $webServiceName | awk '{print $4}')
             if [[ "$webPortNumber" ]]; then
-                healthResult=$(curl -k --silent -H 'Content-Type: application/json' http//frinexbuild:$webPortNumber/$webContextPath/actuator/health)
+                healthResult=$(curl -k --silent -H 'Content-Type: application/json' http://frinexbuild:$webPortNumber/$webContextPath/actuator/health)
                 if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
                     echo "web component OK"
                 else
