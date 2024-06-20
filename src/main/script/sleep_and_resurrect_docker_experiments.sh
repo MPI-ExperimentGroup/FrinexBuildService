@@ -119,7 +119,7 @@ for serviceName in $serviceNameArray; do
                     echo "web component OK"
                 else
                     # sudo docker service rm "$webServiceName"
-                    sudo docker service update --force "$webServiceName"
+                    # sudo docker service update --force "$webServiceName"
                     echo ""
                     echo 'web component broken so can be terminated';
                 fi   
