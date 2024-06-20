@@ -78,7 +78,7 @@ for serviceName in $serviceNameArray; do
                 ((hasRecentUse++))
                 echo 'recent use detected';
                 mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
-                wakeResult=$(curl -k --silent -H 'Content-Type: application/json' http//frinexbuild:$servicePortNumber/$webContextPath)
+                wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
                 echo "pingResult: $wakeResult"
             else
                 # this section will terminate both the admin and web services for this experiment
@@ -89,7 +89,7 @@ for serviceName in $serviceNameArray; do
                         ((unusedNewHealthy++))
                         echo 'recenty started, unused but healthy'; 
                         echo ""
-                        wakeResult=$(curl -k --silent -H 'Content-Type: application/json' http//frinexbuild:$servicePortNumber/$webContextPath)
+                        wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
                         echo "pingResult: $wakeResult"
                     else
                         ((canBeTerminated++))
