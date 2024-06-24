@@ -132,8 +132,14 @@ for serviceName in $serviceNameArray; do
     echo ""
 done
 
+echo "starting missing services"
 for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*-public_usage_stats.json | awk -F '/' '{print $5}' | sed 's/_admin-public_usage_stats.json//g'); do
     echo "expectedServiceName: $expectedServiceName"
+    if [[ $serviceNameArray == *"$expectedServiceName"* ]]; then
+        echo "$expectedServiceName OK"
+    else
+        echo "$expectedServiceName needs starting"
+    fi
 done
 
 if (( $canBeTerminated > 0 )); then
