@@ -132,7 +132,7 @@ for serviceName in $serviceNameArray; do
     echo ""
 done
 
-for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*-public_usage_stats.json); do
+for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*-public_usage_stats.json | awk -F '/' '{print $4}'); do
     echo "expectedServiceName: $expectedServiceName"
 done
 
