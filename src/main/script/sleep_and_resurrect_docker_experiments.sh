@@ -138,7 +138,9 @@ for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates
     if [[ $serviceNameArray == *"$expectedServiceName"* ]]; then
         echo "$expectedServiceName OK"
     else
-        echo "$expectedServiceName needs starting"
+        echo "$expectedServiceName requesting start up"
+        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$$expectedServiceName_admin"
+        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$$expectedServiceName_web"
     fi
 done
 
