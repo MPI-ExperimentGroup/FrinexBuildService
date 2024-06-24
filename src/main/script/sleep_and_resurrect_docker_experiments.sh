@@ -124,8 +124,12 @@ for serviceName in $serviceNameArray; do
                     sudo docker service update "$webServiceName"
                     # sudo docker service update --force "$webServiceName"
                     echo ""
-                    echo "web component broken";
-                fi   
+                    echo "updating web component";
+                fi
+            else
+                ((needsUpdating++))
+                echo "starting web componet"
+                curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?{$expectedServiceName}_web"
             fi
         else
             ((recentyStarted++))
@@ -144,8 +148,8 @@ for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates
     else
         ((needsStarting++))
         echo "$expectedServiceName requesting start up"
-        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$$expectedServiceName_admin"
-        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$$expectedServiceName_web"
+        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?${expectedServiceName}_admin"
+        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?{$expectedServiceName}_web"
     fi
 done
 
