@@ -132,6 +132,10 @@ for serviceName in $serviceNameArray; do
     echo ""
 done
 
+for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*-public_usage_stats.json); do
+    echo "expectedServiceName: $expectedServiceName"
+done
+
 if (( $canBeTerminated > 0 )); then
     curl PROXY_UPDATE_TRIGGER
 fi
