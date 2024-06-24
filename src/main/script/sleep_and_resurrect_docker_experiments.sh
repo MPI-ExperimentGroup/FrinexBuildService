@@ -27,6 +27,8 @@ canBeTerminated=0
 hasRecentUse=0
 recentyStarted=0
 unusedNewHealthy=0
+needsStarting=0
+needsUpdating=0
 
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
 recentUseDates="$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
@@ -116,11 +118,13 @@ for serviceName in $serviceNameArray; do
                 if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
                     echo "web component OK"
                 else
+                    ((needsUpdating++))
                     echo "healthResult: $healthResult"
                     # sudo docker service rm "$webServiceName"
+                    sudo docker service update "$webServiceName"
                     # sudo docker service update --force "$webServiceName"
                     echo ""
-                    echo 'web component broken so can be terminated';
+                    echo "web component broken";
                 fi   
             fi
         else
@@ -138,6 +142,7 @@ for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates
     if [[ $serviceNameArray == *"$expectedServiceName"* ]]; then
         echo "$expectedServiceName OK"
     else
+        ((needsStarting++))
         echo "$expectedServiceName requesting start up"
         curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$$expectedServiceName_admin"
         curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$$expectedServiceName_web"
@@ -155,6 +160,8 @@ echo "canBeTerminated: $canBeTerminated"
 echo "recentyStarted: $recentyStarted"
 echo "unusedNewHealthy: $unusedNewHealthy"
 echo "hasRecentUse: $hasRecentUse"
+echo "needsUpdating: $needsUpdating"
+echo "needsStarting: $needsStarting"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
 # echo "$serviceByMemory"
