@@ -77,6 +77,10 @@ RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format 
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]*}} [a-z0-9-_]*_staging_admin' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]*}} [a-z0-9-_]*_production_web' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]*}} [a-z0-9-_]*_production_admin' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service update [a-z0-9-_]*_staging_web' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service update [a-z0-9-_]*_staging_admin' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service update [a-z0-9-_]*_production_web' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service update [a-z0-9-_]*_production_admin' >> /etc/sudoers
 
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /bin/chown -R frinex\:www-data /FrinexBuildService/artifacts/[a-z0-9-_]*/' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /bin/chmod -R ug+rwx /FrinexBuildService/artifacts/[a-z0-9-_]*/' >> /etc/sudoers
