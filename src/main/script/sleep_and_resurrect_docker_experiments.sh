@@ -129,7 +129,7 @@ for serviceName in $serviceNameArray; do
             else
                 ((needsUpdating++))
                 echo "starting web componet"
-                curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?{$expectedServiceName}_web"
+                curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$webServiceName"
             fi
         else
             ((recentyStarted++))
@@ -141,7 +141,7 @@ for serviceName in $serviceNameArray; do
 done
 
 echo "starting missing services"
-for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*-public_usage_stats.json | awk -F '/' '{print $5}' | sed 's/_admin-public_usage_stats.json//g'); do
+for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*_admin-public_usage_stats.json | awk -F '/' '{print $5}' | sed 's/_admin-public_usage_stats.json//g'); do
     echo "expectedServiceName: $expectedServiceName"
     if [[ $serviceNameArray == *"$expectedServiceName"* ]]; then
         echo "$expectedServiceName OK"
