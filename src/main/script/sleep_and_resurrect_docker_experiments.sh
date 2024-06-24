@@ -47,27 +47,25 @@ for serviceName in $serviceNameArray; do
         daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
         hoursSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60))
         minutesSinceStarted=$((($(date +%s) - $secondsSince1970)/60))
-        echo "daysSinceStarted $daysSinceStarted"
-        echo "hoursSinceStarted $hoursSinceStarted"
-        echo "minutesSinceStarted $minutesSinceStarted"
+        echo "daysSinceStarted $daysSinceStarted, hoursSinceStarted $hoursSinceStarted, minutesSinceStarted $minutesSinceStarted"
         if (( $minutesSinceStarted > 60 )); then
-            echo "considering: $serviceName"
+            # echo "considering: $serviceName"
             adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
             webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
             adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
             webContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
             experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
-            echo "adminServiceName: $adminServiceName"
-            echo "adminContextPath: $adminContextPath"
-            echo "webServiceName: $webServiceName"
-            echo "webContextPath: $webContextPath"
-            echo "artifactsDirectory: $experimentArtifactsDirectory"
+            # echo "adminServiceName: $adminServiceName"
+            # echo "adminContextPath: $adminContextPath"
+            # echo "webServiceName: $webServiceName"
+            # echo "webContextPath: $webContextPath"
+            # echo "artifactsDirectory: $experimentArtifactsDirectory"
             servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
             echo "servicePortNumber: $servicePortNumber"
             if [[ "$servicePortNumber" ]]; then
                 sudo chown -R frinex:www-data /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
                 sudo chmod -R ug+rwx /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
-                curl http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
+                curl --silent http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
             else
                 echo "servicePortNumber not found so using the last known public_usage_stats"
             fi
