@@ -120,11 +120,12 @@ for serviceName in $serviceNameArray; do
                 else
                     ((needsUpdating++))
                     echo "healthResult: $healthResult"
-                    # sudo docker service rm "$webServiceName"
-                    sudo docker service update "$webServiceName"
+                    sudo docker service rm "$webServiceName"
+                    # sudo docker service update "$webServiceName"
                     # sudo docker service update --force "$webServiceName"
                     echo ""
-                    echo "updating web component";
+                    echo "broken web component";
+                    # echo "updating web component";
                 fi
             else
                 ((needsUpdating++))
