@@ -127,10 +127,10 @@ for serviceName in $serviceNameArray; do
                     echo "broken web component";
                     # echo "updating web component";
                 fi
-            else
-                ((needsUpdating++))
-                echo "starting web componet"
-                curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$webServiceName"
+            # else
+            #     ((needsUpdating++))
+            #     echo "starting web componet"
+            #     curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$webServiceName"
             fi
         else
             ((recentyStarted++))
