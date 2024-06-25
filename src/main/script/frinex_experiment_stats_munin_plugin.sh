@@ -43,7 +43,7 @@ update_stats() {
     | sed 's/"port":"//g' \
     | sed 's/["\{\}:,]//g' \
     | awk '{print ":" $4 "/" $1}' \
-    | sed "s|_staging||g" | sed "s|_production||g" | sed "s|_admin|-admin|g" | sed "s|_web||g")
+    | sed "s|_staging_web||g" | sed "s|_production_web||g" | sed "s|_staging_admin|-admin|g" | sed "s|_production_admin|-admin|g")
     do
         experimentAdminName=$(cut -d'/' -f2 <<< $currentUrl)
         #echo $experimentAdminName

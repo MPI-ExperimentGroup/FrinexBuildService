@@ -41,7 +41,8 @@ else
     sudo mv /tmp/frinex_service_health_munin_plugin.sh /usr/lib/munin/plugins/frinex_service_health
     sudo chmod 775 /usr/lib/munin/plugins/frinex_service_health
     sudo chown root:root /usr/lib/munin/plugins/frinex_service_health
-    sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
+    # sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_service_health
+    sudo rm /etc/munin/plugins/frinex_service_health
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_staging_web
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_staging_admin
     sudo ln -s /usr/lib/munin/plugins/frinex_service_health /etc/munin/plugins/frinex_production_web
@@ -58,13 +59,15 @@ else
 
     # instal the experiment stats plugin and working directory
     sudo mkdir -p /srv/frinex_munin_data/stats
-    cp script/frinex_experiment_stats_munin_plugin.sh /tmp/frinex_experiment_stats_munin_plugin.sh
-    chmod 777 /tmp/frinex_experiment_stats_munin_plugin.sh
+    # cp script/frinex_experiment_stats_munin_plugin.sh /tmp/frinex_experiment_stats_munin_plugin.sh
+    # chmod 777 /tmp/frinex_experiment_stats_munin_plugin.sh
     sudo rm /usr/lib/munin/plugins/frinex_experiment_stats
-    sudo mv /tmp/frinex_experiment_stats_munin_plugin.sh /usr/lib/munin/plugins/frinex_experiment_stats
-    sudo chmod 775 /usr/lib/munin/plugins/frinex_experiment_stats
-    sudo chown root:root /usr/lib/munin/plugins/frinex_experiment_stats
-    sudo ln -s /usr/lib/munin/plugins/frinex_experiment_stats /etc/munin/plugins/frinex_experiment_stats
+    # sudo mv /tmp/frinex_experiment_stats_munin_plugin.sh /usr/lib/munin/plugins/frinex_experiment_stats
+    # sudo chmod 775 /usr/lib/munin/plugins/frinex_experiment_stats
+    # sudo chown root:root /usr/lib/munin/plugins/frinex_experiment_stats
+    # sudo ln -s /usr/lib/munin/plugins/frinex_experiment_stats /etc/munin/plugins/frinex_experiment_stats
+    sudo rm /usr/lib/munin/plugins/frinex_experiment_stats
+    sudo rm /etc/munin/plugins/frinex_experiment_stats
 
     # instal the tomcat experiment stats plugin and working directories
     sudo mkdir -p /srv/frinex_munin_data/stats_tomcat_frinexstaging
@@ -76,7 +79,8 @@ else
     sudo mv /tmp/frinex_experiment_stats_munin_tomcat_plugin.sh /usr/lib/munin/plugins/frinex_experiment_stats_tomcat
     sudo chmod 775 /usr/lib/munin/plugins/frinex_experiment_stats_tomcat
     sudo chown root:root /usr/lib/munin/plugins/frinex_experiment_stats_tomcat
-    sudo ln -s /usr/lib/munin/plugins/frinex_experiment_stats_tomcat /etc/munin/plugins/frinex_experiment_stats_frinexstaging
+    #sudo ln -s /usr/lib/munin/plugins/frinex_experiment_stats_tomcat /etc/munin/plugins/frinex_experiment_stats_frinexstaging
+    sudo rm /etc/munin/plugins/frinex_experiment_stats_frinexstaging
     sudo ln -s /usr/lib/munin/plugins/frinex_experiment_stats_tomcat /etc/munin/plugins/frinex_experiment_stats_frinexproduction
     sudo ln -s /usr/lib/munin/plugins/frinex_experiment_stats_tomcat /etc/munin/plugins/frinex_experiment_stats_productionother
 
@@ -88,7 +92,8 @@ else
     sudo chmod 775 /usr/lib/munin/plugins/frinex_external_experiment_stats_
     sudo chown root:root /usr/lib/munin/plugins/frinex_external_experiment_stats_
     sudo mkdir -p /srv/frinex_munin_data/frinex_external_experiment_stats
-    sudo ln -s /usr/lib/munin/plugins/frinex_external_experiment_stats_ /etc/munin/plugins/frinex_external_experiment_stats_https_host_port_experiment
+    #sudo ln -s /usr/lib/munin/plugins/frinex_external_experiment_stats_ /etc/munin/plugins/frinex_external_experiment_stats_https_host_port_experiment
+    sudo rm /etc/munin/plugins/frinex_external_experiment_stats_https_host_port_experiment
 
     # instal the experiment tomcat plugin and working directory
     sudo mkdir -p /srv/frinex_munin_data/tomcat
@@ -98,8 +103,8 @@ else
     sudo mv /tmp/frinex_munin_tomcat_plugin.sh /usr/lib/munin/plugins/frinex_tomcat_stats
     sudo chmod 775 /usr/lib/munin/plugins/frinex_tomcat_stats
     sudo chown root:root /usr/lib/munin/plugins/frinex_tomcat_stats
-    sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_staging_web
-    sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_staging_admin
+    # sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_staging_web
+    # sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_staging_admin
     sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_production_web
     sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_production_admin
     sudo ln -s /usr/lib/munin/plugins/frinex_tomcat_stats /etc/munin/plugins/frinex_tomcat_productionb_web
