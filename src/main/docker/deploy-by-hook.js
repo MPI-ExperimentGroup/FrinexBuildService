@@ -927,6 +927,8 @@ function deployProductionGui(currentEntry, retryCounter) {
                         // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
                         + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
                         + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+                        + " sed -i 's|<!-- TomcatSedMarkerA -->|<!-- |g' /ExperimentTemplate/gwt-cordova/pom.xml;"
+                        + " sed -i 's|<!-- TomcatSedMarkerB -->| -->|g' /ExperimentTemplate/gwt-cordova/pom.xml;"
                         + ' mvn clean '
                         + ((currentEntry.isWebApp && deploymentType.includes('production_tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
                         //+ 'package'
@@ -1104,6 +1106,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
             + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
+            + " sed -i 's|<!-- TomcatSedMarkerA -->|<!-- |g' /ExperimentTemplate/registration/pom.xml;"
+            + " sed -i 's|<!-- TomcatSedMarkerB -->| -->|g' /ExperimentTemplate/registration/pom.xml;"
             + ' mvn clean compile ' // the target compile is used to cause compilation errors to show up before all the effort of 
             + ((/* currentEntry.isWebApp && isWebApp is incorrect, non web apps still need the admin */ deploymentType.includes('production_tomcat')) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
