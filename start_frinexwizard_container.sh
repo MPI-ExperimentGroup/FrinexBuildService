@@ -30,14 +30,14 @@ if ! grep -q $(hostname) config/publish.properties; then
     echo "Aborting because the publish.properties does not match the current machine.";
 else
     # build the frinexwizard dockerfile
-    docker build --no-cache -f docker/frinexwizard.Dockerfile -t frinexwizard:latest .
-
+    docker build -f docker/frinexwizard.Dockerfile -t frinexwizard:latest .
+    # --no-cache 
     # remove the old frinexwizard
     # docker stop frinexwizard
     docker service rm frinexwizard
 
     # start the frinexwizard container
-    docker sercice create -d --name frinexwizard -v m2Directory:/maven/.m2/ -v WizardTemplates:/ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/ -v wizardExperiments:/FrinexBuildService/wizard-experiments -v incomingDirectory:/FrinexBuildService/incoming -v buildServerTarget:/FrinexBuildService/artifacts -p 7070:8080 frinexwizard:latest
+    docker service create -d --name frinexwizard -v m2Directory:/maven/.m2/ -v WizardTemplates:/ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/ -v wizardExperiments:/FrinexBuildService/wizard-experiments -v incomingDirectory:/FrinexBuildService/incoming -v buildServerTarget:/FrinexBuildService/artifacts -p 7070:8080 frinexwizard:latest
     docker service logs -f frinexwizard
 fi;
 
