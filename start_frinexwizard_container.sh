@@ -32,12 +32,14 @@ else
     # build the frinexwizard dockerfile
     docker build -f docker/frinexwizard.Dockerfile -t frinexwizard:latest .
     # --no-cache 
+    docker image tag frinexwizard:latest frinexbuild/frinexwizard:latest
+    docker image push frinexbuild/frinexwizard:latest
     # remove the old frinexwizard
     # docker stop frinexwizard
     docker service rm frinexwizard
 
     # start the frinexwizard container
-    docker service create -d --name frinexwizard --mount type=volume,src=m2Directory,dst=/maven/.m2/ --mount type=volume,src=WizardTemplates,dst=/ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/ --mount type=volume,src=wizardExperiments,dst=/FrinexBuildService/wizard-experiments --mount type=volume,src=incomingDirectory,dst=/FrinexBuildService/incoming --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts -p 7070:8080 frinexwizard:latest
+    docker service create -d --name frinexwizard --mount type=volume,src=m2Directory,dst=/maven/.m2/ --mount type=volume,src=WizardTemplates,dst=/ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/ --mount type=volume,src=wizardExperiments,dst=/FrinexBuildService/wizard-experiments --mount type=volume,src=incomingDirectory,dst=/FrinexBuildService/incoming --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts -p 7070:8080 frinexbuild/frinexwizard:latest
     docker service logs -f frinexwizard
 fi;
 
