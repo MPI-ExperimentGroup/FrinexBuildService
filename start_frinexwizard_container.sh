@@ -37,7 +37,7 @@ else
     docker service rm frinexwizard
 
     # start the frinexwizard container
-    docker service create -d --name frinexwizard -v m2Directory:/maven/.m2/ -v WizardTemplates:/ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/ -v wizardExperiments:/FrinexBuildService/wizard-experiments -v incomingDirectory:/FrinexBuildService/incoming -v buildServerTarget:/FrinexBuildService/artifacts -p 7070:8080 frinexwizard:latest
+    docker service create -d --name frinexwizard --mount type=volume,src=m2Directory,dst=/maven/.m2/ --mount type=volume,src=WizardTemplates,dst=/ExperimentTemplate/ExperimentDesigner/src/main/resources/static/compiled_templates/ --mount type=volume,src=wizardExperiments,dst=/FrinexBuildService/wizard-experiments --mount type=volume,src=incomingDirectory,dst=/FrinexBuildService/incoming --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts -p 7070:8080 frinexwizard:latest
     docker service logs -f frinexwizard
 fi;
 
