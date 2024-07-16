@@ -39,17 +39,19 @@ docker service rm registry
 # delete the volume to prevent build up of unused files
 # docker volume rm frinexDockerRegistry
 docker service create -d \
-   # --restart=always \
    --name registry \
    -v registry_certs:/certs \
-   #-v /srv/frinex_docker_registry:/var/lib/registry \
-   # omitting the frinexDockerRegistry volume for the service because expecting it to exist also requires it to be synchronised across all nodes
-   # -v frinexDockerRegistry:/var/lib/registry \
    -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
    -e REGISTRY_HTTP_TLS_CERTIFICATE=/run/secrets/frinexbuild.mpi.nl.crt \
    -e REGISTRY_HTTP_TLS_KEY=/run/secrets/frinexbuild.mpi.nl.key \
    -p 443:443 \
    registry:2
+
+   # --restart=always \
+   #-v /srv/frinex_docker_registry:/var/lib/registry \
+   # omitting the frinexDockerRegistry volume for the service because expecting it to exist also requires it to be synchronised across all nodes
+   # -v frinexDockerRegistry:/var/lib/registry \
+
 
 # for currentService in $(sudo docker service ls | grep -E "_staging|_production" | grep -E "_admin|_web" | awk '{print $2}')
 # do
