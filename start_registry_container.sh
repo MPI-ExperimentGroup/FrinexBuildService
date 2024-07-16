@@ -40,6 +40,7 @@ docker service rm registry
 # docker volume rm frinexDockerRegistry
 docker service create -d \
    --name registry \
+   --replicas=1 \
    --secret frinexbuild.mpi.nl.crt \
    --secret frinexbuild.mpi.nl.key \
    -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
