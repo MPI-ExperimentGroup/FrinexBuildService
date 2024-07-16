@@ -32,6 +32,8 @@ echo "TODO: please update example.com to the relevant URI, then comment this lin
 
 # TODO: when the certificate is made the resulting file /etc/docker/certs.d/example.com/ca.crt must be copied to each swarm node so that they trust the registry
 
+docker secret create frinexbuild.mpi.nl.crt /var/lib/docker/volumes/registry_certs/_data/frinexbuild.mpi.nl.crt
+docker secret create frinexbuild.mpi.nl.key /var/lib/docker/volumes/registry_certs/_data/frinexbuild.mpi.nl.key
 docker stop registry
 docker container rm registry
 # delete the volume to prevent build up of unused files
@@ -44,8 +46,8 @@ docker run -d \
    # omitting the frinexDockerRegistry volume for the service because expecting it to exist also requires it to be synchronised across all nodes
    # -v frinexDockerRegistry:/var/lib/registry \
    -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
-   -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/example.com.crt \
-   -e REGISTRY_HTTP_TLS_KEY=/certs/example.com.key \
+   -e REGISTRY_HTTP_TLS_CERTIFICATE=/run/secrets/frinexbuild.mpi.nl.crt \
+   -e REGISTRY_HTTP_TLS_KEY=/run/secrets/frinexbuild.mpi.nl.key \
    -p 443:443 \
    registry:2
 
