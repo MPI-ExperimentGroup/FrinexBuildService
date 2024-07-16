@@ -22,23 +22,23 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-echo "TODO: please update example.com to the relevant URI, then comment this line to proceed"; exit;
+echo "TODO: please update frinexbuild.mpi.nl to the relevant URI, then comment this line to proceed"; exit;
 
 # Deploying Frinex experiments to the Docker swarm requires this registry to be running
-# docker run --rm -it -v registry_certs:/certs nginx openssl req -newkey rsa:4096 -nodes -sha256 -keyout /certs/example.com.key -addext "subjectAltName = DNS:example.com" -x509 -days 3650 -out /certs/example.com.crt
+# docker run --rm -it -v registry_certs:/certs nginx openssl req -newkey rsa:4096 -nodes -sha256 -keyout /certs/frinexbuild.mpi.nl.key -addext "subjectAltName = DNS:frinexbuild.mpi.nl" -x509 -days 3650 -out /certs/frinexbuild.mpi.nl.crt
 # the self signed certificate needs to be added to the trust directory of each docker node
-# sudo mkdir /etc/docker/certs.d/example.com/
-# sudo cp /var/lib/docker/volumes/registry_certs/_data/example.com.crt /etc/docker/certs.d/example.com/ca.crt
+# sudo mkdir /etc/docker/certs.d/frinexbuild.mpi.nl/
+# sudo cp /var/lib/docker/volumes/registry_certs/_data/frinexbuild.mpi.nl.crt /etc/docker/certs.d/frinexbuild.mpi.nl/ca.crt
 
-# TODO: when the certificate is made the resulting file /etc/docker/certs.d/example.com/ca.crt must be copied to each swarm node so that they trust the registry
+# TODO: when the certificate is made the resulting file /etc/docker/certs.d/frinexbuild.mpi.nl/ca.crt must be copied to each swarm node so that they trust the registry
 
 # sudo docker secret create frinexbuild.mpi.nl.crt /var/lib/docker/volumes/registry_certs/_data/frinexbuild.mpi.nl.crt
 # sudo docker secret create frinexbuild.mpi.nl.key /var/lib/docker/volumes/registry_certs/_data/frinexbuild.mpi.nl.key
-docker stop registry
-docker container rm registry
+# docker stop registry
+docker service rm registry
 # delete the volume to prevent build up of unused files
 # docker volume rm frinexDockerRegistry
-docker run -d \
+docker service create -d \
    --restart=always \
    --name registry \
    -v registry_certs:/certs \
