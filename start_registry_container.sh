@@ -40,7 +40,6 @@ docker service rm registry
 # docker volume rm frinexDockerRegistry
 docker service create -d \
    --name registry \
-   -v registry_certs:/certs \
    -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
    -e REGISTRY_HTTP_TLS_CERTIFICATE=/run/secrets/frinexbuild.mpi.nl.crt \
    -e REGISTRY_HTTP_TLS_KEY=/run/secrets/frinexbuild.mpi.nl.key \
@@ -48,6 +47,7 @@ docker service create -d \
    registry:2
 
    # --restart=always \
+   # -v registry_certs:/certs \
    #-v /srv/frinex_docker_registry:/var/lib/registry \
    # omitting the frinexDockerRegistry volume for the service because expecting it to exist also requires it to be synchronised across all nodes
    # -v frinexDockerRegistry:/var/lib/registry \
