@@ -48,10 +48,10 @@ docker run -d \
    -p 443:443 \
    registry:2
 
-for currentService in $(sudo docker service ls | grep -E "_staging|_production" | grep -E "_admin|_web" | awk '{print $2}')
-do
-   echo $currentService
-   # push each web and admin service image currently in use to the empty registry so that they can be accessed by the swarm nodes
-   # sudo docker push $currentService
-   # curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$currentService"
-done
+# for currentService in $(sudo docker service ls | grep -E "_staging|_production" | grep -E "_admin|_web" | awk '{print $2}')
+# do
+#    echo $currentService
+#    # push each web and admin service image currently in use to the empty registry so that they can be accessed by the swarm nodes
+#    # sudo docker push $currentService
+#    # curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$currentService"
+# done
