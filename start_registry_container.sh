@@ -53,5 +53,5 @@ do
    echo $currentService
    # push each web and admin service image currently in use to the empty registry so that they can be accessed by the swarm nodes
    # sudo docker push $currentService
-   curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$currentService"
+   # curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$currentService"
 done
