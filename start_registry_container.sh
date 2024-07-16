@@ -39,7 +39,7 @@ docker service rm registry
 # delete the volume to prevent build up of unused files
 # docker volume rm frinexDockerRegistry
 docker service create -d \
-   --restart=always \
+   # --restart=always \
    --name registry \
    -v registry_certs:/certs \
    #-v /srv/frinex_docker_registry:/var/lib/registry \
