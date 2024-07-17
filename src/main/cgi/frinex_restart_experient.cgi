@@ -52,7 +52,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             # comparisonContextPath=$(echo "$cleanedInput" | sed 's/_production_web$/_alpine/g'| sed 's/_production_admin$/_alpine-admin/g' | sed 's/_staging_web$/_alpine/g'| sed 's/_staging_admin$/_alpine-admin/g')
             contextPath=$(echo "$cleanedInput" | sed 's/_production_web$//g'| sed 's/_production_admin$/-admin/g' | sed 's/_staging_web$//g'| sed 's/_staging_admin$/-admin/g')
             # only the web component has the compile date so this is used for the tag of both admin and web images
-            imageDateTag=$(unzip -p /FrinexBuildService/protected/$experimentDirectory/$(echo $cleanedInput | sed "s/_admin.war/_web.war/g") version.json | grep compileDate | sed "s/[^0-9]//g")
+            imageDateTag=$(unzip -p /FrinexBuildService/protected/$experimentDirectory/$(echo "$cleanedInput.war" | sed "s/_admin.war/_web.war/g") version.json | grep compileDate | sed "s/[^0-9]//g")
             echo "imageDateTag: $imageDateTag"
             echo "FROM eclipse-temurin:21-jdk-alpine" > /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
             echo "COPY $cleanedInput.war /$cleanedInput.war" >> /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
