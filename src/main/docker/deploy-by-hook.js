@@ -465,12 +465,14 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
         , { mode: 0o755 });
     const serviceSetupString = "cd " + protectedDirectory + "/" + currentEntry.buildName + "\n"
+        // getting the imageDateTag depends on the web version existing on disk which it will because it is compiled before the other components
+        + "imageDateTag=$(unzip -p $(echo " + serviceName + ".war | sed \"s/_admin.war/_web.war/g\") version.json | grep compileDate | sed \"s/[^0-9]//g\")\n"
         // 2024-04-03 removing the --no-cache does not have much affect on the build times so we keep it in. Although it probably isn't needed because the WAR file mtime should have changed.
-        + "sudo docker build --force-rm --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":stable .\n"
-        // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":stable \n"
-        + "sudo docker push " + dockerRegistry + "/" + serviceName + ":stable \n"
+        + "sudo docker build --force-rm --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":$imageDateTag .\n"
+        // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":$imageDateTag \n"
+        + "sudo docker push " + dockerRegistry + "/" + serviceName + ":$imageDateTag \n"
         + "sudo docker service rm " + serviceName + " || true\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
-        + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":stable\n"
+        + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":$imageDateTag\n"
         + "sudo docker system prune -f\n";
     try {
         // console.log(serviceSetupString);
