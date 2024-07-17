@@ -410,15 +410,16 @@ function unDeploy(currentEntry) {
 }
 
 function updateServicesJson() {
-    if (deploymentType.includes('docker')) {
-        // TODO: this might be a good point to update a list of Tomcat experiments
-        // update the docker service listing JSON which is used to inform the user in the build listing HTML
-        console.log("updateServicesJson");
-        const servicesJsonFileName = targetDirectory + "/services.json";
-        const servicesDockerString = "sudo docker service ls | grep -E \"_admin|_web\" | sed 's/->8080\\/tcp//g' | sed 's/[*:]//g' | awk '{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \\\"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' > " + servicesJsonFileName + ";";
-        // console.log(servicesDockerString);
-        child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
-    }
+    // 2024-07-17 the services.json file is now created and updated by the frinex_locations_update.cgi when the proxy update is triggered
+    // if (deploymentType.includes('docker')) {
+    //     // TODO: this might be a good point to update a list of Tomcat experiments
+    //     // update the docker service listing JSON which is used to inform the user in the build listing HTML
+    //     console.log("updateServicesJson");
+    //     const servicesJsonFileName = targetDirectory + "/services.json";
+    //     const servicesDockerString = "sudo docker service ls | grep -E \"_admin|_web\" | sed 's/->8080\\/tcp//g' | sed 's/[*:]//g' | awk '{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \\\"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' > " + servicesJsonFileName + ";";
+    //     // console.log(servicesDockerString);
+    //     child_process.execSync(servicesDockerString, { stdio: [0, 1, 2] });
+    // }
 }
 
 function waitingServiceStart() {
