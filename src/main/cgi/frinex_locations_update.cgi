@@ -108,6 +108,6 @@ cat /usr/local/apache2/htdocs/frinex_stopped_experiments.txt \
     # | sed 's|_production_admin {|-admin(/.*)?$ {|g' \
 
 # update the services.json file which is used by the build listing and the munin plugins
-sudo docker service ls | grep -E "_admin|_web" | sed 's/->8080\\/tcp//g' | sed 's/[*:]//g' | awk '{print \"\\\"\" $2 \"\\\": {\\\"replicas\\\": \\\"\" $4 \"\\\", \\\"port\\\":\\\"\" $6 \"\\\"},\"}' | sed '$ s/,$/\}/g' | sed '1 s/^\"/\{\"/g' > /FrinexBuildService/artifacts/services.json;
+sudo docker service ls | grep -E "_admin|_web" | sed 's/->8080\/tcp//g' | sed 's/[*:]//g' | awk '{print "\"" $2 "\": {\"replicas\": \"" $4 "\", \"port\":\"" $6 "\"},"}' | sed '$ s/,$/\}/g' | sed '1 s/^"/\{"/g' > /FrinexBuildService/artifacts/services.json;
 
 echo '{"status": "ok"}'
