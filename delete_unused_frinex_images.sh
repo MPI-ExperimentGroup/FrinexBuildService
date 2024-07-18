@@ -55,3 +55,26 @@ do
         docker image rm $imageName
     fi
 done
+
+# clean up the m2Directory volume
+cd $(dirname "$0")
+workingDir=$(pwd -P)
+cd $(dirname "$0")/src/main/
+
+# check that the properties to be used match the current machine
+if ! grep -q $(hostname) config/publish.properties; then 
+    echo "Cannot clean up the m2Directory volume because the publish.properties does not match the current machine.";
+else
+    echo "Deleting and regenerating the m2Directory"
+    docker volume rm m2Directory
+    # recreate an empty m2Directory volume and copy the maven settings to the .m2 directory
+    cat $workingDir/src/main/config/settings.xml | docker run -v m2Directory:/maven/.m2/ -i frinexapps-jdk:alpha /bin/bash -c 'cat > /maven/.m2/settings.xml'
+
+    # iterate all remaining images and make sure the maven dependencies are in the m2Directory volume
+    imagesList=$(docker image ls | grep -E "frinexapps-jdk" | awk '{print $2}')
+    for tagName in $imagesList
+    do
+        # make sure the local .m2 directory dependencies for this image
+        docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:$tagName /bin/bash -c "mvn install -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150 -gs /maven/.m2/settings.xml"
+    done
+fi
