@@ -73,8 +73,14 @@ docker run -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name f
 # -v $workingDir/BackupFiles:/BackupFiles
 # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
 
+# to save server side disk space the following was used to clean up the admin war files which contained the desktop and mobile application artifacts
+# for adminWar in /FrinexBuildService/protected/*/*_admin.war; do zip -d $adminWar \*_cordova.aab \*_ios.zip \*_cordova.apk \*-x64-lt.zip \*-x64.zip \*_android.zip \*-x64-lt.zip; done;
+
 # start the frinexbuild container with access to /var/run/docker.sock so that it can create sibling containers of frinexapps
-docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -v m2Directory:/maven/.m2/ -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+# 2024-07-18 removed the gitCheckedout from the frinexbuild container because it can be recreated as required and its deletion saves disk space
+# -v gitCheckedout:/FrinexBuildService/git-checkedout 
+
 # in non swarm installations the frinex_db_manager_net is excluded as follows
 #docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v wizardExperiments:/FrinexBuildService/wizard-experiments -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
 # -v $workingDir/BackupFiles:/BackupFiles 
