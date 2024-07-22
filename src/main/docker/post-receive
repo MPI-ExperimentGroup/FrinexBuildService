@@ -86,7 +86,7 @@ do
           # these files might exist from the last commit but might also have been changed by this commit so we use the -fu options
           cp -rfu $staticDirectory/* $scriptDir/incoming/static/$staticDirectoryLowercase/
         done;
-        git log --pretty='format:{"repository": "/git/'$(pwd)'.git", "user": "%ce", "date": "%cI"}' $configFile > "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\").commit";
+        git log -1 --pretty='format:{"repository": "/git/RepositoryName.git", "user": "$REMOTE_USER", "date": "%cI"}' $configFile > "$scriptDir/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\").commit";
         # echo "{\"repository\": \"/git/RepositoryName.git\", \"user\": \"$REMOTE_USER\"}"
         # it is important that the XML or JSON file is copied after the static files and the commit info file are in place because the XML and JSON files are what trigger the build/rebuild process
         # copy the configuration files to a lowercase destination
