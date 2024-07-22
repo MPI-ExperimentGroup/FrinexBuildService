@@ -1964,8 +1964,10 @@ function moveIncomingToQueued() {
                                 console.error('failed to parse commit info: ' + error);
                             }
                             if (fs.existsSync(incomingFile + ".commit")) {
-                                fs.unlinkSync(incomingFile + ".commit");
-                                console.log('deleted parsed commit info file: ' + incomingFile + ".commit");
+                                // fs.unlinkSync(incomingFile + ".commit");
+                                // console.log('deleted parsed commit info file: ' + incomingFile + ".commit");
+                                var storedCommitName = path.resolve(protectedDirectory + '/' + currentName, filename + ".commit");
+                                copyDeleteFile(incomingFile + ".commit", storedCommitName);
                             }
                             initialiseResult(currentName, 'validating', false, repositoryName, committerName);
                             //if (fs.existsSync(targetDirectory + "/" + currentName)) {
