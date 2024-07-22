@@ -1859,7 +1859,6 @@ function moveIncomingToQueued() {
                         var lowerCaseFileName = filename.toLowerCase();
                         var currentName = path.parse(lowerCaseFileName).name;
                         var queuedFile = path.resolve(incomingDirectory + '/queued/', lowerCaseFileName);
-                        // TODO: why does this extname check not seem to have an effect
                         if (path.extname(lowerCaseFileName) === ".commit") {
                             console.log(lowerCaseFileName);
                             // the committer info is used when the XML or JSON file is processed
@@ -1877,7 +1876,7 @@ function moveIncomingToQueued() {
                                     }
                                 });
                             }
-                        } else if (!lowerCaseFileName.endsWith(".commit") && checkForDuplicates(currentName) !== 1) {
+                        } else if (checkForDuplicates(currentName) !== 1) {
                             // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
                             initialiseResult(currentName, '<a class="shortmessage" href="' + currentName + '/' + currentName + '_conflict_error.txt?' + new Date().getTime() + '">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true, '', '');
                             console.log("this script will not build when two or more configuration files of the same name are found.");
@@ -1962,14 +1961,15 @@ function moveIncomingToQueued() {
                                 var commitInfoJson = JSON.parse(fs.readFileSync(incomingFile + ".commit", 'utf8'));
                                 repositoryName = commitInfoJson.repository;
                                 committerName = commitInfoJson.user;
+                                var storedCommitName = path.resolve(protectedDirectory + '/' + currentName, filename + ".commit");
+                                fs.writeFileSync(storedCommitName, JSON.stringify(commitInfoJson, null, 4), { mode: 0o755 });
                             } catch (error) {
                                 console.error('failed to parse commit info: ' + error);
                             }
                             if (fs.existsSync(incomingFile + ".commit")) {
-                                // fs.unlinkSync(incomingFile + ".commit");
-                                // console.log('deleted parsed commit info file: ' + incomingFile + ".commit");
-                                var storedCommitName = path.resolve(protectedDirectory + '/' + currentName, filename + ".commit");
-                                copyDeleteFile(incomingFile + ".commit", storedCommitName);
+                                fs.unlinkSync(incomingFile + ".commit");
+                                console.log('deleted parsed commit info file: ' + incomingFile + ".commit");
+                                // copyDeleteFile(incomingFile + ".commit", storedCommitName);
                                 // fs.renameSync(incomingFile + ".commit", storedCommitName);
                             }
                             initialiseResult(currentName, 'validating', false, repositoryName, committerName);
