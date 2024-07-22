@@ -50,6 +50,7 @@ RUN mkdir /FrinexBuildService/protected
 RUN mkdir /FrinexBuildService/docs
 RUN mkdir /FrinexBuildService/lib
 RUN mkdir /FrinexBuildService/cgi
+RUN mkdir /FrinexBuildService/script
 # make the current version of jquery and chartjs available for the documentation and stats pages
 RUN curl -o /FrinexBuildService/lib/jquery.min.js https://code.jquery.com/jquery-3.7.1.min.js
 RUN curl -o /FrinexBuildService/lib/Chart.js https://cdnjs.com/libraries/Chart.js
@@ -63,6 +64,7 @@ COPY static/stats.js /FrinexBuildService/docs/
 COPY cgi/repository_setup.cgi /FrinexBuildService/cgi/
 COPY cgi/request_build.cgi /FrinexBuildService/cgi/
 COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
+COPY script/generate_commit_files.sh /FrinexBuildService/script/
 # apply location specific settings to the various configuration files
 COPY docker/filter_config_files.sh /FrinexBuildService/
 RUN chmod +x /FrinexBuildService/filter_config_files.sh
@@ -135,6 +137,8 @@ RUN chmod -R ug+rwx /FrinexBuildService/docs
 # RUN chown -R frinex:daemon /FrinexBuildService/cgi
 RUN chown -R www-data:daemon /FrinexBuildService/cgi
 RUN chmod -R ug+rwx /FrinexBuildService/cgi
+RUN chown -R www-data:daemon /FrinexBuildService/script
+RUN chmod -R ug+rwx /FrinexBuildService/script
 # RUN chown www-data:daemon /FrinexBuildService/cgi/*.cgi
 #RUN mkdir /BackupFiles
 #RUN chown -R frinex:daemon /BackupFiles
