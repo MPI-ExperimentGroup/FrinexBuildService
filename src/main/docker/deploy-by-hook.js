@@ -225,7 +225,7 @@ function unDeploy(currentEntry) {
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
-            + ' -Dlog4j2.version=2.17.2'
+            // + ' -Dlog4j2.version=2.17.2'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
@@ -274,7 +274,7 @@ function unDeploy(currentEntry) {
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
-            + ' -Dlog4j2.version=2.17.2'
+            // + ' -Dlog4j2.version=2.17.2'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
@@ -323,7 +323,7 @@ function unDeploy(currentEntry) {
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
-            + ' -Dlog4j2.version=2.17.2'
+            // + ' -Dlog4j2.version=2.17.2'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
@@ -376,7 +376,7 @@ function unDeploy(currentEntry) {
             + ' mvn tomcat7:undeploy '
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
-            + ' -Dlog4j2.version=2.17.2'
+            // + ' -Dlog4j2.version=2.17.2'
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
             + ' -Dexperiment.configuration.displayName=\\\"' + currentEntry.experimentDisplayName + '\\\"'
             + ' -Dexperiment.webservice=' + configServer
@@ -547,7 +547,7 @@ function deployStagingGui(currentEntry) {
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
-            + ' -Dlog4j2.version=2.17.2'
+            // + ' -Dlog4j2.version=2.17.2'
             //+ ' -pl gwt-cordova'
             + ((currentEntry.state === "debug") ? ' -Dgwt.draftCompile=true -Dgwt.style=DETAILED -Dgwt.extraJvmArgs="-Xmx1024m"' : '')
             // + ' -Dgwt.extraJvmArgs="-Xmx8g"'
@@ -740,7 +740,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
-            + ' -Dlog4j2.version=2.17.2'
+            // + ' -Dlog4j2.version=2.17.2'
             //+ ' -pl frinex-admin'
             + ' -q' // quiet output
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
@@ -940,7 +940,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         //+ 'package'
                         + ' -gs /maven/.m2/settings.xml'
                         + ' -DskipTests'
-                        + ' -Dlog4j2.version=2.17.2'
+                        // + ' -Dlog4j2.version=2.17.2'
                         //+ ' -pl gwt-cordova'
                         + ' -q -Dgwt.logLevel=WARN' // ERROR, WARN, INFO, TRACE, DEBUG, SPAM or ALL (defaults to INFO)
                         + ' -Dexperiment.configuration.name=' + currentEntry.buildName
@@ -1120,7 +1120,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             //+ 'package'
             + ' -gs /maven/.m2/settings.xml'
             + ' -DskipTests'
-            + ' -Dlog4j2.version=2.17.2'
+            // + ' -Dlog4j2.version=2.17.2'
             //+ ' -pl frinex-admin'
             + ' -q' // quiet output
             + ' -Dexperiment.configuration.name=' + currentEntry.buildName
@@ -2031,7 +2031,7 @@ function convertJsonToXml() {
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
         + ' -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150'
-        + ' -Dlog4j2.version=2.17.2'
+        // + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/prevalidation /FrinexBuildService/incoming/postvalidation /FrinexBuildService/listing ' + targetDirectory /* the schema file is in the target directory, however it might be nicer to use a dedicated directory when we support multiple schema/build versions */ + '\\"'
@@ -2085,7 +2085,7 @@ function updateDocumentation() {
         + ' -gs /maven/.m2/settings.xml'
         + ' -DskipTests'
         + ' -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150'
-        + ' -Dlog4j2.version=2.17.2'
+        // + ' -Dlog4j2.version=2.17.2'
         + ' -Dexec.executable=java'
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.DocumentationGenerator ' + targetDirectory + /*'/FrinexBuildService/docs '*/ ' ' + targetDirectory + '\\"'
