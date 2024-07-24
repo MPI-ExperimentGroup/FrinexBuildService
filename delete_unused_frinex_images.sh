@@ -76,6 +76,6 @@ else
     do
         echo "tagName: $tagName"
         # instaling the pom to make sure the .m2 directory dependencies are available for this image
-        docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:$tagName /bin/bash -c "mvn install -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150 -gs /maven/.m2/settings.xml"
+        docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:$tagName /bin/bash -c "mvn install -pl '!gwt-cordova,!registration' -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150 -gs /maven/.m2/settings.xml"
     done
 fi
