@@ -25,10 +25,10 @@ cd /FrinexBuildService/git-checkedout/;
 for checkoutDirectory in /FrinexBuildService/git-checkedout/*/ ; do
     cd $checkoutDirectory; 
     pwd; 
-    for experimentXml in $checkoutDirectory/*.xml ; do
+    for experimentXml in *.xml ; do
         echo $experimentXml
         nameLowercase=$(echo $experimentXml | tr \"[:upper:]\" \"[:lower:]\" | sed -e "s/.xml//g")
-        git log --pretty='format:{"repository": "/git/'$(pwd)'.git", "user": "%ce", "date": "%cI"}' $experimentXml 
+        git log -1 --pretty='format:{"repository": "/git/'$(pwd)'.git", "user": "%ce", "date": "%cI"}' $experimentXml 
         echo  "/FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit";
     done
  done
