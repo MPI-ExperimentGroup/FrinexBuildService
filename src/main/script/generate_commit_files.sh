@@ -25,7 +25,7 @@ cd /FrinexBuildService/git-checkedout/;
 for checkoutDirectory in /FrinexBuildService/git-checkedout/*/ ; do
     cd $checkoutDirectory; 
     pwd; 
-    for experimentXml in /FrinexBuildService/git-checkedout/$checkoutDirectory/*.xml ; do
+    for experimentXml in $checkoutDirectory/*.xml ; do
         echo $experimentXml
         nameLowercase=$(echo $checkoutDirectory | tr \"[:upper:]\" \"[:lower:]\")
         git log --pretty='format:{"repository": "/git/'$(pwd)'.git", "user": "%ce", "date": "%cI"}' $experimentXml 
