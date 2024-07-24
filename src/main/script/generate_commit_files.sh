@@ -29,6 +29,8 @@ for checkoutDirectory in /FrinexBuildService/git-checkedout/*/ ; do
         echo $experimentXml
         nameLowercase=$(echo $experimentXml | tr \"[:upper:]\" \"[:lower:]\" | sed -e "s/.xml//g")
         mkdir /FrinexBuildService/protected/$nameLowercase
-        git log -1 --pretty='format:{"repository": "/git/'$(pwd)'.git", "user": "%ce", "date": "%cI"}' $experimentXml > "/FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit";
+        git log -1 --pretty='format:{"repository": "/git/'$nameLowercase'.git", "user": "%ce", "date": "%cI"}' $experimentXml > "/FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit";
+        echo /FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit
+        cat /FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit
     done
  done
