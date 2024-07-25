@@ -60,16 +60,18 @@ docker stop frinexbuild
 docker container rm frinexbuild 
 
 # make sure the relevant directories have the correct permissions after an install or update
-docker run  -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected --rm -it --user root --name frinexbuild-permissions frinexbuild:latest bash -c \
-    "chmod -R ug+rwx /FrinexBuildService; chown -R frinex:www-data /FrinexBuildService/artifacts; chmod -R ug+rwx /FrinexBuildService/artifacts; chown -R www-data:daemon /FrinexBuildService/git-checkedout; chmod -R ug+rwx /FrinexBuildService/git-checkedout; chown -R www-data:daemon /FrinexBuildService/git-repositories; chmod -R ug+rwx /FrinexBuildService/git-repositories; chown -R frinex:www-data /FrinexBuildService/docs; chmod -R ug+rwx /FrinexBuildService/docs; chown -R frinex:www-data /FrinexBuildService/protected; chmod -R ug+rwx /FrinexBuildService/protected;chown -R frinex:www-data /FrinexBuildService/incoming; chmod -R ug+rwx /FrinexBuildService/incoming; chown -R frinex:www-data /FrinexBuildService/listing; chmod -R ug+rwx /FrinexBuildService/listing; chown -R frinex:www-data /FrinexBuildService/processing; chmod -R ug+rwx /FrinexBuildService/processing;";
+docker run -v gitRepositories:/FrinexBuildService/git-repositories -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected --rm -it --user root --name frinexbuild-permissions frinexbuild:latest bash -c \
+    "chmod -R ug+rwx /FrinexBuildService; chown -R frinex:www-data /FrinexBuildService/artifacts; chmod -R ug+rwx /FrinexBuildService/artifacts; chown -R www-data:daemon /FrinexBuildService/git-repositories; chmod -R ug+rwx /FrinexBuildService/git-repositories; chown -R frinex:www-data /FrinexBuildService/docs; chmod -R ug+rwx /FrinexBuildService/docs; chown -R frinex:www-data /FrinexBuildService/protected; chmod -R ug+rwx /FrinexBuildService/protected;chown -R frinex:www-data /FrinexBuildService/incoming; chmod -R ug+rwx /FrinexBuildService/incoming; chown -R frinex:www-data /FrinexBuildService/listing; chmod -R ug+rwx /FrinexBuildService/listing; chown -R frinex:www-data /FrinexBuildService/processing; chmod -R ug+rwx /FrinexBuildService/processing;";
+#  -v gitCheckedout:/FrinexBuildService/git-checkedout
+# chown -R www-data:daemon /FrinexBuildService/git-checkedout; chmod -R ug+rwx /FrinexBuildService/git-checkedout;
 
 # move the old logs out of the way, note that this could overwrite old out of the way logs from the same date
 docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --user root --name frinexbuild-moveoldlogs frinexbuild:latest bash -c \
     "mkdir artifacts/logs-$(date +%F)/; mv artifacts/git-*.txt artifacts/json_to_xml.txt artifacts/update_schema_docs.txt artifacts/logs-$(date +%F)/; cp /FrinexBuildService/buildlisting.html /FrinexBuildService/artifacts/index.html; chmod -R ug+rwx /FrinexBuildService/artifacts/index.html; chown -R frinex:www-data /FrinexBuildService/artifacts/index.html";
 
 # iterate the git checkout directories and reset them in case they were damaged in an unexpected shutdown
-docker run -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name frinexbuild-reset-git-co frinexbuild:latest bash -c \
-    "cd /FrinexBuildService/git-checkedout/; for checkoutDirectory in /FrinexBuildService/git-checkedout/*/ ; do cd \$checkoutDirectory; pwd; if [ -f .git/index.lock ]; then rm .git/index.lock; git restore .; fi; if [ -f .git/shallow.lock ]; then rm .git/shallow.lock; git restore .; fi; done;";
+# docker run -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name frinexbuild-reset-git-co frinexbuild:latest bash -c \
+#     "cd /FrinexBuildService/git-checkedout/; for checkoutDirectory in /FrinexBuildService/git-checkedout/*/ ; do cd \$checkoutDirectory; pwd; if [ -f .git/index.lock ]; then rm .git/index.lock; git restore .; fi; if [ -f .git/shallow.lock ]; then rm .git/shallow.lock; git restore .; fi; done;";
 # -v $workingDir/BackupFiles:/BackupFiles
 # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
 

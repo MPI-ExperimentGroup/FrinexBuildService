@@ -26,7 +26,8 @@ cd $(dirname "$0")
 workingDir=$(pwd -P)
 
 # clean up volumes
-docker volume rm $(docker volume ls | grep -v "gitRepositories" | grep -v "gitCheckedout" | grep -v "protectedDirectory" | grep -v "registry_certs" | grep -v "m2Directory" | grep -v "buildServerTarget" | grep -v "frinexDockerRegistry" | awk 'NR>1 {print $2}')
+docker volume rm $(docker volume ls | grep -v "gitRepositories" | grep -v "protectedDirectory" | grep -v "registry_certs" | grep -v "m2Directory" | grep -v "buildServerTarget" | grep -v "frinexDockerRegistry" | awk 'NR>1 {print $2}')
+#  | grep -v "gitCheckedout"
 # clean up images
 docker image rm $(docker image ls | grep -v "frinexbuild" | grep -v "frinexapps" | grep -v "frinex_db_manager" | awk 'NR>1 {print $3}')
 # prune what remains
