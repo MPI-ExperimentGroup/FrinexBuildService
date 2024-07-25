@@ -1730,37 +1730,51 @@ function prepareForProcessing() {
     buildFromListing();
 }
 
-function checkForDuplicates(currentName) {
+function checkForDuplicates(incomingFile, filename, currentName) {
     console.log("checkForDuplicates: " + currentName);
     var experimentConfigCounter = 0;
     var experimentConfigLocations = "";
-    // iterate all git repositories checking for duplicate files of XML or JSON regardless of case
-    var repositoriesList = fs.readdirSync("/FrinexBuildService/git-checkedout");
-    for (var repositoryDirectory of repositoriesList) {
-        //console.log(repositoryDirectory);
-        var repositoryDirectoryPath = path.resolve("/FrinexBuildService/git-checkedout", repositoryDirectory);
-        var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
-        for (var repositoryEntry of repositoryEntries) {
-            //console.log(repositoryEntry);
-            var lowercaseEntry = repositoryEntry.toLowerCase();
-            //console.log(fileNamePart);
-            if (currentName + ".json" === lowercaseEntry || currentName + ".xml" === lowercaseEntry) {
-                experimentConfigCounter++;
-                experimentConfigLocations += repositoryEntry + " found in /git/" + repositoryDirectory + ".git" + "\n";
-                console.log(repositoryEntry + " found in /git/" + repositoryDirectory + ".git");
-            }
+    if (fs.existsSync(incomingFile + ".commit") && fs.existsSync(protectedDirectory + '/' + currentName + '/' + filename + ".commit")) {
+        var commitInfoJson = JSON.parse(fs.readFileSync(incomingFile + ".commit", 'utf8'));
+        var storedCommitJson = JSON.parse(fs.readFileSync(protectedDirectory + '/' + currentName + '/' + filename + ".commit"));
+        if (commitInfoJson.repository !== storedCommitJson.repository) {
+            experimentConfigLocations = "The repository " + commitInfoJson.repository + " cannot build " + currentName + " because it is locked by " + storedCommitJson.repository;
+            experimentConfigCounter = 2;
+        } else {
+            experimentConfigCounter = 1;
         }
+    } else {
+        experimentConfigCounter = 1;
     }
+
+    // 2024-07-25 the git checkout directories are no longer kept after triggering the builds so the following section has been replaced by the use of .xml.commit files
+    // // iterate all git repositories checking for duplicate files of XML or JSON regardless of case
+    // var repositoriesList = fs.readdirSync("/FrinexBuildService/git-checkedout");
+    // for (var repositoryDirectory of repositoriesList) {
+    //     //console.log(repositoryDirectory);
+    //     var repositoryDirectoryPath = path.resolve("/FrinexBuildService/git-checkedout", repositoryDirectory);
+    //     var repositoryEntries = fs.readdirSync(repositoryDirectoryPath);
+    //     for (var repositoryEntry of repositoryEntries) {
+    //         //console.log(repositoryEntry);
+    //         var lowercaseEntry = repositoryEntry.toLowerCase();
+    //         //console.log(fileNamePart);
+    //         if (currentName + ".json" === lowercaseEntry || currentName + ".xml" === lowercaseEntry) {
+    //             experimentConfigCounter++;
+    //             experimentConfigLocations += repositoryEntry + " found in /git/" + repositoryDirectory + ".git" + "\n";
+    //             console.log(repositoryEntry + " found in /git/" + repositoryDirectory + ".git");
+    //         }
+    //     }
+    // }
     // check the wizard working directory for duplicate files of XML or JSON regardless of case
-    var repositoryEntries = fs.readdirSync("/FrinexBuildService/wizard-experiments");
-    for (var wizardEntry of repositoryEntries) {
-        var lowercaseEntry = wizardEntry.toLowerCase();
-        if (currentName + ".json" === lowercaseEntry || currentName + ".xml" === lowercaseEntry) {
-            experimentConfigCounter++;
-            experimentConfigLocations += wizardEntry + " found in wizard-experiments" + "\n";
-            console.log(wizardEntry + " found in wizard-experiments");
-        }
-    }
+    // var repositoryEntries = fs.readdirSync("/FrinexBuildService/wizard-experiments");
+    // for (var wizardEntry of repositoryEntries) {
+    //     var lowercaseEntry = wizardEntry.toLowerCase();
+    //     if (currentName + ".json" === lowercaseEntry || currentName + ".xml" === lowercaseEntry) {
+    //         experimentConfigCounter++;
+    //         experimentConfigLocations += wizardEntry + " found in wizard-experiments" + "\n";
+    //         console.log(wizardEntry + " found in wizard-experiments");
+    //     }
+    // }
     var configErrorPath = path.resolve(targetDirectory + "/" + currentName + "/" + currentName + "_conflict_error.txt");
     if (experimentConfigCounter > 1) {
         //console.log(experimentConfigLocations);
@@ -1769,7 +1783,7 @@ function checkForDuplicates(currentName) {
             console.log(targetDirectory + "/" + currentName + " directory created");
         }
         const queuedConfigFile = fs.openSync(configErrorPath, "w");
-        fs.writeSync(queuedConfigFile, "Multiple configuration files found in the following locations:\n" + experimentConfigLocations);
+        fs.writeSync(queuedConfigFile, "Multiple configuration files:\n" + experimentConfigLocations);
     } else {
         if (fs.existsSync(configErrorPath)) {
             fs.unlinkSync(configErrorPath);
@@ -1894,7 +1908,7 @@ function moveIncomingToQueued() {
                                     }
                                 });
                             }
-                        } else if (checkForDuplicates(currentName) !== 1) {
+                        } else if (checkForDuplicates(incomingFile, filename, currentName) !== 1) {
                             // the locations of the conflicting configuration files is listed in the error file _conflict_error.txt so we link it here in the message
                             initialiseResult(currentName, '<a class="shortmessage" href="' + currentName + '/' + currentName + '_conflict_error.txt?' + new Date().getTime() + '">conflict<span class="longmessage">Two or more configuration files of the same name exist for this experiment and as a precaution this experiment will not compile until this error is resovled.</span></a>', true, '', '');
                             console.log("this script will not build when two or more configuration files of the same name are found.");
