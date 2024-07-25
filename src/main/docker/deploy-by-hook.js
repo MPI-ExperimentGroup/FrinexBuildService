@@ -1457,6 +1457,7 @@ function buildNextExperiment() {
             } else if (currentEntry.state === "transfer") {
                 // delete the .commit file in the protected directory to allow transfer of control to an other repository
                 fs.unlinkSync(protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + ".xml.commit");
+                storeResult(currentEntry.buildName, 'transferred', "staging", "web", false, false, false);
             } else {
                 console.log("nothing to do for: " + currentEntry.buildName);
                 currentlyBuilding.delete(currentEntry.buildName);
