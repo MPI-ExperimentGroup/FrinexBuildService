@@ -25,12 +25,14 @@ cd /FrinexBuildService/git-checkedout/;
 for checkoutDirectory in /FrinexBuildService/git-checkedout/*/ ; do
     cd $checkoutDirectory; 
     pwd; 
-    for experimentXml in *.xml ; do
-        echo $experimentXml
-        nameLowercase=$(echo $experimentXml | tr \"[:upper:]\" \"[:lower:]\" | sed -e "s/.xml//g")
-        mkdir /FrinexBuildService/protected/$nameLowercase
-        git log -1 --pretty='format:{"repository": "/git/'${PWD##*/}'.git", "user": "%ce", "date": "%cI"}' $experimentXml > "/FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit";
-        echo /FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit
-        cat /FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit
-    done
+    if [ -d ".git" ]; then
+        for experimentXml in *.xml ; do
+            echo $experimentXml
+            nameLowercase=$(echo $experimentXml | tr \"[:upper:]\" \"[:lower:]\" | sed -e "s/.xml//g")
+            mkdir /FrinexBuildService/protected/$nameLowercase
+            git log -1 --pretty='format:{"repository": "/git/'${PWD##*/}'.git", "user": "%ce", "date": "%cI"}' $experimentXml > "/FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit";
+            echo /FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit
+            cat /FrinexBuildService/protected/$nameLowercase/$nameLowercase.xml.commit
+        done
+    fi
  done
