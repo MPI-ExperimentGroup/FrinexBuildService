@@ -65,6 +65,7 @@ cd $(dirname "$0")/src/main/
 if ! grep -q $(hostname) config/publish.properties; then 
     echo "Cannot clean up the m2Directory volume because the publish.properties does not match the current machine.";
 else
+    read -p "Press enter to delete and regenerate the m2Directory (a slow process and not mandatory)"
     echo "Deleting and regenerating the m2Directory"
     docker run -v m2Directory:/maven/.m2/ -i frinexapps-jdk:alpha /bin/bash -c 'rm -rf /maven/.m2/*'
     # copy the maven settings to the .m2 directory
