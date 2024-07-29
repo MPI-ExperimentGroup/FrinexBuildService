@@ -201,6 +201,28 @@ function unDeploy(currentEntry) {
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
     // check if the deploymentType is tomcat vs docker and do the required undeployment process
     var dockerString = "";
+    
+    // delete the staging artifacts
+    dockerString += ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
+        + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_android.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_cordova.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_darwin*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_electron.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_ios.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_win32*;'
+        // delete the production artifacts
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
+        + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_android.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_cordova.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_darwin*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_electron.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_ios.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_win32*;';
+
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_web && "
         dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + " || true\n"
