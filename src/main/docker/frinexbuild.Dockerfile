@@ -39,7 +39,7 @@ RUN git config --global user.email "noone@frinexbuild.mpi.nl"
 RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/git-repositories
 RUN mkdir /FrinexBuildService/git-checkedout
-RUN mkdir /FrinexBuildService/wizard-experiments
+# RUN mkdir /FrinexBuildService/wizard-experiments
 RUN mkdir /FrinexBuildService/processing
 RUN mkdir /FrinexBuildService/incoming
 RUN mkdir /FrinexBuildService/listing
