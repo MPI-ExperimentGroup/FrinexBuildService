@@ -74,4 +74,5 @@ RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-
 #CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.arguments=--logging.level.org.springframework=TRACE", "-f", "/ExperimentTemplate/ExperimentDesigner/pom.xml"]
 # CMD ["java", "-jar", "/frinexwizard.war"]
 RUN echo "cd /ExperimentTemplate; git pull; mvn spring-boot:run -f /ExperimentTemplate/ExperimentDesigner/pom.xml" > /updateRunWizard.sh
+RUN chmod +x /updateRunWizard.sh
 CMD ["/bin/bash","-c","/updateRunWizard.sh"]
