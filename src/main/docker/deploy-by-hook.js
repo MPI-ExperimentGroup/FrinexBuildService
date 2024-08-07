@@ -1766,13 +1766,19 @@ function checkForDuplicates(incomingFile, filename, currentName) {
     var experimentConfigCounter = 0;
     var experimentConfigLocations = "";
     if (fs.existsSync(incomingFile + ".commit") && fs.existsSync(protectedDirectory + '/' + currentName + '/' + filename + ".commit")) {
-        var commitInfoJson = JSON.parse(fs.readFileSync(incomingFile + ".commit", 'utf8'));
-        var storedCommitJson = JSON.parse(fs.readFileSync(protectedDirectory + '/' + currentName + '/' + filename + ".commit"));
-        if (commitInfoJson.repository !== storedCommitJson.repository) {
-            experimentConfigLocations = "The repository " + commitInfoJson.repository + " cannot build " + currentName + " because it is locked by " + storedCommitJson.repository;
+        try {
+            var commitInfoJson = JSON.parse(fs.readFileSync(incomingFile + ".commit", 'utf8'));
+            var storedCommitJson = JSON.parse(fs.readFileSync(protectedDirectory + '/' + currentName + '/' + filename + ".commit"));
+            if (commitInfoJson.repository !== storedCommitJson.repository) {
+                experimentConfigLocations = "The repository " + commitInfoJson.repository + " cannot build " + currentName + " because it is locked by " + storedCommitJson.repository;
+                experimentConfigCounter = 2;
+            } else {
+                experimentConfigCounter = 1;
+            }
+        } catch (error) {
+            console.log(error);
+            experimentConfigLocations = error;
             experimentConfigCounter = 2;
-        } else {
-            experimentConfigCounter = 1;
         }
     } else {
         experimentConfigCounter = 1;
