@@ -28,8 +28,18 @@ inUseCompileDates=$(docker run --rm -v buildServerTarget:/FrinexBuildService/art
 echo "inUseCompileDates:"
 echo "$inUseCompileDates"
 
+cd src/main/
+
 IFS=$'\n'
-for compileDate in $inUseCompileDates
+for compileDateString in $inUseCompileDates
 do
-    echo "$compileDate" | sed "s/lastCommitDate:'//g" | sed "s/',//g" 
+    compileDate=$(echo "$compileDateString" | sed "s/lastCommitDate:'//g" | sed "s/',//g")
+    echo $compileDate
+    # build the compile date based version based on alpha:
+    if docker build --no-cache --build-arg lastCommitDate="$compileDate" -f docker/rebuild-jdk-version.Dockerfile -t "frinexapps-jdk:$compileDate" . 
+    then 
+        # tag the compileDate version with its own build version
+        compileDateVersion=$(docker run --rm -w /ExperimentTemplate/gwt-cordova "frinexapps-jdk:$compileDate" /bin/bash -c "cat /ExperimentTemplate/gwt-cordova.version")
+        echo "taging as $compileDateVersion"
+        docker tag "frinexapps-jdk:$compileDate" frinexapps-jdk:$compileDateVersion
 done
