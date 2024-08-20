@@ -2,7 +2,7 @@ FROM frinexapps-jdk:alpha
 ARG lastCommitDate
 
 # checkout the required commit by date
-RUN cd /ExperimentTemplate/; git checkout `git rev-list -n 1 --before="$lastCommitDate" master` .
+RUN cd /ExperimentTemplate/; git reset --hard `git rev-list -n 1 --before="$lastCommitDate" master`
 
 RUN cd /ExperimentTemplate/; git status
 
