@@ -32,7 +32,7 @@ RUN cd /ExperimentTemplate \
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
-RUN cd /ExperimentTemplate/
+RUN cd /ExperimentTemplate/ \
     && mvn clean
 
 # clean out the static directory to prevent these files being used in the automated builds
