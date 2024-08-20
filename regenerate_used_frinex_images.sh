@@ -28,7 +28,8 @@ inUseCompileDates=$(docker run --rm -v buildServerTarget:/FrinexBuildService/art
 echo "inUseCompileDates:"
 echo "$inUseCompileDates"
 
+IFS=$'\n'
 for compileDate in $inUseCompileDates
 do
-    echo "$compileDate" | sed "s/projectVersion:'//g" | sed "s/',//g" 
+    echo "$compileDate" | sed "s/lastCommitDate:'//g" | sed "s/',//g" 
 done
