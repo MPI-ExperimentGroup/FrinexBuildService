@@ -4,6 +4,10 @@ ARG lastCommitDate
 # checkout the required commit by date
 RUN cd /ExperimentTemplate/; git checkout `git rev-list -n 1 --before="$lastCommitDate" master` .
 
+RUN git status
+
+RUN git rev-list --count --all gwt-cordova
+
 RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
 RUN sed -i 's|<versionCheck.buildType>testing</versionCheck.buildType>|<versionCheck.buildType>stable</versionCheck.buildType>|g' /ExperimentTemplate/pom.xml
 

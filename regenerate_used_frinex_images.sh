@@ -34,7 +34,7 @@ IFS=$'\n'
 for compileDateString in $inUseCompileDates
 do
     compileDate=$(echo "$compileDateString" | sed "s/lastCommitDate:'//g" | sed "s/',//g")
-    compileDateTag=$(echo "$compileDateTag" | sed "s/[^0-9]//g")
+    compileDateTag=$(echo "$compileDate" | sed "s/[^0-9]//g")
     echo $compileDate
     echo $compileDateTag
     # build the compile date based version based on alpha:
