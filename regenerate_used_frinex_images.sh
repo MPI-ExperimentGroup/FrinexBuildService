@@ -24,7 +24,7 @@
 
 
 # search through all staging web war files extracting a list of Frinex versions in use
-inUseCompileDates=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -it --name frinex-images-cleanup frinexbuild:latest bash -c "(for warFile in artifacts/*/*_staging_web.war;do unzip -p \$warFile version.json | grep lastCommitDate; done;) | sort | uniq | tr '\n' ' '")
+inUseCompileDates=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -it --name frinex-images-cleanup frinexbuild:latest bash -c "(for warFile in artifacts/*/*_staging_web.war;do unzip -p \$warFile version.json | grep lastCommitDate; done;) | sort | uniq")
 echo "inUseCompileDates:"
 echo "$inUseCompileDates"
 
