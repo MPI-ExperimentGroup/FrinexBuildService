@@ -24,7 +24,7 @@
 
 
 # search through all staging web war files extracting a list of Frinex versions in use
-inUseCompileDates=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -it --name frinex-images-cleanup frinexbuild:latest bash -c "(for warFile in artifacts/*/*_staging_web.war;do unzip -p \$warFile version.json | grep lastCommitDate; done;) | sort | uniq")
+inUseCompileDates=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -it --name frinex-images-cleanup frinexbuild:latest bash -c "(for warFile in artifacts/*/*_staging_web.war;do unzip -p \$warFile version.json | grep lastCommitDate; done;) | sort -r | uniq")
 echo "inUseCompileDates:"
 echo "$inUseCompileDates"
 
@@ -44,5 +44,7 @@ do
         compileDateVersion=$(docker run --rm -w /ExperimentTemplate/gwt-cordova "frinexapps-jdk:$compileDateTag" /bin/bash -c "cat /ExperimentTemplate/gwt-cordova.version")
         echo "taging as $compileDateVersion"
         docker tag "frinexapps-jdk:$compileDateTag" frinexapps-jdk:$compileDateVersion
+        docker tag "frinexapps-cordova:$alpha" frinexapps-cordova:$compileDateVersion
+        docker tag "frinexapps-electron:$alpha" frinexapps-electron:$compileDateVersion
     fi
 done
