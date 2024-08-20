@@ -32,12 +32,12 @@ RUN cd /ExperimentTemplate \
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 
-RUN cd /ExperimentTemplate/gwt-cordova/ \
-    && mvn clean
-RUN cd /ExperimentTemplate/registration/ \
+RUN cd /ExperimentTemplate/
     && mvn clean
 
 # clean out the static directory to prevent these files being used in the automated builds
 RUN rm -r /ExperimentTemplate/gwt-cordova/src/main/static/*
+RUN rm -r /root/.m2
+RUN rm -r /test_data_cordova
 
 WORKDIR /target
