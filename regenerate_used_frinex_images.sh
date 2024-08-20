@@ -27,3 +27,8 @@
 inUseCompileDates=$(docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -it --name frinex-images-cleanup frinexbuild:latest bash -c "(for warFile in artifacts/*/*_staging_web.war;do unzip -p \$warFile version.json | grep lastCommitDate; done;) | sort | uniq | tr '\n' ' '")
 echo "inUseCompileDates:"
 echo "$inUseCompileDates"
+
+for compileDate in $inUseCompileDates
+do
+    echo "$compileDate" | sed "s/projectVersion:'//g" | sed "s/',//g" 
+done
