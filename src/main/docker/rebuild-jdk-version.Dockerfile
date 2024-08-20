@@ -6,24 +6,24 @@ RUN cd /ExperimentTemplate/; git reset --hard `git rev-list -n 1 --before="$last
 
 RUN cd /ExperimentTemplate/; git status
 
-RUN cd /ExperimentTemplate/; git rev-list --count --all gwt-cordova
+RUN cd /ExperimentTemplate/; git log --pretty=oneline gwt-cordova | wc -l
 
 RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
 RUN sed -i 's|<versionCheck.buildType>testing</versionCheck.buildType>|<versionCheck.buildType>stable</versionCheck.buildType>|g' /ExperimentTemplate/pom.xml
 
 RUN cd /ExperimentTemplate \
-    && sed -i '/war/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all gwt-cordova)'-stable/}' gwt-cordova/pom.xml
+    && sed -i '/war/{n;s/-testing-SNAPSHOT/.'$(git log --pretty=oneline gwt-cordova | wc -l)'-stable/}' gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/Frinex Experiment Designer/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all ExperimentDesigner)'-stable/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
+    && sed -i '/Frinex Experiment Designer/{n;s/-testing-SNAPSHOT/.'$(git log --pretty=oneline ExperimentDesigner | wc -l)'-stable/}' /ExperimentTemplate/ExperimentDesigner/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-admin/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all registration)'-stable/}' /ExperimentTemplate/registration/pom.xml
+    && sed -i '/frinex-admin/{n;s/-testing-SNAPSHOT/.'$(git log --pretty=oneline registration | wc -l)'-stable/}' /ExperimentTemplate/registration/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/common/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all common)'-stable/}' /ExperimentTemplate/common/pom.xml /ExperimentTemplate/registration/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml
+    && sed -i '/common/{n;s/-testing-SNAPSHOT/.'$(git log --pretty=oneline common | wc -l)'-stable/}' /ExperimentTemplate/common/pom.xml /ExperimentTemplate/registration/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-experiment-designer/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all ExperimentDesigner)'-stable/}' /ExperimentTemplate/gwt-cordova/pom.xml
+    && sed -i '/frinex-experiment-designer/{n;s/-testing-SNAPSHOT/.'$(git log --pretty=oneline ExperimentDesigner | wc -l)'-stable/}' /ExperimentTemplate/gwt-cordova/pom.xml
 RUN cd /ExperimentTemplate \
-    && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
-    && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
+    && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git log --pretty=oneline | wc -l) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
+    && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git log --pretty=oneline | wc -l) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
 
 RUN cd /ExperimentTemplate \
     && mvn clean install -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
