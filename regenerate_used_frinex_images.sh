@@ -44,7 +44,7 @@ do
         compileDateVersion=$(docker run --rm -w /ExperimentTemplate/gwt-cordova "frinexapps-jdk:$compileDateTag" /bin/bash -c "cat /ExperimentTemplate/gwt-cordova.version")
         echo "taging as $compileDateVersion"
         docker tag "frinexapps-jdk:$compileDateTag" frinexapps-jdk:$compileDateVersion
-        docker tag "frinexapps-cordova:$alpha" frinexapps-cordova:$compileDateVersion
-        docker tag "frinexapps-electron:$alpha" frinexapps-electron:$compileDateVersion
+        docker tag "frinexapps-cordova:alpha" frinexapps-cordova:$compileDateVersion
+        docker tag "frinexapps-electron:alpha" frinexapps-electron:$compileDateVersion
     fi
 done
