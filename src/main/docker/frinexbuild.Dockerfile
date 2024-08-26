@@ -51,6 +51,7 @@ RUN mkdir /FrinexBuildService/docs
 RUN mkdir /FrinexBuildService/lib
 RUN mkdir /FrinexBuildService/cgi
 RUN mkdir /FrinexBuildService/script
+RUN mkdir /FrinexBuildService/passwd
 # make the current version of jquery and chartjs available for the documentation and stats pages
 RUN curl -o /FrinexBuildService/lib/jquery.min.js https://code.jquery.com/jquery-3.7.1.min.js
 RUN curl -o /FrinexBuildService/lib/Chart.js https://cdnjs.com/libraries/Chart.js
