@@ -71,7 +71,8 @@ COPY docker/filter_config_files.sh /FrinexBuildService/
 RUN chmod +x /FrinexBuildService/filter_config_files.sh
 RUN /FrinexBuildService/filter_config_files.sh
 # TODO: configure the WizardUser password before building this image "htpasswd -c src/passwd/WizardUser.htpasswd WizardUser"
-COPY passwd/WizardUser.htpasswd FrinexBuildService/passwd/WizardUser.htpasswd
+# COPY passwd/WizardUser.htpasswd FrinexBuildService/passwd/WizardUser.htpasswd
+RUN htpasswd -c FrinexBuildService/passwd/WizardUser.htpasswd WizardUser
 RUN sed "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/frinex-git-server.conf >> /usr/local/apache2/conf/httpd.conf
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
