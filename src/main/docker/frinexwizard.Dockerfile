@@ -77,7 +77,7 @@ RUN chown -R frinex /ExperimentTemplate
 RUN mkdir /data
 RUN chown -R frinex /data
 
-RUN WizardUserPass="SetThisPassword"
+ENV WizardUserPass="SetThisPassword"
 
 #CMD ["java", "-Dlogging.level.org.springframework=TRACE", "-jar", "/frinexwizard.war"]
 #CMD ["java", "-Dlogging.level.org.springframework=DEBUG", "-jar", "/frinexwizard.war"]
