@@ -74,7 +74,6 @@ RUN adduser frinex
 RUN chown -R frinex /FrinexExperiments
 RUN chown -R frinex /FrinexWizardUtils
 RUN chown -R frinex /ExperimentTemplate
-USER frinex
 
 #CMD ["java", "-Dlogging.level.org.springframework=TRACE", "-jar", "/frinexwizard.war"]
 #CMD ["java", "-Dlogging.level.org.springframework=DEBUG", "-jar", "/frinexwizard.war"]
@@ -82,4 +81,5 @@ USER frinex
 # CMD ["java", "-jar", "/frinexwizard.war"]
 RUN echo "cd /ExperimentTemplate; git pull; mvn spring-boot:run -f /ExperimentTemplate/ExperimentDesigner/pom.xml" > /updateRunWizard.sh
 RUN chmod a+x /updateRunWizard.sh
+USER frinex
 CMD ["/bin/bash","-c","/updateRunWizard.sh"]
