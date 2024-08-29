@@ -44,6 +44,7 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 #RUN git clone https://github.com/chris-rudmin/opus-recorder.git
 #RUN cd opus-recorder; git checkout tags/v8.0.4
 RUN mkdir /FrinexWizardUtils
+RUN mkdir /FrinexExperiments
 COPY docker/compile_wizard_tempates.sh /FrinexWizardUtils/
 RUN chmod +x /FrinexWizardUtils/compile_wizard_tempates.sh
 # RUN /FrinexWizardUtils/compile_wizard_tempates.sh
@@ -68,6 +69,12 @@ RUN cd /ExperimentTemplate/ExperimentDesigner \
     && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-*.*-testing-SNAPSHOT.war /frinexwizard.war
+
+RUN adduser -S frinex
+USER frinex
+RUN chown -R frinex /FrinexExperiments
+RUN chown -R frinex /FrinexWizardUtils
+RUN chown -R frinex /ExperimentTemplate
 
 #CMD ["java", "-Dlogging.level.org.springframework=TRACE", "-jar", "/frinexwizard.war"]
 #CMD ["java", "-Dlogging.level.org.springframework=DEBUG", "-jar", "/frinexwizard.war"]
