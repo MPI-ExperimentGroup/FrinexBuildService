@@ -74,6 +74,8 @@ RUN adduser frinex
 RUN chown -R frinex /FrinexExperiments
 RUN chown -R frinex /FrinexWizardUtils
 RUN chown -R frinex /ExperimentTemplate
+RUN mkdir /data
+RUN chown -R frinex /data
 
 #CMD ["java", "-Dlogging.level.org.springframework=TRACE", "-jar", "/frinexwizard.war"]
 #CMD ["java", "-Dlogging.level.org.springframework=DEBUG", "-jar", "/frinexwizard.war"]
