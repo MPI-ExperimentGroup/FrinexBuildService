@@ -24,7 +24,7 @@ FROM openjdk:11
 
 RUN apt-get update
 RUN apt-get -y upgrade
-RUN apt-get -y install maven vim
+RUN apt-get -y install maven vim git
 
 # clone the Frinex repository including enough depth to give correct build numbers
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
