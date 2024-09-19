@@ -20,7 +20,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM openjdk:11
+FROM eclipse-temurin:21-jdk-alpine
 
 RUN apt-get update
 RUN apt-get -y upgrade
