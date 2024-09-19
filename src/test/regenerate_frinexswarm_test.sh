@@ -280,3 +280,181 @@ wget http://frinexbuild.mpi.nl/wmx_l2pros_test/wmx_l2pros_test.xml;"
 
 # the following step will require authentication
 curl http://localhost/cgi/request_build.cgi
+
+
+# Thu Sep 19 13:57:07 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   51M  391G   1% /var/lib/docker
+# install_frinexbuild_container
+# Thu Sep 19 13:58:52 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G  795M  391G   1% /var/lib/docker
+# generate_alpha_frinexapps
+# Thu Sep 19 14:37:14 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   18G  373G   5% /var/lib/docker
+# 202408131657270200
+# Thu Sep 19 14:38:23 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   19G  373G   5% /var/lib/docker
+# 202407081152070200
+# Thu Sep 19 14:41:32 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   20G  371G   6% /var/lib/docker
+# 202406271716450200
+# Thu Sep 19 14:44:37 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   22G  369G   6% /var/lib/docker
+# 202405231133150200
+# Thu Sep 19 14:47:43 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   24G  367G   7% /var/lib/docker
+# 202405071528270200
+# Thu Sep 19 14:50:55 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   26G  365G   7% /var/lib/docker
+# 202404041622400200
+# Thu Sep 19 14:54:03 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   28G  364G   8% /var/lib/docker
+# 202403131613080100
+# Thu Sep 19 14:57:12 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   30G  362G   8% /var/lib/docker
+# 202402261432350100
+# Thu Sep 19 15:00:19 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   32G  360G   9% /var/lib/docker
+# 202309061208080200
+# Thu Sep 19 15:03:21 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   34G  358G   9% /var/lib/docker
+# 202308151550210200
+# Thu Sep 19 15:06:23 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   36G  356G  10% /var/lib/docker
+# 202308141443350200
+# Thu Sep 19 15:09:19 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   37G  354G  10% /var/lib/docker
+# 202305251737070200
+# Thu Sep 19 15:12:19 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   39G  353G  10% /var/lib/docker
+# 202305161530140200
+# Thu Sep 19 15:15:17 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   41G  351G  11% /var/lib/docker
+# 202304251457450200
+# Thu Sep 19 15:18:18 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   43G  349G  11% /var/lib/docker
+# 202304181454510200
+# Thu Sep 19 15:21:20 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   44G  348G  12% /var/lib/docker
+# 202304051432230200
+# Thu Sep 19 15:24:18 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   46G  346G  12% /var/lib/docker
+# 202303201508280100
+# Thu Sep 19 15:27:18 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   48G  344G  13% /var/lib/docker
+# 202303081420500100
+# Thu Sep 19 15:30:21 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   49G  342G  13% /var/lib/docker
+# 202302271216190100
+# Thu Sep 19 15:33:23 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   51G  341G  13% /var/lib/docker
+# 202302011625520100
+# Thu Sep 19 15:36:26 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   53G  339G  14% /var/lib/docker
+# 202211241627400100
+# Thu Sep 19 15:40:55 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   55G  337G  14% /var/lib/docker
+# 202211231658470100
+# Thu Sep 19 15:44:45 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   57G  335G  15% /var/lib/docker
+# 202211221602300100
+# Thu Sep 19 15:48:37 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   59G  333G  15% /var/lib/docker
+# 202211180835440100
+# Thu Sep 19 15:52:34 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202205021648080200
+# Thu Sep 19 15:52:48 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202204141630030200
+# Thu Sep 19 15:52:59 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202110181635530200
+# Thu Sep 19 15:53:13 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202109291638100200
+# Thu Sep 19 15:53:24 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202109071645320200
+# Thu Sep 19 15:53:36 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202108311054260200
+# Thu Sep 19 15:53:47 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202108201608260200
+# Thu Sep 19 15:53:59 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202108121517060200
+# Thu Sep 19 15:54:10 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202107081420180200
+# Thu Sep 19 15:54:22 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202106181551360200
+# Thu Sep 19 15:54:34 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202105041110310200
+# Thu Sep 19 15:54:46 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202104281549040200
+# Thu Sep 19 15:54:59 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202104200952450200
+# Thu Sep 19 15:55:10 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202103151558240100
+# Thu Sep 19 15:55:24 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  331G  16% /var/lib/docker
+# 202103111631550100
+# Thu Sep 19 15:55:35 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  330G  16% /var/lib/docker
+# 202103101406000100
+# Thu Sep 19 15:55:47 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  330G  16% /var/lib/docker
+# 202102171415200100
+# Thu Sep 19 15:55:58 CEST 2024
+# Filesystem              Size  Used Avail Use% Mounted on
+# /dev/mapper/vg1-docker  412G   61G  330G  16% /var/lib/docker
+# frinexbuild-wget
