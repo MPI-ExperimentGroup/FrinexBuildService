@@ -23,12 +23,12 @@
 #
 
 date >> frinexbuild_disk.log
-df -hs >> frinexbuild_disk.log
+df /var/lib/docker/ >> frinexbuild_disk.log
 echo "install_frinexbuild_container" >> frinexbuild_disk.log
 bash install_frinexbuild_container.sh
 
 date >> frinexbuild_disk.log
-df -hs >> frinexbuild_disk.log
+df /var/lib/docker/ >> frinexbuild_disk.log
 echo "generate_alpha_frinexapps" >> frinexbuild_disk.log
 bash generate_alpha_frinexapps.sh
 
@@ -43,7 +43,7 @@ do
     echo $compileDateTag
 
     date >> ../../frinexbuild_disk.log
-    df -hs >> ../../frinexbuild_disk.log
+    df /var/lib/docker/ >> ../../frinexbuild_disk.log
     echo "$compileDateTag" >> ../../frinexbuild_disk.log
 
     # build the compile date based version based on alpha:
@@ -59,7 +59,7 @@ do
 done
 
 date >> ../../frinexbuild_disk.log
-df -hs >> ../../frinexbuild_disk.log
+df /var/lib/docker/ >> ../../frinexbuild_disk.log
 echo "frinexbuild-wget" >> ../../frinexbuild_disk.log
 
 docker run -v incomingDirectory:/FrinexBuildService/incoming --rm -it --name frinexbuild-wget frinexbuild:latest bash -c \
