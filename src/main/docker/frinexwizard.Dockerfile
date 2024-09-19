@@ -24,7 +24,7 @@ FROM eclipse-temurin:21-jdk-alpine
 # RUN apt-get update
 # RUN apt-get -y upgrade
 # RUN apt-get -y install maven vim git
-RUN apk add --no-cache maven vim git
+RUN apk add --no-cache maven vim git bash
 # clone the Frinex repository including enough depth to give correct build numbers
 RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
 
