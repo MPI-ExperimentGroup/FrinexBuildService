@@ -58,6 +58,8 @@ do
         # copy the current versions HTML and XSD to the build service artifacts directory
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:$compileDateTag /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/\$(cat /ExperimentTemplate/gwt-cordova.version).xsd"
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:$compileDateTag /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/\$(cat /ExperimentTemplate/gwt-cordova.version).html"
+        # make sure the local .m2 directory has the $compileDateTag jar files. In this case only frinex common and the parent pom are required, compiling the GWT component is not needed here
+        docker run --rm -v m2Directory:/maven/.m2/ -w /ExperimentTemplate frinexapps-jdk:$compileDateTag /bin/bash -c "mvn install -Djdk.xml.xpathExprGrpLimit=140 -Djdk.xml.xpathExprOpLimit=650 -Djdk.xml.xpathTotalOpLimit=150 -gs /maven/.m2/settings.xml"
     fi
 done
 
