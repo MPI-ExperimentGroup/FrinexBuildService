@@ -282,7 +282,8 @@ wget http://frinexbuild.mpi.nl/very_large_example/very_large_example.xml;\
 wget http://frinexbuild.mpi.nl/with_stimulus_example-admin/with_stimulus_example-admin.xml;\
 wget http://frinexbuild.mpi.nl/with_stimulus_example/with_stimulus_example.xml;\
 wget http://frinexbuild.mpi.nl/wmx_l2pros_test-admin/wmx_l2pros_test-admin.xml;\
-wget http://frinexbuild.mpi.nl/wmx_l2pros_test/wmx_l2pros_test.xml;"
+wget http://frinexbuild.mpi.nl/wmx_l2pros_test/wmx_l2pros_test.xml;\
+chown -R frinex:www-data /FrinexBuildService/incoming; chmod -R ug+rwx /FrinexBuildService/incoming;"
 
 # the following step will require authentication
 curl http://localhost/cgi/request_build.cgi
