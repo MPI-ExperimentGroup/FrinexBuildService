@@ -55,6 +55,9 @@ do
         docker tag "frinexapps-jdk:$compileDateTag" frinexapps-jdk:$compileDateVersion
         docker tag "frinexapps-cordova:alpha" frinexapps-cordova:$compileDateVersion
         docker tag "frinexapps-electron:alpha" frinexapps-electron:$compileDateVersion
+        # copy the current versions HTML and XSD to the build service artifacts directory
+        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:$compileDateTag /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.xsd /FrinexBuildService/artifacts/\$(cat /ExperimentTemplate/gwt-cordova.version).xsd"
+        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:$compileDateTag /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/\$(cat /ExperimentTemplate/gwt-cordova.version).html"
     fi
 done
 
