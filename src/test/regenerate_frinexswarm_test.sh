@@ -465,3 +465,30 @@ curl http://localhost/cgi/request_build.cgi
 # Filesystem              Size  Used Avail Use% Mounted on
 # /dev/mapper/vg1-docker  412G   61G  330G  16% /var/lib/docker
 # frinexbuild-wget
+
+
+# after building 298 war files
+
+# /dev/mapper/vg1-docker           412G  101G  290G  26% /var/lib/docker
+
+# 185M	/var/lib/docker/buildkit
+# 420K	/var/lib/docker/containerd
+# 28M	/var/lib/docker/containers
+# 4.0K	/var/lib/docker/engine-id
+# 77M	/var/lib/docker/image
+# 16K	/var/lib/docker/lost+found
+# 100K	/var/lib/docker/network
+# 92G	/var/lib/docker/overlay2
+# 16K	/var/lib/docker/plugins
+# 4.0K	/var/lib/docker/runtimes
+# 4.0K	/var/lib/docker/swarm
+# 8.0K	/var/lib/docker/tmp
+# 28G	/var/lib/docker/volumes
+
+# 7.8G	/var/lib/docker/volumes/buildServerTarget
+# 19M	/var/lib/docker/volumes/incomingDirectory
+# 20K	/var/lib/docker/volumes/listingDirectory
+# 2.1G	/var/lib/docker/volumes/m2Directory
+# 32K	/var/lib/docker/volumes/processingDirectory
+# 18G	/var/lib/docker/volumes/protectedDirectory
+# 8.0K	/var/lib/docker/volumes/webappsTomcatStaging
