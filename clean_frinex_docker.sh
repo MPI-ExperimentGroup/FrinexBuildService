@@ -29,6 +29,6 @@ workingDir=$(pwd -P)
 docker volume rm $(docker volume ls | grep -v "gitRepositories" | grep -v "protectedDirectory" | grep -v "registry_certs" | grep -v "m2Directory" | grep -v "buildServerTarget" | grep -v "frinexDockerRegistry" | awk 'NR>1 {print $2}')
 #  | grep -v "gitCheckedout"
 # clean up images
-docker image rm $(docker image ls | grep -v "frinexbuild" | grep -v "frinexapps" | grep -v "frinex_db_manager" | awk 'NR>1 {print $3}')
+docker image rm $(docker image ls | grep -v "frinexbuild " | grep -v "frinexwizard " | grep -v "registry " | grep -v "frinex_listing_provider" | grep -v "frinexapps" | grep -v "frinex_db_manager" | awk 'NR>1 {print $3}')
 # prune what remains
 docker system prune
