@@ -68,222 +68,230 @@ date >> ../../frinexbuild_disk.log
 df -h /var/lib/docker/ >> ../../frinexbuild_disk.log
 echo "frinexbuild-wget" >> ../../frinexbuild_disk.log
 
-docker run -v incomingDirectory:/FrinexBuildService/incoming --rm -it --name frinexbuild-wget frinexbuild:latest bash -c \
-"mkdir /FrinexBuildService/incoming/commits/;\
-cd /FrinexBuildService/incoming/commits/;\
-wget http://frinexbuild.mpi.nl/addressee_memory-admin/addressee_memory-admin.xml;\
-wget http://frinexbuild.mpi.nl/addressee_memory/addressee_memory.xml;\
-wget http://frinexbuild.mpi.nl/aggressive_audio_ref-admin/aggressive_audio_ref-admin.xml;\
-wget http://frinexbuild.mpi.nl/aggressive_audio_ref/aggressive_audio_ref.xml;\
-wget http://frinexbuild.mpi.nl/aggressive_audio_test-admin/aggressive_audio_test-admin.xml;\
-wget http://frinexbuild.mpi.nl/aggressive_audio_test/aggressive_audio_test.xml;\
-wget http://frinexbuild.mpi.nl/assigned_value_example-admin/assigned_value_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/assigned_value_example/assigned_value_example.xml;\
-wget http://frinexbuild.mpi.nl/audio_recorder_example-admin/audio_recorder_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/audio_recorder_example/audio_recorder_example.xml;\
-wget http://frinexbuild.mpi.nl/auteurstest_separate-admin/auteurstest_separate-admin.xml;\
-wget http://frinexbuild.mpi.nl/auteurstest_separate/auteurstest_separate.xml;\
-wget http://frinexbuild.mpi.nl/digitspantest-admin/digitspantest-admin.xml;\
-wget http://frinexbuild.mpi.nl/digitspantest/digitspantest.xml;\
-wget http://frinexbuild.mpi.nl/ed_dog1_human1_r_2atrgzmcny4hubq-admin/ed_dog1_human1_r_2atrgzmcny4hubq-admin.xml;\
-wget http://frinexbuild.mpi.nl/ed_dog1_human1_r_2atrgzmcny4hubq/ed_dog1_human1_r_2atrgzmcny4hubq.xml;\
-wget http://frinexbuild.mpi.nl/ed_dog1_human2_r_3jerivhkxcqjqor-admin/ed_dog1_human2_r_3jerivhkxcqjqor-admin.xml;\
-wget http://frinexbuild.mpi.nl/ed_dog1_human2_r_3jerivhkxcqjqor/ed_dog1_human2_r_3jerivhkxcqjqor.xml;\
-wget http://frinexbuild.mpi.nl/ed_dog2_human2_r_2yb4ykf7hywe31s-admin/ed_dog2_human2_r_2yb4ykf7hywe31s-admin.xml;\
-wget http://frinexbuild.mpi.nl/ed_dog2_human2_r_2yb4ykf7hywe31s/ed_dog2_human2_r_2yb4ykf7hywe31s.xml;\
-wget http://frinexbuild.mpi.nl/ed_human1_dog1_r_1jtanttjf5bw8qw-admin/ed_human1_dog1_r_1jtanttjf5bw8qw-admin.xml;\
-wget http://frinexbuild.mpi.nl/ed_human1_dog1_r_1jtanttjf5bw8qw/ed_human1_dog1_r_1jtanttjf5bw8qw.xml;\
-wget http://frinexbuild.mpi.nl/ed_human2_dog2_r_3i4afkxvondatcv-admin/ed_human2_dog2_r_3i4afkxvondatcv-admin.xml;\
-wget http://frinexbuild.mpi.nl/ed_human2_dog2_r_3i4afkxvondatcv/ed_human2_dog2_r_3i4afkxvondatcv.xml;\
-wget http://frinexbuild.mpi.nl/ed_human2_dog2_r_an7elf1xgpa8rlp-admin/ed_human2_dog2_r_an7elf1xgpa8rlp-admin.xml;\
-wget http://frinexbuild.mpi.nl/ed_human2_dog2_r_an7elf1xgpa8rlp/ed_human2_dog2_r_an7elf1xgpa8rlp.xml;\
-wget http://frinexbuild.mpi.nl/electron_wrapper_test-admin/electron_wrapper_test-admin.xml;\
-wget http://frinexbuild.mpi.nl/electron_wrapper_test/electron_wrapper_test.xml;\
-wget http://frinexbuild.mpi.nl/fn_dutch_all-admin/fn_dutch_all-admin.xml;\
-wget http://frinexbuild.mpi.nl/fn_dutch_all/fn_dutch_all.xml;\
-wget http://frinexbuild.mpi.nl/fn_ukrainian-admin/fn_ukrainian-admin.xml;\
-wget http://frinexbuild.mpi.nl/fn_ukrainian/fn_ukrainian.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice1a-admin/forcedchoice1a-admin.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice1a/forcedchoice1a.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice1b-admin/forcedchoice1b-admin.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice1b/forcedchoice1b.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice2a-admin/forcedchoice2a-admin.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice2a/forcedchoice2a.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice4a-admin/forcedchoice4a-admin.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice4a/forcedchoice4a.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice-admin/forcedchoice-admin.xml;\
-wget http://frinexbuild.mpi.nl/forcedchoice/forcedchoice.xml;\
-wget http://frinexbuild.mpi.nl/framerate_timer_example-admin/framerate_timer_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/framerate_timer_example/framerate_timer_example.xml;\
-wget http://frinexbuild.mpi.nl/french_audio_example-admin/french_audio_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/french_audio_example/french_audio_example.xml;\
-wget http://frinexbuild.mpi.nl/frinexmanualsurvey-admin/frinexmanualsurvey-admin.xml;\
-wget http://frinexbuild.mpi.nl/frinexmanualsurvey/frinexmanualsurvey.xml;\
-wget http://frinexbuild.mpi.nl/group_streaming_example-admin/group_streaming_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/group_streaming_example/group_streaming_example.xml;\
-wget http://frinexbuild.mpi.nl/group_webcam_example-admin/group_webcam_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/group_webcam_example/group_webcam_example.xml;\
-wget http://frinexbuild.mpi.nl/idlas_en_pilot_electron-admin/idlas_en_pilot_electron-admin.xml;\
-wget http://frinexbuild.mpi.nl/idlas_en_pilot_electron/idlas_en_pilot_electron.xml;\
-wget http://frinexbuild.mpi.nl/idlas_se_pilot_electron-admin/idlas_se_pilot_electron-admin.xml;\
-wget http://frinexbuild.mpi.nl/idlas_se_pilot_electron/idlas_se_pilot_electron.xml;\
-wget http://frinexbuild.mpi.nl/idlasdeauditorychoicereactiontime-admin/idlasdeauditorychoicereactiontime-admin.xml;\
-wget http://frinexbuild.mpi.nl/idlasdeauditorychoicereactiontime/idlasdeauditorychoicereactiontime.xml;\
-wget http://frinexbuild.mpi.nl/idlasdeauditorysimplereactiontime-admin/idlasdeauditorysimplereactiontime-admin.xml;\
-wget http://frinexbuild.mpi.nl/idlasdeauditorysimplereactiontime/idlasdeauditorysimplereactiontime.xml;\
-wget http://frinexbuild.mpi.nl/idlasdelandingpage-admin/idlasdelandingpage-admin.xml;\
-wget http://frinexbuild.mpi.nl/idlasdelandingpage/idlasdelandingpage.xml;\
-wget http://frinexbuild.mpi.nl/idlasenregistration-admin/idlasenregistration-admin.xml;\
-wget http://frinexbuild.mpi.nl/idlasenregistration/idlasenregistration.xml;\
-wget http://frinexbuild.mpi.nl/idlasseerrorhandler-admin/idlasseerrorhandler-admin.xml;\
-wget http://frinexbuild.mpi.nl/idlasseerrorhandler/idlasseerrorhandler.xml;\
-wget http://frinexbuild.mpi.nl/idlasselandingpage-admin/idlasselandingpage-admin.xml;\
-wget http://frinexbuild.mpi.nl/idlasselandingpage/idlasselandingpage.xml;\
-wget http://frinexbuild.mpi.nl/lettercom-admin/lettercom-admin.xml;\
-wget http://frinexbuild.mpi.nl/lettercom/lettercom.xml;\
-wget http://frinexbuild.mpi.nl/local_storage_full-admin/local_storage_full-admin.xml;\
-wget http://frinexbuild.mpi.nl/local_storage_full/local_storage_full.xml;\
-wget http://frinexbuild.mpi.nl/mainexp_baseline_naming_task_list4-admin/mainexp_baseline_naming_task_list4-admin.xml;\
-wget http://frinexbuild.mpi.nl/mainexp_baseline_naming_task_list4/mainexp_baseline_naming_task_list4.xml;\
-wget http://frinexbuild.mpi.nl/mpideauditorychoicereactiontime-admin/mpideauditorychoicereactiontime-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpideauditorychoicereactiontime/mpideauditorychoicereactiontime.xml;\
-wget http://frinexbuild.mpi.nl/mpidecorsiblock-admin/mpidecorsiblock-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpidecorsiblock/mpidecorsiblock.xml;\
-wget http://frinexbuild.mpi.nl/mpidegrammaticalgendercues2-admin/mpidegrammaticalgendercues2-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpidegrammaticalgendercues2/mpidegrammaticalgendercues2.xml;\
-wget http://frinexbuild.mpi.nl/mpideidiomrecognition-admin/mpideidiomrecognition-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpideidiomrecognition/mpideidiomrecognition.xml;\
-wget http://frinexbuild.mpi.nl/mpideprescriptivegrammar-admin/mpideprescriptivegrammar-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpideprescriptivegrammar/mpideprescriptivegrammar.xml;\
-wget http://frinexbuild.mpi.nl/mpidequestionsdemographic-admin/mpidequestionsdemographic-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpidequestionsdemographic/mpidequestionsdemographic.xml;\
-wget http://frinexbuild.mpi.nl/mpidequestionsdemographics-admin/mpidequestionsdemographics-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpidequestionsdemographics/mpidequestionsdemographics.xml;\
-wget http://frinexbuild.mpi.nl/mpidesentencecomprehension1-admin/mpidesentencecomprehension1-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpidesentencecomprehension1/mpidesentencecomprehension1.xml;\
-wget http://frinexbuild.mpi.nl/mpidesessionend-admin/mpidesessionend-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpidesessionend/mpidesessionend.xml;\
-wget http://frinexbuild.mpi.nl/mpidevisualchoicereactiontime-admin/mpidevisualchoicereactiontime-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpidevisualchoicereactiontime/mpidevisualchoicereactiontime.xml;\
-wget http://frinexbuild.mpi.nl/mpienauditorychoicereactiontime-admin/mpienauditorychoicereactiontime-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienauditorychoicereactiontime/mpienauditorychoicereactiontime.xml;\
-wget http://frinexbuild.mpi.nl/mpienauthorrecognition-admin/mpienauthorrecognition-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienauthorrecognition/mpienauthorrecognition.xml;\
-wget http://frinexbuild.mpi.nl/mpienfastreadlisten-admin/mpienfastreadlisten-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienfastreadlisten/mpienfastreadlisten.xml;\
-wget http://frinexbuild.mpi.nl/mpienmaximalspeechrate-admin/mpienmaximalspeechrate-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienmaximalspeechrate/mpienmaximalspeechrate.xml;\
-wget http://frinexbuild.mpi.nl/mpienreadingspan-admin/mpienreadingspan-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienreadingspan/mpienreadingspan.xml;\
-wget http://frinexbuild.mpi.nl/mpienspellingtest-admin/mpienspellingtest-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienspellingtest/mpienspellingtest.xml;\
-wget http://frinexbuild.mpi.nl/mpienstuvoc-admin/mpienstuvoc-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienstuvoc/mpienstuvoc.xml;\
-wget http://frinexbuild.mpi.nl/mpienverbalfluency-admin/mpienverbalfluency-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienverbalfluency/mpienverbalfluency.xml;\
-wget http://frinexbuild.mpi.nl/mpienvisualsimplereactiontime-admin/mpienvisualsimplereactiontime-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienvisualsimplereactiontime/mpienvisualsimplereactiontime.xml;\
-wget http://frinexbuild.mpi.nl/mpienwordstogether-admin/mpienwordstogether-admin.xml;\
-wget http://frinexbuild.mpi.nl/mpienwordstogether/mpienwordstogether.xml;\
-wget http://frinexbuild.mpi.nl/network_description_task-admin/network_description_task-admin.xml;\
-wget http://frinexbuild.mpi.nl/network_description_task/network_description_task.xml;\
-wget http://frinexbuild.mpi.nl/prescreentest-admin/prescreentest-admin.xml;\
-wget http://frinexbuild.mpi.nl/prescreentest/prescreentest.xml;\
-wget http://frinexbuild.mpi.nl/prosody_2_2-admin/prosody_2_2-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_2_2/prosody_2_2.xml;\
-wget http://frinexbuild.mpi.nl/prosody_5_1-admin/prosody_5_1-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_5_1/prosody_5_1.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_1-admin/prosody_exp2_1-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_1/prosody_exp2_1.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_2-admin/prosody_exp2_2-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_2/prosody_exp2_2.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_3-admin/prosody_exp2_3-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_3/prosody_exp2_3.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_4-admin/prosody_exp2_4-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_4/prosody_exp2_4.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_5-admin/prosody_exp2_5-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_5/prosody_exp2_5.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_6-admin/prosody_exp2_6-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_6/prosody_exp2_6.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_7-admin/prosody_exp2_7-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_7/prosody_exp2_7.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_8-admin/prosody_exp2_8-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_8/prosody_exp2_8.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_9-admin/prosody_exp2_9-admin.xml;\
-wget http://frinexbuild.mpi.nl/prosody_exp2_9/prosody_exp2_9.xml;\
-wget http://frinexbuild.mpi.nl/q_test-admin/q_test-admin.xml;\
-wget http://frinexbuild.mpi.nl/q_test/q_test.xml;\
-wget http://frinexbuild.mpi.nl/questionnaire_example-admin/questionnaire_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/questionnaire_example/questionnaire_example.xml;\
-wget http://frinexbuild.mpi.nl/recorder_level_trigger_example-admin/recorder_level_trigger_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/recorder_level_trigger_example/recorder_level_trigger_example.xml;\
-wget http://frinexbuild.mpi.nl/s1prescreense-admin/s1prescreense-admin.xml;\
-wget http://frinexbuild.mpi.nl/s1prescreense/s1prescreense.xml;\
-wget http://frinexbuild.mpi.nl/s2bfi10de-admin/s2bfi10de-admin.xml;\
-wget http://frinexbuild.mpi.nl/s2bfi10de/s2bfi10de.xml;\
-wget http://frinexbuild.mpi.nl/s3auditorychoicereactiontimese-admin/s3auditorychoicereactiontimese-admin.xml;\
-wget http://frinexbuild.mpi.nl/s3auditorychoicereactiontimese/s3auditorychoicereactiontimese.xml;\
-wget http://frinexbuild.mpi.nl/s3auditorysimplereactiontimese-admin/s3auditorysimplereactiontimese-admin.xml;\
-wget http://frinexbuild.mpi.nl/s3auditorysimplereactiontimese/s3auditorysimplereactiontimese.xml;\
-wget http://frinexbuild.mpi.nl/s3grammaticalgendercues1se-admin/s3grammaticalgendercues1se-admin.xml;\
-wget http://frinexbuild.mpi.nl/s3grammaticalgendercues1se/s3grammaticalgendercues1se.xml;\
-wget http://frinexbuild.mpi.nl/s3grammaticalgendercues2se-admin/s3grammaticalgendercues2se-admin.xml;\
-wget http://frinexbuild.mpi.nl/s3grammaticalgendercues2se/s3grammaticalgendercues2se.xml;\
-wget http://frinexbuild.mpi.nl/s3phrasegenerationse-admin/s3phrasegenerationse-admin.xml;\
-wget http://frinexbuild.mpi.nl/s3phrasegenerationse/s3phrasegenerationse.xml;\
-wget http://frinexbuild.mpi.nl/s3sentencegenerationse-admin/s3sentencegenerationse-admin.xml;\
-wget http://frinexbuild.mpi.nl/s3sentencegenerationse/s3sentencegenerationse.xml;\
-wget http://frinexbuild.mpi.nl/s4audiotestse-admin/s4audiotestse-admin.xml;\
-wget http://frinexbuild.mpi.nl/s4audiotestse/s4audiotestse.xml;\
-wget http://frinexbuild.mpi.nl/s4questionnairehealthse-admin/s4questionnairehealthse-admin.xml;\
-wget http://frinexbuild.mpi.nl/s4questionnairehealthse/s4questionnairehealthse.xml;\
-wget http://frinexbuild.mpi.nl/s4rapidautomatizednamingde-admin/s4rapidautomatizednamingde-admin.xml;\
-wget http://frinexbuild.mpi.nl/s4rapidautomatizednamingde/s4rapidautomatizednamingde.xml;\
-wget http://frinexbuild.mpi.nl/s4rapidautomatizednamingse-admin/s4rapidautomatizednamingse-admin.xml;\
-wget http://frinexbuild.mpi.nl/s4rapidautomatizednamingse/s4rapidautomatizednamingse.xml;\
-wget http://frinexbuild.mpi.nl/s4verbalfluencyse-admin/s4verbalfluencyse-admin.xml;\
-wget http://frinexbuild.mpi.nl/s4verbalfluencyse/s4verbalfluencyse.xml;\
-wget http://frinexbuild.mpi.nl/secondlan1-admin/secondlan1-admin.xml;\
-wget http://frinexbuild.mpi.nl/secondlan1/secondlan1.xml;\
-wget http://frinexbuild.mpi.nl/secondlan2-admin/secondlan2-admin.xml;\
-wget http://frinexbuild.mpi.nl/secondlan2/secondlan2.xml;\
-wget http://frinexbuild.mpi.nl/secondlan3-admin/secondlan3-admin.xml;\
-wget http://frinexbuild.mpi.nl/secondlan3/secondlan3.xml;\
-wget http://frinexbuild.mpi.nl/secondlan4-admin/secondlan4-admin.xml;\
-wget http://frinexbuild.mpi.nl/secondlan4/secondlan4.xml;\
-wget http://frinexbuild.mpi.nl/secondlan5-admin/secondlan5-admin.xml;\
-wget http://frinexbuild.mpi.nl/secondlan5/secondlan5.xml;\
-wget http://frinexbuild.mpi.nl/secondlan6-admin/secondlan6-admin.xml;\
-wget http://frinexbuild.mpi.nl/secondlan6/secondlan6.xml;\
-wget http://frinexbuild.mpi.nl/secondlan-admin/secondlan-admin.xml;\
-wget http://frinexbuild.mpi.nl/secondlan/secondlan.xml;\
-wget http://frinexbuild.mpi.nl/secondlan_test-admin/secondlan_test-admin.xml;\
-wget http://frinexbuild.mpi.nl/secondlan_test/secondlan_test.xml;\
-wget http://frinexbuild.mpi.nl/sound_onset_example-admin/sound_onset_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/sound_onset_example/sound_onset_example.xml;\
-wget http://frinexbuild.mpi.nl/stimulus_timer_example-admin/stimulus_timer_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/stimulus_timer_example/stimulus_timer_example.xml;\
-wget http://frinexbuild.mpi.nl/temple_test-admin/temple_test-admin.xml;\
-wget http://frinexbuild.mpi.nl/temple_test/temple_test.xml;\
-wget http://frinexbuild.mpi.nl/thijs_test_2-admin/thijs_test_2-admin.xml;\
-wget http://frinexbuild.mpi.nl/thijs_test_2/thijs_test_2.xml;\
-wget http://frinexbuild.mpi.nl/thijs_test_3-admin/thijs_test_3-admin.xml;\
-wget http://frinexbuild.mpi.nl/thijs_test_3/thijs_test_3.xml;\
-wget http://frinexbuild.mpi.nl/thijs_test-admin/thijs_test-admin.xml;\
-wget http://frinexbuild.mpi.nl/thijs_test/thijs_test.xml;\
-wget http://frinexbuild.mpi.nl/timer_averaging_example-admin/timer_averaging_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/timer_averaging_example/timer_averaging_example.xml;\
-wget http://frinexbuild.mpi.nl/translation_example-admin/translation_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/translation_example/translation_example.xml;\
-wget http://frinexbuild.mpi.nl/uppercasetest-admin/uppercasetest-admin.xml;\
-wget http://frinexbuild.mpi.nl/uppercasetest/uppercasetest.xml;\
-wget http://frinexbuild.mpi.nl/very_large_example-admin/very_large_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/very_large_example/very_large_example.xml;\
-wget http://frinexbuild.mpi.nl/with_stimulus_example-admin/with_stimulus_example-admin.xml;\
-wget http://frinexbuild.mpi.nl/with_stimulus_example/with_stimulus_example.xml;\
-wget http://frinexbuild.mpi.nl/wmx_l2pros_test-admin/wmx_l2pros_test-admin.xml;\
-wget http://frinexbuild.mpi.nl/wmx_l2pros_test/wmx_l2pros_test.xml;\
-chown -R frinex:www-data /FrinexBuildService/incoming; chmod -R ug+rwx /FrinexBuildService/incoming;"
+# docker run -v incomingDirectory:/FrinexBuildService/incoming --rm -it --name frinexbuild-wget frinexbuild:latest bash -c \
+# "mkdir /FrinexBuildService/incoming/commits/;\
+# cd /FrinexBuildService/incoming/commits/;\
+# wget http://frinexbuild.mpi.nl/addressee_memory-admin/addressee_memory-admin.xml;\
+# wget http://frinexbuild.mpi.nl/addressee_memory/addressee_memory.xml;\
+# wget http://frinexbuild.mpi.nl/aggressive_audio_ref-admin/aggressive_audio_ref-admin.xml;\
+# wget http://frinexbuild.mpi.nl/aggressive_audio_ref/aggressive_audio_ref.xml;\
+# wget http://frinexbuild.mpi.nl/aggressive_audio_test-admin/aggressive_audio_test-admin.xml;\
+# wget http://frinexbuild.mpi.nl/aggressive_audio_test/aggressive_audio_test.xml;\
+# wget http://frinexbuild.mpi.nl/assigned_value_example-admin/assigned_value_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/assigned_value_example/assigned_value_example.xml;\
+# wget http://frinexbuild.mpi.nl/audio_recorder_example-admin/audio_recorder_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/audio_recorder_example/audio_recorder_example.xml;\
+# wget http://frinexbuild.mpi.nl/auteurstest_separate-admin/auteurstest_separate-admin.xml;\
+# wget http://frinexbuild.mpi.nl/auteurstest_separate/auteurstest_separate.xml;\
+# wget http://frinexbuild.mpi.nl/digitspantest-admin/digitspantest-admin.xml;\
+# wget http://frinexbuild.mpi.nl/digitspantest/digitspantest.xml;\
+# wget http://frinexbuild.mpi.nl/ed_dog1_human1_r_2atrgzmcny4hubq-admin/ed_dog1_human1_r_2atrgzmcny4hubq-admin.xml;\
+# wget http://frinexbuild.mpi.nl/ed_dog1_human1_r_2atrgzmcny4hubq/ed_dog1_human1_r_2atrgzmcny4hubq.xml;\
+# wget http://frinexbuild.mpi.nl/ed_dog1_human2_r_3jerivhkxcqjqor-admin/ed_dog1_human2_r_3jerivhkxcqjqor-admin.xml;\
+# wget http://frinexbuild.mpi.nl/ed_dog1_human2_r_3jerivhkxcqjqor/ed_dog1_human2_r_3jerivhkxcqjqor.xml;\
+# wget http://frinexbuild.mpi.nl/ed_dog2_human2_r_2yb4ykf7hywe31s-admin/ed_dog2_human2_r_2yb4ykf7hywe31s-admin.xml;\
+# wget http://frinexbuild.mpi.nl/ed_dog2_human2_r_2yb4ykf7hywe31s/ed_dog2_human2_r_2yb4ykf7hywe31s.xml;\
+# wget http://frinexbuild.mpi.nl/ed_human1_dog1_r_1jtanttjf5bw8qw-admin/ed_human1_dog1_r_1jtanttjf5bw8qw-admin.xml;\
+# wget http://frinexbuild.mpi.nl/ed_human1_dog1_r_1jtanttjf5bw8qw/ed_human1_dog1_r_1jtanttjf5bw8qw.xml;\
+# wget http://frinexbuild.mpi.nl/ed_human2_dog2_r_3i4afkxvondatcv-admin/ed_human2_dog2_r_3i4afkxvondatcv-admin.xml;\
+# wget http://frinexbuild.mpi.nl/ed_human2_dog2_r_3i4afkxvondatcv/ed_human2_dog2_r_3i4afkxvondatcv.xml;\
+# wget http://frinexbuild.mpi.nl/ed_human2_dog2_r_an7elf1xgpa8rlp-admin/ed_human2_dog2_r_an7elf1xgpa8rlp-admin.xml;\
+# wget http://frinexbuild.mpi.nl/ed_human2_dog2_r_an7elf1xgpa8rlp/ed_human2_dog2_r_an7elf1xgpa8rlp.xml;\
+# wget http://frinexbuild.mpi.nl/electron_wrapper_test-admin/electron_wrapper_test-admin.xml;\
+# wget http://frinexbuild.mpi.nl/electron_wrapper_test/electron_wrapper_test.xml;\
+# wget http://frinexbuild.mpi.nl/fn_dutch_all-admin/fn_dutch_all-admin.xml;\
+# wget http://frinexbuild.mpi.nl/fn_dutch_all/fn_dutch_all.xml;\
+# wget http://frinexbuild.mpi.nl/fn_ukrainian-admin/fn_ukrainian-admin.xml;\
+# wget http://frinexbuild.mpi.nl/fn_ukrainian/fn_ukrainian.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice1a-admin/forcedchoice1a-admin.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice1a/forcedchoice1a.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice1b-admin/forcedchoice1b-admin.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice1b/forcedchoice1b.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice2a-admin/forcedchoice2a-admin.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice2a/forcedchoice2a.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice4a-admin/forcedchoice4a-admin.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice4a/forcedchoice4a.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice-admin/forcedchoice-admin.xml;\
+# wget http://frinexbuild.mpi.nl/forcedchoice/forcedchoice.xml;\
+# wget http://frinexbuild.mpi.nl/framerate_timer_example-admin/framerate_timer_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/framerate_timer_example/framerate_timer_example.xml;\
+# wget http://frinexbuild.mpi.nl/french_audio_example-admin/french_audio_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/french_audio_example/french_audio_example.xml;\
+# wget http://frinexbuild.mpi.nl/frinexmanualsurvey-admin/frinexmanualsurvey-admin.xml;\
+# wget http://frinexbuild.mpi.nl/frinexmanualsurvey/frinexmanualsurvey.xml;\
+# wget http://frinexbuild.mpi.nl/group_streaming_example-admin/group_streaming_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/group_streaming_example/group_streaming_example.xml;\
+# wget http://frinexbuild.mpi.nl/group_webcam_example-admin/group_webcam_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/group_webcam_example/group_webcam_example.xml;\
+# wget http://frinexbuild.mpi.nl/idlas_en_pilot_electron-admin/idlas_en_pilot_electron-admin.xml;\
+# wget http://frinexbuild.mpi.nl/idlas_en_pilot_electron/idlas_en_pilot_electron.xml;\
+# wget http://frinexbuild.mpi.nl/idlas_se_pilot_electron-admin/idlas_se_pilot_electron-admin.xml;\
+# wget http://frinexbuild.mpi.nl/idlas_se_pilot_electron/idlas_se_pilot_electron.xml;\
+# wget http://frinexbuild.mpi.nl/idlasdeauditorychoicereactiontime-admin/idlasdeauditorychoicereactiontime-admin.xml;\
+# wget http://frinexbuild.mpi.nl/idlasdeauditorychoicereactiontime/idlasdeauditorychoicereactiontime.xml;\
+# wget http://frinexbuild.mpi.nl/idlasdeauditorysimplereactiontime-admin/idlasdeauditorysimplereactiontime-admin.xml;\
+# wget http://frinexbuild.mpi.nl/idlasdeauditorysimplereactiontime/idlasdeauditorysimplereactiontime.xml;\
+# wget http://frinexbuild.mpi.nl/idlasdelandingpage-admin/idlasdelandingpage-admin.xml;\
+# wget http://frinexbuild.mpi.nl/idlasdelandingpage/idlasdelandingpage.xml;\
+# wget http://frinexbuild.mpi.nl/idlasenregistration-admin/idlasenregistration-admin.xml;\
+# wget http://frinexbuild.mpi.nl/idlasenregistration/idlasenregistration.xml;\
+# wget http://frinexbuild.mpi.nl/idlasseerrorhandler-admin/idlasseerrorhandler-admin.xml;\
+# wget http://frinexbuild.mpi.nl/idlasseerrorhandler/idlasseerrorhandler.xml;\
+# wget http://frinexbuild.mpi.nl/idlasselandingpage-admin/idlasselandingpage-admin.xml;\
+# wget http://frinexbuild.mpi.nl/idlasselandingpage/idlasselandingpage.xml;\
+# wget http://frinexbuild.mpi.nl/lettercom-admin/lettercom-admin.xml;\
+# wget http://frinexbuild.mpi.nl/lettercom/lettercom.xml;\
+# wget http://frinexbuild.mpi.nl/local_storage_full-admin/local_storage_full-admin.xml;\
+# wget http://frinexbuild.mpi.nl/local_storage_full/local_storage_full.xml;\
+# wget http://frinexbuild.mpi.nl/mainexp_baseline_naming_task_list4-admin/mainexp_baseline_naming_task_list4-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mainexp_baseline_naming_task_list4/mainexp_baseline_naming_task_list4.xml;\
+# wget http://frinexbuild.mpi.nl/mpideauditorychoicereactiontime-admin/mpideauditorychoicereactiontime-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpideauditorychoicereactiontime/mpideauditorychoicereactiontime.xml;\
+# wget http://frinexbuild.mpi.nl/mpidecorsiblock-admin/mpidecorsiblock-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpidecorsiblock/mpidecorsiblock.xml;\
+# wget http://frinexbuild.mpi.nl/mpidegrammaticalgendercues2-admin/mpidegrammaticalgendercues2-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpidegrammaticalgendercues2/mpidegrammaticalgendercues2.xml;\
+# wget http://frinexbuild.mpi.nl/mpideidiomrecognition-admin/mpideidiomrecognition-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpideidiomrecognition/mpideidiomrecognition.xml;\
+# wget http://frinexbuild.mpi.nl/mpideprescriptivegrammar-admin/mpideprescriptivegrammar-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpideprescriptivegrammar/mpideprescriptivegrammar.xml;\
+# wget http://frinexbuild.mpi.nl/mpidequestionsdemographic-admin/mpidequestionsdemographic-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpidequestionsdemographic/mpidequestionsdemographic.xml;\
+# wget http://frinexbuild.mpi.nl/mpidequestionsdemographics-admin/mpidequestionsdemographics-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpidequestionsdemographics/mpidequestionsdemographics.xml;\
+# wget http://frinexbuild.mpi.nl/mpidesentencecomprehension1-admin/mpidesentencecomprehension1-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpidesentencecomprehension1/mpidesentencecomprehension1.xml;\
+# wget http://frinexbuild.mpi.nl/mpidesessionend-admin/mpidesessionend-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpidesessionend/mpidesessionend.xml;\
+# wget http://frinexbuild.mpi.nl/mpidevisualchoicereactiontime-admin/mpidevisualchoicereactiontime-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpidevisualchoicereactiontime/mpidevisualchoicereactiontime.xml;\
+# wget http://frinexbuild.mpi.nl/mpienauditorychoicereactiontime-admin/mpienauditorychoicereactiontime-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienauditorychoicereactiontime/mpienauditorychoicereactiontime.xml;\
+# wget http://frinexbuild.mpi.nl/mpienauthorrecognition-admin/mpienauthorrecognition-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienauthorrecognition/mpienauthorrecognition.xml;\
+# wget http://frinexbuild.mpi.nl/mpienfastreadlisten-admin/mpienfastreadlisten-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienfastreadlisten/mpienfastreadlisten.xml;\
+# wget http://frinexbuild.mpi.nl/mpienmaximalspeechrate-admin/mpienmaximalspeechrate-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienmaximalspeechrate/mpienmaximalspeechrate.xml;\
+# wget http://frinexbuild.mpi.nl/mpienreadingspan-admin/mpienreadingspan-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienreadingspan/mpienreadingspan.xml;\
+# wget http://frinexbuild.mpi.nl/mpienspellingtest-admin/mpienspellingtest-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienspellingtest/mpienspellingtest.xml;\
+# wget http://frinexbuild.mpi.nl/mpienstuvoc-admin/mpienstuvoc-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienstuvoc/mpienstuvoc.xml;\
+# wget http://frinexbuild.mpi.nl/mpienverbalfluency-admin/mpienverbalfluency-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienverbalfluency/mpienverbalfluency.xml;\
+# wget http://frinexbuild.mpi.nl/mpienvisualsimplereactiontime-admin/mpienvisualsimplereactiontime-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienvisualsimplereactiontime/mpienvisualsimplereactiontime.xml;\
+# wget http://frinexbuild.mpi.nl/mpienwordstogether-admin/mpienwordstogether-admin.xml;\
+# wget http://frinexbuild.mpi.nl/mpienwordstogether/mpienwordstogether.xml;\
+# wget http://frinexbuild.mpi.nl/network_description_task-admin/network_description_task-admin.xml;\
+# wget http://frinexbuild.mpi.nl/network_description_task/network_description_task.xml;\
+# wget http://frinexbuild.mpi.nl/prescreentest-admin/prescreentest-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prescreentest/prescreentest.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_2_2-admin/prosody_2_2-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_2_2/prosody_2_2.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_5_1-admin/prosody_5_1-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_5_1/prosody_5_1.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_1-admin/prosody_exp2_1-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_1/prosody_exp2_1.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_2-admin/prosody_exp2_2-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_2/prosody_exp2_2.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_3-admin/prosody_exp2_3-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_3/prosody_exp2_3.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_4-admin/prosody_exp2_4-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_4/prosody_exp2_4.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_5-admin/prosody_exp2_5-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_5/prosody_exp2_5.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_6-admin/prosody_exp2_6-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_6/prosody_exp2_6.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_7-admin/prosody_exp2_7-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_7/prosody_exp2_7.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_8-admin/prosody_exp2_8-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_8/prosody_exp2_8.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_9-admin/prosody_exp2_9-admin.xml;\
+# wget http://frinexbuild.mpi.nl/prosody_exp2_9/prosody_exp2_9.xml;\
+# wget http://frinexbuild.mpi.nl/q_test-admin/q_test-admin.xml;\
+# wget http://frinexbuild.mpi.nl/q_test/q_test.xml;\
+# wget http://frinexbuild.mpi.nl/questionnaire_example-admin/questionnaire_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/questionnaire_example/questionnaire_example.xml;\
+# wget http://frinexbuild.mpi.nl/recorder_level_trigger_example-admin/recorder_level_trigger_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/recorder_level_trigger_example/recorder_level_trigger_example.xml;\
+# wget http://frinexbuild.mpi.nl/s1prescreense-admin/s1prescreense-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s1prescreense/s1prescreense.xml;\
+# wget http://frinexbuild.mpi.nl/s2bfi10de-admin/s2bfi10de-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s2bfi10de/s2bfi10de.xml;\
+# wget http://frinexbuild.mpi.nl/s3auditorychoicereactiontimese-admin/s3auditorychoicereactiontimese-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s3auditorychoicereactiontimese/s3auditorychoicereactiontimese.xml;\
+# wget http://frinexbuild.mpi.nl/s3auditorysimplereactiontimese-admin/s3auditorysimplereactiontimese-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s3auditorysimplereactiontimese/s3auditorysimplereactiontimese.xml;\
+# wget http://frinexbuild.mpi.nl/s3grammaticalgendercues1se-admin/s3grammaticalgendercues1se-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s3grammaticalgendercues1se/s3grammaticalgendercues1se.xml;\
+# wget http://frinexbuild.mpi.nl/s3grammaticalgendercues2se-admin/s3grammaticalgendercues2se-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s3grammaticalgendercues2se/s3grammaticalgendercues2se.xml;\
+# wget http://frinexbuild.mpi.nl/s3phrasegenerationse-admin/s3phrasegenerationse-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s3phrasegenerationse/s3phrasegenerationse.xml;\
+# wget http://frinexbuild.mpi.nl/s3sentencegenerationse-admin/s3sentencegenerationse-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s3sentencegenerationse/s3sentencegenerationse.xml;\
+# wget http://frinexbuild.mpi.nl/s4audiotestse-admin/s4audiotestse-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s4audiotestse/s4audiotestse.xml;\
+# wget http://frinexbuild.mpi.nl/s4questionnairehealthse-admin/s4questionnairehealthse-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s4questionnairehealthse/s4questionnairehealthse.xml;\
+# wget http://frinexbuild.mpi.nl/s4rapidautomatizednamingde-admin/s4rapidautomatizednamingde-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s4rapidautomatizednamingde/s4rapidautomatizednamingde.xml;\
+# wget http://frinexbuild.mpi.nl/s4rapidautomatizednamingse-admin/s4rapidautomatizednamingse-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s4rapidautomatizednamingse/s4rapidautomatizednamingse.xml;\
+# wget http://frinexbuild.mpi.nl/s4verbalfluencyse-admin/s4verbalfluencyse-admin.xml;\
+# wget http://frinexbuild.mpi.nl/s4verbalfluencyse/s4verbalfluencyse.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan1-admin/secondlan1-admin.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan1/secondlan1.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan2-admin/secondlan2-admin.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan2/secondlan2.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan3-admin/secondlan3-admin.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan3/secondlan3.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan4-admin/secondlan4-admin.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan4/secondlan4.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan5-admin/secondlan5-admin.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan5/secondlan5.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan6-admin/secondlan6-admin.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan6/secondlan6.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan-admin/secondlan-admin.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan/secondlan.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan_test-admin/secondlan_test-admin.xml;\
+# wget http://frinexbuild.mpi.nl/secondlan_test/secondlan_test.xml;\
+# wget http://frinexbuild.mpi.nl/sound_onset_example-admin/sound_onset_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/sound_onset_example/sound_onset_example.xml;\
+# wget http://frinexbuild.mpi.nl/stimulus_timer_example-admin/stimulus_timer_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/stimulus_timer_example/stimulus_timer_example.xml;\
+# wget http://frinexbuild.mpi.nl/temple_test-admin/temple_test-admin.xml;\
+# wget http://frinexbuild.mpi.nl/temple_test/temple_test.xml;\
+# wget http://frinexbuild.mpi.nl/thijs_test_2-admin/thijs_test_2-admin.xml;\
+# wget http://frinexbuild.mpi.nl/thijs_test_2/thijs_test_2.xml;\
+# wget http://frinexbuild.mpi.nl/thijs_test_3-admin/thijs_test_3-admin.xml;\
+# wget http://frinexbuild.mpi.nl/thijs_test_3/thijs_test_3.xml;\
+# wget http://frinexbuild.mpi.nl/thijs_test-admin/thijs_test-admin.xml;\
+# wget http://frinexbuild.mpi.nl/thijs_test/thijs_test.xml;\
+# wget http://frinexbuild.mpi.nl/timer_averaging_example-admin/timer_averaging_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/timer_averaging_example/timer_averaging_example.xml;\
+# wget http://frinexbuild.mpi.nl/translation_example-admin/translation_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/translation_example/translation_example.xml;\
+# wget http://frinexbuild.mpi.nl/uppercasetest-admin/uppercasetest-admin.xml;\
+# wget http://frinexbuild.mpi.nl/uppercasetest/uppercasetest.xml;\
+# wget http://frinexbuild.mpi.nl/very_large_example-admin/very_large_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/very_large_example/very_large_example.xml;\
+# wget http://frinexbuild.mpi.nl/with_stimulus_example-admin/with_stimulus_example-admin.xml;\
+# wget http://frinexbuild.mpi.nl/with_stimulus_example/with_stimulus_example.xml;\
+# wget http://frinexbuild.mpi.nl/wmx_l2pros_test-admin/wmx_l2pros_test-admin.xml;\
+# wget http://frinexbuild.mpi.nl/wmx_l2pros_test/wmx_l2pros_test.xml;\
+# chown -R frinex:www-data /FrinexBuildService/incoming; chmod -R ug+rwx /FrinexBuildService/incoming;"
+
+# docker run -v incomingDirectory:/FrinexBuildService/incoming --rm -it --name frinexbuild-wget frinexbuild:latest bash -c \
+# TODO: for repositories in /FrinexBuildService/git-repositories/*
+# TODO: checkout repository
+# TODO: process all XML files committed in the last year based on post-receive
+# for configFile in $(git log --since="1 year ago" --name-only --pretty=format: | sort | uniq); 
+#     do 
+# TODO:       
 
 # the following step will require authentication
 curl http://localhost/cgi/request_build.cgi
