@@ -318,7 +318,7 @@ do
           # these files might exist from the last commit but might also have been changed by this commit so we use the -fu options
           cp -rfu $staticDirectory/* /FrinexBuildService/incoming/static/$staticDirectoryLowercase/
         done;
-        git log -1 --pretty='format:{"repository": "/git/RepositoryName.git", "user": "'$REMOTE_USER'", "date": "%cI"}' $configFile > "/FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\").commit";
+        git log -1 --pretty='format:{"repository": "/git/$repositoryName.git", "user": "'$REMOTE_USER'", "date": "%cI"}' $configFile > "/FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\").commit";
         cp "$configFile" "/FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")";
     done
 done
