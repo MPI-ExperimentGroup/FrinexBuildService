@@ -304,7 +304,7 @@ do
     cd $checkoutDir
     # TODO: checkout repository
     # TODO: process all XML files committed in the last year based on post-receive
-    for configFile in $(git log --since="1 year ago" --name-only --pretty=format: | sort | uniq); 
+    for configFile in $(git log --since="1 year ago" --name-only --pretty=format: | sort | uniq | grep -Ei '.xml|.json'| sed -e "s/[^ ]*\/[^ ]*//g");
         do 
         echo $configFile
         echo "copying $configFile to /FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")"
