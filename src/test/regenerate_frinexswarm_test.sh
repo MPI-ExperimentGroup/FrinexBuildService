@@ -307,9 +307,23 @@ do
     for configFile in $(git log --since="1 year ago" --name-only --pretty=format: | sort | uniq); 
         do 
         echo $configFile
+        echo "copying $configFile to /FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")"
+        echo "copying static files"
+        for staticDirectory in $(find -iname $(echo $configFile | tr \"[:upper:]\" \"[:lower:]\" | sed -e "s/.json//g" | sed -e "s/.xml//g"));
+        do
+          staticDirectoryLowercase=$(echo $staticDirectory | tr "[:upper:]" "[:lower:]");
+          echo "$staticDirectory to $staticDirectoryLowercase"
+          # this directory might exist from the last commit so we use the -p option
+          mkdir -p /FrinexBuildService/incoming/static/$staticDirectoryLowercase
+          # these files might exist from the last commit but might also have been changed by this commit so we use the -fu options
+          cp -rfu $staticDirectory/* /FrinexBuildService/incoming/static/$staticDirectoryLowercase/
+        done;
+        git log -1 --pretty='format:{"repository": "/git/RepositoryName.git", "user": "'$REMOTE_USER'", "date": "%cI"}' $configFile > "/FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\").commit";
+        cp "$configFile" "/FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")";
     done
 done
-
+chmod -R a+rw /FrinexBuildService/incoming/commits/*
+chmod -R a+rw /FrinexBuildService/incoming/static/*
 
 # the following step will require authentication
 curl http://localhost/cgi/request_build.cgi
