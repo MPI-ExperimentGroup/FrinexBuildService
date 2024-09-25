@@ -298,8 +298,8 @@ do
     # verify that the checkout directory exists and check it out again if missing
     if [ ! -d $checkoutDir ]
     then
-    cd /FrinexBuildService/git-checkedout/;
-    git clone $repositoryPath;
+        cd /FrinexBuildService/git-checkedout/;
+        git clone $repositoryPath;
     fi
     cd $checkoutDir
     # TODO: checkout repository
