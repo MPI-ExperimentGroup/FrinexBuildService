@@ -286,12 +286,30 @@ echo "frinexbuild-wget" >> ../../frinexbuild_disk.log
 # chown -R frinex:www-data /FrinexBuildService/incoming; chmod -R ug+rwx /FrinexBuildService/incoming;"
 
 # docker run -v incomingDirectory:/FrinexBuildService/incoming --rm -it --name frinexbuild-wget frinexbuild:latest bash -c \
-# TODO: for repositories in /FrinexBuildService/git-repositories/*
-# TODO: checkout repository
-# TODO: process all XML files committed in the last year based on post-receive
-# for configFile in $(git log --since="1 year ago" --name-only --pretty=format: | sort | uniq); 
-#     do 
-# TODO:       
+for repositoryPath in /FrinexBuildService/git-repositories/*
+do
+    echo $repositoryPath
+    repositoryDir=$(basename $repositoryPath)
+    echo $repositoryDir
+    repositoryName=${repositoryDir%.git}
+    echo $repositoryName
+    checkoutDir=/FrinexBuildService/git-checkedout/$repositoryName
+
+    # verify that the checkout directory exists and check it out again if missing
+    if [ ! -d $checkoutDir ]
+    then
+    cd /FrinexBuildService/git-checkedout/;
+    git clone $repositoryPath;
+    fi
+    cd $checkoutDir
+    # TODO: checkout repository
+    # TODO: process all XML files committed in the last year based on post-receive
+    for configFile in $(git log --since="1 year ago" --name-only --pretty=format: | sort | uniq); 
+        do 
+        echo $configFile
+    done
+done
+
 
 # the following step will require authentication
 curl http://localhost/cgi/request_build.cgi
