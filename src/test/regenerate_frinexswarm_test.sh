@@ -320,6 +320,8 @@ do
         done;
         git log -1 --pretty='format:{"repository": "/git/$repositoryName.git", "user": "'$REMOTE_USER'", "date": "%cI"}' $configFile > "/FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\").commit";
         cp "$configFile" "/FrinexBuildService/incoming/commits/$(echo $configFile | tr \"[:upper:]\" \"[:lower:]\")";
+        # chown -R frinex:www-data /FrinexBuildService/incoming;
+        # chmod -R ug+rwx /FrinexBuildService/incoming;
     done
 done
 chmod -R a+rw /FrinexBuildService/incoming/commits/*
