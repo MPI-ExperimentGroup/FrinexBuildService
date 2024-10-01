@@ -534,3 +534,30 @@ curl http://localhost/cgi/request_build.cgi
 # 32K	/var/lib/docker/volumes/processingDirectory
 # 18G	/var/lib/docker/volumes/protectedDirectory
 # 8.0K	/var/lib/docker/volumes/webappsTomcatStaging
+
+
+# part way through building the last years experiments when including all of the static files
+# lux149:~ # du -hs /var/lib/docker/volumes/*
+# 39G	/var/lib/docker/volumes/buildServerTarget
+# 52G	/var/lib/docker/volumes/gitRepositories
+# 20G	/var/lib/docker/volumes/incomingDirectory
+# 32K	/var/lib/docker/volumes/listingDirectory
+# 2.1G	/var/lib/docker/volumes/m2Directory
+# 131M	/var/lib/docker/volumes/processingDirectory
+# 69G	/var/lib/docker/volumes/protectedDirectory
+# 8.0K	/var/lib/docker/volumes/webappsTomcatStaging
+# lux149:~ # du -hs /var/lib/docker/*
+# 120M	/var/lib/docker/buildkit
+# 520K	/var/lib/docker/containerd
+# 59M	/var/lib/docker/containers
+# 4.0K	/var/lib/docker/engine-id
+# 88M	/var/lib/docker/image
+# 16K	/var/lib/docker/lost+found
+# 132K	/var/lib/docker/network
+# 301G	/var/lib/docker/overlay2
+# 16K	/var/lib/docker/plugins
+# 4.0K	/var/lib/docker/runtimes
+# 123M	/var/lib/docker/swarm
+# 8.0K	/var/lib/docker/tmp
+# 180G	/var/lib/docker/volumes
+lux149:~ # 
