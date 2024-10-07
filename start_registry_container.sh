@@ -57,7 +57,7 @@ docker service create -d \
 
 # build the frinex_synchronisation_service
 docker build --rm -f docker/frinex_synchronisation_service.Dockerfile -t DOCKER_REGISTRY/frinex_synchronisation_service:latest .
-sudo docker push DOCKER_REGISTRY/frinex_synchronisation_service:latest
+docker push DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
 read -p "Press enter to restart frinex_synchronisation_service"
 # remove the old frinex_synchronisation_service
