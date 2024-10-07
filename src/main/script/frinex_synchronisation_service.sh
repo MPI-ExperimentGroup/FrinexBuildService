@@ -28,6 +28,7 @@ while true
 do
     echo "DOCKER_REGISTRY"
     echo "$ServiceHostname"
+    whoami
     # echo all arguments
     printf '%s\n' "$*"
 

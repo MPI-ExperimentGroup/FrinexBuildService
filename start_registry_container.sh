@@ -71,7 +71,13 @@ else
    # remove the old frinex_synchronisation_service
    docker service rm frinex_synchronisation_service 
    # start the frinex_synchronisation_service
-   docker service create -e 'ServiceHostname={{.Node.Hostname}}' --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -dit --name frinex_synchronisation_service DOCKER_REGISTRY/frinex_synchronisation_service:latest
+   nodeCount=1
+   docker service create -d \
+   --replicas-max-per-node=1 \
+   --replicas=$nodeCount \
+   -e 'ServiceHostname={{.Node.Hostname}}' \
+   --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+   --name frinex_synchronisation_service DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
    # for currentService in $(sudo docker service ls | grep -E "_staging|_production" | grep -E "_admin|_web" | awk '{print $2}')
    # do
