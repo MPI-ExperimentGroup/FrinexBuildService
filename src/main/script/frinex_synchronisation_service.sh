@@ -27,9 +27,10 @@
 while true
 do
     echo "DOCKER_REGISTRY"
+    echo "$ServiceHostname"
     # echo all arguments
     printf '%s\n' "$*"
-    
+
     # Add a service to run on all nodes, when a service is running where the image is not local then pull that image
     # When the registry start up, push all images for running services to the freshly started registry
     # On each node a clean can be run and all images not found in the running services can be deleted
