@@ -51,8 +51,14 @@ do
         echo "registryHasTags: $registryHasTags"
         if [[ $registryHasTags != *"$tagNameService"* ]]; then
           echo "$currentServiceImage tag missing"
+          if [[ $imageList == *"$currentServiceImage"* ]]; then
+            echo "$currentServiceImage local found, can be pushed"
+          fi
         else
           echo "$currentServiceImage tag found"
+          if [[ $imageList != *"$currentServiceImage"* ]]; then
+            echo "$currentServiceImage local missingv, can be pulled"
+          fi
         fi
     done
     for imageName in $imageList
