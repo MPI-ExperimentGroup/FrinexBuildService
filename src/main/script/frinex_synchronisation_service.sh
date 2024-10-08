@@ -47,12 +47,16 @@ do
         tagNameService=$(echo "$currentServiceImage" | cut -d ":" -f 2)
         imageNameService=$(echo "$currentServiceImage" | cut -d ":" -f 1)
         echo "serviceList: $tagNameService $imageNameService"
+        curl -k "https://frinexbuild.mpi.nl:443/v2/$imageNameService/tags/list"
     done
     for imageName in $imageList
     do
         tagName=$(echo "$imageName" | cut -d ":" -f 2)
         imageName=$(echo "$imageName" | cut -d ":" -f 1)
         echo "imageList: $tagName $imageName"
+        if [[ $serviceList 1= *"$imageName"* ]]; then
+          echo "$imageName is not used in a service"
+        fi
     done
 
     sleep 1h
