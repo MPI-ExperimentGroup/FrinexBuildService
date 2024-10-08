@@ -30,7 +30,8 @@ RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-zA-Z0-9-_.]*/[a
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_web\:stable' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_admin\:stable' >> /etc/sudoers
 
-RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-z0-9 ]*' >> /etc/sudoers
+# used to delete stray images without tags
+# RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-z0-9 ]*' >> /etc/sudoers
 
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker system prune -f' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers

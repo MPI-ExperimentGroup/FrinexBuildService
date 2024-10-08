@@ -41,7 +41,7 @@ do
 
 
     # delete stray images without tags
-    sudo docker image rm $(sudo docker image ls | grep "<none>" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $3}')
+    # sudo docker image rm $(sudo docker image ls | grep "<none>" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $3}')
 
     serviceList=$(sudo docker service ls | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $5}')
     imageList=$(sudo docker image ls --format "{{.Repository}}:{{.Tag}}" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin")
