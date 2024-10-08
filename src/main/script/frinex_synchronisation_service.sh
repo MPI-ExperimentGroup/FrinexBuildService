@@ -69,11 +69,17 @@ do
         imageName=$(echo "$imageName" | cut -d ":" -f 1)
         echo "imageList: $tagName $imageName"
         if [[ $serviceList != *"$imageName"* ]]; then
-          echo "$imageName not a service"
+          echo "$imageName not a service, can be removed"
         else
           echo "$imageName service found"
         fi
     done
+    # show the volumes on this node
+    docker volume ls
+    # show the remaining non experiment images on this node
+    docker image ls | grep -vE "_staging_web|_production_web|_staging_admin|_production_admin"
+    # prune what remains on this node
+    docker system prune -f
 
     sleep 1h
 done
