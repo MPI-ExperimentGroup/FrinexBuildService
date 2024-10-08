@@ -78,7 +78,9 @@ do
     docker volume ls
     # show the remaining non experiment images on this node
     docker image ls | grep -vE "_staging_web|_production_web|_staging_admin|_production_admin"
-    # prune what remains on this node
+    # show some stats
+    docker system df
+    # prune unused data on this node
     docker system prune -f
 
     sleep 1h
