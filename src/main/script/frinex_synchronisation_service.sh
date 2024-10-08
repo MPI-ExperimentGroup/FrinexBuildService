@@ -75,13 +75,13 @@ do
         fi
     done
     # show the volumes on this node
-    docker volume ls
+    sudo docker volume ls
     # show the remaining non experiment images on this node
-    docker image ls | grep -vE "_staging_web|_production_web|_staging_admin|_production_admin"
+    sudo docker image ls | grep -vE "_staging_web|_production_web|_staging_admin|_production_admin"
     # show some stats
-    docker system df
+    sudo docker system df
     # prune unused data on this node
-    docker system prune -f
+    sudo docker system prune -f
 
     sleep 1h
 done
