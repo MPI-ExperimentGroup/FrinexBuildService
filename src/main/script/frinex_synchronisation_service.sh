@@ -53,13 +53,13 @@ do
           echo "$currentServiceImage tag missing"
           if [[ $imageList == *"$currentServiceImage"* ]]; then
             echo "$currentServiceImage local found, can be pushed"
-            docker push "$currentServiceImage"
+            sudo docker push "$currentServiceImage"
           fi
         else
           echo "$currentServiceImage tag found"
           if [[ $imageList != *"$currentServiceImage"* ]]; then
             echo "$currentServiceImage local missing, can be pulled"
-            docker pull "$currentServiceImage"
+            sudo docker pull "$currentServiceImage"
           fi
         fi
     done
