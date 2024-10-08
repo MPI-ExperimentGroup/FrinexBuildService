@@ -46,15 +46,13 @@ do
         echo $currentServiceImage
         tagNameService=$(echo "$currentServiceImage" | cut -d ":" -f 2)
         imageNameService=$(echo "$currentServiceImage" | cut -d ":" -f 1)
-        echo $tagNameService
-        echo $imageNameService
+        echo "serviceList: $tagNameService $imageNameService"
     done
     for imageName in $imageList
     do
         tagName=$(echo "$imageName" | cut -d ":" -f 2)
         imageName=$(echo "$imageName" | cut -d ":" -f 1)
-        echo $tagName
-        echo $imageName
+        echo "imageList: $tagName $imageName"
     done
 
     sleep 1h
