@@ -43,7 +43,7 @@ do
     imageList=$(sudo docker image ls --format "{{.Repository}}:{{.Tag}}" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin")
     for currentServiceImage in $serviceList
     do
-        echo $currentServiceImage
+        echo "currentServiceImage: $currentServiceImage"
         tagNameService=$(echo "$currentServiceImage" | cut -d ":" -f 2)
         imageNameService=$(echo "$currentServiceImage" | cut -d ":" -f 1)
         echo "serviceList: $tagNameService $imageNameService"
