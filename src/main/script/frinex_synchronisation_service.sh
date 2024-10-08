@@ -40,19 +40,21 @@ do
     # 1010  curl -k https://frinexbuild.mpi.nl:443/v2/very_large_example_staging_admin/tags/list
 
     serviceList=$(sudo docker service ls | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $5}')
-    imageList=$(sudo docker image ls)
+    imageList=$(sudo docker image ls --format "{{.Repository}}:{{.Tag}}")
     for currentServiceImage in $serviceList
     do
         echo $currentServiceImage
-        tagName=$(echo "$currentServiceImage" | cut -d ":" -f 2)
-        imageName=$(echo "$currentServiceImage" | cut -d ":" -f 1)
-        echo $tagName
-        echo $imageName
+        tagNameService=$(echo "$currentServiceImage" | cut -d ":" -f 2)
+        imageNameService=$(echo "$currentServiceImage" | cut -d ":" -f 1)
+        echo $tagNameService
+        echo $imageNameService
     done
     for imageName in $imageList
     do
-    echo "$imageName" | awk '{print $1}'
-    echo "$imageName" | awk '{print $2}'
+        tagName=$(echo "$imageName" | cut -d ":" -f 2)
+        imageName=$(echo "$imageName" | cut -d ":" -f 1)
+        echo $tagName
+        echo $imageName
     done
 
     sleep 1h
