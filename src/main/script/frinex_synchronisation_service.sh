@@ -46,7 +46,7 @@ do
         echo "currentServiceImage: $currentServiceImage"
         tagNameService=$(echo "$currentServiceImage" | cut -d ":" -f 2)
         imageNameService=$(echo "$currentServiceImage" | cut -d ":" -f 1)
-        echo "serviceList: $tagNameService $imageNameService"
+        echo "serviceParts: $imageNameService $tagNameService"
         registryHasTags=$(curl -sk "https://DOCKER_REGISTRY/v2/$imageNameService/tags/list")
         echo "registryHasTags: $registryHasTags"
         if [[ $registryHasTags != *"$tagNameService"* ]]; then
