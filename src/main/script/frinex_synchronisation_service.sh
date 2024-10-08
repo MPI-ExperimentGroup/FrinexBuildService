@@ -36,11 +36,11 @@ do
     # When the registry start up, push all images for running services to the freshly started registry
     # On each node a clean can be run and all images not found in the running services can be deleted
 
-    # 1009  curl -k https://frinexbuild.mpi.nl:443/v2/_catalog?n=1000
-    # 1010  curl -k https://frinexbuild.mpi.nl:443/v2/very_large_example_staging_admin/tags/list
+    # 1009  curl -k https://DOCKER_REGISTRY/v2/_catalog?n=1000
+    # 1010  curl -k https://DOCKER_REGISTRY/v2/very_large_example_staging_admin/tags/list
 
     serviceList=$(sudo docker service ls | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $5}')
-    imageList=$(sudo docker image ls --format "{{.Repository}}:{{.Tag}}")
+    imageList=$(sudo docker image ls --format "{{.Repository}}:{{.Tag}}" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin")
     for currentServiceImage in $serviceList
     do
         echo $currentServiceImage
