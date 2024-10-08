@@ -54,7 +54,7 @@ do
         tagName=$(echo "$imageName" | cut -d ":" -f 2)
         imageName=$(echo "$imageName" | cut -d ":" -f 1)
         echo "imageList: $tagName $imageName"
-        if [[ $serviceList 1= *"$imageName"* ]]; then
+        if [[ $serviceList != *"$imageName"* ]]; then
           echo "$imageName is not used in a service"
         fi
     done
