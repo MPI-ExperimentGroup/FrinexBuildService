@@ -65,11 +65,12 @@ do
     done
     for imageName in $imageList
     do
-        tagName=$(echo "$imageName" | cut -d ":" -f 2)
+        # tagName=$(echo "$imageName" | cut -d ":" -f 2)
         # imageName=$(echo "$imageName" | cut -d ":" -f 1)
-        echo "imageList: $tagName $imageName"
+        echo "imageList: $imageName"
         if [[ $serviceList != *"$imageName"* ]]; then
           echo "$imageName not a service, can be removed"
+          sudo docker image rm "$imageName"
         else
           echo "$imageName service found"
         fi
