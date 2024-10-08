@@ -71,7 +71,7 @@ else
    # remove the old frinex_synchronisation_service
    docker service rm frinex_synchronisation_service 
    # start the frinex_synchronisation_service
-   nodeCount=1
+   nodeCount=$(docker node ls --format "{{.Hostname}}" | wc -l)
    docker service create -d \
    --replicas-max-per-node=1 \
    --replicas=$nodeCount \
