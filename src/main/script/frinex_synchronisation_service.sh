@@ -85,8 +85,13 @@ do
         if [[ $serviceList != *"$imageName"* ]]; then
           echo "$imageName not a service, can be removed"
           # TODO: clean up all the images with the tag <none>
-          imageNameCleaned=$(echo $imageName | sed "s/:<none>/:/g";)
-          sudo docker image rm "$imageNameCleaned"
+        #   imageNameCleaned=$(echo $imageName | sed "s/:<none>/:/g";)
+        #   sudo docker image rm "$imageNameCleaned"
+            if [[ $imageName != *"<none>"* ]]; then
+                sudo docker image rm "$imageName"
+            else
+                echo "$imageName leaving untaged image as is"
+            fi
         else
           echo "$imageName service found"
         fi
@@ -100,5 +105,6 @@ do
     # prune unused data on this node
     sudo docker system prune -f
     date
-    sleep 1h
+    # TODO: put back this sleep when testing is done
+    # sleep 1h
 done
