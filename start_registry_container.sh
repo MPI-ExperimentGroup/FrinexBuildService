@@ -40,7 +40,7 @@ docker service rm registry
 # docker volume rm frinexDockerRegistry
 docker service create -d \
    --name registry \
-   -v frinexDockerRegistry:/var/lib/registry \
+   --mount type=volume,src=frinexDockerRegistry,dst=/var/lib/registry \
    --replicas=1 \
    --secret frinexbuild.mpi.nl.crt \
    --secret frinexbuild.mpi.nl.key \
