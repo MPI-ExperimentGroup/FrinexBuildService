@@ -76,7 +76,8 @@ do
         if [[ $serviceList != *"$imageName"* ]]; then
           echo "$imageName not a service, can be removed"
           # TODO: clean up all the images with the tag <none>
-          # sudo docker image rm "$imageName"
+          imageNameCleaned=$(echo $imageName | sed "s/:<none>/:/g";)
+          sudo docker image rm "$imageNameCleaned"
         else
           echo "$imageName service found"
         fi
