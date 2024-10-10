@@ -40,7 +40,7 @@ do
     # 1010  curl -k https://DOCKER_REGISTRY/v2/very_large_example_staging_admin/tags/list
 
     sudo docker image ls
-    sudo docker container ls
+    # sudo docker container ls
     # if [[ $ServiceHostname == "lux28" ]]; then
     #     # cleaning up aggressively
     #     echo "is lux28 so cleaning up aggressively"
@@ -59,14 +59,14 @@ do
     imageList=$(sudo docker image ls --format "{{.Repository}}:{{.Tag}}" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin")
     for currentServiceImage in $serviceList
     do
-        echo "currentServiceImage: $currentServiceImage"
+        # echo "currentServiceImage: $currentServiceImage"
         tagNameService=$(echo "$currentServiceImage" | cut -d ":" -f 2)
         imageNameService=$(echo "$currentServiceImage" | cut -d ":" -f 1)
         imageNamePart=$(echo "$imageNameService" | cut -d "/" -f 2)
-        echo "serviceParts: $imageNameService $tagNameService"
-        echo "imageNamePart: $imageNamePart"
+        # echo "serviceParts: $imageNameService $tagNameService"
+        # echo "imageNamePart: $imageNamePart"
         registryHasTags=$(curl -sk "https://DOCKER_REGISTRY/v2/$imageNamePart/tags/list")
-        echo "registryHasTags: $registryHasTags"
+        # echo "registryHasTags: $registryHasTags"
         if [[ $registryHasTags != *"$tagNameService"* ]]; then
           echo "$currentServiceImage tag missing"
           if [[ $imageList == *"$currentServiceImage"* ]]; then
@@ -74,7 +74,7 @@ do
             sudo docker push "$currentServiceImage"
           fi
         else
-          echo "$currentServiceImage tag found"
+        #   echo "$currentServiceImage tag found"
           if [[ $imageList != *"$currentServiceImage"* ]]; then
             echo "$currentServiceImage local missing, can be pulled"
             sudo docker pull "$currentServiceImage"
@@ -89,10 +89,10 @@ do
         if [[ $serviceList != *"$imageName"* ]]; then
             if [[ $imageName != *"<none>"* ]]; then        
               echo "$imageName not a service, can be removed"
-                # TODO: clean up all the images with the tag <none>
-                #   imageNameCleaned=$(echo $imageName | sed "s/:<none>/:/g";)
-                #   sudo docker image rm "$imageNameCleaned"
-                sudo docker image rm "$imageName"
+              # TODO: clean up all the images with the tag <none>
+              #   imageNameCleaned=$(echo $imageName | sed "s/:<none>/:/g";)
+              #   sudo docker image rm "$imageNameCleaned"
+              sudo docker image rm "$imageName"
             else
                 echo "$imageName leaving untaged image as is"
             fi
