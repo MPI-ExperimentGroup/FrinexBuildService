@@ -41,7 +41,11 @@ do
 
     if [[ $ServiceHostname == "lux28" ]]; then
         # cleaning up aggressively
-        ech "is lux28 so cleaning up aggressively"
+        echo "is lux28 so cleaning up aggressively"
+        sudo docker image ls
+        sudo docker container prune -f
+        sudo docker image prune -af
+        # sudo docker volume prune -f
         sudo docker image ls
     fi
 

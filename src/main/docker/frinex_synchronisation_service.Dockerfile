@@ -38,6 +38,8 @@ RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-zA-Z0-9-_.]*/[a
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_admin\:' >> /etc/sudoers
 
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker system prune -f' >> /etc/sudoers
+RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker container prune -f' >> /etc/sudoers
+RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image prune -af' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker volume ls' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker system df' >> /etc/sudoers
