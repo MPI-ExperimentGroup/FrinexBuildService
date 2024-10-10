@@ -39,6 +39,11 @@ do
     # 1009  curl -k https://DOCKER_REGISTRY/v2/_catalog?n=1000
     # 1010  curl -k https://DOCKER_REGISTRY/v2/very_large_example_staging_admin/tags/list
 
+    if [[ $ServiceHostname == "lux28" ]]; then
+        # cleaning up aggressively
+        ech "is lux28 so cleaning up aggressively"
+        sudo docker image ls
+    fi
 
     # delete stray images without tags
     # sudo docker image rm $(sudo docker image ls | grep "<none>" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $3}')
