@@ -39,7 +39,7 @@ do
     # 1009  curl -k https://DOCKER_REGISTRY/v2/_catalog?n=1000
     # 1010  curl -k https://DOCKER_REGISTRY/v2/very_large_example_staging_admin/tags/list
 
-    sudo docker image ls
+    # sudo docker image ls
     # sudo docker container ls
     # if [[ $ServiceHostname == "lux28" ]]; then
     #     # cleaning up aggressively
@@ -51,6 +51,8 @@ do
     #     sudo docker image ls
     # fi
 
+    untagedCount=0;
+    missingCount=0;
     # delete stray images without tags
     # sudo docker image rm $(sudo docker image ls | grep "<none>" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $3}')
     sudo docker image ls | grep "<none>" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin"
@@ -72,6 +74,8 @@ do
           if [[ $imageList == *"$currentServiceImage"* ]]; then
             echo "$currentServiceImage local found, can be pushed"
             sudo docker push "$currentServiceImage"
+          else
+            missingCount=$((missingCount + 1))
           fi
         else
         #   echo "$currentServiceImage tag found"
@@ -94,12 +98,15 @@ do
               #   sudo docker image rm "$imageNameCleaned"
               sudo docker image rm "$imageName"
             else
-                echo "$imageName leaving untaged image as is"
+                untagedCount=$((untagedCount + 1))
+            #     echo "$imageName leaving untaged image as is"
             fi
         # else
         #   echo "$imageName service found"
         fi
     done
+    echo "untagedCount: $untagedCount"
+    echo "missingCount: $missingCount"
     # show the volumes on this node
     sudo docker volume ls
     # show the remaining non experiment images on this node
@@ -109,6 +116,5 @@ do
     # prune unused data on this node
     sudo docker system prune -f
     date
-    # TODO: put back this sleep when testing is done
-    # sleep 1h
+    sleep 1h
 done
