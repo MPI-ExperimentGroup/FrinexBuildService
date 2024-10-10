@@ -68,7 +68,7 @@ do
         registryHasTags=$(curl -sk "https://DOCKER_REGISTRY/v2/$imageNamePart/tags/list")
         # echo "registryHasTags: $registryHasTags"
         if [[ $registryHasTags != *"$tagNameService"* ]]; then
-          echo "$currentServiceImage tag missing"
+        #   echo "$currentServiceImage tag missing"
           if [[ $imageList == *"$currentServiceImage"* ]]; then
             echo "$currentServiceImage local found, can be pushed"
             sudo docker push "$currentServiceImage"
