@@ -20,6 +20,11 @@ RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker push [a-zA-Z0-9-_.]*/[a-z0-
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker push [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_web\:[0-9]*' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker push [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_admin\:[0-9]*' >> /etc/sudoers
 
+RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker pull [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_web\:[0-9]*' >> /etc/sudoers
+RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker pull [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_admin\:[0-9]*' >> /etc/sudoers
+RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker pull [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_web\:[0-9]*' >> /etc/sudoers
+RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker pull [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_admin\:[0-9]*' >> /etc/sudoers
+
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_web\:[0-9]*' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_admin\:[0-9]*' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image rm [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_web\:[0-9]*' >> /etc/sudoers
