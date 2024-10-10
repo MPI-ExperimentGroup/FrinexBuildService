@@ -83,13 +83,13 @@ do
     do
         # tagName=$(echo "$imageName" | cut -d ":" -f 2)
         # imageName=$(echo "$imageName" | cut -d ":" -f 1)
-        echo "imageList: $imageName"
+        # echo "imageList: $imageName"
         if [[ $serviceList != *"$imageName"* ]]; then
-          echo "$imageName not a service, can be removed"
-          # TODO: clean up all the images with the tag <none>
-        #   imageNameCleaned=$(echo $imageName | sed "s/:<none>/:/g";)
-        #   sudo docker image rm "$imageNameCleaned"
-            if [[ $imageName != *"<none>"* ]]; then
+            if [[ $imageName != *"<none>"* ]]; then        
+              echo "$imageName not a service, can be removed"
+                # TODO: clean up all the images with the tag <none>
+                #   imageNameCleaned=$(echo $imageName | sed "s/:<none>/:/g";)
+                #   sudo docker image rm "$imageNameCleaned"
                 sudo docker image rm "$imageName"
             else
                 echo "$imageName leaving untaged image as is"
