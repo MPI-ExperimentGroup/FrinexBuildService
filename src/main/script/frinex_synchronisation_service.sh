@@ -90,6 +90,6 @@ do
     sudo docker system df
     # prune unused data on this node
     sudo docker system prune -f
-
+    date
     sleep 1h
 done
