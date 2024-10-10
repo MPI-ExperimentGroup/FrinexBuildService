@@ -96,8 +96,8 @@ do
             else
                 echo "$imageName leaving untaged image as is"
             fi
-        else
-          echo "$imageName service found"
+        # else
+        #   echo "$imageName service found"
         fi
     done
     # show the volumes on this node
