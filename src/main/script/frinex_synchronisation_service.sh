@@ -53,6 +53,7 @@ do
 
     untagedCount=0;
     missingCount=0;
+    localCount=0;
     # delete stray images without tags
     # sudo docker image rm $(sudo docker image ls | grep "<none>" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $3}')
     # sudo docker image ls | grep "<none>" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin"
@@ -74,6 +75,7 @@ do
           if [[ $imageList == *"$currentServiceImage"* ]]; then
             echo "$currentServiceImage local found, can be pushed"
             sudo docker push "$currentServiceImage"
+            localCount=$((localCount + 1))
           else
             missingCount=$((missingCount + 1))
           fi
@@ -82,6 +84,8 @@ do
           if [[ $imageList != *"$currentServiceImage"* ]]; then
             echo "$currentServiceImage local missing, can be pulled"
             sudo docker pull "$currentServiceImage"
+          else
+            localCount=$((localCount + 1))
           fi
         fi
     done
@@ -107,6 +111,7 @@ do
     done
     echo "untagedCount: $untagedCount"
     echo "missingCount: $missingCount"
+    echo "localCount: $localCount"
     # show the volumes on this node
     sudo docker volume ls
     # show the remaining non experiment images on this node
