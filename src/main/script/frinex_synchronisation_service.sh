@@ -115,7 +115,8 @@ do
     # show the volumes on this node
     sudo docker volume ls
     # show the remaining non experiment images on this node
-    sudo docker image ls | grep -vE "_staging_web|_production_web|_staging_admin|_production_admin"
+    # sudo docker image ls | grep -vE "_staging_web|_production_web|_staging_admin|_production_admin"
+    sudo docker image ls
     # show some stats
     sudo docker system df
     # prune unused data on this node
