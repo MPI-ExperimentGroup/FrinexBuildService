@@ -142,9 +142,10 @@ for serviceName in $serviceNameArray; do
 done
 
 echo "starting missing services"
+serviceNameUpdatedArray=$(sudo docker service ls --format '{{.Name}}' | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$" | sed 's/_web$/_admin/g' | sort | uniq)
 for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*_admin-public_usage_stats.json | awk -F '/' '{print $5}' | sed 's/_admin-public_usage_stats.json//g'); do
     echo "expectedServiceName: $expectedServiceName"
-    if [[ $serviceNameArray == *"$expectedServiceName"* ]]; then
+    if [[ $serviceNameUpdatedArray == *"$expectedServiceName"* ]]; then
         echo "$expectedServiceName OK"
     else
         ((needsStarting++))
