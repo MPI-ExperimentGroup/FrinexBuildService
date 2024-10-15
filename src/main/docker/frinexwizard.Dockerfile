@@ -46,7 +46,7 @@ RUN mkdir /FrinexWizardUtils
 RUN mkdir /FrinexExperiments
 COPY docker/compile_wizard_tempates.sh /FrinexWizardUtils/
 RUN chmod +x /FrinexWizardUtils/compile_wizard_tempates.sh
-# RUN /FrinexWizardUtils/compile_wizard_tempates.sh
+RUN /FrinexWizardUtils/compile_wizard_tempates.sh
 
 # TODO: for now we are not using postgres
 RUN cd /ExperimentTemplate \
