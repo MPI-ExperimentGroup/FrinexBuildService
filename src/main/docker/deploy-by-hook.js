@@ -680,6 +680,9 @@ function deployStagingGui(currentEntry) {
                     if (currentEntry.isDesktop) {
                         buildElectron(currentEntry, "staging", buildArtifactsJson, buildArtifactsFileName);
                     }
+                    if (currentEntry.isVirtualReality) {
+                        buildVirtualReality(currentEntry, "staging", buildArtifactsJson, buildArtifactsFileName);
+                    }
                     // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
                     deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
                 } else if (currentEntry.state === "debug") {
@@ -1060,6 +1063,9 @@ function deployProductionGui(currentEntry, retryCounter) {
                             }
                             if (currentEntry.isDesktop) {
                                 buildElectron(currentEntry, "production", buildArtifactsJson, buildArtifactsFileName);
+                            }
+                            if (currentEntry.isVirtualReality) {
+                                buildVirtualReality(currentEntry, "production", buildArtifactsJson, buildArtifactsFileName);
                             }
                             // before admin is compliled web, apk, and desktop must be built (if they are going to be), because the artifacts of those builds are be included in admin for user download
                             deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsFileName);
@@ -1458,6 +1464,10 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
     storeResult(currentEntry.buildName, resultString, stage, "desktop", isError, isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
     //  update artifacts.json
     fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+}
+
+function buildVirtualReality(currentEntry, stage, buildArtifactsJson, buildArtifactsFileName) {
+    console.log("TODO: build VR");
 }
 
 function buildNextExperiment() {

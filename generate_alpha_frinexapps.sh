@@ -77,6 +77,13 @@ else
             echo "frinexapps-electron ok"
         fi
 
+        # build the frinexapps_unrealengine dockerfile:
+        if docker build --no-cache -f docker/frinexapps_unrealengine.Dockerfile -t frinexapps_unrealengine:alpha .
+        then
+            docker tag frinexapps-unrealengine:alpha frinexapps-unrealengine:$alphaVersion
+            echo "frinexapps-unrealengine ok"
+        fi
+
         # update the frinex_examples
         $workingDir/update_frinex_examples.sh "alpha"
 
