@@ -211,6 +211,7 @@ function unDeploy(currentEntry) {
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_cordova.*;'
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_darwin*;'
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_electron.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_vr.*;'
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_ios.*;'
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_win32*;'
         // delete the production artifacts
@@ -222,6 +223,7 @@ function unDeploy(currentEntry) {
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_cordova.*;'
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_darwin*;'
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_electron.*;'
+        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_vr.*;'
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_ios.*;'
         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_win32*;';
 
@@ -571,6 +573,7 @@ function deployStagingGui(currentEntry) {
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_cordova.*;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_darwin*;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_electron.*;'
+            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_vr.*;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_ios.*;'
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_win32*;'
             + ' mvn clean '
@@ -770,6 +773,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-cordova.zip;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-electron.zip;'
+            + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-vr.zip;'
             + ' mkdir ' + targetDirectory + '/' + currentEntry.buildName + '/included_artifacts/;'
             // + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + ' mvn clean compile ' // the target 'compile' is used to cause compilation errors to show up before all the effort/time of the full build process
@@ -972,6 +976,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_cordova.*;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_darwin*;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_electron.*;'
+                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_vr.*;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_ios.*;'
                         + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_win32*;'
                         // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
@@ -1158,6 +1163,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
+            + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-vr.zip;'
             + ' mkdir ' + targetDirectory + '/' + currentEntry.buildName + '/included_artifacts/;'
             + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt;'
             // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
@@ -1472,12 +1478,31 @@ function buildVirtualReality(currentEntry, stage, buildArtifactsJson, buildArtif
     storeResult(currentEntry.buildName, "building", stage, "desktop", false, true, false);
     var resultString = "";
     var hasFailed = false;
+    try {
+        if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_vr.txt")) {
+            fs.unlinkSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_vr.txt");
+        }
+        fs.closeSync(fs.openSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_" + stage + "_vr.txt", 'w'));
+        resultString += '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + "_" + stage + "_vr.txt?" + new Date().getTime() + '">log</a>&nbsp;';
+        // TODO: this will overwrite previous "desktop" column data, a new column needs to be added to the build page for "virtualreality"
+        storeResult(currentEntry.buildName, "building " + resultString, stage, "desktop", false, true, false);
 
+        console.log("TODO: build VR");
+        // mount static files and the XML
+        // rename artifacts zip and log to the mounted output folder
 
-    console.log("TODO: build VR");
-    // mount static files and the XML
-    // rename artifacts zip and log
-    
+        var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_vr'
+         + ' &> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_vr.txt;'
+        + '"';
+        // console.log(dockerString);
+        child_process.execSync(dockerString, { stdio: [0, 1, 2] });
+        //resultString += "built&nbsp;";
+    } catch (reason) {
+        console.error(reason);
+        resultString += "failed&nbsp;";
+        hasFailed = true;
+    }
+    var producedOutput = false;
 
     if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_vr.zip')) {
         resultString += '<a href="' + currentEntry.buildName + '_' + stage + '_vr.zip">vr</a>&nbsp;';
@@ -2040,7 +2065,7 @@ function moveIncomingToQueued() {
                                 fs.unlinkSync(stagingBuildingConfigFile);
                                 try {
                                     // note that we dont stop currentName + '_undeploy' because it is probable that the committer intends to undeploy then redeploy and a partial undeploy would be undesirable
-                                    child_process.execSync('sudo docker container rm -f ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron', { stdio: [0, 1, 2] });
+                                    child_process.execSync('sudo docker container rm -f ' + currentName + '_staging_web ' + currentName + '_staging_admin ' + currentName + '_staging_cordova ' + currentName + '_staging_electron ' + currentName + '_staging_vr', { stdio: [0, 1, 2] });
                                 } catch (reason) {
                                     console.error(reason);
                                 }
@@ -2051,7 +2076,7 @@ function moveIncomingToQueued() {
                                 console.log("moveIncomingToQueued if another process already building it will be terminated: " + currentName);
                                 fs.unlinkSync(productionBuildingConfigFile);
                                 try {
-                                    child_process.execSync('sudo docker container rm -f ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron', { stdio: [0, 1, 2] });
+                                    child_process.execSync('sudo docker container rm -f ' + currentName + '_production_web ' + currentName + '_production_admin ' + currentName + '_production_cordova ' + currentName + '_production_electron ' + currentName + '_production_vr', { stdio: [0, 1, 2] });
                                 } catch (reason) {
                                     console.error(reason);
                                 }
