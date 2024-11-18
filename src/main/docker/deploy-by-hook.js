@@ -1467,7 +1467,29 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
 }
 
 function buildVirtualReality(currentEntry, stage, buildArtifactsJson, buildArtifactsFileName) {
+    var stageStartTime = new Date().getTime();
+    console.log("starting VR build");
+    storeResult(currentEntry.buildName, "building", stage, "desktop", false, true, false);
+    var resultString = "";
+    var hasFailed = false;
+
+
     console.log("TODO: build VR");
+    // mount static files and the XML
+    // rename artifacts zip and log
+    
+
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_vr.zip')) {
+        resultString += '<a href="' + currentEntry.buildName + '_' + stage + '_vr.zip">vr</a>&nbsp;';
+        buildArtifactsJson.artifacts['vr'] = currentEntry.buildName + '_' + stage + '_vr.zip';
+        producedOutput = true;
+    }
+    console.log("build VR finished");
+    var isError = hasFailed || !producedOutput;
+    // TODO: this will overwrite previous "desktop" column data, a new column needs to be added to the build page for "virtualreality"
+    storeResult(currentEntry.buildName, resultString, stage, "desktop", isError, isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
+    //  update artifacts.json
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
 }
 
 function buildNextExperiment() {
