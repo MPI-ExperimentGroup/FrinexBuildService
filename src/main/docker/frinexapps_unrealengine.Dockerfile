@@ -20,8 +20,9 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM alpine:3.14
+# FROM alpine:3.14
 # FROM adamrehn/ue4-full:4.24.3
+FROM ghcr.io/epicgames/unreal-engine:dev-4.27
 
 RUN mkdir /FrinexBuildService
 RUN mkdir /vr-build
