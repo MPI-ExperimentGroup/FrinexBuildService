@@ -19,10 +19,13 @@
 # @since 14 November 2024 16:28 PM (creation date)
 # @author Peter Withers <peter.withers@mpi.nl>
 #
-FROM adamrehn/ue4-full:4.24.3
+
+FROM alpine:3.14
+# FROM adamrehn/ue4-full:4.24.3
+
 RUN mkdir /FrinexBuildService
 RUN mkdir /vr-build
-RUN echo "cp -r /FrinexBuildService/vr-build/* /vr-build; cd /vr-build; ue4 build; ue4 test --filter Product; ue4 package; zip -r /FrinexBuildService/vr-build/temp.zip /vr-build/dist/*; " > build_experiment.sh
+RUN echo "ls -l /FrinexBuildService/vr-build/*; cp -r /FrinexBuildService/vr-build/* /vr-build; cd /vr-build; ue4 build; ue4 test --filter Product; ue4 package; zip -r /FrinexBuildService/vr-build/temp.zip /vr-build/dist/*; ls -l /vr-build/dist/*;" > build_experiment.sh
 RUN adduser -S frinex
 RUN chown -R frinex /FrinexBuildService
 RUN chown -R frinex /vr-build
