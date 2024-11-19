@@ -30,16 +30,17 @@ RUN apk add --no-cache \
   openssh-client \
   sudo
 RUN mkdir /FrinexBuildService
+RUN mkdir /BuildTools
 RUN mkdir /vr-build
 RUN adduser -S frinex
 RUN chown -R frinex /FrinexBuildService
 RUN chown -R frinex /vr-build
-RUN chown -R frinex build_experiment.sh
-RUN chmod a+x /build_experiment.sh
+RUN chown -R frinex /BuildTools
 USER frinex
 COPY .ssh /frinex/
-RUN git clone --single-branch -b release git@github.com:<EGUE>.git
+RUN cd /BuildTools; git clone --single-branch -b release git@github.com:<EGUE>.git
 RUN cd /<EGUE>; Setup.sh
 RUN echo "ls -l /FrinexBuildService/vr-build/*; cp -r /FrinexBuildService/vr-build/* /vr-build; cd /vr-build; ue4 build; ue4 test --filter Product; ue4 package; zip -r /FrinexBuildService/vr-build/temp.zip /vr-build/dist/*; ls -l /vr-build/dist/*;" > /FrinexBuildService/build_experiment.sh
+RUN chmod a+x /build_experiment.sh
 
 CMD ["/bin/bash","-c","/FrinexBuildService/build_experiment.sh"]
