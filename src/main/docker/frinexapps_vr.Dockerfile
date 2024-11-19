@@ -41,6 +41,6 @@ COPY .ssh /frinex/
 RUN cd /BuildTools; git clone --single-branch -b release git@github.com:<EGUE>.git
 RUN cd /<EGUE>; Setup.sh
 RUN echo "ls -l /FrinexBuildService/vr-build/*; cp -r /FrinexBuildService/vr-build/* /vr-build; cd /vr-build; ue4 build; ue4 test --filter Product; ue4 package; zip -r /FrinexBuildService/vr-build/temp.zip /vr-build/dist/*; ls -l /vr-build/dist/*;" > /FrinexBuildService/build_experiment.sh
-RUN chmod a+x /build_experiment.sh
+RUN chmod a+x /FrinexBuildService/build_experiment.sh
 
 CMD ["/bin/bash","-c","/FrinexBuildService/build_experiment.sh"]
