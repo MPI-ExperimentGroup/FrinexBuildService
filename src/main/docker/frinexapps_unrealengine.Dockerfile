@@ -28,7 +28,7 @@ RUN apk add --no-cache \
   bash \
   git \
   sudo
-RUN git clone --single-branch -r release git@github.com:EpicGames/UnrealEngine.git
+RUN git clone --single-branch -b release git@github.com:EpicGames/UnrealEngine.git
 
 
 RUN mkdir /FrinexBuildService
