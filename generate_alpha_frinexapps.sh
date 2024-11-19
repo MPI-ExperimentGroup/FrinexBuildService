@@ -77,13 +77,13 @@ else
             echo "frinexapps-electron ok"
         fi
 
-        # build the frinexapps_unrealengine dockerfile:
-        if docker build --no-cache -f docker/frinexapps_unrealengine.Dockerfile -t frinexapps_unrealengine:alpha .
+        # build the frinexapps_vr dockerfile:
+        if docker build --no-cache -f docker/frinexapps_vr.Dockerfile -t frinexapps_vr:alpha .
         then
-            docker tag frinexapps-unrealengine:alpha frinexapps-unrealengine:$alphaVersion
-            echo "frinexapps-unrealengine ok"
+            docker tag frinexapps-vr:alpha frinexapps-vr:$alphaVersion
+            echo "frinexapps-vr ok"
         else
-            echo "frinexapps-unrealengine failed, pulling upstream dependency for the next run"
+            echo "frinexapps-vr failed, pulling upstream dependency for the next run"
             # TODO: update the access token below
             echo ACCESS_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
             docker pull ghcr.io/epicgames/unreal-engine:dev-4.27
