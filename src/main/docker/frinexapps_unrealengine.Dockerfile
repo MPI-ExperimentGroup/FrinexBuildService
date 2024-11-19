@@ -27,6 +27,7 @@ RUN apk add --no-cache \
   curl \
   bash \
   git \
+  openssh-client \
   sudo
 RUN git clone --single-branch -b release git@github.com:EpicGames/UnrealEngine.git
 
