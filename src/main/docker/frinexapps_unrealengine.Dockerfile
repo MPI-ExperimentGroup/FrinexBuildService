@@ -29,16 +29,17 @@ RUN apk add --no-cache \
   git \
   openssh-client \
   sudo
-RUN git clone --single-branch -b release git@github.com:EpicGames/UnrealEngine.git
-
-
+RUN git clone --single-branch -b release git@github.com:<EGUE>.git
 RUN mkdir /FrinexBuildService
 RUN mkdir /vr-build
 RUN echo "ls -l /FrinexBuildService/vr-build/*; cp -r /FrinexBuildService/vr-build/* /vr-build; cd /vr-build; ue4 build; ue4 test --filter Product; ue4 package; zip -r /FrinexBuildService/vr-build/temp.zip /vr-build/dist/*; ls -l /vr-build/dist/*;" > build_experiment.sh
 RUN adduser -S frinex
 RUN chown -R frinex /FrinexBuildService
 RUN chown -R frinex /vr-build
+RUN chown -R frinex /<EGUE>
 RUN chown -R frinex build_experiment.sh
 RUN chmod a+x /build_experiment.sh
 USER frinex
+RUN cd /<EGUE>; Setup.sh
+
 CMD ["/bin/bash","-c","/build_experiment.sh"]
