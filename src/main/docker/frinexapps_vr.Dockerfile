@@ -38,6 +38,7 @@ RUN chown -R frinex /vr-build
 RUN chown -R frinex /BuildTools
 COPY .ssh /home/frinex/.ssh
 RUN chown -R frinex /home/frinex/.ssh
+RUN ssh-keyscan github.com >> /home/frinex/.ssh/known_hosts
 USER frinex
 RUN cd /BuildTools; git clone --single-branch -b release git@github.com:<EGUE>.git
 RUN cd /<EGUE>; Setup.sh
