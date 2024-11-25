@@ -29,7 +29,8 @@ RUN apt-get -y install \
   openssh-client \
   sudo \
   libicu-dev \
-  build-essential
+  build-essential \
+  vim
 RUN mkdir /FrinexBuildService
 RUN mkdir /BuildTools
 RUN mkdir /vr-build
@@ -44,6 +45,7 @@ USER frinex
 RUN cd /BuildTools; git clone --single-branch -b release git@github.com:<EGUE>.git /BuildTools
 RUN cd /BuildTools; ./Setup.sh
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
+RUN cd /BuildTools; ./GenerateProjectFiles.sh
 RUN echo "ls -l /FrinexBuildService/vr-build/*; cp -r /FrinexBuildService/vr-build/* /vr-build; cd /vr-build; ue4 build; ue4 test --filter Product; ue4 package; zip -r /FrinexBuildService/vr-build/temp.zip /vr-build/dist/*; ls -l /vr-build/dist/*;" > /FrinexBuildService/build_experiment.sh
 RUN chmod a+x /FrinexBuildService/build_experiment.sh
 
