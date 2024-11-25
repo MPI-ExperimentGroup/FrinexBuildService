@@ -84,10 +84,6 @@ else
             echo "frinexapps-vr ok"
         else
             echo "frinexapps-vr failed"
-            #, pulling upstream dependency for the next run"
-            # TODO: update the access token below
-            # echo ACCESS_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
-            # docker pull ghcr.io/epicgames/unreal-engine:dev-4.27
         fi
 
         # update the frinex_examples
