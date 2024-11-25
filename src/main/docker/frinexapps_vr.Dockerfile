@@ -20,10 +20,9 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM alpine:3.20.3
-# FROM adamrehn/ue4-full:4.24.3
-# FROM ghcr.io/epicgames/unreal-engine:dev-4.27
-RUN apk add --no-cache \
+FROM debian:bookworm
+RUN apt-get update
+RUN apt-get -y install \
   curl \
   bash \
   git \
