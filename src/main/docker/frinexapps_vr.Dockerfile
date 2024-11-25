@@ -27,7 +27,8 @@ RUN apt-get -y install \
   bash \
   git \
   openssh-client \
-  sudo
+  sudo \
+  libicu-dev
 RUN mkdir /FrinexBuildService
 RUN mkdir /BuildTools
 RUN mkdir /vr-build
