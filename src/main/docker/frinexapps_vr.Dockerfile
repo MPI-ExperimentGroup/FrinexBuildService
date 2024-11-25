@@ -31,7 +31,7 @@ RUN apt-get -y install \
 RUN mkdir /FrinexBuildService
 RUN mkdir /BuildTools
 RUN mkdir /vr-build
-RUN adduser -S frinex
+RUN adduser frinex
 RUN chown -R frinex /FrinexBuildService
 RUN chown -R frinex /vr-build
 RUN chown -R frinex /BuildTools
