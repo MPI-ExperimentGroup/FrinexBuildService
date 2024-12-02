@@ -175,6 +175,7 @@ echo "start generate some data for Grafana"
 echo "{" > /FrinexBuildService/artifacts/grafana_stats_temp.json
 for serviceStatsFile in $(ls /FrinexBuildService/artifacts/*/*_admin-public_usage_stats.json); do
     serviceStatsName=$(echo "$serviceStatsFile" | sed "s|.*/||g" | sed "s/-public_usage_stats.json//g"); 
+    echo "$serviceStatsName"
     echo "\"$serviceStatsName\":" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
     cat $serviceStatsFile >> /FrinexBuildService/artifacts/grafana_stats_temp.json
     echo "," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
