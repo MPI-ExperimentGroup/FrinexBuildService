@@ -171,12 +171,13 @@ echo "hasRecentUse: $hasRecentUse"
 echo "needsUpdating: $needsUpdating"
 echo "needsStarting: $needsStarting"
 
-# start generate some data for Grafana
+echo "start generate some data for Grafana"
 echo "{" > /FrinexBuildService/artifacts/grafana_stats_temp.json
 for serviceStatsFile in $(ls /FrinexBuildService/artifacts/*/*_admin-public_usage_stats.json); do
-    serviceStatsName=$serviceStatsFile; # TODO: extract the experient name
+    serviceStatsName=$(echo "$serviceStatsFile" | sed "s|.*/||g" | sed "s/-public_usage_stats.json//g"); 
     echo "\"$serviceStatsName\":" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
     cat $serviceStatsFile >> /FrinexBuildService/artifacts/grafana_stats_temp.json
+    echo "," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 done
 echo "\"date\": \"$(date)\"," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 echo "\"totalConsidered\": $totalConsidered," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
@@ -188,7 +189,7 @@ echo "\"needsUpdating\": $needsUpdating," >> /FrinexBuildService/artifacts/grafa
 echo "\"needsStarting\": $needsStarting," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 echo "}" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 mv /FrinexBuildService/artifacts/grafana_stats_temp.json /FrinexBuildService/artifacts/grafana_stats.json
-# end generate some data for Grafana
+echo "end generate some data for Grafana"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
 # echo "$serviceByMemory"
