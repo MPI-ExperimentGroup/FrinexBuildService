@@ -21,6 +21,14 @@
 #
 FROM grafana/grafana-oss
 RUN grafana-cli plugins install yesoreyeram-infinity-datasource
-# RUN mkdir /FrinexBuildService/
-#COPY config/frinex-grafana /FrinexBuildService/
+ENV GF_AUTH_ANONYMOUS_ENABLED=true
+ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+ENV GF_AUTH_BASIC_ENABLED=false
+ENV GF_AUTH_DISABLE_LOGIN_FORM=true
+ENV GF_AUTH_DISABLE_SIGNOUT_MENU=true
+ENV GF_SECURITY_ALLOW_EMBEDDING=true
+ENV GF_SERVER_SERVE_FROM_SUB_PATH=true  
+ENV GF_SERVE_FROM_SUB_PATH=true
+# ADD config/provisioning /etc/grafana/provisioning
+ADD config/dashboards /var/lib/grafana/dashboards
 USER "$GF_UID"
