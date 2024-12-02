@@ -187,7 +187,7 @@ echo "\"recentyStarted\": $recentyStarted," >> /FrinexBuildService/artifacts/gra
 echo "\"unusedNewHealthy\": $unusedNewHealthy," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 echo "\"hasRecentUse\": $hasRecentUse," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 echo "\"needsUpdating\": $needsUpdating," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
-echo "\"needsStarting\": $needsStarting," >> /FrinexBuildService/artifacts/grafana_stats_temp.json
+echo "\"needsStarting\": $needsStarting" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 echo "}" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 mv /FrinexBuildService/artifacts/grafana_stats_temp.json /FrinexBuildService/artifacts/grafana_stats.json
 echo "end generate some data for Grafana"
