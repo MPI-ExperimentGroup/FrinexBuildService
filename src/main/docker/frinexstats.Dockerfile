@@ -21,6 +21,6 @@
 #
 FROM grafana/grafana-oss
 RUN grafana-cli plugins install yesoreyeram-infinity-datasource
-RUN mkdir /FrinexBuildService/
+# RUN mkdir /FrinexBuildService/
 #COPY config/frinex-grafana /FrinexBuildService/
 USER "$GF_UID"
