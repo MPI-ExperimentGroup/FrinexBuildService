@@ -1,0 +1,9 @@
+apiVersion: 1
+
+providers:
+  - name: Frinex
+    folder: Services
+    type: file
+    options:
+      path:
+        /var/lib/grafana/dashboards/frinex_stats_grafana.json
