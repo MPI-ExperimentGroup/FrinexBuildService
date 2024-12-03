@@ -1,26 +1,26 @@
 apiVersion: 1
 
 datasources:
-- id: 1
-  uid: "ae5pqbr21q0w0a"
-  orgId: 1
-  name: "yesoreyeram-infinity-datasource"
-  type: "yesoreyeram-infinity-datasource"
-  url: "__IGNORE_URL__"
-  basicAuth: false
-  basicAuthUser: ""
-  isDefault: true
-  jsonData:
-    global_queries: []
-  readOnly: false
-  apiVersion: ""
+  - id: 1
+    uid: "ae5pqbr21q0w0a"
+    orgId: 1
+    name: "yesoreyeram-infinity-datasource"
+    type: "yesoreyeram-infinity-datasource"
+    url: "__IGNORE_URL__"
+    basicAuth: false
+    basicAuthUser: ""
+    isDefault: true
+    jsonData:
+      global_queries: []
+    readOnly: false
+    apiVersion: ""
 
 providers:
-- name: 'Frinex'
-  folder: 'Services'
-  type: file
-  disableDeletion: false
-  editable: true
-  updateIntervalSeconds: 60
-  options:
-    path: /etc/grafana/provisioning/dashboards
+  - name: 'Frinex'
+    folder: 'Services'
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 60
+    options:
+      path: /etc/grafana/provisioning/dashboards
