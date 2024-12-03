@@ -31,6 +31,6 @@ ENV GF_SERVER_SERVE_FROM_SUB_PATH=true
 ENV GF_SERVE_FROM_SUB_PATH=true
 # ADD config/provisioning /etc/grafana/provisioning
 # ADD config/dashboards /var/lib/grafana/dashboards
-COPY config/dashboards /etc/grafana/provisioning/dashboards
-# COPY config/dashboards/frinex_stats_grafana.json /usr/share/grafana/public/dashboards/home.json
+# COPY config/dashboards /etc/grafana/provisioning/dashboards
+COPY config/dashboards/frinex_stats_grafana.json /usr/share/grafana/public/dashboards/home.json
 USER "$GF_UID"
