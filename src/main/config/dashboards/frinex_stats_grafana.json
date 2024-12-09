@@ -162,7 +162,7 @@
           "root_selector": "",
           "source": "url",
           "type": "csv",
-          "url": "http://frinexbuild.mpi.nl/grafana_running_stats.csv",
+          "url": "http://frinexbuild.mpi.nl/grafana_running_stats.txt",
           "url_options": {
             "data": "",
             "method": "GET"

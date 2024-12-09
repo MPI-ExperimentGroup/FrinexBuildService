@@ -196,9 +196,12 @@ echo "}" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 mv /FrinexBuildService/artifacts/grafana_stats_temp.json /FrinexBuildService/artifacts/grafana_stats.json
 
 echo "generating some time series data for Grafana"
-echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealthy,$hasRecentUse,$needsUpdating,$needsStarting" > /FrinexBuildService/artifacts/grafana_running_stats_temp.csv
-head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.csv >> /FrinexBuildService/artifacts/grafana_running_stats_temp.csv
-mv /FrinexBuildService/artifacts/grafana_running_stats_temp.csv /FrinexBuildService/artifacts/grafana_running_stats.csv
+echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealthy,$hasRecentUse,$needsUpdating,$needsStarting" > /FrinexBuildService/artifacts/grafana_running_stats_temp.txt
+head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.txt >> /FrinexBuildService/artifacts/grafana_running_stats_temp.txt
+mv /FrinexBuildService/artifacts/grafana_running_stats_temp.txt /FrinexBuildService/artifacts/grafana_running_stats.txt
+
+# TODO: remove this rm when done
+rm /FrinexBuildService/artifacts/grafana_running_stats_temp.csv /FrinexBuildService/artifacts/grafana_running_stats.csv
 
 echo "end generate some data for Grafana"
 
