@@ -200,9 +200,6 @@ echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealth
 head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.csv >> /FrinexBuildService/artifacts/grafana_running_stats_temp.csv
 mv /FrinexBuildService/artifacts/grafana_running_stats_temp.csv /FrinexBuildService/artifacts/grafana_running_stats.csv
 
-# TODO: remove this rm when done
-rm /FrinexBuildService/artifacts/grafana_running_stats_temp.json /FrinexBuildService/artifacts/grafana_running_stats.json
-
 echo "end generate some data for Grafana"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
