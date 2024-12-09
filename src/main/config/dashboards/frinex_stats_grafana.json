@@ -145,12 +145,15 @@
               "type": "timestamp"
             }
           ],
+          "csv_options": {
+            "columns": "date,totalConsidered,canBeTerminated,recentyStarted,unusedNewHealthy,hasRecentUse,needsUpdating,needsStarting"
+          },
           "datasource": {
             "type": "yesoreyeram-infinity-datasource",
             "uid": "ae5pqbr21q0w0a"
           },
           "filters": [],
-          "format": "table",
+          "format": "timeseries",
           "global_query_id": "",
           "json_options": {
             "root_is_not_array": false
@@ -158,8 +161,8 @@
           "refId": "A",
           "root_selector": "",
           "source": "url",
-          "type": "json",
-          "url": "http://frinexbuild.mpi.nl/grafana_stats.json",
+          "type": "csv",
+          "url": "http://frinexbuild.mpi.nl/grafana_running_stats.csv",
           "url_options": {
             "data": "",
             "method": "GET"
@@ -184,6 +187,6 @@
   "timezone": "browser",
   "title": "Swarm Experiments",
   "uid": "de5pqxaewkxs0b",
-  "version": 5,
+  "version": 1,
   "weekStart": "monday"
 }
