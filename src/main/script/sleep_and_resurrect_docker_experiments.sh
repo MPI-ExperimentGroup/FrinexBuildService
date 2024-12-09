@@ -194,6 +194,12 @@ echo "\"needsUpdating\": $needsUpdating," >> /FrinexBuildService/artifacts/grafa
 echo "\"needsStarting\": $needsStarting" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 echo "}" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 mv /FrinexBuildService/artifacts/grafana_stats_temp.json /FrinexBuildService/artifacts/grafana_stats.json
+
+echo "generating some time series data for Grafana"
+echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealthy,$hasRecentUse,$needsUpdating,$needsStarting" > /FrinexBuildService/artifacts/grafana_running_stats_temp.json
+head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.json >> /FrinexBuildService/artifacts/grafana_running_stats_temp.json
+mv /FrinexBuildService/artifacts/grafana_running_stats_temp.json /FrinexBuildService/artifacts/grafana_running_stats.json
+
 echo "end generate some data for Grafana"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
