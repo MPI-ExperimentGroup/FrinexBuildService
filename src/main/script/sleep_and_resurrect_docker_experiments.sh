@@ -210,7 +210,7 @@ done
 cp /FrinexBuildService/artifacts/grafana_experiment_usage.txt /FrinexBuildService/artifacts/grafana_experiment_usage.previous
 mv /FrinexBuildService/artifacts/grafana_experiment_usage.temp /FrinexBuildService/artifacts/grafana_experiment_usage.txt
 # diff the previous to values and generate the change per period graphs
-difference="$(diff --suppress-common-lines -y /FrinexBuildService/artifacts/grafana_experiment_usage.previous /FrinexBuildService/artifacts/grafana_experiment_usage.temp | awk '{print $1, " ", $5-$2}')"
+difference="$(diff --suppress-common-lines -y /FrinexBuildService/artifacts/grafana_experiment_usage.previous /FrinexBuildService/artifacts/grafana_experiment_usage.txt | awk '{print $1, " ", $5-$2}')"
 echo "$difference"
 # generate totals for each type
 for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
