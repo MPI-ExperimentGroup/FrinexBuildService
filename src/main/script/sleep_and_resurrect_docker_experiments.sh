@@ -209,7 +209,7 @@ do
 done
 mv /FrinexBuildService/artifacts/grafana_experiment_usage.current /FrinexBuildService/artifacts/grafana_experiment_usage.previous
 mv /FrinexBuildService/artifacts/grafana_experiment_usage.temp /FrinexBuildService/artifacts/grafana_experiment_usage.current
-currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_usage.current | sed 's/.*\.value / /g' | tr '\n' ',')
+currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_usage.current | sed 's/.*\.value / /g' | tr '\n' ',' | sed 's/,$//g')
 echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_usage.temp
 head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_usage.txt >> /FrinexBuildService/artifacts/grafana_experiment_usage.temp
 mv /FrinexBuildService/artifacts/grafana_experiment_usage.temp /FrinexBuildService/artifacts/grafana_experiment_usage.txt
@@ -223,7 +223,7 @@ for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads t
 do
     echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current
 done
-currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current | sed 's/.*\.value / /g' | tr '\n' ',')
+currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current | sed 's/.*\.value / /g' | tr '\n' ',' | sed 's/,$//g')
 echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
 head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt >> /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
 mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt
