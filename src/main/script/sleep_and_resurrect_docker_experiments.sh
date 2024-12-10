@@ -200,36 +200,45 @@ echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealth
 head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.txt >> /FrinexBuildService/artifacts/grafana_running_stats.temp
 mv /FrinexBuildService/artifacts/grafana_running_stats.temp /FrinexBuildService/artifacts/grafana_running_stats.txt
 
+# TODO: remove these mv commands when done
+mv /FrinexBuildService/artifacts/grafana_experiment_usage.previous /FrinexBuildService/artifacts/grafana_experiment_staging_usage.previous
+mv /FrinexBuildService/artifacts/grafana_experiment_usage.current /FrinexBuildService/artifacts/grafana_experiment_staging_usage.current
+mv /FrinexBuildService/artifacts/grafana_experiment_usage.txt /FrinexBuildService/artifacts/grafana_experiment_staging_usage.txt
+mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current /FrinexBuildService/artifacts/grafana_experiment_staging_usage_diff.current
+mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt /FrinexBuildService/artifacts/grafana_experiment_staging_usage_diff.txt
+
 echo "generating experiment stats for Grafana"
-allExperimentStats=$(cat artifacts/*/*_staging_admin-public_usage_stats.json | sed 's/\"[:]/.value /g' | sed 's/[,]/\n/g' | grep -v "+" | sed 's/[\{\}"]//g' | grep -v "null" | grep -v "[\[\]]")
-# generate totals for each type
-for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
+for buildType in staging production
 do
-    echo "$allExperimentStats" | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_usage.temp
-done
-mv /FrinexBuildService/artifacts/grafana_experiment_usage.current /FrinexBuildService/artifacts/grafana_experiment_usage.previous
-mv /FrinexBuildService/artifacts/grafana_experiment_usage.temp /FrinexBuildService/artifacts/grafana_experiment_usage.current
-currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_usage.current | sed 's/.*\.value / /g' | tr '\n' ',' | sed 's/,$//g')
-echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_usage.temp
-head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_usage.txt >> /FrinexBuildService/artifacts/grafana_experiment_usage.temp
-mv /FrinexBuildService/artifacts/grafana_experiment_usage.temp /FrinexBuildService/artifacts/grafana_experiment_usage.txt
-# end generate totals for each type
+    allExperimentStats=$(cat artifacts/*/*_"$buildType"_admin-public_usage_stats.json | sed 's/\"[:]/.value /g' | sed 's/[,]/\n/g' | grep -v "+" | sed 's/[\{\}"]//g' | grep -v "null" | grep -v "[\[\]]")
+    # generate totals for each type
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
+    do
+        echo "$allExperimentStats" | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.temp
+    done
+    mv /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.current /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.previous
+    mv /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.temp /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.current
+    currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.current | sed 's/.*\.value / /g' | tr '\n' ',' | sed 's/,$//g')
+    echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.temp
+    head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.txt >> /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.temp
+    mv /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.temp /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.txt
+    # end generate totals for each type
 
-# diff the previous to values and generate the change per period graphs
-difference="$(diff --suppress-common-lines -y /FrinexBuildService/artifacts/grafana_experiment_usage.previous /FrinexBuildService/artifacts/grafana_experiment_usage.current | awk '{print $1, " ", $5-$2}')"
-echo "$difference"
-# generate totals for each type
-for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
-do
-    echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
+    # diff the previous to values and generate the change per period graphs
+    difference="$(diff --suppress-common-lines -y /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.previous /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.current | awk '{print $1, " ", $5-$2}')"
+    echo "$difference"
+    # generate totals for each type
+    for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
+    do
+        echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.temp
+    done
+    mv /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.current
+    currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.current | sed 's/.*\.value / /g' | tr '\n' ',' | sed 's/,$//g')
+    echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.temp
+    head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.txt >> /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.temp
+    mv /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.txt
+    # end generate totals for each type
 done
-mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current
-currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current | sed 's/.*\.value / /g' | tr '\n' ',' | sed 's/,$//g')
-echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
-head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt >> /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
-mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt
-# end generate totals for each type
-
 echo "end generate some data for Grafana"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
