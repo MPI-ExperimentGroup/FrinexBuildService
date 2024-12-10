@@ -26,6 +26,7 @@ RUN apk add --no-cache \
   bash \
   rsync \
   docker \
+  diffutils \
   sudo
 RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/cgi
