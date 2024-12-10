@@ -229,9 +229,6 @@ head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt >> 
 mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt
 # end generate totals for each type
 
-# TODO: remove this rm when done
-rm /FrinexBuildService/artifacts/grafana_experiment_stats.txt
-
 echo "end generate some data for Grafana"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
