@@ -196,19 +196,28 @@ echo "}" >> /FrinexBuildService/artifacts/grafana_stats_temp.json
 mv /FrinexBuildService/artifacts/grafana_stats_temp.json /FrinexBuildService/artifacts/grafana_stats.json
 
 echo "generating some time series data for Grafana"
-echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealthy,$hasRecentUse,$needsUpdating,$needsStarting" > /FrinexBuildService/artifacts/grafana_running_stats_temp.txt
-head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.txt >> /FrinexBuildService/artifacts/grafana_running_stats_temp.txt
-mv /FrinexBuildService/artifacts/grafana_running_stats_temp.txt /FrinexBuildService/artifacts/grafana_running_stats.txt
+echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealthy,$hasRecentUse,$needsUpdating,$needsStarting" > /FrinexBuildService/artifacts/grafana_running_stats.temp
+head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.txt >> /FrinexBuildService/artifacts/grafana_running_stats.temp
+mv /FrinexBuildService/artifacts/grafana_running_stats.temp /FrinexBuildService/artifacts/grafana_running_stats.txt
 
 echo "generating experiment stats for Grafana"
 allExperimentStats=$(cat artifacts/*/*_staging_admin-public_usage_stats.json | sed 's/\"[:]/.value /g' | sed 's/[,]/\n/g' | grep -v "+" | sed 's/[\{\}"]//g' | grep -v "null" | grep -v "[\[\]]")
 # generate totals for each type
-rm /FrinexBuildService/artifacts/grafana_experiment_stats_temp.txt
 for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
 do
-    echo "$allExperimentStats" | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_stats_temp.txt
+    echo "$allExperimentStats" | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_usage.temp
 done
-mv /FrinexBuildService/artifacts/grafana_experiment_stats_temp.txt /FrinexBuildService/artifacts/grafana_experiment_stats.txt
+cp /FrinexBuildService/artifacts/grafana_experiment_usage.txt /FrinexBuildService/artifacts/grafana_experiment_usage.previous
+mv /FrinexBuildService/artifacts/grafana_experiment_usage.temp /FrinexBuildService/artifacts/grafana_experiment_usage.txt
+# diff the previous to values and generate the change per period graphs
+difference="$(diff --suppress-common-lines -y /FrinexBuildService/artifacts/grafana_experiment_usage.previous /FrinexBuildService/artifacts/grafana_experiment_usage.temp | awk '{print $1, " ", $5-$2}')"
+echo "$difference"
+# generate totals for each type
+for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
+do
+    echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
+done
+mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt
 
 echo "end generate some data for Grafana"
 
