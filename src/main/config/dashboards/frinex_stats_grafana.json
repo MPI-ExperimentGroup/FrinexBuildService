@@ -159,7 +159,7 @@
           }
         }
       ],
-      "title": "Experiment Totals",
+      "title": "Experiment Totals (only recent experiments are included in these totals)",
       "type": "timeseries"
     },
     {
