@@ -200,8 +200,15 @@ echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealth
 head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.txt >> /FrinexBuildService/artifacts/grafana_running_stats_temp.txt
 mv /FrinexBuildService/artifacts/grafana_running_stats_temp.txt /FrinexBuildService/artifacts/grafana_running_stats.txt
 
-# TODO: remove this rm when done
-rm /FrinexBuildService/artifacts/grafana_running_stats_temp.csv /FrinexBuildService/artifacts/grafana_running_stats.csv
+echo "generating experiment stats for Grafana"
+allExperimentStats=$(cat artifacts/*/*_staging_admin-public_usage_stats.json | sed 's/\"[:]/.value /g' | sed 's/[,]/\n/g' | grep -v "+" | sed 's/[\{\}"]//g' | grep -v "null" | grep -v "[\[\]]")
+# generate totals for each type
+rm /FrinexBuildService/artifacts/grafana_experiment_stats_temp.txt
+for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
+do
+    echo "$allExperimentStats" | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_stats_temp.txt
+done
+mv /FrinexBuildService/artifacts/grafana_experiment_stats_temp.txt /FrinexBuildService/artifacts/grafana_experiment_stats.txt
 
 echo "end generate some data for Grafana"
 
