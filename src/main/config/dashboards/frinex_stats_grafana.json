@@ -18,9 +18,150 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "ae5pqbr21q0w0a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "totalParticipantsSeen",
+              "text": "totalParticipantsSeen",
+              "type": "number"
+            },
+            {
+              "selector": "totalDeploymentsAccessed",
+              "text": "totalDeploymentsAccessed",
+              "type": "number"
+            },
+            {
+              "selector": "totalPageLoads",
+              "text": "totalPageLoads",
+              "type": "number"
+            },
+            {
+              "selector": "totalStimulusResponses",
+              "text": "totalStimulusResponses",
+              "type": "number"
+            },
+            {
+              "selector": "totalMediaResponses",
+              "text": "totalMediaResponses",
+              "type": "number"
+            },
+            {
+              "selector": "totalDeletionEvents",
+              "text": "totalDeletionEvents",
+              "type": "number"
+            },
+            {
+              "selector": "date",
+              "text": "date",
+              "type": "timestamp"
+            }
+          ],
+          "csv_options": {
+            "columns": "date,totalParticipantsSeen,totalDeploymentsAccessed,totalPageLoads,totalStimulusResponses,totalMediaResponses,totalDeletionEvents"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "simple",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "csv",
+          "uql": "parse-csv",
+          "url": "http://frinexbuild.mpi.nl/grafana_experiment_usage.txt",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Experiment Totals",
+      "type": "timeseries"
+    },
     {
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
