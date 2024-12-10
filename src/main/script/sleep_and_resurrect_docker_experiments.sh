@@ -30,6 +30,15 @@ unusedNewHealthy=0
 needsStarting=0
 needsUpdating=0
 
+proxyStagingWebChecked=0
+proxyStagingWebHealthy=0
+proxyProductionWebChecked=0
+proxyProductionWebHealthy=0
+proxyStagingAdminChecked=0
+proxyStagingAdminHealthy=0
+proxyProductionAdminChecked=0
+proxyProductionAdminHealthy=0
+
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
 recentUseDates="$(date -d "$(date +%Y-%m-01) -5 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
 echo "recentUseDates $recentUseDates"
@@ -68,6 +77,34 @@ for serviceName in $serviceNameArray; do
                 sudo chown -R frinex:www-data /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
                 sudo chmod -R ug+rwx /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
                 curl --silent http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
+
+                # check the service connection throught the proxy
+                if [[ "$serviceName" == *"_production_admin" ]]; then
+                    echo production; 
+                    ((proxyStagingWebChecked++))
+                    ((proxyStagingAdminChecked++))
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging/$webContextPath/actuator/health | grep "Content-Type")
+                    if [[ "$headerResult" == *"json"* ]]; then
+                        ((proxyStagingWebHealthy++))
+                    fi
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging/$adminContextPath/actuator/health | grep "Content-Type")
+                    if [[ "$headerResult" == *"json"* ]]; then
+                        ((proxyStagingAdminHealthy++))
+                    fi
+                else 
+                    echo staging;
+                    ((proxyProductionWebChecked++))
+                    ((proxyProductionAdminChecked++))
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction/$webContextPath/actuator/health | grep "Content-Type")
+                    if [[ "$headerResult" == *"json"* ]]; then
+                        ((proxyProductionWebHealthy++))
+                    fi
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction/$adminContextPath/actuator/health | grep "Content-Type")
+                    if [[ "$headerResult" == *"json"* ]]; then
+                        ((proxyProductionAdminHealthy++))
+                    fi
+                fi
+                # end check the service connection throught the proxy
             else
                 echo "servicePortNumber not found so using the last known public_usage_stats"
             fi
@@ -200,12 +237,9 @@ echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealth
 head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.txt >> /FrinexBuildService/artifacts/grafana_running_stats.temp
 mv /FrinexBuildService/artifacts/grafana_running_stats.temp /FrinexBuildService/artifacts/grafana_running_stats.txt
 
-# TODO: remove these mv commands when done
-mv /FrinexBuildService/artifacts/grafana_experiment_usage.previous /FrinexBuildService/artifacts/grafana_experiment_staging_usage.previous
-mv /FrinexBuildService/artifacts/grafana_experiment_usage.current /FrinexBuildService/artifacts/grafana_experiment_staging_usage.current
-mv /FrinexBuildService/artifacts/grafana_experiment_usage.txt /FrinexBuildService/artifacts/grafana_experiment_staging_usage.txt
-mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current /FrinexBuildService/artifacts/grafana_experiment_staging_usage_diff.current
-mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt /FrinexBuildService/artifacts/grafana_experiment_staging_usage_diff.txt
+echo "$(date),$proxyStagingWebChecked,$proxyStagingWebHealthy,$proxyProductionWebChecked,$proxyProductionWebHealthy,$proxyStagingAdminChecked,$proxyStagingAdminHealthy,$proxyProductionAdminChecked,$proxyProductionAdminHealthy" > /FrinexBuildService/artifacts/grafana_proxy_stats.temp
+head -n 1000  /FrinexBuildService/artifacts/grafana_proxy_stats.txt >> /FrinexBuildService/artifacts/grafana_proxy_stats.temp
+mv /FrinexBuildService/artifacts/grafana_proxy_stats.temp /FrinexBuildService/artifacts/grafana_proxy_stats.txt
 
 echo "generating experiment stats for Grafana"
 for buildType in staging production
