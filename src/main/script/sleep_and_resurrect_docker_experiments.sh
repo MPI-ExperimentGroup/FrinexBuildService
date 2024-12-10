@@ -207,17 +207,30 @@ for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads t
 do
     echo "$allExperimentStats" | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_usage.temp
 done
-cp /FrinexBuildService/artifacts/grafana_experiment_usage.txt /FrinexBuildService/artifacts/grafana_experiment_usage.previous
+mv /FrinexBuildService/artifacts/grafana_experiment_usage.current /FrinexBuildService/artifacts/grafana_experiment_usage.previous
+mv /FrinexBuildService/artifacts/grafana_experiment_usage.temp /FrinexBuildService/artifacts/grafana_experiment_usage.current
+currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_usage.current | sed 's/.*\.value / /g' | tr '\n' ',')
+echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_usage.temp
+head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_usage.txt >> /FrinexBuildService/artifacts/grafana_experiment_usage.temp
 mv /FrinexBuildService/artifacts/grafana_experiment_usage.temp /FrinexBuildService/artifacts/grafana_experiment_usage.txt
+# end generate totals for each type
+
 # diff the previous to values and generate the change per period graphs
-difference="$(diff --suppress-common-lines -y /FrinexBuildService/artifacts/grafana_experiment_usage.previous /FrinexBuildService/artifacts/grafana_experiment_usage.txt | awk '{print $1, " ", $5-$2}')"
+difference="$(diff --suppress-common-lines -y /FrinexBuildService/artifacts/grafana_experiment_usage.previous /FrinexBuildService/artifacts/grafana_experiment_usage.current | awk '{print $1, " ", $5-$2}')"
 echo "$difference"
 # generate totals for each type
 for graphType in totalParticipantsSeen totalDeploymentsAccessed totalPageLoads totalStimulusResponses totalMediaResponses totalDeletionEvents
 do
-    echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
+    echo $difference | grep $graphType | awk 'BEGIN{sum=0} {sum=sum+$2} END{print "total-'$graphType'.value " sum}' >> /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current
 done
+currentRow=$(cat /FrinexBuildService/artifacts/grafana_experiment_usage_diff.current | sed 's/.*\.value / /g' | tr '\n' ',')
+echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
+head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt >> /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp
 mv /FrinexBuildService/artifacts/grafana_experiment_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_usage_diff.txt
+# end generate totals for each type
+
+# TODO: remove this rm when done
+rm /FrinexBuildService/artifacts/grafana_experiment_stats.txt
 
 echo "end generate some data for Grafana"
 
