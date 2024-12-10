@@ -21,6 +21,7 @@
 #
 FROM grafana/grafana-oss
 RUN grafana-cli plugins install yesoreyeram-infinity-datasource
+RUN grafana-cli admin reset-admin-password Frinex
 ENV GF_AUTH_ANONYMOUS_ENABLED=true
 ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
 ENV GF_AUTH_BASIC_ENABLED=false
