@@ -941,8 +941,8 @@
         {
           "columns": [
             {
-              "selector": "totalConsidered",
-              "text": "totalConsidered",
+              "selector": "totalConsideredStaging",
+              "text": "totalConsideredStaging",
               "type": "number"
             },
             {
@@ -1092,8 +1092,8 @@
         {
           "columns": [
             {
-              "selector": "totalConsidered",
-              "text": "totalConsidered",
+              "selector": "totalConsideredProduction",
+              "text": "totalConsideredProduction",
               "type": "number"
             },
             {
