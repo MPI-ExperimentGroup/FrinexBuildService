@@ -1007,6 +1007,157 @@
       ],
       "title": "Swarm Services",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "ae5pqbr21q0w0a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 38
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "totalConsidered",
+              "text": "totalConsidered",
+              "type": "number"
+            },
+            {
+              "selector": "canBeTerminatedProduction",
+              "text": "canBeTerminatedProduction",
+              "type": "number"
+            },
+            {
+              "selector": "recentyStartedProduction",
+              "text": "recentyStartedProduction",
+              "type": "number"
+            },
+            {
+              "selector": "unusedNewHealthyProduction",
+              "text": "unusedNewHealthyProduction",
+              "type": "number"
+            },
+            {
+              "selector": "hasRecentUseProduction",
+              "text": "hasRecentUseProduction",
+              "type": "number"
+            },
+            {
+              "selector": "needsUpdatingProduction",
+              "text": "needsUpdatingProduction",
+              "type": "number"
+            },
+            {
+              "selector": "needsStartingProduction",
+              "text": "needsStartingProduction",
+              "type": "number"
+            },
+            {
+              "selector": "date",
+              "text": "date",
+              "type": "timestamp"
+            }
+          ],
+          "csv_options": {
+            "columns": "proxyStagingWebChecked,proxyStagingWebHealthy,proxyProductionWebChecked,proxyProductionWebHealthy,proxyStagingAdminChecked,proxyStagingAdminHealthy,proxyProductionAdminChecked,proxyProductionAdminHealthy"
+          },
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "ae5pqbr21q0w0a"
+          },
+          "filters": [],
+          "format": "timeseries",
+          "global_query_id": "",
+          "json_options": {
+            "root_is_not_array": false
+          },
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "csv",
+          "url": "http://frinexbuild.mpi.nl/grafana_running_staging_production_stats.txt",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Swarm Production Services",
+      "type": "timeseries"
     }
   ],
   "preload": false,
