@@ -30,6 +30,22 @@ unusedNewHealthy=0
 needsStarting=0
 needsUpdating=0
 
+totalConsideredStaging=0
+canBeTerminatedStaging=0
+hasRecentUseStaging=0
+recentyStartedStaging=0
+unusedNewHealthyStaging=0
+needsStartingStaging=0
+needsUpdatingStaging=0
+
+totalConsideredProduction=0
+canBeTerminatedProduction=0
+hasRecentUseProduction=0
+recentyStartedProduction=0
+unusedNewHealthyProduction=0
+needsStartingProduction=0
+needsUpdatingProduction=0
+
 proxyStagingWebChecked=0
 proxyStagingWebHealthy=0
 proxyProductionWebChecked=0
@@ -44,6 +60,18 @@ recentUseDates="$(date -d "$(date +%Y-%m-01) -5 month" +%Y-%m)|$(date -d "$(date
 echo "recentUseDates $recentUseDates"
 for serviceName in $serviceNameArray; do
     ((totalConsidered++))
+    if [[ "$serviceName" == *"_staging_web" || "$serviceName" == *"_staging_admin" ]]; then
+        isStaging=1
+    else
+        isStaging=0
+    fi
+    if [[ "$serviceName" == *"_production_web" || "$serviceName" == *"_production_admin" ]]; then
+        isProduction=1
+    else
+        isProduction=0
+    fi
+    totalConsideredStaging=$(( $totalConsideredStaging + $isStaging ))
+    totalConsideredProduction=$(( $totalConsideredProduction + $isProduction ))
     echo "serviceName $serviceName"
     updatedAt=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName")
     echo "updatedAt $updatedAt"
@@ -52,6 +80,8 @@ for serviceName in $serviceNameArray; do
     # echo "secondsSince1970 $secondsSince1970"
     if [[ ! "$secondsSince1970" ]]; then
         ((recentyStarted++))
+        recentyStartedStaging=$(( $recentyStartedStaging + $isStaging ))
+        recentyStartedProduction=$(( $recentyStartedProduction + $isProduction ))
         echo ""
         echo 'recenty started, date not found'; 
     else
@@ -113,6 +143,8 @@ for serviceName in $serviceNameArray; do
             echo ""
             if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp | grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]"; then 
                 ((hasRecentUse++))
+                hasRecentUseStaging=$(( $hasRecentUseStaging + $isStaging ))
+                hasRecentUseProduction=$(( $hasRecentUseProduction + $isProduction ))
                 echo 'recent use detected';
                 mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
                 # wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
@@ -124,12 +156,16 @@ for serviceName in $serviceNameArray; do
                     mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
                     if (( $daysSinceStarted < 14 )); then 
                         ((unusedNewHealthy++))
+                        unusedNewHealthyStaging=$(( $unusedNewHealthyStaging + $isStaging ))
+                        unusedNewHealthyProduction=$(( $unusedNewHealthyProduction + $isProduction ))
                         echo 'recenty started, unused but healthy'; 
                         echo ""
                         # wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
                         # echo "wakeResult: $wakeResult"
                     else
                         ((canBeTerminated++))
+                        canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
+                        canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
                         # echo "adminServiceName: $adminServiceName"
                         sudo docker service rm "$adminServiceName"
                         # echo "webServiceName: $webServiceName"
@@ -139,6 +175,8 @@ for serviceName in $serviceNameArray; do
                     fi
                 else
                     ((canBeTerminated++))
+                    canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
+                    canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
                     # echo "adminServiceName: $adminServiceName"
                     sudo docker service rm "$adminServiceName"
                     # echo "webServiceName: $webServiceName"
@@ -156,6 +194,8 @@ for serviceName in $serviceNameArray; do
                     echo "web component OK"
                 else
                     ((needsUpdating++))
+                    needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
+                    needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
                     echo "healthResult: $healthResult"
                     sudo docker service rm "$webServiceName"
                     # sudo docker service update "$webServiceName"
@@ -171,6 +211,8 @@ for serviceName in $serviceNameArray; do
             fi
         else
             ((recentyStarted++))
+            recentyStartedStaging=$(( $recentyStartedStaging + $isStaging ))
+            recentyStartedProduction=$(( $recentyStartedProduction + $isProduction ))
             echo ""
             echo 'recenty started, waiting for startup'; 
         fi
@@ -236,6 +278,10 @@ echo "generating some time series data for Grafana"
 echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealthy,$hasRecentUse,$needsUpdating,$needsStarting" > /FrinexBuildService/artifacts/grafana_running_stats.temp
 head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.txt >> /FrinexBuildService/artifacts/grafana_running_stats.temp
 mv /FrinexBuildService/artifacts/grafana_running_stats.temp /FrinexBuildService/artifacts/grafana_running_stats.txt
+
+echo "$(date),$totalConsideredStaging,$canBeTerminatedStaging,$hasRecentUseStaging,$recentyStartedStaging,$unusedNewHealthyStaging,$needsStartingStaging,$needsUpdatingStaging,$totalConsideredProduction,$canBeTerminatedProduction,$hasRecentUseProduction,$recentyStartedProduction,$unusedNewHealthyProduction,$needsStartingProduction,$needsUpdatingProduction" > /FrinexBuildService/artifacts/grafana_running_staging_production_stats.temp
+head -n 1000  /FrinexBuildService/artifacts/grafana_running_staging_production_stats.txt >> /FrinexBuildService/artifacts/grafana_running_staging_production_stats.temp
+mv /FrinexBuildService/artifacts/grafana_running_staging_production_stats.temp /FrinexBuildService/artifacts/grafana_running_staging_production_stats.txt
 
 echo "$(date),$proxyStagingWebChecked,$proxyStagingWebHealthy,$proxyProductionWebChecked,$proxyProductionWebHealthy,$proxyStagingAdminChecked,$proxyStagingAdminHealthy,$proxyProductionAdminChecked,$proxyProductionAdminHealthy" > /FrinexBuildService/artifacts/grafana_proxy_stats.temp
 head -n 1000  /FrinexBuildService/artifacts/grafana_proxy_stats.txt >> /FrinexBuildService/artifacts/grafana_proxy_stats.temp
