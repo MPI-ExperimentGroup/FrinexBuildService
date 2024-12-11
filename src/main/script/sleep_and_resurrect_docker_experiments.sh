@@ -83,11 +83,11 @@ for serviceName in $serviceNameArray; do
                     echo production; 
                     ((proxyProductionWebChecked++))
                     ((proxyProductionAdminChecked++))
-                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction/$webContextPath/actuator/health | grep "Content-Type")
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyProductionWebHealthy++))
                     fi
-                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction/$adminContextPath/actuator/health | grep "Content-Type")
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyProductionAdminHealthy++))
                     fi
@@ -95,11 +95,11 @@ for serviceName in $serviceNameArray; do
                     echo staging;
                     ((proxyStagingWebChecked++))
                     ((proxyStagingAdminChecked++))
-                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging/$webContextPath/actuator/health | grep "Content-Type")
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyStagingWebHealthy++))
                     fi
-                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging/$adminContextPath/actuator/health | grep "Content-Type")
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyStagingAdminHealthy++))
                     fi
