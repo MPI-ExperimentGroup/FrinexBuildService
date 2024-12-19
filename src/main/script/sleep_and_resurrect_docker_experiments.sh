@@ -116,10 +116,14 @@ for serviceName in $serviceNameArray; do
                     headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyProductionWebHealthy++))
+                    else
+                        echo "Not proxyProductionWebHealthy $webContextPath"
                     fi
                     headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyProductionAdminHealthy++))
+                    else
+                        echo "Not proxyProductionAdminHealthy $adminContextPath"
                     fi
                 else 
                     echo staging;
@@ -128,10 +132,14 @@ for serviceName in $serviceNameArray; do
                     headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyStagingWebHealthy++))
+                    else
+                        echo "Not proxyStagingWebHealthy $webContextPath"
                     fi
                     headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyStagingAdminHealthy++))
+                    else
+                        echo "Not proxyStagingAdminHealthy $adminContextPath"
                     fi
                 fi
                 # end check the service connection throught the proxy
