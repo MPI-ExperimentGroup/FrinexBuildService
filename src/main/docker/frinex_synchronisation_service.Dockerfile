@@ -8,7 +8,9 @@ RUN apk add --no-cache \
   bash \
   rsync \
   docker \
+  openssh \
   sudo
+RUN rc-update add sshd
 RUN mkdir /FrinexBuildService/
 COPY config/publish.properties /FrinexBuildService/
 COPY script/frinex_synchronisation_service.sh /FrinexBuildService/
