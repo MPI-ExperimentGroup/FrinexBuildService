@@ -77,7 +77,7 @@ else
    --replicas-max-per-node=1 \
    --replicas=$nodeCount \
    -e 'ServiceHostname={{.Node.Hostname}}' \
-   -p 2200:22
+   -p 2200:22 \
    --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
    --name frinex_synchronisation_service DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
