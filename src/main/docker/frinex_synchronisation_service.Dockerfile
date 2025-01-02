@@ -8,7 +8,7 @@ RUN apk add --no-cache \
   bash \
   rsync \
   docker \
-  openssh \
+  openrc openssh \
   sudo
 RUN rc-update add sshd
 RUN mkdir /FrinexBuildService/
