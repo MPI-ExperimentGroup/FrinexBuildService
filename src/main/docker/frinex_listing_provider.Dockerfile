@@ -87,7 +87,7 @@ RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service update [a-z0-9-_]
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /bin/chown -R frinex\:www-data /FrinexBuildService/artifacts/[a-z0-9-_]*/' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /bin/chmod -R ug+rwx /FrinexBuildService/artifacts/[a-z0-9-_]*/' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker node ps [a-zA-Z0-9-_.]*' >> /etc/sudoers
-RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker node ls --format "{{.Hostname}}' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker node ls --format {{.Hostname}}' >> /etc/sudoers
 
 RUN chown -R www-data:daemon /FrinexBuildService
 RUN chown -R www-data:daemon /usr/local/apache2/htdocs/
