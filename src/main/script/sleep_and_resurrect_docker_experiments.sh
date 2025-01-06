@@ -302,7 +302,7 @@ echo "generating stats for the number of Frinex experiment services on each node
     # echo -n "$nodeName," >> /FrinexBuildService/artifacts/grafana_swarm_stats.temp
 # done
 echo -n "$(date)" > /FrinexBuildService/artifacts/grafana_swarm_stats.temp
-for nodeName in $(docker node ls --format "{{.Hostname}}")
+for nodeName in $(sudo docker node ls --format "{{.Hostname}}")
 do
     echo -n ","$(sudo docker node ps $nodeName | grep -E "_admin|_web" | grep Running | wc -l) >> /FrinexBuildService/artifacts/grafana_swarm_stats.temp
 done
