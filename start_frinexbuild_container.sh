@@ -56,6 +56,7 @@ docker run --cpus=".5" --restart unless-stopped -v buildServerTarget:/FrinexBuil
 
 echo "starting the frinex stats service"
 docker container stop frinex_stats;
+docker container rm frinex_stats
 docker run --rm -d -p 3000:3000 --name=frinex_stats frinex_stats; 
 
 read -p "Press enter to restart frinexbuild"
