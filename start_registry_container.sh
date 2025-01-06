@@ -23,7 +23,7 @@
 #
 
 echo "TODO: please update frinexbuild.mpi.nl to the relevant URI, then comment this line to proceed"; exit;
-
+DOCKER_REGISTRY=frinexbuild.mpi.nl
 # Deploying Frinex experiments to the Docker swarm requires this registry to be running
 # docker run --rm -it -v registry_certs:/certs nginx openssl req -newkey rsa:4096 -nodes -sha256 -keyout /certs/frinexbuild.mpi.nl.key -addext "subjectAltName = DNS:frinexbuild.mpi.nl" -x509 -days 3650 -out /certs/frinexbuild.mpi.nl.crt
 # the self signed certificate needs to be added to the trust directory of each docker node
@@ -65,8 +65,8 @@ if ! grep -q $(hostname) config/publish.properties; then
     echo "Aborting because the publish.properties does not match the current machine.";
 else
    # build the frinex_synchronisation_service
-   docker build --rm -f docker/frinex_synchronisation_service.Dockerfile -t DOCKER_REGISTRY/frinex_synchronisation_service:latest .
-   docker push DOCKER_REGISTRY/frinex_synchronisation_service:latest
+   docker build --rm -f docker/frinex_synchronisation_service.Dockerfile -t $DOCKER_REGISTRY/frinex_synchronisation_service:latest .
+   docker push $DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
    read -p "Press enter to restart frinex_synchronisation_service"
    # remove the old frinex_synchronisation_service
@@ -79,7 +79,7 @@ else
    -e 'ServiceHostname={{.Node.Hostname}}' \
    -p 2200:22 \
    --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
-   --name 'frinex_synchronisation_service_{{.Node.Hostname}}' DOCKER_REGISTRY/frinex_synchronisation_service:latest
+   --name 'frinex_synchronisation_service_{{.Node.Hostname}}' $DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
    # for currentService in $(sudo docker service ls | grep -E "_staging|_production" | grep -E "_admin|_web" | awk '{print $2}')
    # do
