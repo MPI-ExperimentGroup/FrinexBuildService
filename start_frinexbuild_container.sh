@@ -54,6 +54,10 @@ docker container rm frinex_service_manager
 # TODO: once per hour is probably a bit too often unless we are also generating munin stats
 docker run --cpus=".5" --restart unless-stopped -v buildServerTarget:/FrinexBuildService/artifacts --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -dit --name frinex_service_manager frinex_listing_provider:latest bash -c "while true; do /FrinexBuildService/sleep_and_resurrect_docker_experiments.sh; sleep 1h; done;"
 
+echo "starting the frinex stats service"
+docker container stop frinex_stats;
+docker run --rm -d -p 3000:3000 --name=frinex_stats frinex_stats; 
+
 read -p "Press enter to restart frinexbuild"
 # remove the old frinexbuild
 docker stop frinexbuild 
