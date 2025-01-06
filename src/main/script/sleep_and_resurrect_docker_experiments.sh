@@ -295,6 +295,21 @@ echo "$(date),$proxyStagingWebChecked,$proxyStagingWebHealthy,$proxyProductionWe
 head -n 1000  /FrinexBuildService/artifacts/grafana_proxy_stats.txt >> /FrinexBuildService/artifacts/grafana_proxy_stats.temp
 mv /FrinexBuildService/artifacts/grafana_proxy_stats.temp /FrinexBuildService/artifacts/grafana_proxy_stats.txt
 
+echo "generating stats for the number of Frinex experiment services on each node in the docker swarm"
+# echo -n "date" > /FrinexBuildService/artifacts/grafana_swarm_stats.temp
+# for nodeName in ${1//_/ }
+# do
+    # echo -n "$nodeName," >> /FrinexBuildService/artifacts/grafana_swarm_stats.temp
+# done
+echo -n "$(date)" > /FrinexBuildService/artifacts/grafana_swarm_stats.temp
+for nodeName in ${1//_/ }
+do
+    echo -n ","$(sudo docker node ps $nodeName | grep -E "_admin|_web" | grep Running | wc -l) >> /FrinexBuildService/artifacts/grafana_swarm_stats.temp
+done
+echo "" >> /FrinexBuildService/artifacts/grafana_swarm_stats.temp
+head -n 1000  /FrinexBuildService/artifacts/grafana_swarm_stats.txt >> /FrinexBuildService/artifacts/grafana_swarm_stats.temp
+mv /FrinexBuildService/artifacts/grafana_swarm_stats.temp /FrinexBuildService/artifacts/grafana_swarm_stats.txt
+
 echo "generating experiment stats for Grafana"
 for buildType in staging production
 do
