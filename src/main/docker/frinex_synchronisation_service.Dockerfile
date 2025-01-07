@@ -72,6 +72,8 @@ COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/id_ed25519
 COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/id_ed25519.pub
 RUN cat /home/frinex/.ssh/id_ed25519.pub > /home/frinex/.ssh/authorized_keys
 RUN chown -R frinex:frinex /home/frinex/.ssh
-RUN chmod -R 0700 /home/frinex/.ssh
+RUN chmod 600 /home/frinex/.ssh/*
+RUN chmod 700 /home/frinex/.ssh
+RUN chmod 644 /home/frinex/.ssh/*.pub
 USER frinex
 ENTRYPOINT ["/FrinexBuildService/startup.sh"]
