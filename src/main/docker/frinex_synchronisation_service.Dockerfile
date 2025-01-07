@@ -67,6 +67,8 @@ WORKDIR /FrinexBuildService
 RUN ssh-keygen -A
 USER frinex
 RUN mkdir /home/frinex/.ssh
-COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/
-COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/
+COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/id_ed25519
+COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/id_ed25519.pub
+RUN cat /home/frinex/.ssh/id_ed25519.pub > /home/frinex/.ssh/authorized_keys
+RUN chown -R frinex /home/frinex/.ssh
 ENTRYPOINT ["/FrinexBuildService/startup.sh"]
