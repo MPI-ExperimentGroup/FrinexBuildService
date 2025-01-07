@@ -11,6 +11,7 @@ RUN apk add --no-cache \
   openrc openssh \
   sudo
 RUN rc-update add sshd
+RUN rc-service sshd start
 RUN mkdir /FrinexBuildService/
 COPY config/publish.properties /FrinexBuildService/
 COPY script/frinex_synchronisation_service.sh /FrinexBuildService/
