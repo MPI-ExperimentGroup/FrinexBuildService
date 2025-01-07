@@ -11,6 +11,7 @@ RUN apk add --no-cache \
   openrc openssh \
   sudo
 RUN rc-update add sshd
+RUN ssh-keygen -A
 RUN rc-service sshd start
 RUN mkdir /FrinexBuildService/
 COPY config/publish.properties /FrinexBuildService/
