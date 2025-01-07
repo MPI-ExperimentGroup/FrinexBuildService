@@ -75,5 +75,6 @@ RUN chown -R frinex /home/frinex/.ssh
 RUN chmod 600 /home/frinex/.ssh/*
 RUN chmod 700 /home/frinex/.ssh
 RUN chmod 644 /home/frinex/.ssh/*.pub
+RUN chmod 644 /home/frinex/.ssh/authorized_keys
 USER frinex
 ENTRYPOINT ["/FrinexBuildService/startup.sh"]
