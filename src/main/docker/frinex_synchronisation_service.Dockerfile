@@ -58,6 +58,9 @@ RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker node ps [a-zA-Z0-9-_.]*' >>
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/sbin/sshd -D' >> /etc/sudoers
 
 RUN adduser -S frinex
+RUN echo "#!/bin/bash" > /FrinexBuildService/startup.sh
+RUN echo "sudo /usr/sbin/sshd -D&" >> /FrinexBuildService/startup.sh
+RUN echo "/FrinexBuildService/frinex_synchronisation_service.sh" >> /FrinexBuildService/startup.sh
 RUN chown -R frinex /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 WORKDIR /FrinexBuildService
@@ -66,7 +69,4 @@ USER frinex
 RUN mkdir /home/frinex/.ssh
 COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/
 COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/
-RUN echo "#!/bin/bash" > /home/frinex/startup.sh
-RUN echo "sudo /usr/sbin/sshd -D&;" >> /home/frinex/startup.sh
-RUN echo "/FrinexBuildService/frinex_synchronisation_service.sh;" >> /home/frinex/startup.sh
-ENTRYPOINT ["/home/frinex/startup.sh"]
+ENTRYPOINT ["/FrinexBuildService/startup.sh"]
