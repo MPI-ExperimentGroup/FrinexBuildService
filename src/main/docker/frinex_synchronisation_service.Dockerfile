@@ -66,5 +66,4 @@ USER frinex
 RUN mkdir /home/frinex/.ssh
 COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/
 COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/
-ENTRYPOINT ["/FrinexBuildService/frinex_synchronisation_service.sh"]
-RUN ["/usr/bin/sudo /usr/sbin/sshd -D"]
+ENTRYPOINT ["/bin/bash", "/usr/bin/sudo /usr/sbin/sshd -D&;", "/FrinexBuildService/frinex_synchronisation_service.sh;"]
