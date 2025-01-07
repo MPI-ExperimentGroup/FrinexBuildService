@@ -71,7 +71,7 @@ RUN mkdir /home/frinex/.ssh
 COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/id_ed25519
 COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/id_ed25519.pub
 RUN cat /home/frinex/.ssh/id_ed25519.pub > /home/frinex/.ssh/authorized_keys
-RUN cat /home/frinex/.ssh/id_ed25519.pub  >> /home/frinex/.ssh/known_hosts
+COPY .ssh/known_hosts /home/frinex/.ssh/known_hosts
 RUN chown -R frinex:nogroup /home/frinex/.ssh
 RUN chmod 600 /home/frinex/.ssh/*
 RUN chmod 700 /home/frinex/.ssh
