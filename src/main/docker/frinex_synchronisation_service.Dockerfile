@@ -8,11 +8,9 @@ RUN apk add --no-cache \
   bash \
   rsync \
   docker \
-  openrc openssh \
+  openssh \
   sudo
 RUN rc-update add sshd
-RUN ssh-keygen -A
-RUN rc-service sshd start
 RUN mkdir /FrinexBuildService/
 COPY config/publish.properties /FrinexBuildService/
 COPY script/frinex_synchronisation_service.sh /FrinexBuildService/
@@ -63,6 +61,8 @@ RUN adduser -S frinex
 RUN chown -R frinex /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 WORKDIR /FrinexBuildService
+RUN ssh-keygen -A
+CMD /usr/sbin/sshd -D
 USER frinex
 RUN mkdir /home/frinex/.ssh
 COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/
