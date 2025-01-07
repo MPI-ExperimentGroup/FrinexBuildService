@@ -62,4 +62,7 @@ RUN chown -R frinex /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 WORKDIR /FrinexBuildService
 USER frinex
+RUN mkdir /home/frinex/.ssh
+COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/
+COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/
 ENTRYPOINT ["/FrinexBuildService/frinex_synchronisation_service.sh"]
