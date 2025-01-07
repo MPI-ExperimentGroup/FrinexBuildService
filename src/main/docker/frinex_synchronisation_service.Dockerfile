@@ -66,6 +66,7 @@ RUN chmod -R ug+rwx /FrinexBuildService
 WORKDIR /FrinexBuildService
 RUN ssh-keygen -A
 RUN echo -e "PasswordAuthentication no" >> /etc/ssh/sshd_config
+RUN echo -e "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
 RUN mkdir /home/frinex/.ssh
 COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/id_ed25519
 COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/id_ed25519.pub
