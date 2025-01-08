@@ -143,6 +143,7 @@ RUN chown -R www-data:daemon /FrinexBuildService/cgi
 RUN chmod -R ug+rwx /FrinexBuildService/cgi
 RUN chown -R www-data:daemon /FrinexBuildService/script
 RUN chmod -R ug+rwx /FrinexBuildService/script
+RUN chmod -R ug+rwx /FrinexBuildService/passwd
 # RUN chown www-data:daemon /FrinexBuildService/cgi/*.cgi
 #RUN mkdir /BackupFiles
 #RUN chown -R frinex:daemon /BackupFiles
