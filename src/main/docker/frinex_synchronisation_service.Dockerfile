@@ -65,10 +65,16 @@ RUN echo "/FrinexBuildService/frinex_synchronisation_service.sh" >> /FrinexBuild
 RUN chown -R frinex /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 WORKDIR /FrinexBuildService
-# RUN ssh-keygen -A
+# the host keys were generated in a running continer with:
+# ssh-keygen -A
+# followed by copying the files into the .ssh directory with:
+# docker cp <container_id>:/etc/ssh/ src/main/.ssh/
+# mv src/main/.ssh/ssh/ssh_host_* src/main/.ssh/
+# rm -rf src/main/.ssh/ssh
 RUN echo -e "PasswordAuthentication no" >> /etc/ssh/sshd_config
 RUN echo -e "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
 RUN mkdir /home/frinex/.ssh
+COPY .ssh/ssh_host_* /etc/ssh/
 COPY .ssh/id_rsa /home/frinex/.ssh/id_rsa
 COPY .ssh/id_rsa.pub /home/frinex/.ssh/id_rsa.pub
 RUN cat /home/frinex/.ssh/id_rsa.pub > /home/frinex/.ssh/authorized_keys
