@@ -146,7 +146,6 @@ RUN chown -R www-data:daemon /FrinexBuildService/script
 RUN chmod -R ug+rwx /FrinexBuildService/script
 RUN chmod -R ug+rwx /FrinexBuildService/passwd
 RUN chown -R frinex:www-data /FrinexBuildService/script/sync_file_to_swarm_nodes.sh
-RUN mkdir /home/frinex/.ssh
 COPY .ssh/id_rsa /home/frinex/.ssh/id_rsa
 COPY .ssh/id_rsa.pub /home/frinex/.ssh/id_rsa.pub
 COPY .ssh/known_hosts /home/frinex/.ssh/known_hosts
