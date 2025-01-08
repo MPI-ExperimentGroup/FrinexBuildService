@@ -65,7 +65,7 @@ RUN echo "/FrinexBuildService/frinex_synchronisation_service.sh" >> /FrinexBuild
 RUN chown -R frinex /FrinexBuildService
 RUN chmod -R ug+rwx /FrinexBuildService
 WORKDIR /FrinexBuildService
-RUN ssh-keygen -A
+# RUN ssh-keygen -A
 RUN echo -e "PasswordAuthentication no" >> /etc/ssh/sshd_config
 RUN echo -e "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
 RUN mkdir /home/frinex/.ssh
