@@ -145,6 +145,7 @@ RUN chmod -R ug+rwx /FrinexBuildService/cgi
 RUN chown -R www-data:daemon /FrinexBuildService/script
 RUN chmod -R ug+rwx /FrinexBuildService/script
 RUN chmod -R ug+rwx /FrinexBuildService/passwd
+RUN chown -R frinex:www-data /FrinexBuildService/script/sync_file_to_swarm_nodes.sh
 # RUN chown www-data:daemon /FrinexBuildService/cgi/*.cgi
 #RUN mkdir /BackupFiles
 #RUN chown -R frinex:daemon /BackupFiles
