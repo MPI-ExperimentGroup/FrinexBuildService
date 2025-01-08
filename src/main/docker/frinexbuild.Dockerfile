@@ -163,7 +163,4 @@ VOLUME ["protectedDirectory:/FrinexBuildService/protected"]
 VOLUME ["buildServerTarget:/FrinexBuildService/artifacts"]
 RUN chown www-data:www-data /usr/local/apache2/logs
 USER frinex
-RUN mkdir /home/frinex/.ssh
-COPY .ssh/id_ed25519_frinex_synchronisation_service /home/frinex/.ssh/
-COPY .ssh/id_ed25519_frinex_synchronisation_service.pub /home/frinex/.ssh/
 USER www-data
