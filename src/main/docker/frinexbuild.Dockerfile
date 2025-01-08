@@ -66,6 +66,7 @@ COPY cgi/repository_setup.cgi /FrinexBuildService/cgi/
 COPY cgi/request_build.cgi /FrinexBuildService/cgi/
 COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
 COPY script/generate_commit_files.sh /FrinexBuildService/script/
+COPY script/sync_file_to_swarm_nodes.sh /FrinexBuildService/script/
 # apply location specific settings to the various configuration files
 COPY docker/filter_config_files.sh /FrinexBuildService/
 RUN chmod +x /FrinexBuildService/filter_config_files.sh
