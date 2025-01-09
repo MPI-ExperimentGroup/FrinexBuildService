@@ -179,6 +179,13 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
+    console.log("sync_file_to_swarm_nodes: " + buildHistoryFileName);
+    try {
+        child_process.execSync('bash script/sync_file_to_swarm_nodes.sh ' + buildHistoryFileName, { stdio: [0, 1, 2] });
+    } catch (reason) {
+        console.error("sync_file_to_swarm_nodes error");
+        console.error(reason);
+    }
 }
 
 function stopUpdatingResults() {
@@ -190,6 +197,13 @@ function stopUpdatingResults() {
     buildHistoryJson.building = false;
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
+    console.log("sync_file_to_swarm_nodes: " + buildHistoryFileName);
+    try {
+        child_process.execSync('bash script/sync_file_to_swarm_nodes.sh ' + buildHistoryFileName, { stdio: [0, 1, 2] });
+    } catch (reason) {
+        console.error("sync_file_to_swarm_nodes error");
+        console.error(reason);
+    }
 }
 
 function unDeploy(currentEntry) {
