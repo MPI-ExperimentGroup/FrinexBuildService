@@ -22,7 +22,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-echo "TODO: please update frinexbuild.mpi.nl to the relevant URI, then comment this line to proceed"; exit;
+# echo "TODO: please update frinexbuild.mpi.nl to the relevant URI, then comment this line to proceed"; exit;
 DOCKER_REGISTRY=frinexbuild.mpi.nl
 # Deploying Frinex experiments to the Docker swarm requires this registry to be running
 # docker run --rm -it -v registry_certs:/certs nginx openssl req -newkey rsa:4096 -nodes -sha256 -keyout /certs/frinexbuild.mpi.nl.key -addext "subjectAltName = DNS:frinexbuild.mpi.nl" -x509 -days 3650 -out /certs/frinexbuild.mpi.nl.crt
