@@ -94,7 +94,7 @@ else
       echo "$nodeName"
       # start the frinex_synchronisation_service
       docker service create -d \
-      -e constraint:node==$nodeName
+      -e constraint:node==$nodeName \
       --replicas-max-per-node=1 \
       --replicas=1 \
       -e 'ServiceHostname={{.Node.Hostname}}' \
