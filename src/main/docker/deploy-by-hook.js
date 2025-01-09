@@ -181,7 +181,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
     console.log("sync_file_to_swarm_nodes: " + buildHistoryFileName);
     try {
-        child_process.execSync('bash script/sync_file_to_swarm_nodes.sh ' + buildHistoryFileName, { stdio: [0, 1, 2] });
+        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh ' + buildHistoryFileName, { stdio: [0, 1, 2] });
     } catch (reason) {
         console.error("sync_file_to_swarm_nodes error");
         console.error(reason);
@@ -199,7 +199,7 @@ function stopUpdatingResults() {
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
     console.log("sync_file_to_swarm_nodes: " + buildHistoryFileName);
     try {
-        child_process.execSync('bash script/sync_file_to_swarm_nodes.sh ' + buildHistoryFileName, { stdio: [0, 1, 2] });
+        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh ' + buildHistoryFileName, { stdio: [0, 1, 2] });
     } catch (reason) {
         console.error("sync_file_to_swarm_nodes error");
         console.error(reason);
