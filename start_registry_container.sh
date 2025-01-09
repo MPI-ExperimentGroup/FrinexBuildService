@@ -69,18 +69,41 @@ else
    docker push $DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
    read -p "Press enter to restart frinex_synchronisation_service"
-   # remove the old frinex_synchronisation_service
-   docker service rm frinex_synchronisation_service 
-   # start the frinex_synchronisation_service
-   nodeCount=$(docker node ls --format "{{.Hostname}}" | wc -l)
-   docker service create -d \
-   --replicas-max-per-node=1 \
-   --replicas=$nodeCount \
-   -e 'ServiceHostname={{.Node.Hostname}}' \
-   -p 2200:22 \
-   --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts \
-   --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
-   --name frinex_synchronisation_service $DOCKER_REGISTRY/frinex_synchronisation_service:latest
+   # # remove the old frinex_synchronisation_service
+   # docker service rm frinex_synchronisation_service 
+   # # start the frinex_synchronisation_service
+   # nodeCount=$(docker node ls --format "{{.Hostname}}" | wc -l)
+   # docker service create -d \
+   # --replicas-max-per-node=1 \
+   # --replicas=$nodeCount \
+   # -e 'ServiceHostname={{.Node.Hostname}}' \
+   # -p 22 \
+   # --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts \
+   # --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+   # --name frinex_synchronisation_service $DOCKER_REGISTRY/frinex_synchronisation_service:latest
+
+   for nodeName in $(docker node ls --format "{{.Hostname}}")
+   do
+      echo "$nodeName"
+      # remove the old frinex_synchronisation_service
+      docker service rm frinex_synchronisation_service_$nodeName
+   done
+   serviceCount=0
+   for nodeName in $(docker node ls --format "{{.Hostname}}")
+   do
+      echo "$nodeName"
+      # start the frinex_synchronisation_service
+      docker service create -d \
+      -e constraint:node==$nodeName
+      --replicas-max-per-node=1 \
+      --replicas=1 \
+      -e 'ServiceHostname={{.Node.Hostname}}' \
+      -p 220$serviceCount:22 \
+      --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts \
+      --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+      --name frinex_synchronisation_service_$nodeName $DOCKER_REGISTRY/frinex_synchronisation_service:latest
+      ((serviceCount++))
+   done
 
    # for currentService in $(sudo docker service ls | grep -E "_staging|_production" | grep -E "_admin|_web" | awk '{print $2}')
    # do
