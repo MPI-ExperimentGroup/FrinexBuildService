@@ -11,10 +11,14 @@ for filePath in "$@"
 do
     echo "$filePath"
     serviceCount=0
-    for nodeName in $(sudo docker node ls --format "{{.Hostname}}")
+    # for nodeName in $(sudo docker node ls --format "{{.Hostname}}")
+    for servicePortAndNode in $(sudo docker service ls --format "{{.Ports}}{{.Name}}" -f "name=frinex_synchronisation_service" | sed 's/[*:]//g' | sed 's/->22\/tcp//g')
     do
-        echo "$nodeName"
-        rsync -auve "ssh -p 220$serviceCount" $filePath frinex@$nodeName:/$filePath
+        servicePort=$(echo $servicePortAndNode | sed 's/frinex_synchronisation_service_[a-zA-Z0-9]*//g')
+        nodeName=$(echo $servicePortAndNode | sed 's/[0-9]*frinex_synchronisation_service_//g')
+        echo "nodeName: $nodeName"
+        echo "servicePort: $servicePort"
+        rsync -auve "ssh -p $servicePort" $filePath frinex@$nodeName:/$filePath
         # ssh $nodeName  -p 2200 mv $filePath.tmp $filePath;
         ((serviceCount++))
     done
