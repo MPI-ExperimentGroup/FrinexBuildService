@@ -13,7 +13,7 @@ do
     for nodeName in $(sudo docker node ls --format "{{.Hostname}}")
     do
         echo "$nodeName"
-        rsync -auve 'ssh -p 2200' $filePath frinex@$nodeName:$filePath
+        rsync -auve 'ssh -p 2200' $filePath frinex@$nodeName:/$filePath
         # ssh $nodeName  -p 2200 mv $filePath.tmp $filePath;
     done
 done
