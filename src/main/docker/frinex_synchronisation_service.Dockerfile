@@ -57,7 +57,8 @@ RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Name
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker node ps [a-zA-Z0-9-_.]*' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/sbin/sshd -D' >> /etc/sudoers
 
-RUN adduser -S frinex
+# RUN adduser -S frinex
+RUN adduser -D frinex
 RUN passwd -u frinex
 RUN echo "#!/bin/bash" > /FrinexBuildService/startup.sh
 RUN echo "sudo /usr/sbin/sshd -D&" >> /FrinexBuildService/startup.sh
