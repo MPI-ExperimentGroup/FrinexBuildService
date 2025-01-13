@@ -69,7 +69,7 @@ else
    docker push $DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
    # create the frinex_synchronisation_net bridge network 
-   docker network create frinex_synchronisation_net
+   docker network create --scope=swarm --attachable -d overlay frinex_synchronisation_net
 
    read -p "Press enter to restart frinex_synchronisation_service"
    # # remove the old frinex_synchronisation_service
