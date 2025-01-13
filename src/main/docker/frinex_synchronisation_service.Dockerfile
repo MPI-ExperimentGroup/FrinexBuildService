@@ -11,6 +11,7 @@ RUN apk add --no-cache \
   openssh \
   sudo
 RUN mkdir /FrinexBuildService/
+RUN mkdir /FrinexBuildService/artifacts
 COPY config/publish.properties /FrinexBuildService/
 COPY script/frinex_synchronisation_service.sh /FrinexBuildService/
 RUN dockerRegistry=$(grep dockerRegistry /FrinexBuildService/publish.properties | sed "s/dockerRegistry[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s/DOCKER_REGISTRY/$dockerRegistry/g" /FrinexBuildService/frinex_synchronisation_service.sh
