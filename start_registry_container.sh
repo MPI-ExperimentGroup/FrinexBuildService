@@ -102,7 +102,7 @@ else
       --replicas=1 \
       -e 'ServiceHostname={{.Node.Hostname}}' \
       -p 220$serviceCount:22 \
-      --net frinex_synchronisation_net \
+      --network frinex_synchronisation_net \
       --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts \
       --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
       --name frinex_synchronisation_service_$nodeName $DOCKER_REGISTRY/frinex_synchronisation_service:latest
