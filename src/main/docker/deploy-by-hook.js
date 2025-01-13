@@ -93,6 +93,13 @@ function startResult() {
     fs.writeFileSync(targetDirectory + "/buildlisting.js", fs.readFileSync("/FrinexBuildService/buildlisting.js"));
     resultsFile = fs.openSync(targetDirectory + "/index.html", "a"); //{ flags: 'w', mode: 0o755 });
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
+    console.log("sync_file_to_swarm_nodes: /FrinexBuildService/buildlisting.js");
+    try {
+        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh /FrinexBuildService/buildlisting.js', { stdio: [0, 1, 2] });
+    } catch (reason) {
+        console.error("sync_file_to_swarm_nodes error");
+        console.error(reason);
+    }
 }
 
 function getExperimentToken(name) {
