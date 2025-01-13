@@ -68,6 +68,9 @@ else
    docker build --rm -f docker/frinex_synchronisation_service.Dockerfile -t $DOCKER_REGISTRY/frinex_synchronisation_service:latest .
    docker push $DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
+   # create the frinex_synchronisation_net bridge network 
+   docker network create frinex_synchronisation_net
+
    read -p "Press enter to restart frinex_synchronisation_service"
    # # remove the old frinex_synchronisation_service
    # docker service rm frinex_synchronisation_service 
@@ -99,6 +102,7 @@ else
       --replicas=1 \
       -e 'ServiceHostname={{.Node.Hostname}}' \
       -p 220$serviceCount:22 \
+      --net frinex_synchronisation_net \
       --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts \
       --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
       --name frinex_synchronisation_service_$nodeName $DOCKER_REGISTRY/frinex_synchronisation_service:latest
