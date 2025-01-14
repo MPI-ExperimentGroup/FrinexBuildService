@@ -44,6 +44,8 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 #RUN cd opus-recorder; git checkout tags/v8.0.4
 RUN mkdir /FrinexWizardUtils
 RUN mkdir /FrinexExperiments
+RUN mkdir /FrinexBuildService/
+RUN mkdir /FrinexBuildService/artifacts
 COPY docker/compile_wizard_tempates.sh /FrinexWizardUtils/
 RUN chmod +x /FrinexWizardUtils/compile_wizard_tempates.sh
 RUN /FrinexWizardUtils/compile_wizard_tempates.sh
@@ -73,6 +75,7 @@ RUN adduser -S frinex
 RUN chown -R frinex /FrinexExperiments
 RUN chown -R frinex /FrinexWizardUtils
 RUN chown -R frinex /ExperimentTemplate
+RUN chown -R frinex /FrinexBuildService
 RUN mkdir /data
 RUN chown -R frinex /data
 
