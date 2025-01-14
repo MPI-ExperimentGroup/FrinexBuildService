@@ -93,13 +93,7 @@ function startResult() {
     fs.writeFileSync(targetDirectory + "/buildlisting.js", fs.readFileSync("/FrinexBuildService/buildlisting.js"));
     resultsFile = fs.openSync(targetDirectory + "/index.html", "a"); //{ flags: 'w', mode: 0o755 });
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
-    console.log("sync_file_to_swarm_nodes: /FrinexBuildService/buildlisting.js");
-    try {
-        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh /FrinexBuildService/buildlisting.js', { stdio: [0, 1, 2] });
-    } catch (reason) {
-        console.error("sync_file_to_swarm_nodes error");
-        console.error(reason);
-    }
+    // there is no point syncing buildlisting.js to the swarm because it is not in a volume
 }
 
 function getExperimentToken(name) {
@@ -186,13 +180,7 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
-    console.log("sync_file_to_swarm_nodes: " + buildHistoryFileName);
-    try {
-        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh ' + buildHistoryFileName, { stdio: [0, 1, 2] });
-    } catch (reason) {
-        console.error("sync_file_to_swarm_nodes error");
-        console.error(reason);
-    }
+    syncFileToSwarmNodes(buildHistoryFileName);
 }
 
 function stopUpdatingResults() {
@@ -204,13 +192,7 @@ function stopUpdatingResults() {
     buildHistoryJson.building = false;
     buildHistoryJson.buildDate = new Date().toISOString();
     fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o755 });
-    console.log("sync_file_to_swarm_nodes: " + buildHistoryFileName);
-    try {
-        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh ' + buildHistoryFileName, { stdio: [0, 1, 2] });
-    } catch (reason) {
-        console.error("sync_file_to_swarm_nodes error");
-        console.error(reason);
-    }
+    syncFileToSwarmNodes(buildHistoryFileName);
 }
 
 function unDeploy(currentEntry) {
@@ -1750,6 +1732,16 @@ function copyDeleteFile(incomingFile, targetFile) {
     }
 }
 
+function syncFileToSwarmNodes(fileListString) {
+    console.log("sync_file_to_swarm_nodes: " + fileListString);
+    try {
+        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh ' + fileListString, { stdio: [0, 1, 2] });
+    } catch (reason) {
+        console.error("sync_file_to_swarm_nodes error");
+        console.error(reason);
+    }
+}
+
 function moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename) {
     console.log('moving XML from validated to queued: ' + filename);
     // this move is within the same volume so we can do it this easy way
@@ -1766,6 +1758,7 @@ function moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename)
     console.log('configStoreFile: ' + configStoreFile);
     // this move is not within the same volume
     incomingReadStream.pipe(fs.createWriteStream(configStoreFile));
+    syncFileToSwarmNodes(configStoreFile);
 }
 
 function prepareForProcessing() {
@@ -2152,7 +2145,7 @@ function moveIncomingToQueued() {
 
 function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
-    var dockerString = 'mv /FrinexBuildService/incoming/queued/*.json /FrinexBuildService/incoming/prevalidation/;'
+    var dockerString = /* TODO: check for json files before the mv or just use a loop or find . -type f -name '*.avi' -exec  rename   's/\.(?=[^.]*\.)/ /g' "{}" \; ish */'mv /FrinexBuildService/incoming/queued/*.json /FrinexBuildService/incoming/prevalidation/;'
         // + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + ' mv /FrinexBuildService/incoming/queued/*.xml /FrinexBuildService/incoming/prevalidation/;'
         // + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
