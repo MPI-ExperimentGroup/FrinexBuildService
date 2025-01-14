@@ -18,7 +18,7 @@ do
         echo "servicePort: $servicePort"
         # rsync --mkpath -auve "ssh -p $servicePort -o BatchMode=yes" $filePath frinex@$nodeName.mpi.nl:/$filePath
         ssh $nodeName.mpi.nl -p $servicePort \
-            'echo "delete the staging artifacts"' \
+            'echo "delete the staging artifacts";' \
             'rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web.war;' \
             ' rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.war;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web_sources.jar;' \
@@ -30,7 +30,7 @@ do
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_vr.*;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_ios.*;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_win32*;' \
-            'echo "delete the production artifacts"' \
+            'echo "delete the production artifacts";' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web.war;' \
             ' rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.war;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web_sources.jar;' \
