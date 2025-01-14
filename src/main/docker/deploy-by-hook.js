@@ -1754,11 +1754,11 @@ function moveToQueued(incomingFile, configQueuedFile, configStoreFile, filename)
     incomingReadStream.on('close', function () {
         console.log('close: ' + configStoreFile);
         fs.renameSync(configQueuedFile + ".lock", configQueuedFile);
+        syncFileToSwarmNodes(configStoreFile);
     });
     console.log('configStoreFile: ' + configStoreFile);
     // this move is not within the same volume
     incomingReadStream.pipe(fs.createWriteStream(configStoreFile));
-    syncFileToSwarmNodes(configStoreFile);
 }
 
 function prepareForProcessing() {
