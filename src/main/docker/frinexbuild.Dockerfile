@@ -67,6 +67,7 @@ COPY cgi/request_build.cgi /FrinexBuildService/cgi/
 COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
 COPY script/generate_commit_files.sh /FrinexBuildService/script/
 COPY script/sync_file_to_swarm_nodes.sh /FrinexBuildService/script/
+COPY script/sync_delete_from_swarm_nodes.sh /FrinexBuildService/script/
 # apply location specific settings to the various configuration files
 COPY docker/filter_config_files.sh /FrinexBuildService/
 RUN chmod +x /FrinexBuildService/filter_config_files.sh
@@ -146,6 +147,7 @@ RUN chown -R www-data:daemon /FrinexBuildService/script
 RUN chmod -R ug+rwx /FrinexBuildService/script
 RUN chmod -R ug+rwx /FrinexBuildService/passwd
 RUN chown -R frinex:www-data /FrinexBuildService/script/sync_file_to_swarm_nodes.sh
+RUN chown -R frinex:www-data /FrinexBuildService/script/sync_delete_from_swarm_nodes.sh
 COPY .ssh/id_rsa /home/frinex/.ssh/id_rsa
 COPY .ssh/id_rsa.pub /home/frinex/.ssh/id_rsa.pub
 COPY .ssh/known_hosts /home/frinex/.ssh/known_hosts
