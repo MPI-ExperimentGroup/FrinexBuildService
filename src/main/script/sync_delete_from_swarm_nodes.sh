@@ -9,8 +9,9 @@
 
 buildName=$1
 buildStage=$2
-
-if [ -d "/FrinexBuildService/artifacts/$buildName" ]; then
+if [[ "$buildName" == "" || "$buildStage" == "" ]]; then
+    echo "both buildName: $buildName and buildStage: $buildStage are required"
+else if [ -d "/FrinexBuildService/artifacts/$buildName" ]; then
     for servicePortAndNode in $(sudo docker service ls --format "{{.Ports}}{{.Name}}" -f "name=frinex_synchronisation_service" | sed 's/[*:]//g' | sed 's/->22\/tcp//g')
     do
         servicePort=$(echo $servicePortAndNode | sed 's/frinex_synchronisation_service_[a-zA-Z0-9]*//g')
@@ -19,34 +20,34 @@ if [ -d "/FrinexBuildService/artifacts/$buildName" ]; then
         echo "buildStage: $buildStage"
         echo "nodeName: $nodeName"
         echo "servicePort: $servicePort"
-        remoteCommand='echo "delete the staging artifacts";' \
-            'rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web.war;' \
-            ' rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.war;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web_sources.jar;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_admin_sources.jar;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_android.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_cordova.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_darwin*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_electron.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_vr.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_ios.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_win32*;'
+        remoteCommand='echo "delete the staging artifacts"; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web.war; \
+            rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.war; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web_sources.jar; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_admin_sources.jar; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_android.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_cordova.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_darwin*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_electron.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_vr.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_ios.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_win32*';
         if [ "$buildStage" == "production" ]; then
-            remoteCommand=$remoteCommand'echo "delete the production artifacts";' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web.war;' \
-            ' rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.war;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web_sources.jar;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_admin_sources.jar;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_android.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_cordova.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_darwin*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_electron.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_vr.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_ios.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;';
+            remoteCommand=$remoteCommand'echo "delete the production artifacts"; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web.war; \
+            rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.war; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web_sources.jar; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_admin_sources.jar; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_android.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_cordova.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_darwin*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_electron.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_vr.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_ios.*; \
+            rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;';
         fi
         echo "remoteCommand: $remoteCommand"
         echo "TODO: reneable when tested"
         # ssh $nodeName.mpi.nl -p $servicePort "$remoteCommand"
     done
-fi
+fi fi

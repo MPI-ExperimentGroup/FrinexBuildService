@@ -204,7 +204,7 @@ function unDeploy(currentEntry) {
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
 
     syncDeleteFromSwarmNodes(currentEntry.buildName, "production");
-    
+
     // check if the deploymentType is tomcat vs docker and do the required undeployment process
     var dockerString = "";
     
