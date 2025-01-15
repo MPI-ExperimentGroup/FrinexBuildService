@@ -202,6 +202,9 @@ function unDeploy(currentEntry) {
     // undeploy staging gui
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt?' + new Date().getTime() + '">undeploying</a>', "staging", "web", false, true, false);
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
+
+    syncDeleteFromSwarmNodes(currentEntry.buildName, "production");
+    
     // check if the deploymentType is tomcat vs docker and do the required undeployment process
     var dockerString = "";
     
@@ -1536,6 +1539,7 @@ function buildNextExperiment() {
             //console.log("starting generate stimulus");
             //child_process.execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
             if (currentEntry.state === "draft" || currentEntry.state === "debug" || currentEntry.state === "staging" || currentEntry.state === "production") {
+                syncDeleteFromSwarmNodes(currentEntry.buildName, currentEntry.state);
                 deployStagingGui(currentEntry);
             } else if (currentEntry.state === "undeploy") {
                 // todo: undeploy probably does not need to be limited by concurrentBuildCount
@@ -1738,6 +1742,17 @@ function syncFileToSwarmNodes(fileListString) {
         child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh ' + fileListString, { stdio: [0, 1, 2] });
     } catch (reason) {
         console.error("sync_file_to_swarm_nodes error");
+        console.error(reason);
+    }
+}
+
+function syncDeleteFromSwarmNodes(buildName, stage) {
+
+    console.log("sync_delete_from_swarm_nodes: " + fileListString);
+    try {
+        child_process.execSync('bash /FrinexBuildService/script/sync_delete_from_swarm_nodes.sh ' + buildName + ' ' + stage, { stdio: [0, 1, 2] });
+    } catch (reason) {
+        console.error("sync_delete_from_swarm_nodes error");
         console.error(reason);
     }
 }

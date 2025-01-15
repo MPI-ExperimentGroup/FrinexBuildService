@@ -46,6 +46,7 @@ if [ -d "/FrinexBuildService/artifacts/$buildName" ]; then
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;';
         fi
         echo "remoteCommand: $remoteCommand"
-        ssh $nodeName.mpi.nl -p $servicePort "$remoteCommand"
+        echo "TODO: reneable when tested"
+        # ssh $nodeName.mpi.nl -p $servicePort "$remoteCommand"
     done
 fi
