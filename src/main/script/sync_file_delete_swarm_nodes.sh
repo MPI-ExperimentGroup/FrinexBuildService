@@ -7,18 +7,19 @@
 
 # This script deletes build output files on all nodes in the docker swarm
 
-for buildName in "$@"
-do
-    echo "$filePath"
+buildName=$1
+buildStage=$2
+
+if [ -d "/FrinexBuildService/artifacts/$buildName" ]; then
     for servicePortAndNode in $(sudo docker service ls --format "{{.Ports}}{{.Name}}" -f "name=frinex_synchronisation_service" | sed 's/[*:]//g' | sed 's/->22\/tcp//g')
     do
         servicePort=$(echo $servicePortAndNode | sed 's/frinex_synchronisation_service_[a-zA-Z0-9]*//g')
         nodeName=$(echo $servicePortAndNode | sed 's/[0-9]*frinex_synchronisation_service_//g')
+        echo "buildName: $buildName"
+        echo "buildStage: $buildStage"
         echo "nodeName: $nodeName"
         echo "servicePort: $servicePort"
-        # rsync --mkpath -auve "ssh -p $servicePort -o BatchMode=yes" $filePath frinex@$nodeName.mpi.nl:/$filePath
-        ssh $nodeName.mpi.nl -p $servicePort \
-            'echo "delete the staging artifacts";' \
+        remoteCommand='echo "delete the staging artifacts";' \
             'rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web.war;' \
             ' rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.war;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web_sources.jar;' \
@@ -29,8 +30,9 @@ do
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_electron.*;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_vr.*;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_ios.*;' \
-            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_win32*;' \
-            'echo "delete the production artifacts";' \
+            ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_win32*;'
+        if [ "$buildStage" == "production" ]; then
+            remoteCommand=$remoteCommand'echo "delete the production artifacts";' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web.war;' \
             ' rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.war;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web_sources.jar;' \
@@ -42,5 +44,8 @@ do
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_vr.*;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_ios.*;' \
             ' rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;';
+        fi
+        echo "remoteCommand: $remoteCommand"
+        ssh $nodeName.mpi.nl -p $servicePort "$remoteCommand"
     done
-done
+fi
