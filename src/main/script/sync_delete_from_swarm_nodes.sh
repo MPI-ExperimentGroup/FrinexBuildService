@@ -52,7 +52,7 @@ rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;
             fi
             echo "remoteCommand: $remoteCommand"
             echo "TODO: reneable when tested"
-            # ssh $nodeName.mpi.nl -p $servicePort "$remoteCommand"
+            # ssh -o "BatchMode yes" $nodeName.mpi.nl -p $servicePort "$remoteCommand"
         done
     fi
 fi
