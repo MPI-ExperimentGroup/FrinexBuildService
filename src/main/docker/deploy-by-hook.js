@@ -1747,8 +1747,7 @@ function syncFileToSwarmNodes(fileListString) {
 }
 
 function syncDeleteFromSwarmNodes(buildName, stage) {
-
-    console.log("sync_delete_from_swarm_nodes: " + fileListString);
+    console.log("sync_delete_from_swarm_nodes: " + buildName + " " + stage);
     try {
         child_process.execSync('bash /FrinexBuildService/script/sync_delete_from_swarm_nodes.sh ' + buildName + ' ' + stage, { stdio: [0, 1, 2] });
     } catch (reason) {
