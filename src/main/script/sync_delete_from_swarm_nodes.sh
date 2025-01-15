@@ -51,7 +51,11 @@ rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;
 ';
             fi
             echo "remoteCommand: $remoteCommand"
+            ls -l /FrinexBuildService/artifacts/$buildName/$buildName*;
+            ls -l /FrinexBuildService/protected/$buildName/$buildName*;
             ssh -o "BatchMode yes" $nodeName.mpi.nl -p $servicePort "$remoteCommand"
+            ls -l /FrinexBuildService/artifacts/$buildName/$buildName*;
+            ls -l /FrinexBuildService/protected/$buildName/$buildName*;
         done
     fi
 fi
