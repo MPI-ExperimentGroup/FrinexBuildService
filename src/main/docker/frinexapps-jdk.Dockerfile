@@ -41,6 +41,22 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 #     && sed -i '/adaptive-vocabulary-assessment-module/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all AdaptiveVocabularyAssessmentModule)'-stable/}' /AdaptiveVocabularyAssessmentModule/AdaptiveVocabularyAssessmentModule/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml \
 #     && sed -i '/common/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all common)'-stable/}' /AdaptiveVocabularyAssessmentModule/AdaptiveVocabularyAssessmentModule/pom.xml
 
+# make the .m2 directory that will later be a volume
+RUN mkdir /maven
+RUN mkdir /maven/.m2
+RUN mkdir /target
+RUN mkdir /test_data_electron
+RUN mkdir /test_data_cordova
+# add a frinex user here and do all further actions with that user
+RUN adduser -S frinex -u 101010
+RUN chown -R frinex /ExperimentTemplate
+RUN chown -R frinex /maven
+RUN chown -R frinex /target
+RUN chown -R frinex /test_data_electron
+RUN chown -R frinex /test_data_cordova
+RUN chown -R frinex /opus-recorder
+USER frinex
+
 RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
 RUN sed -i 's|<versionCheck.buildType>testing</versionCheck.buildType>|<versionCheck.buildType>stable</versionCheck.buildType>|g' /ExperimentTemplate/pom.xml
 
@@ -60,10 +76,6 @@ RUN cd /ExperimentTemplate \
 
 RUN mkdir /ExperimentTemplate/target
 
-# make the .m2 directory that will later be a volume
-RUN mkdir /maven
-RUN mkdir /maven/.m2
-
 RUN cd /ExperimentTemplate \
     && mvn clean install -Dgwt.validateOnly -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 RUN cd /ExperimentTemplate \
@@ -73,7 +85,6 @@ RUN cd /ExperimentTemplate/gwt-cordova \
 
 # RUN cd /ExperimentTemplate \
 #     && mvn clean install -Dgwt.draftCompile=true -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example
-RUN mkdir /target
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
