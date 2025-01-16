@@ -30,10 +30,13 @@ rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_admin_sources
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_android.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_cordova.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_darwin*;
+rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_linux*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_electron.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_vr.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_ios.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_win32*;
+rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging*.asar;
+rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging*.dmg;
 ';
             if [ "$buildStage" == "production" ]; then
                 remoteCommand=$remoteCommand'echo "delete the production artifacts";
@@ -44,10 +47,13 @@ rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_admin_sour
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_android.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_cordova.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_darwin*;
+rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_linux*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_electron.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_vr.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_ios.*;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;
+rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production*.asar;
+rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production*.dmg;
 ';
             fi
             echo "remoteCommand: $remoteCommand"
