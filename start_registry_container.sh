@@ -103,6 +103,7 @@ else
       -e 'ServiceHostname={{.Node.Hostname}}' \
       -p 220$serviceCount:22 \
       --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts \
+      --mount type=volume,src=protectedDirectory,dst=/FrinexBuildService/protected \
       --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
       --name frinex_synchronisation_service_$nodeName $DOCKER_REGISTRY/frinex_synchronisation_service:latest
 
