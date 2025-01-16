@@ -92,7 +92,7 @@ RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker node ls --format {{.Hostn
 RUN chown -R www-data:daemon /FrinexBuildService
 RUN chown -R www-data:daemon /usr/local/apache2/htdocs/
 RUN chmod -R ug+rwx /FrinexBuildService
-RUN adduser -S frinex
+RUN adduser -S frinex -u 1010101
 WORKDIR /FrinexBuildService
 RUN chown www-data:www-data /usr/local/apache2/logs
 USER www-data
