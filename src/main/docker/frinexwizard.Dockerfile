@@ -71,7 +71,7 @@ RUN cd /ExperimentTemplate/ExperimentDesigner \
 
 RUN cp /ExperimentTemplate/ExperimentDesigner/target/frinex-experiment-designer-*.*-testing-SNAPSHOT.war /frinexwizard.war
 
-RUN adduser -S frinex -u 1010101
+RUN adduser -S frinex -u 101010
 RUN chown -R frinex /FrinexExperiments
 RUN chown -R frinex /FrinexWizardUtils
 RUN chown -R frinex /ExperimentTemplate
