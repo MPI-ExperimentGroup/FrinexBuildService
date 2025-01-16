@@ -207,31 +207,6 @@ function unDeploy(currentEntry) {
 
     // check if the deploymentType is tomcat vs docker and do the required undeployment process
     var dockerString = "";
-    
-    // delete the staging artifacts
-    dockerString += ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
-        + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_android.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_cordova.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_darwin*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_electron.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_vr.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_ios.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_win32*;'
-        // delete the production artifacts
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
-        + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_android.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_cordova.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_darwin*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_electron.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_vr.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_ios.*;'
-        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_win32*;';
 
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_web && "
@@ -571,17 +546,6 @@ function deployStagingGui(currentEntry) {
             + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ((currentEntry.state === "draft") ? " sed -i 's|<extraJvmArgs>|<draftCompile>true</draftCompile><style>DETAILED</style><extraJvmArgs>|g' pom.xml;" : '')
             + ((currentEntry.state === "draft") ? " sed -i 's|<source|<collapse-all-properties /><source|g' src/main/resources/nl/mpi/tg/eg/ExperimentTemplate.gwt.xml;" : '')
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
-            // + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_android.*;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_cordova.*;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_darwin*;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_electron.*;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_vr.*;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_ios.*;'
-            // + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_win32*;'
             + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '*;'
             + ' ls -l ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '*;'
             + ' mvn clean '
@@ -777,8 +741,6 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             // using sed to replace the deprecated DB URL in very old build images like 1.3-audiofix
             + " sed -i 's|localhost:5432|" + stagingDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
-            + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
-            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-cordova.zip;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-electron.zip;'
             + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-vr.zip;'
@@ -976,17 +938,6 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' rm /ExperimentTemplate/gwt-cordova/src/main/webapp/*.css;'
                         // remove all console.log|error statments that should not make it to production
                         + " sed -i 's|console\.[el][^;]*;||g' /ExperimentTemplate/gwt-cordova/src/main/html/index.html /ExperimentTemplate/gwt-cordova/src/main/java/nl/mpi/tg/eg/experiment/*/*.java /ExperimentTemplate/gwt-cordova/src/main/java/nl/mpi/tg/eg/experiment/client/*/*.java;"
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
-                        + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_android.*;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_cordova.*;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_darwin*;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_electron.*;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_vr.*;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_ios.*;'
-                        + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_win32*;'
                         // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
                         + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
                         + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
@@ -1167,8 +1118,6 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             // using sed to replace the deprecated DB URL in very old build images like 1.3-audiofix
             + " sed -i 's|localhost:5432|" + productionDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
-            + ' rm ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
-            + ' rm ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-electron.zip;'
             + ' rm /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*-stable-vr.zip;'
