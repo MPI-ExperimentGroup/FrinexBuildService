@@ -25,6 +25,7 @@ else if [ ! -d "/FrinexBuildService/artifacts/$buildName" ]; then
             remoteCommand='echo "delete the staging artifacts";
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web.war;
 rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.war;
+rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.war;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web_sources.jar;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_admin_sources.jar;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_android.*;
@@ -42,6 +43,7 @@ rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging*.dmg;
                 remoteCommand=$remoteCommand'echo "delete the production artifacts";
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web.war;
 rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.war;
+rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_admin.war;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web_sources.jar;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_admin_sources.jar;
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_android.*;
