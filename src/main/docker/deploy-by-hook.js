@@ -546,8 +546,6 @@ function deployStagingGui(currentEntry) {
             + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             + ((currentEntry.state === "draft") ? " sed -i 's|<extraJvmArgs>|<draftCompile>true</draftCompile><style>DETAILED</style><extraJvmArgs>|g' pom.xml;" : '')
             + ((currentEntry.state === "draft") ? " sed -i 's|<source|<collapse-all-properties /><source|g' src/main/resources/nl/mpi/tg/eg/ExperimentTemplate.gwt.xml;" : '')
-            + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '*;'
-            + ' ls -l ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '*;'
             + ' mvn clean '
             + ((currentEntry.isWebApp && (deploymentType.includes('staging_tomcat') || ( /* limiting tomcat deployments to when a server is specified */ currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0))) ? 'tomcat7:undeploy tomcat7:redeploy' : 'package')
             //+ 'package'
@@ -620,6 +618,10 @@ function deployStagingGui(currentEntry) {
             + " chmod a+rwx -R" + targetDirectory + "/" + currentEntry.buildName + "/;"
             + ' echo "build complete" &>> ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
+        syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war '
+            + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt; ');
         console.log(dockerString);
         child_process.exec(dockerString, (error, stdout, stderr) => {
             // gtwBuildingCount--;
@@ -807,6 +809,10 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                 if (fs.existsSync(buildArtifactsFileName)) {
                     fs.unlinkSync(buildArtifactsFileName);
                 }
+                syncFileToSwarmNodes(protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war '
+                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar '
+                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt; '
+                    + buildArtifactsTargetFileName);
                 console.log("deployStagingAdmin ended");
                 if (currentEntry.state === "production") {
                     var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
@@ -1021,6 +1027,10 @@ function deployProductionGui(currentEntry, retryCounter) {
                             buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production_web.war";
                             // update artifacts.json
                             fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o755 });
+                            syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar '
+                            + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
+                            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
+                            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt; ');
                             // build cordova 
                             if (currentEntry.isAndroid || currentEntry.isiOS) {
                                 buildApk(currentEntry, "production", buildArtifactsJson, buildArtifactsFileName);
@@ -1204,6 +1214,11 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                     fs.unlinkSync(buildArtifactsFileName);
                 }
                 currentlyBuilding.delete(currentEntry.buildName);
+                syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar '
+                    + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war '
+                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war '
+                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt; '
+                    + buildArtifactsTargetFileName);
             } else {
                 console.log("deployProductionAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
