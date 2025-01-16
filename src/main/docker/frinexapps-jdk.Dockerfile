@@ -22,8 +22,7 @@
 
 FROM eclipse-temurin:21-jdk-alpine
 
-RUN apt-get update
-RUN apt-get -y install unzip zip imagemagick graphviz maven vim file
+RUN apk add --no-cache unzip zip imagemagick graphviz maven vim file
 
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
 RUN git clone https://github.com/chris-rudmin/opus-recorder.git
