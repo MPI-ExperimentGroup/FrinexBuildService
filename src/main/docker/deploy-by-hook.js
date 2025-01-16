@@ -268,7 +268,7 @@ function unDeploy(currentEntry) {
             + ' -Dexperiment.destinationServerUrl=' + stagingServerUrl
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             //+ ' rm /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_web.war'
-            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            // + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
     }
     // console.log(dockerString);
