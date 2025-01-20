@@ -25,51 +25,51 @@ else if [ ! -d "/FrinexBuildService/artifacts/$buildName" ]; then
             remoteCommand=""
             if [ "$buildStage" == "transfer" ]; then
                 remoteCommand=$remoteCommand'echo "transfer: delete commit file";
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'.xml.commit;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'.xml.commit;
             ';
             fi
             if [ "$buildStage" == "staging" ] || [ "$buildStage" == "undeploy" ]; then
                 remoteCommand=$remoteCommand'echo "delete the staging artifacts";
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web.war;
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.war;
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.war;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web_sources.jar;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_admin_sources.jar;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_android.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_cordova.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_darwin*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_linux*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_electron.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_vr.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_ios.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_win32*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging*.asar;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging*.dmg;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_artifacts.json;
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.Docker;
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.Docker;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web.war;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.war;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.war;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web_sources.jar;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_admin_sources.jar;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_android.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_cordova.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_darwin*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_linux*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_electron.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_vr.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_ios.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_win32*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging*.asar;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging*.dmg;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_artifacts.json;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.Docker;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.Docker;
 ';
             fi
             if [ "$buildStage" == "production" ] || [ "$buildStage" == "undeploy" ]; then
                 remoteCommand=$remoteCommand'echo "delete the production artifacts";
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web.war;
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.war;
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_admin.war;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web_sources.jar;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_admin_sources.jar;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_android.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_cordova.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_darwin*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_linux*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_electron.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_vr.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_ios.*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production*.asar;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production*.dmg;
-rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_artifacts.json;
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_admin.Docker;
-rm /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.Docker;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web.war;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.war;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_admin.war;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web_sources.jar;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_admin_sources.jar;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_android.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_cordova.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_darwin*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_linux*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_electron.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_vr.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_ios.*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_win32*;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production*.asar;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production*.dmg;
+rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_artifacts.json;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_admin.Docker;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.Docker;
 ';
             fi
             echo "remoteCommand: $remoteCommand"
