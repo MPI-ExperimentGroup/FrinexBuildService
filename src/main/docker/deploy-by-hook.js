@@ -620,10 +620,6 @@ function deployStagingGui(currentEntry) {
             + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + ' echo "build complete" &>> ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
-        syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar '
-            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war '
-            + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war '
-            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt; ');
         console.log(dockerString);
         child_process.exec(dockerString, (error, stdout, stderr) => {
             // gtwBuildingCount--;
@@ -644,6 +640,10 @@ function deployStagingGui(currentEntry) {
                 storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt?' + new Date().getTime() + '">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war">download</a>&nbsp;' + browseLink, "staging", "web", false, false, true, new Date().getTime() - stageStartTime);
                 var buildArtifactsJson = { artifacts: {} };
                 const buildArtifactsFileName = processingDirectory + '/staging-building/' + currentEntry.buildName + '_staging_artifacts.json';
+                syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar '
+                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war '
+                    + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war '
+                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt; ');
                 if (currentEntry.state === "staging" || currentEntry.state === "production") {
                     //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                     //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
