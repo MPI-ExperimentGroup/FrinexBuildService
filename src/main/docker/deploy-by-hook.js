@@ -616,6 +616,7 @@ function deployStagingGui(currentEntry) {
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             // + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + " chmod a+rwx -R" + targetDirectory + "/" + currentEntry.buildName + "/;"
+            + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + ' echo "build complete" &>> ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar '
@@ -788,6 +789,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' chmod a+rwx ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war;'
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar;'
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
+            + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + ' echo "build complete" &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + '"';
         console.log(dockerString);
@@ -1008,6 +1010,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar;'
                         //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/production-building/'
                         //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
+                        + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
                         + '"';
                     // console.log(dockerString);
                     child_process.exec(dockerString, (error, stdout, stderr) => {
@@ -1190,6 +1193,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' chmod a+rwx ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war;'
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar;'
             + " chmod a+rwx " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
         // console.log(dockerString);
         try {
@@ -1280,6 +1284,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-android.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-ios.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.*;'
+            + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
         // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
@@ -1358,6 +1363,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-darwin-x64-lt.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64-lt.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-linux-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + ' chmod a+rwx ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_*.zip;'
+            + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
         // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
