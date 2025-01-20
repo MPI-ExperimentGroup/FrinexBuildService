@@ -203,7 +203,7 @@ function unDeploy(currentEntry) {
     storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt?' + new Date().getTime() + '">undeploying</a>', "staging", "web", false, true, false);
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
 
-    syncDeleteFromSwarmNodes(currentEntry.buildName, "production");
+    syncDeleteFromSwarmNodes(currentEntry.buildName, "undeploy");
 
     // check if the deploymentType is tomcat vs docker and do the required undeployment process
     var dockerString = "";
@@ -499,6 +499,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
 
 function deployStagingGui(currentEntry) {
     console.log("deployStagingGui");
+    syncDeleteFromSwarmNodes(currentEntry.buildName, "staging");
     // gtwBuildingCount++;
     var stageStartTime = new Date().getTime();
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt")) {
@@ -854,6 +855,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
 }
 
 function deployProductionGui(currentEntry, retryCounter) {
+    syncDeleteFromSwarmNodes(currentEntry.buildName, "production");
     var stageStartTime = new Date().getTime();
     // gtwBuildingCount++;
     console.log("deployProductionGui started: " + currentEntry.buildName);
@@ -1496,7 +1498,6 @@ function buildNextExperiment() {
             //console.log("starting generate stimulus");
             //child_process.execSync('bash gwt-cordova/target/generated-sources/bash/generateStimulus.sh');
             if (currentEntry.state === "draft" || currentEntry.state === "debug" || currentEntry.state === "staging" || currentEntry.state === "production") {
-                syncDeleteFromSwarmNodes(currentEntry.buildName, currentEntry.state);
                 deployStagingGui(currentEntry);
             } else if (currentEntry.state === "undeploy") {
                 // todo: undeploy probably does not need to be limited by concurrentBuildCount
@@ -1504,7 +1505,7 @@ function buildNextExperiment() {
             } else if (currentEntry.state === "transfer") {
                 // delete the .commit file in the protected directory to allow transfer of control to an other repository
                 // fs.unlinkSync(protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + ".xml.commit");
-                syncDeleteFromSwarmNodes(currentEntry.buildName, "commitFile");
+                syncDeleteFromSwarmNodes(currentEntry.buildName, "transfer");
                 storeResult(currentEntry.buildName, 'transferred', "staging", "web", false, false, false);
                 currentlyBuilding.delete(currentEntry.buildName);
             } else {
