@@ -2074,6 +2074,7 @@ function moveIncomingToQueued() {
                                 committerName = commitInfoJson.user;
                                 var storedCommitName = path.resolve(protectedDirectory + '/' + currentName, filename + ".commit");
                                 fs.writeFileSync(storedCommitName, JSON.stringify(commitInfoJson, null, 4), { mode: 0o755 });
+                                syncFileToSwarmNodes(storedCommitName);
                             } catch (error) {
                                 console.error('failed to parse commit info: ' + error);
                             }
