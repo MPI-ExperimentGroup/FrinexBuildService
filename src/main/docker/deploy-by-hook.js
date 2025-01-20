@@ -1503,7 +1503,8 @@ function buildNextExperiment() {
                 unDeploy(currentEntry);
             } else if (currentEntry.state === "transfer") {
                 // delete the .commit file in the protected directory to allow transfer of control to an other repository
-                fs.unlinkSync(protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + ".xml.commit");
+                // fs.unlinkSync(protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + ".xml.commit");
+                syncDeleteFromSwarmNodes(currentEntry.buildName, "commitFile");
                 storeResult(currentEntry.buildName, 'transferred', "staging", "web", false, false, false);
                 currentlyBuilding.delete(currentEntry.buildName);
             } else {

@@ -22,7 +22,14 @@ else if [ ! -d "/FrinexBuildService/artifacts/$buildName" ]; then
             echo "buildStage: $buildStage"
             echo "nodeName: $nodeName"
             echo "servicePort: $servicePort"
-            remoteCommand='echo "delete the staging artifacts";
+            remoteCommand=""
+            if [ "$buildStage" == "commitFile" ]; then
+                remoteCommand=$remoteCommand'echo "delete commit file";
+rm /FrinexBuildService/protected/'$buildName'/'$buildName'.xml.commit;
+            ';
+            fi
+            if [ "$buildStage" == "staging" ] || [ "$buildStage" == "production" ]; then
+                remoteCommand=$remoteCommand'echo "delete the staging artifacts";
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_web.war;
 rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.war;
 rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.war;
@@ -42,6 +49,7 @@ rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_artifacts.jso
 rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.Docker;
 rm /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.Docker;
 ';
+            fi
             if [ "$buildStage" == "production" ]; then
                 remoteCommand=$remoteCommand'echo "delete the production artifacts";
 rm /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_web.war;
