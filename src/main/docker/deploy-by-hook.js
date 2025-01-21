@@ -1290,6 +1290,12 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             + '"';
         // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
+        syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.apk '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.aab '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_ios.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt; ');
     } catch (reason) {
         console.error(reason);
         resultString += 'failed&nbsp;';
@@ -1369,6 +1375,12 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             + '"';
         // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
+        syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64-lt.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64-lt.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt; ');
         //resultString += "built&nbsp;";
     } catch (reason) {
         console.error(reason);
