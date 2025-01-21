@@ -50,6 +50,10 @@ rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging*.dmg;
 rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_staging_artifacts.json;
 rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.Docker;
 rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_web.Docker;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging.txt;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_admin.txt;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_android.txt;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_staging_electron.txt;
 ';
             fi
             if [ "$buildStage" == "production" ] || [ "$buildStage" == "undeploy" ]; then
@@ -72,6 +76,10 @@ rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production*.dmg;
 rm -f /FrinexBuildService/artifacts/'$buildName'/'$buildName'_production_artifacts.json;
 rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_admin.Docker;
 rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.Docker;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production.txt;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_admin.txt;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_android.txt;
+rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_electron.txt;
 ';
             fi
             remoteCommand=$remoteCommand'ls -l /FrinexBuildService/artifacts/'$buildName'/'$buildName'*;
