@@ -489,6 +489,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         console.log("deployDockerService " + serviceName + " finished");
         // storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt?' + new Date().getTime() + '">DockerService</a>', "production", "admin", false, false, false);
         // TODO: while we could store the service information in a JSON file: docker service ls --format='{{json .Name}}, {{json .Ports}}' it would be better to use docker service ls and translate that into JSON for all of the sevices at once.
+        syncFileToSwarmNodes(dockerFilePath);
         updateServicesJson();
         triggerProxyUpdate();
     } catch (error) {
