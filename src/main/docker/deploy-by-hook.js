@@ -1701,6 +1701,7 @@ function copyDeleteFile(incomingFile, targetFile) {
             } catch (reason) {
                 console.error("copyDeleteFile close failed: " + incomingFile + ":" + targetFile + ":" + reason);
             }
+            syncFileToSwarmNodes(targetFile);
         });
         incomingReadStream.pipe(fs.createWriteStream(targetFile)); // + '.tmp' at the point of close the destination file is still not accessable for rename.
     } catch (reason) {
@@ -1769,7 +1770,6 @@ function prepareForProcessing() {
             console.log('moving JSON from validated to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>moving JSON from validated to target: " + filename + "</div>");
             copyDeleteFile(incomingFile, jsonStoreFile);
-            syncFileToSwarmNodes(jsonStoreFile);
         } else if (path.extname(filename) === ".xml") {
             //var processingName = path.resolve(processingDirectory, filename);
             // preserve the current XML by copying it to /srv/target which will be accessed via a link in the first column of the results table
@@ -1783,7 +1783,6 @@ function prepareForProcessing() {
             //console.log('copying UML from validated to target: ' + incomingFile);
             //fs.writeSync(resultsFile, "<div>copying UML from validated to target: " + incomingFile + "</div>");
             copyDeleteFile(incomingFile, targetName);
-            syncFileToSwarmNodes(targetName);
         } else if (path.extname(filename) === ".svg") {
             // preserve the generated UML SVG to be accessed via a link in the results table
             var targetName = path.resolve(targetDirectory + "/" + fileNamePart, filename);
@@ -1791,7 +1790,6 @@ function prepareForProcessing() {
             //console.log('copying SVG from validated to target: ' + filename);
             //fs.writeSync(resultsFile, "<div>copying SVG from validated to target: " + filename + "</div>");
             copyDeleteFile(incomingFile, targetName);
-            syncFileToSwarmNodes(targetName);
         } else if (path.extname(filename) === ".xsd") {
             // place the generated XSD file for use in XML editors
             var targetName = path.resolve(targetDirectory, filename);
@@ -1812,7 +1810,6 @@ function prepareForProcessing() {
             //fs.writeSync(resultsFile, "<div>copying from validated to target: " + filename + "</div>");
             //fs.renameSync(incomingFile, processingName);
             copyDeleteFile(incomingFile, configErrorFile);
-            syncFileToSwarmNodes(configErrorFile);
         } else if (fs.existsSync(incomingFile)) {
             console.log('deleting unkown file: ' + incomingFile);
             fs.writeSync(resultsFile, "<div>deleting unkown file: " + incomingFile + "</div>");
