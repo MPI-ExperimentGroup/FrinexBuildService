@@ -22,7 +22,9 @@ else if [ ! -d "/FrinexBuildService/artifacts/$buildName" ]; then
             echo "buildStage: $buildStage"
             echo "nodeName: $nodeName"
             echo "servicePort: $servicePort"
-            remoteCommand=""
+            remoteCommand='ls -l /FrinexBuildService/artifacts/'$buildName'/'$buildName'*;
+            ls -l /FrinexBuildService/protected/'$buildName'/'$buildName'*;
+            '
             if [ "$buildStage" == "transfer" ]; then
                 remoteCommand=$remoteCommand'echo "transfer: delete commit file";
 rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'.xml.commit;
@@ -72,12 +74,11 @@ rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_admin.D
 rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_web.Docker;
 ';
             fi
+            remoteCommand=$remoteCommand'ls -l /FrinexBuildService/artifacts/'$buildName'/'$buildName'*;
+            ls -l /FrinexBuildService/protected/'$buildName'/'$buildName'*;
+            '
             echo "remoteCommand: $remoteCommand"
-            ls -l /FrinexBuildService/artifacts/$buildName/$buildName*;
-            ls -l /FrinexBuildService/protected/$buildName/$buildName*;
             ssh -o "BatchMode yes" $nodeName.mpi.nl -p $servicePort "$remoteCommand"
-            ls -l /FrinexBuildService/artifacts/$buildName/$buildName*;
-            ls -l /FrinexBuildService/protected/$buildName/$buildName*;
         done
     fi
 fi

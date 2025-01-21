@@ -9,7 +9,7 @@
 
 for filePath in "$@"
 do
-    echo "$filePath"
+    echo "filePath: $filePath"
     serviceCount=0
     # for nodeName in $(sudo docker node ls --format "{{.Hostname}}")
     for servicePortAndNode in $(sudo docker service ls --format "{{.Ports}}{{.Name}}" -f "name=frinex_synchronisation_service" | sed 's/[*:]//g' | sed 's/->22\/tcp//g')
