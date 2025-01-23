@@ -22,6 +22,7 @@ do
         # ssh $nodeName  -p 2200 mv $filePath.tmp $filePath;
         ((serviceCount++))
     done
+    cd /FrinexBuildService
     ssh lux27.mpi.nl -p 2200 "ls -lG /FrinexBuildService/protected/uppercasetest; ls -lG /FrinexBuildService/artifacts/uppercasetest" > lux27.txt;
     ssh lux28.mpi.nl -p 2201 "ls -lG /FrinexBuildService/protected/uppercasetest; ls -lG /FrinexBuildService/artifacts/uppercasetest" > lux28.txt; 
     ssh lux29.mpi.nl -p 2202 "ls -lG /FrinexBuildService/protected/uppercasetest; ls -lG /FrinexBuildService/artifacts/uppercasetest" > lux29.txt; 
