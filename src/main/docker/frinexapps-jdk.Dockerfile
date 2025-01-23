@@ -95,8 +95,7 @@ RUN cd /ExperimentTemplate/gwt-cordova \
 RUN mkdir /test_data_electron/with_stimulus_example \
     && cp /ExperimentTemplate/gwt-cordova/target/setup-electron.sh /test_data_electron/with_stimulus_example/ \
     && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example*-electron.zip /test_data_electron/with_stimulus_example/
-RUN mkdir /test_data_cordova \
-    && mkdir /test_data_cordova/with_stimulus_example \
+RUN mkdir /test_data_cordova/with_stimulus_example \
     && cp /ExperimentTemplate/gwt-cordova/target/setup-cordova.sh /test_data_cordova/with_stimulus_example/ \
     && cp /ExperimentTemplate/gwt-cordova/target/with_stimulus_example*-cordova.zip /test_data_cordova/with_stimulus_example/
 
