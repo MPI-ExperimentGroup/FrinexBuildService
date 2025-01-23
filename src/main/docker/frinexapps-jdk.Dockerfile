@@ -22,7 +22,7 @@
 
 FROM eclipse-temurin:21-jdk-alpine
 
-RUN apk add --no-cache git bash unzip zip imagemagick graphviz maven vim file noto
+RUN apk add --no-cache git bash unzip zip imagemagick graphviz maven vim file freetype
 
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
 RUN git clone https://github.com/chris-rudmin/opus-recorder.git
