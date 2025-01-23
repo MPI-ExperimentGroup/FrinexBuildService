@@ -86,8 +86,10 @@ RUN cd /ExperimentTemplate/gwt-cordova \
 #     && mvn clean install -Dgwt.draftCompile=true -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example
 
 RUN cd /ExperimentTemplate/gwt-cordova \
-    && convert -gravity center -size 128x128 -background blue -fill white /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
-    && convert -gravity center -size 512x513 -background blue -fill white /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
+    && magick -size 128x128 xc:blue /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
+    && magick -size 512x513 xc:blue /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
+    # && magick convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/icon.png \
+    # && magick convert -gravity center -size 512x513 -background blue -fill white -pointsize 80 label:"WSE" /ExperimentTemplate/gwt-cordova/src/main/static/with_stimulus_example/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -Dgwt.draftCompile=true -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example -Dexperiment.configuration.displayName=with_stimulus_example -Dexperiment.configuration.path=/ExperimentTemplate/ExperimentDesigner/src/main/resources/examples/
 RUN mkdir /test_data_electron \
@@ -101,8 +103,10 @@ RUN mkdir /test_data_cordova \
 
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mkdir /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit \
-    && convert -gravity center -size 128x128 -background blue -fill white /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
-    && convert -gravity center -size 512x512 -background blue -fill white /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
+    && magick -size 128x128 xc:blue /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
+    && magick -size 512x513 xc:blue /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
+    # && magick convert -gravity center -size 128x128 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/icon.png \
+    # && magick convert -gravity center -size 512x512 -background blue -fill white -pointsize 80 label:"RFK" /ExperimentTemplate/gwt-cordova/src/main/static/rosselfieldkit/splash.png
 RUN cd /ExperimentTemplate/gwt-cordova \
     && mvn clean install -Dgwt.draftCompile=true -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=rosselfieldkit -Dexperiment.configuration.displayName=rosselfieldkit
 RUN mkdir /test_data_electron/rosselfieldkit \
