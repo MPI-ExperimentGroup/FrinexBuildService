@@ -739,6 +739,9 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + " sed -i 's|>\\${experiment.destinationServerUrl}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
             // using sed to replace the deprecated DB URL in very old build images like 1.3-audiofix
             + " sed -i 's|localhost:5432|" + stagingDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
+            + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-cordova.zip;'
+            + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-electron.zip;'
+            + ' rm /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*-*-vr.zip;'
             + ' mkdir ' + targetDirectory + '/' + currentEntry.buildName + '/included_artifacts/;'
             // + ' ls -l ' + targetDirectory + '/' + currentEntry.buildName + ' &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + ' mvn clean compile ' // the target 'compile' is used to cause compilation errors to show up before all the effort/time of the full build process
