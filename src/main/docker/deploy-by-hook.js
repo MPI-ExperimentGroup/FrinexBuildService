@@ -1696,7 +1696,7 @@ function copyDeleteFile(incomingFile, targetFile) {
             }
             syncFileToSwarmNodes(targetFile);
         });
-        incomingReadStream.pipe(fs.createWriteStream(targetFile, { mode: 0o774 })); // + '.tmp' at the point of close the destination file is still not accessable for rename.
+        incomingReadStream.pipe(fs.createWriteStream(targetFile, { mode: '774' })); // 0o774 // + '.tmp' at the point of close the destination file is still not accessable for rename.
     } catch (reason) {
         console.error("copyDeleteFile failed: " + incomingFile + ":" + targetFile + ":" + reason);
     }
