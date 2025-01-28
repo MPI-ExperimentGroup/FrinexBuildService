@@ -2157,6 +2157,8 @@ function convertJsonToXml() {
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.JsonToXml /FrinexBuildService/incoming/prevalidation /FrinexBuildService/incoming/postvalidation /FrinexBuildService/listing ' + targetDirectory /* the schema file is in the target directory, however it might be nicer to use a dedicated directory when we support multiple schema/build versions */ + '\\"'
         + ' &> ' + targetDirectory + '/json_to_xml.txt;'
+        + ' chmod a+rwx -R /FrinexBuildService/incoming/postvalidation'
+        + ' &>> ' + targetDirectory + '/json_to_xml.txt;";'
         + ' mv /FrinexBuildService/incoming/postvalidation/* /FrinexBuildService/processing/validated/'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + ' chmod a+rwx -R /FrinexBuildService/processing/validated /FrinexBuildService/listing'
