@@ -18,7 +18,7 @@ do
         nodeName=$(echo $servicePortAndNode | sed 's/[0-9]*frinex_synchronisation_service_//g')
         echo "nodeName: $nodeName"
         echo "servicePort: $servicePort"
-        rsync --mkpath -auve "ssh -p $servicePort -o BatchMode=yes" $filePath frinex@$nodeName.mpi.nl:/$filePath
+        rsync --mkpath -apuve "ssh -p $servicePort -o BatchMode=yes" $filePath frinex@$nodeName.mpi.nl:/$filePath
         # ssh $nodeName  -p 2200 mv $filePath.tmp $filePath;
         ((serviceCount++))
     done
