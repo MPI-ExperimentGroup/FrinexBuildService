@@ -610,8 +610,10 @@ function deployStagingGui(currentEntry) {
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war'
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " chmod 774 -R " + protectedDirectory + "/" + currentEntry.buildName + "/;"
             + " chmod 774 -R " + targetDirectory + "/" + currentEntry.buildName + "/;"
-            + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + " chown -R 101010 " + targetDirectory + "/" + currentEntry.buildName + "/;"
+            + " chown -R 101010 " + protectedDirectory + "/" + currentEntry.buildName + "/;"
             + ' echo "build complete" &>> ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
@@ -781,10 +783,10 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-*-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar'
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + ' chmod 774 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chmod 774 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chown -R 101010 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
+            + " chmod 774 -R " + protectedDirectory + "/" + currentEntry.buildName + "/;"
+            + " chmod 774 -R " + targetDirectory + "/" + currentEntry.buildName + "/;"
+            + " chown -R 101010 " + targetDirectory + "/" + currentEntry.buildName + "/;"
+            + " chown -R 101010 " + protectedDirectory + "/" + currentEntry.buildName + "/;"
             + ' echo "build complete" &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + '"';
         console.log(dockerString);
@@ -1001,8 +1003,8 @@ function deployProductionGui(currentEntry, retryCounter) {
                         //+ ' chmod a+rwx /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production*;'
                         + ' chmod 774 /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-*.sh;'
                         + ' chmod 774 /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*;'
-                        + ' chmod 774 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
-                        + ' chmod 774 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+                        + ' chmod 774 -R ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
+                        + ' chmod 774 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
                         //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/production-building/'
                         //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' chown -R 101010 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
@@ -1186,8 +1188,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar'
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + ' chmod 774 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chmod 774 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chmod 774 -R ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chmod 774 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + ' chown -R 101010 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
             + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
@@ -1279,7 +1281,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-android.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-ios.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
-            + ' chmod 774 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chmod 774 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
         // console.log(dockerString);
@@ -1364,7 +1366,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-win32-x64-lt.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64-lt.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-darwin-x64-lt.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64-lt.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-linux-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
-            + ' chmod 774 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chmod 774 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
         // console.log(dockerString);
