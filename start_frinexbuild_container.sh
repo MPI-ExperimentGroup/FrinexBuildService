@@ -72,7 +72,7 @@ docker run -v gitRepositories:/FrinexBuildService/git-repositories -v incomingDi
 
 # move the old logs out of the way, note that this could overwrite old out of the way logs from the same date
 docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --user root --name frinexbuild-moveoldlogs frinexbuild:latest bash -c \
-    "mkdir artifacts/logs-$(date +%F)/; mv artifacts/git-*.txt artifacts/json_to_xml.txt artifacts/update_schema_docs.txt artifacts/logs-$(date +%F)/; cp /FrinexBuildService/buildlisting.html /FrinexBuildService/artifacts/index.html; chmod -R ug+rwx /FrinexBuildService/artifacts/index.html; chown -R frinex:www-data /FrinexBuildService/artifacts/index.html";
+    "mkdir artifacts/logs-$(date +%F)/; mv artifacts/git-*.txt artifacts/json_to_xml.txt artifacts/sync_swarm_nodes.txt artifacts/update_schema_docs.txt artifacts/logs-$(date +%F)/; cp /FrinexBuildService/buildlisting.html /FrinexBuildService/artifacts/index.html; chmod -R ug+rwx /FrinexBuildService/artifacts/index.html; chown -R frinex:www-data /FrinexBuildService/artifacts/index.html";
 
 # iterate the git checkout directories and reset them in case they were damaged in an unexpected shutdown
 # docker run -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name frinexbuild-reset-git-co frinexbuild:latest bash -c \
