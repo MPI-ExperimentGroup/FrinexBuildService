@@ -808,8 +808,8 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                 }
                 syncFileToSwarmNodes(protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.war '
                     + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar '
-                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt; '
-                    + buildArtifactsTargetFileName);
+                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt '
+                    + buildArtifactsTargetFileName + ';');
                 console.log("deployStagingAdmin ended");
                 if (currentEntry.state === "production") {
                     var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
@@ -1217,8 +1217,8 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar '
                     + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war '
                     + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war '
-                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt; '
-                    + buildArtifactsTargetFileName);
+                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt '
+                    + buildArtifactsTargetFileName + ';');
             } else {
                 console.log("deployProductionAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
