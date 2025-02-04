@@ -1705,7 +1705,7 @@ function copyDeleteFile(incomingFile, targetFile) {
 function syncFileToSwarmNodes(fileListString) {
     console.log("sync_file_to_swarm_nodes: " + fileListString);
     try {
-        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh ' + fileListString + ' 2>&1 ' + targetDirectory + '/sync_swarm_nodes.txt;', { stdio: [0, 1, 2] });
+        child_process.execSync('bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh ' + fileListString + ' >> ' + targetDirectory + '/sync_swarm_nodes.txt 2>&1;', { stdio: [0, 1, 2] });
     } catch (reason) {
         console.error("sync_file_to_swarm_nodes error");
         console.error(reason);
@@ -1715,7 +1715,7 @@ function syncFileToSwarmNodes(fileListString) {
 function syncDeleteFromSwarmNodes(buildName, stage) {
     console.log("sync_delete_from_swarm_nodes: " + buildName + " " + stage);
     try {
-        child_process.execSync('bash /FrinexBuildService/script/sync_delete_from_swarm_nodes.sh ' + buildName + ' ' + stage + ' 2>&1 ' + targetDirectory + '/sync_swarm_nodes.txt;', { stdio: [0, 1, 2] });
+        child_process.execSync('bash /FrinexBuildService/script/sync_delete_from_swarm_nodes.sh ' + buildName + ' ' + stage + ' >> ' + targetDirectory + '/sync_swarm_nodes.txt 2>&1;', { stdio: [0, 1, 2] });
     } catch (reason) {
         console.error("sync_delete_from_swarm_nodes error");
         console.error(reason);
