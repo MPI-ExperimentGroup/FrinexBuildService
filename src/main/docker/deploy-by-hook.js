@@ -1218,7 +1218,6 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 currentlyBuilding.delete(currentEntry.buildName);
                 syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar '
                     + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war '
-                    + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war '
                     + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt '
                     + buildArtifactsTargetFileName + ';');
             } else {
