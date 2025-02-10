@@ -63,6 +63,7 @@ RUN echo 'frinex ALL=(ALL) NOPASSWD: /bin/chown -R frinex /FrinexBuildService' >
 # RUN adduser -S frinex
 RUN adduser -D frinex -u 101010
 RUN passwd -u frinex
+RUN addgroup -g 101010 -S frinex frinex
 RUN echo "#!/bin/bash" > /FrinexBuildService/startup.sh
 RUN echo "sudo /usr/sbin/sshd -D&" >> /FrinexBuildService/startup.sh
 RUN echo "/FrinexBuildService/frinex_synchronisation_service.sh" >> /FrinexBuildService/startup.sh
