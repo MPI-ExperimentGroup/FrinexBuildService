@@ -123,7 +123,8 @@ RUN cd /FrinexBuildService/; npm install properties-reader; npm install check-di
 #RUN adduser -S frinex -G docker
 # we do not use the docker group for permissions on the docker.sock instead we use sudo for the frinex user to control containers
 RUN adduser -S frinex -u 101010
-RUN addgroup -g 101010 frinex frinex
+RUN addgroup -g 101010 frinex
+RUN addgroup frinex frinex
 # the use of daemon in these permissions failed when using Apache/2.4.52 so daemon has been replaced with www-data in this section
 # RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
