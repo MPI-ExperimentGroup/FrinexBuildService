@@ -22,9 +22,9 @@ else if [ ! -d "/FrinexBuildService/artifacts/$buildName" ]; then
             echo "servicePort: $servicePort"
 
             # output a debuging diff of the local and renote files
-            ls -lG /FrinexBuildService/protected/$buildName > /FrinexBuildService/artifacts/$buildName/listingLocal.txt;
-            ls -lG /FrinexBuildService/artifacts/$buildName >> /FrinexBuildService/artifacts/$buildName/listingLocal.txt;
-            ssh $nodeName.mpi.nl -p $servicePort "ls -lG /FrinexBuildService/protected/$buildName; ls -lG /FrinexBuildService/artifacts/$buildName" > /FrinexBuildService/artifacts/$buildName/listing$servicePort.txt; 
+            ls -l /FrinexBuildService/protected/$buildName > /FrinexBuildService/artifacts/$buildName/listingLocal.txt;
+            ls -l /FrinexBuildService/artifacts/$buildName >> /FrinexBuildService/artifacts/$buildName/listingLocal.txt;
+            ssh $nodeName.mpi.nl -p $servicePort "ls -l /FrinexBuildService/protected/$buildName; ls -l /FrinexBuildService/artifacts/$buildName" > /FrinexBuildService/artifacts/$buildName/listing$servicePort.txt; 
             diff --ignore-space-change -U 0 /FrinexBuildService/artifacts/$buildName/listingLocal.txt /FrinexBuildService/artifacts/$buildName/listing$servicePort.txt
         done
     fi
