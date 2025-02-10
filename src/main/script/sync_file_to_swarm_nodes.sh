@@ -13,6 +13,7 @@ do
     serviceCount=0
     # set the permissions here because of strange outcomes via node
     chmod 775 $filePath
+    chown frinex:frinex $filePath
     # for nodeName in $(sudo docker node ls --format "{{.Hostname}}")
     for servicePortAndNode in $(sudo docker service ls --format "{{.Ports}}{{.Name}}" -f "name=frinex_synchronisation_service" | sed 's/[*:]//g' | sed 's/->22\/tcp//g')
     do
