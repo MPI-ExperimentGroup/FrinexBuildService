@@ -82,17 +82,11 @@ rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_android
 rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_electron.txt;
 ';
             fi
-            remoteCommand=$remoteCommand'ls -l /FrinexBuildService/artifacts/'$buildName'/'$buildName'*;
-            ls -l /FrinexBuildService/protected/'$buildName'/'$buildName'*;
-            '
-            echo "remoteCommand: $remoteCommand"
+            # remoteCommand=$remoteCommand'ls -l /FrinexBuildService/artifacts/'$buildName'/'$buildName'*;
+            # ls -l /FrinexBuildService/protected/'$buildName'/'$buildName'*;
+            # '
+            # echo "remoteCommand: $remoteCommand"
             ssh -o "BatchMode yes" $nodeName.mpi.nl -p $servicePort "$remoteCommand"
-
-            # output a debuging diff of the local and renote files
-            ls -lG /FrinexBuildService/protected/uppercasetest > listingLocal.txt;
-            ls -lG /FrinexBuildService/artifacts/uppercasetest >> listingLocal.txt;
-            ssh $nodeName.mpi.nl -p $servicePort "ls -lG /FrinexBuildService/protected/uppercasetest; ls -lG /FrinexBuildService/artifacts/uppercasetest" > listing$servicePort.txt; 
-            diff --ignore-space-change -U 0 listingLocal.txt listing$servicePort.txt
         done
     fi
 fi

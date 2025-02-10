@@ -204,7 +204,7 @@ function unDeploy(currentEntry) {
     var queuedConfigFile = path.resolve(processingDirectory + '/staging-queued', currentEntry.buildName + '.xml');
 
     syncDeleteFromSwarmNodes(currentEntry.buildName, "undeploy");
-
+    syncDiffExperimentSwarmNodes(currentEntry.buildName);
     // check if the deploymentType is tomcat vs docker and do the required undeployment process
     var dockerString = "";
 
@@ -501,6 +501,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
 function deployStagingGui(currentEntry) {
     console.log("deployStagingGui");
     syncDeleteFromSwarmNodes(currentEntry.buildName, "staging");
+    syncDiffExperimentSwarmNodes(currentEntry.buildName);
     // gtwBuildingCount++;
     var stageStartTime = new Date().getTime();
     if (fs.existsSync(targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt")) {
@@ -854,6 +855,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
 
 function deployProductionGui(currentEntry, retryCounter) {
     syncDeleteFromSwarmNodes(currentEntry.buildName, "production");
+    syncDiffExperimentSwarmNodes(currentEntry.buildName);
     var stageStartTime = new Date().getTime();
     // gtwBuildingCount++;
     console.log("deployProductionGui started: " + currentEntry.buildName);
@@ -1519,6 +1521,7 @@ function buildNextExperiment() {
                 // delete the .commit file in the protected directory to allow transfer of control to an other repository
                 // fs.unlinkSync(protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + ".xml.commit");
                 syncDeleteFromSwarmNodes(currentEntry.buildName, "transfer");
+                syncDiffExperimentSwarmNodes(currentEntry.buildName);
                 storeResult(currentEntry.buildName, 'transferred', "staging", "web", false, false, false);
                 currentlyBuilding.delete(currentEntry.buildName);
             } else {
