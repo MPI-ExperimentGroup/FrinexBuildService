@@ -73,7 +73,7 @@ const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
 const productionDbHost = properties.get('production.dbHost');
 
 var resultsFile; // this is set once in startResult after the file is populated
-const statsFile = fs.openSync(targetDirectory + "/buildstats.txt", "a"); //{ flags: 'w', mode: 0o774 });
+const statsFile = fs.openSync(targetDirectory + "/buildstats.txt", "a"); //{ flags: 'w', mode: 0o775 });
 const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
@@ -91,8 +91,8 @@ function startResult() {
     buildHistoryJson.building = true;
     fs.writeFileSync(targetDirectory + "/index.html", fs.readFileSync("/FrinexBuildService/buildlisting.html"));
     fs.writeFileSync(targetDirectory + "/buildlisting.js", fs.readFileSync("/FrinexBuildService/buildlisting.js"));
-    resultsFile = fs.openSync(targetDirectory + "/index.html", "a"); //{ flags: 'w', mode: 0o774 });
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o774 });
+    resultsFile = fs.openSync(targetDirectory + "/index.html", "a"); //{ flags: 'w', mode: 0o775 });
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o775 });
     // there is no point syncing buildlisting.js to the swarm because it is not in a volume
 }
 
@@ -103,7 +103,7 @@ function getExperimentToken(name) {
     } else {
         const tokenString = generatePassword();
         experimentTokensJson[name] = tokenString;
-        fs.writeFileSync(experimentTokensFileName, JSON.stringify(experimentTokensJson, null, 4), { mode: 0o774 });
+        fs.writeFileSync(experimentTokensFileName, JSON.stringify(experimentTokensJson, null, 4), { mode: 0o775 });
         return tokenString;
     }
 }
@@ -133,7 +133,7 @@ function initialiseResult(name, message, isError, repositoryName, committerName)
         "_production_admin": { value: '', style: '' }
     };
     // todo: remove any listing.json
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o774 });
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o775 });
 }
 
 function storeResult(name, message, stage, type, isError, isBuilding, isDone, stageBuildTime) {
@@ -174,12 +174,12 @@ function storeResult(name, message, stage, type, isError, isBuilding, isDone, st
         } else {
             buildStatisticsJson[stage + "_" + type] = (stageBuildTime);
         }
-        fs.writeFileSync(buildStatisticsFileName, JSON.stringify(buildStatisticsJson, null, 4), { mode: 0o774 });
+        fs.writeFileSync(buildStatisticsFileName, JSON.stringify(buildStatisticsJson, null, 4), { mode: 0o775 });
         // update the docker service listing JSON (this moment is not so critical since the services will be changing regardless of this process)
         updateServicesJson();
     }
     buildHistoryJson.table[name]["_" + stage + "_" + type].built = (!isError && !isBuilding && isDone);
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o774 });
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o775 });
     syncFileToSwarmNodes(buildHistoryFileName);
 }
 
@@ -191,7 +191,7 @@ function stopUpdatingResults() {
     triggerProxyUpdate();
     buildHistoryJson.building = false;
     buildHistoryJson.buildDate = new Date().toISOString();
-    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o774 });
+    fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o775 });
     syncFileToSwarmNodes(buildHistoryFileName);
 }
 
@@ -471,7 +471,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + ((currentEntry.state === "debug") ? ', \"--trace\"]\n' : ']\n')
         // TODO: it should not be necessary to do a service start, but this needs to be tested 
         // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
-        , { mode: 0o774 });
+        , { mode: 0o775 });
     const serviceSetupString = "cd " + protectedDirectory + "/" + currentEntry.buildName + "\n"
         // getting the imageDateTag depends on the web version existing on disk which it will because it is compiled before the other components
         + "imageDateTag=$(unzip -p $(echo " + serviceName + ".war | sed \"s/_admin.war/_web.war/g\") version.json | grep compileDate | sed \"s/[^0-9]//g\")\n"
@@ -600,8 +600,8 @@ function deployStagingGui(currentEntry) {
                 + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
                 + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-*-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web_sources.jar'
                 + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-                + ' chmod 774 /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-*.sh;'
-                + ' chmod 774 /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*;')
+                + ' chmod 775 /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '_setup-*.sh;'
+                + ' chmod 775 /FrinexBuildService/processing/staging-building/' + currentEntry.buildName + '-frinex-gui-*;')
             // end of skipping electron and cordova if this is a draft build
             //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging'
             //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
@@ -611,10 +611,10 @@ function deployStagingGui(currentEntry) {
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war'
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            + " chmod 774 -R " + protectedDirectory + "/" + currentEntry.buildName + "/;"
-            + " chmod 774 -R " + targetDirectory + "/" + currentEntry.buildName + "/;"
-            + " chown -R 101010:82 " + targetDirectory + "/" + currentEntry.buildName + "/;"
-            + " chown -R 101010:82 " + protectedDirectory + "/" + currentEntry.buildName + "/;"
+            + " chmod 775 -R " + protectedDirectory + "/" + currentEntry.buildName + "/;"
+            + " chmod 775 -R " + targetDirectory + "/" + currentEntry.buildName + "/;"
+            + " chown -R 101010:101010 " + targetDirectory + "/" + currentEntry.buildName + "/;"
+            + " chown -R 101010:101010 " + protectedDirectory + "/" + currentEntry.buildName + "/;"
             + ' echo "build complete" &>> ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
@@ -649,7 +649,7 @@ function deployStagingGui(currentEntry) {
                     //        console.log(value);
                     buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_staging_web.war";
                     // update artifacts.json
-                    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o774 });
+                    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o775 });
                     // build cordova 
                     if (currentEntry.isAndroid || currentEntry.isiOS) {
                         buildApk(currentEntry, "staging", buildArtifactsJson, buildArtifactsFileName);
@@ -785,10 +785,10 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-*-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar'
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
-            + " chmod 774 -R " + protectedDirectory + "/" + currentEntry.buildName + "/;"
-            + " chmod 774 -R " + targetDirectory + "/" + currentEntry.buildName + "/;"
-            + " chown -R 101010:82 " + targetDirectory + "/" + currentEntry.buildName + "/;"
-            + " chown -R 101010:82 " + protectedDirectory + "/" + currentEntry.buildName + "/;"
+            + " chmod 775 -R " + protectedDirectory + "/" + currentEntry.buildName + "/;"
+            + " chmod 775 -R " + targetDirectory + "/" + currentEntry.buildName + "/;"
+            + " chown -R 101010:101010 " + targetDirectory + "/" + currentEntry.buildName + "/;"
+            + " chown -R 101010:101010 " + protectedDirectory + "/" + currentEntry.buildName + "/;"
             + ' echo "build complete" &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + '"';
         console.log(dockerString);
@@ -806,7 +806,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
                 const buildArtifactsTargetFileName = targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_artifacts.json';
-                fs.writeFileSync(buildArtifactsTargetFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o774 });
+                fs.writeFileSync(buildArtifactsTargetFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o775 });
                 if (fs.existsSync(buildArtifactsFileName)) {
                     fs.unlinkSync(buildArtifactsFileName);
                 }
@@ -1005,14 +1005,14 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' cp /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war'
                         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         //+ ' chmod a+rwx /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production*;'
-                        + ' chmod 774 /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-*.sh;'
-                        + ' chmod 774 /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*;'
-                        + ' chmod 774 -R ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
-                        + ' chmod 774 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+                        + ' chmod 775 /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '_setup-*.sh;'
+                        + ' chmod 775 /FrinexBuildService/processing/production-building/' + currentEntry.buildName + '-frinex-gui-*;'
+                        + ' chmod 775 -R ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
+                        + ' chmod 775 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
                         //+ ' mv /ExperimentTemplate/gwt-cordova/target/*.war /FrinexBuildService/processing/production-building/'
                         //+ " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        + ' chown -R 101010:82 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
-                        + ' chown -R 101010:82 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+                        + ' chown -R 101010:101010 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
+                        + ' chown -R 101010:101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
                         + '"';
                     // console.log(dockerString);
                     child_process.exec(dockerString, (error, stdout, stderr) => {
@@ -1031,7 +1031,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                             var buildArtifactsJson = { artifacts: {} };
                             buildArtifactsJson.artifacts['web'] = currentEntry.buildName + "_production_web.war";
                             // update artifacts.json
-                            fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o774 });
+                            fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o775 });
                             syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar '
                             + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
                             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
@@ -1193,10 +1193,10 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar'
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
-            + ' chmod 774 -R ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chmod 774 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chown -R 101010:82 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chown -R 101010:82 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chmod 775 -R ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chmod 775 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chown -R 101010:101010 ' + protectedDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chown -R 101010:101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
         // console.log(dockerString);
         try {
@@ -1213,7 +1213,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
                 const buildArtifactsTargetFileName = targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_artifacts.json';
-                fs.writeFileSync(buildArtifactsTargetFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o774 });
+                fs.writeFileSync(buildArtifactsTargetFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o775 });
                 if (fs.existsSync(productionConfigFile)) {
                     fs.unlinkSync(productionConfigFile);
                 }
@@ -1286,8 +1286,8 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_cordova.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-android.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
             + ' cp /FrinexBuildService/cordova-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-stable-ios.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_ios.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt;'
-            + ' chmod 774 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chown -R 101010:82 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chmod 775 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chown -R 101010:101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
         // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
@@ -1334,7 +1334,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
     storeResult(currentEntry.buildName, resultString, stage, "android", isError, isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
     //update artifacts.json
     //const buildArtifactsFileName = processingDirectory + '/' + stage + '-building/' + currentEntry.buildName + "_" + stage + '_artifacts.json';
-    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o774 });
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o775 });
 }
 
 function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFileName) {
@@ -1372,8 +1372,8 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-win32-x64-lt.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64-lt.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-darwin-x64-lt.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64-lt.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-linux-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
-            + ' chmod 774 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
-            + ' chown -R 101010:82 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chmod 775 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
+            + ' chown -R 101010:101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + '"';
         // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
@@ -1449,7 +1449,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
     var isError = hasFailed || !producedOutput;
     storeResult(currentEntry.buildName, resultString, stage, "desktop", isError, isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
     //  update artifacts.json
-    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o774 });
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o775 });
 }
 
 function buildVirtualReality(currentEntry, stage, buildArtifactsJson, buildArtifactsFileName) {
@@ -1494,7 +1494,7 @@ function buildVirtualReality(currentEntry, stage, buildArtifactsJson, buildArtif
     // TODO: this will overwrite previous "desktop" column data, a new column needs to be added to the build page for "virtualreality"
     storeResult(currentEntry.buildName, resultString, stage, "desktop", isError, isError /* preventing skipped indicators */, true, new Date().getTime() - stageStartTime);
     //  update artifacts.json
-    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o774 });
+    fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o775 });
 }
 
 function buildNextExperiment() {
@@ -1706,7 +1706,7 @@ function copyDeleteFile(incomingFile, targetFile) {
             }
             syncFileToSwarmNodes(targetFile);
         });
-        incomingReadStream.pipe(fs.createWriteStream(targetFile, { mode: '774' })); // 0o774 // + '.tmp' at the point of close the destination file is still not accessable for rename.
+        incomingReadStream.pipe(fs.createWriteStream(targetFile, { mode: '775' })); // 0o775 // + '.tmp' at the point of close the destination file is still not accessable for rename.
     } catch (reason) {
         console.error("copyDeleteFile failed: " + incomingFile + ":" + targetFile + ":" + reason);
     }
@@ -2102,7 +2102,7 @@ function moveIncomingToQueued() {
                                 repositoryName = commitInfoJson.repository;
                                 committerName = commitInfoJson.user;
                                 var storedCommitName = path.resolve(protectedDirectory + '/' + currentName, filename + ".commit");
-                                fs.writeFileSync(storedCommitName, JSON.stringify(commitInfoJson, null, 4), { mode: 0o774 });
+                                fs.writeFileSync(storedCommitName, JSON.stringify(commitInfoJson, null, 4), { mode: 0o775 });
                                 syncFileToSwarmNodes(storedCommitName);
                             } catch (error) {
                                 console.error('failed to parse commit info: ' + error);
@@ -2179,7 +2179,7 @@ function convertJsonToXml() {
         + ' &> ' + targetDirectory + '/json_to_xml.txt;'
         + ' mv /FrinexBuildService/incoming/postvalidation/* /FrinexBuildService/processing/validated/'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
-        + ' chmod 774 -R /FrinexBuildService/processing/validated /FrinexBuildService/listing'
+        + ' chmod 775 -R /FrinexBuildService/processing/validated /FrinexBuildService/listing'
         + ' &>> ' + targetDirectory + '/json_to_xml.txt;";'
         + ' fi;';
     //+ " &> " + targetDirectory + "/JsonToXml_" + new Date().toISOString() + ".txt";
@@ -2231,11 +2231,11 @@ function updateDocumentation() {
         + ' -Dexec.classpathScope=runtime'
         + ' -Dexec.args=\\"-classpath %classpath nl.mpi.tg.eg.experimentdesigner.util.DocumentationGenerator ' + targetDirectory + /*'/FrinexBuildService/docs '*/ ' ' + targetDirectory + '\\"'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + ' chmod 774 ' + targetDirectory + '/minimal_example.xml'
+        + ' chmod 775 ' + targetDirectory + '/minimal_example.xml'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + ' chmod 774 ' + targetDirectory + '/frinex.html'
+        + ' chmod 775 ' + targetDirectory + '/frinex.html'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;'
-        + ' chmod 774 ' + targetDirectory + '/frinex.xsd'
+        + ' chmod 775 ' + targetDirectory + '/frinex.xsd'
         + ' &>> ' + targetDirectory + '/update_schema_docs.txt;"';
     // console.log(dockerString);
     try {
@@ -2288,10 +2288,10 @@ function prepareBuildHistory() {
     if (fs.existsSync(experimentTokensFileName)) {
         try {
             experimentTokensJson = JSON.parse(fs.readFileSync(experimentTokensFileName, 'utf8'));
-            fs.writeFileSync(experimentTokensFileName + ".temp", JSON.stringify(experimentTokensJson, null, 4), { mode: 0o774 });
+            fs.writeFileSync(experimentTokensFileName + ".temp", JSON.stringify(experimentTokensJson, null, 4), { mode: 0o775 });
             var now = new Date();
             var datedFileSuffix = '-' + now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate();
-            fs.writeFileSync(experimentTokensFileName + datedFileSuffix, JSON.stringify(experimentTokensJson, null, 4), { mode: 0o774 });
+            fs.writeFileSync(experimentTokensFileName + datedFileSuffix, JSON.stringify(experimentTokensJson, null, 4), { mode: 0o775 });
         } catch (error) {
             console.error("faild to read " + experimentTokensFileName);
             console.error(error);
@@ -2314,10 +2314,10 @@ function prepareBuildHistory() {
     if (fs.existsSync(buildHistoryFileName)) {
         try {
             var buildHistoryJsonTemp = JSON.parse(fs.readFileSync(buildHistoryFileName, 'utf8'));
-            fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o774 });
+            fs.writeFileSync(buildHistoryFileName + ".temp", JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o775 });
             var now = new Date();
             var datedFileSuffix = '-' + now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate();
-            fs.writeFileSync(buildHistoryFileName + datedFileSuffix, JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o774 });
+            fs.writeFileSync(buildHistoryFileName + datedFileSuffix, JSON.stringify(buildHistoryJsonTemp, null, 4), { mode: 0o775 });
             for (var keyString in buildHistoryJsonTemp.table) {
                 buildHistoryJson.table[keyString] = {};
                 for (var cellString in buildHistoryJsonTemp.table[keyString]) {
