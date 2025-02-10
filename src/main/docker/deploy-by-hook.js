@@ -640,6 +640,7 @@ function deployStagingGui(currentEntry) {
                     + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war '
                     + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_web.war '
                     + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging.txt; ');
+                syncDiffExperimentSwarmNodes(currentEntry.buildName);
                 if (currentEntry.state === "staging" || currentEntry.state === "production") {
                     //        var successFile = fs.createWriteStream(targetDirectory + "/" + currentEntry.buildName + "_staging.html", {flags: 'w'});
                     //        successFile.write(currentEntry.experimentDisplayName + ": " + JSON.stringify(value, null, 4));
@@ -812,6 +813,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                     + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar '
                     + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt '
                     + buildArtifactsTargetFileName + ';');
+                syncDiffExperimentSwarmNodes(currentEntry.buildName);
                 console.log("deployStagingAdmin ended");
                 if (currentEntry.state === "production") {
                     var productionQueuedFile = path.resolve(processingDirectory + '/production-queued', currentEntry.buildName + '.xml');
@@ -1032,6 +1034,7 @@ function deployProductionGui(currentEntry, retryCounter) {
                             + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
                             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
                             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt; ');
+                            syncDiffExperimentSwarmNodes(currentEntry.buildName);
                             // build cordova 
                             if (currentEntry.isAndroid || currentEntry.isiOS) {
                                 buildApk(currentEntry, "production", buildArtifactsJson, buildArtifactsFileName);
@@ -1220,6 +1223,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
                     + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war '
                     + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.txt '
                     + buildArtifactsTargetFileName + ';');
+                syncDiffExperimentSwarmNodes(currentEntry.buildName);
             } else {
                 console.log("deployProductionAdmin failed");
                 console.log(currentEntry.experimentDisplayName);
@@ -1291,6 +1295,7 @@ function buildApk(currentEntry, stage, buildArtifactsJson, buildArtifactsFileNam
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.zip '
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_ios.zip '
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_android.txt; ');
+        syncDiffExperimentSwarmNodes(currentEntry.buildName);
     } catch (reason) {
         console.error(reason);
         resultString += 'failed&nbsp;';
@@ -1376,6 +1381,7 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64-lt.zip '
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64-lt.zip '
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt; ');
+        syncDiffExperimentSwarmNodes(currentEntry.buildName);
         //resultString += "built&nbsp;";
     } catch (reason) {
         console.error(reason);
@@ -1719,6 +1725,16 @@ function syncDeleteFromSwarmNodes(buildName, stage) {
         child_process.execSync('bash /FrinexBuildService/script/sync_delete_from_swarm_nodes.sh ' + buildName + ' ' + stage + ' >> ' + targetDirectory + '/sync_swarm_nodes.txt 2>&1;', { stdio: [0, 1, 2] });
     } catch (reason) {
         console.error("sync_delete_from_swarm_nodes error");
+        console.error(reason);
+    }
+}
+
+function syncDiffExperimentSwarmNodes(buildName) {
+    console.log("sync_diff_experiment_swarm_nodes: " + buildName);
+    try {
+        child_process.execSync('bash /FrinexBuildService/script/sync_diff_experiment_swarm_nodes.sh ' + buildName + ' >> ' + targetDirectory + '/sync_swarm_nodes.txt 2>&1;', { stdio: [0, 1, 2] });
+    } catch (reason) {
+        console.error("sync_diff_experiment_swarm_nodes.sh error");
         console.error(reason);
     }
 }
