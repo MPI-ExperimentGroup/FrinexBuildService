@@ -23,6 +23,12 @@ do
         rsync --mkpath -apuve "ssh -p $servicePort -o BatchMode=yes" $filePath frinex@$nodeName.mpi.nl:/$filePath
         # ssh $nodeName  -p 2200 mv $filePath.tmp $filePath;
         ((serviceCount++))
+
+        # output a debuging diff of the local and renote files
+        ls -lG /FrinexBuildService/protected/uppercasetest > listingLocal.txt;
+        ls -lG /FrinexBuildService/artifacts/uppercasetest >> listingLocal.txt;
+        ssh $nodeName.mpi.nl -p $servicePort "ls -lG /FrinexBuildService/protected/uppercasetest; ls -lG /FrinexBuildService/artifacts/uppercasetest" > listing$servicePort.txt; 
+        diff --ignore-space-change -U 0 listingLocal.txt listing$servicePort.txt
     done
     # cd /FrinexBuildService;
     # ssh lux27.mpi.nl -p 2200 "ls -lG /FrinexBuildService/protected/uppercasetest; ls -lG /FrinexBuildService/artifacts/uppercasetest" > lux27.txt;
