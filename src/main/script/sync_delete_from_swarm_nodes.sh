@@ -87,6 +87,12 @@ rm -f /FrinexBuildService/protected/'$buildName'/'$buildName'_production_electro
             '
             echo "remoteCommand: $remoteCommand"
             ssh -o "BatchMode yes" $nodeName.mpi.nl -p $servicePort "$remoteCommand"
+
+            # output a debuging diff of the local and renote files
+            ls -lG /FrinexBuildService/protected/uppercasetest > listingLocal.txt;
+            ls -lG /FrinexBuildService/artifacts/uppercasetest >> listingLocal.txt;
+            ssh $nodeName.mpi.nl -p $servicePort "ls -lG /FrinexBuildService/protected/uppercasetest; ls -lG /FrinexBuildService/artifacts/uppercasetest" > listing$servicePort.txt; 
+            diff --ignore-space-change -U 0 listingLocal.txt listing$servicePort.txt'
         done
     fi
 fi
