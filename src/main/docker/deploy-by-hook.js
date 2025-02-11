@@ -1186,9 +1186,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
-            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            // + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             //+ ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*.war /usr/local/tomcat/webapps/' + currentEntry.buildName + '_production_admin.war'
-            + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
+            // + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + ' cp /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable.war ' + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin.war'
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.txt;"
             + ' mv /ExperimentTemplate/registration/target/' + currentEntry.buildName + '-frinex-admin-*-stable-sources.jar ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_admin_sources.jar'
@@ -1737,7 +1737,7 @@ function syncDiffExperimentSwarmNodes(buildName) {
     try {
         child_process.execSync('bash /FrinexBuildService/script/sync_diff_experiment_swarm_nodes.sh ' + buildName + ' >> ' + targetDirectory + '/sync_swarm_nodes.txt 2>&1;', { stdio: [0, 1, 2] });
     } catch (reason) {
-        console.error("sync_diff_experiment_swarm_nodes.sh error");
+        console.error("sync_diff_experiment_swarm_nodes.sh error: " + buildName);
         console.error(reason);
     }
 }
