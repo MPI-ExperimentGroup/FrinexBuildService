@@ -41,6 +41,7 @@ COPY cgi/frinex_restart_experient.cgi /FrinexBuildService/cgi/
 COPY config/frinex_db_manager.conf  /FrinexBuildService/
 COPY config/publish.properties /FrinexBuildService/
 COPY script/sleep_and_resurrect_docker_experiments.sh /FrinexBuildService/
+COPY script/sync_file_to_swarm_nodes.sh /FrinexBuildService/script/
 RUN serviceOptions=$(grep serviceOptions /FrinexBuildService/publish.properties | sed "s/serviceOptions[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s/DOCKER_SERVICE_OPTIONS/$serviceOptions/g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN dockerRegistry=$(grep dockerRegistry /FrinexBuildService/publish.properties | sed "s/dockerRegistry[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s/DOCKER_REGISTRY/$dockerRegistry/g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN proxyUpdateTrigger=$(grep proxyUpdateTrigger /FrinexBuildService/publish.properties | sed "s/proxyUpdateTrigger[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s|PROXY_UPDATE_TRIGGER|$proxyUpdateTrigger|g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
@@ -107,5 +108,6 @@ RUN chmod 644 /home/frinex/.ssh/*.pub
 WORKDIR /FrinexBuildService
 RUN chown www-data:www-data /usr/local/apache2/logs
 RUN chown frinex /FrinexBuildService/sleep_and_resurrect_docker_experiments.sh
+RUN chown frinex /FrinexBuildService/script/sync_file_to_swarm_nodes.sh
 #USER frinex
 USER www-data

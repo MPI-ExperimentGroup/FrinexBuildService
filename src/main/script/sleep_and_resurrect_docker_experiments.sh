@@ -55,6 +55,8 @@ proxyStagingAdminHealthy=0
 proxyProductionAdminChecked=0
 proxyProductionAdminHealthy=0
 
+fileInNeedOfSync=""
+
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
 recentUseDates="$(date -d "$(date +%Y-%m-01) -5 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
 echo "recentUseDates $recentUseDates"
@@ -155,6 +157,7 @@ for serviceName in $serviceNameArray; do
                 hasRecentUseProduction=$(( $hasRecentUseProduction + $isProduction ))
                 echo 'recent use detected';
                 mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+                fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json"
                 # wakeResult=$(curl -k --silent http://frinexbuild.mpi.nl:8010/cgi/frinex_restart_experient.cgi?$webServiceName)
                 # echo "wakeResult: $wakeResult"
             else
@@ -162,6 +165,7 @@ for serviceName in $serviceNameArray; do
                 # check that we got a valid JSON response by looking for sessionFirstAndLastSeen, if found then wait until the service is N days old otherwise terminate it
                 if cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp | grep -qE "sessionFirstAndLastSeen"; then
                     mv -f /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json
+                    fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json"
                     if (( $daysSinceStarted < 14 )); then 
                         ((unusedNewHealthy++))
                         unusedNewHealthyStaging=$(( $unusedNewHealthyStaging + $isStaging ))
@@ -286,14 +290,17 @@ echo "generating some time series data for Grafana"
 echo "$(date),$totalConsidered,$canBeTerminated,$recentyStarted,$unusedNewHealthy,$hasRecentUse,$needsUpdating,$needsStarting" > /FrinexBuildService/artifacts/grafana_running_stats.temp
 head -n 1000  /FrinexBuildService/artifacts/grafana_running_stats.txt >> /FrinexBuildService/artifacts/grafana_running_stats.temp
 mv /FrinexBuildService/artifacts/grafana_running_stats.temp /FrinexBuildService/artifacts/grafana_running_stats.txt
+fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/grafana_running_stats.txt"
 
 echo "$(date),$totalConsideredStaging,$canBeTerminatedStaging,$hasRecentUseStaging,$recentyStartedStaging,$unusedNewHealthyStaging,$needsStartingStaging,$needsUpdatingStaging,$totalConsideredProduction,$canBeTerminatedProduction,$hasRecentUseProduction,$recentyStartedProduction,$unusedNewHealthyProduction,$needsStartingProduction,$needsUpdatingProduction" > /FrinexBuildService/artifacts/grafana_running_staging_production_stats.temp
 head -n 1000  /FrinexBuildService/artifacts/grafana_running_staging_production_stats.txt >> /FrinexBuildService/artifacts/grafana_running_staging_production_stats.temp
 mv /FrinexBuildService/artifacts/grafana_running_staging_production_stats.temp /FrinexBuildService/artifacts/grafana_running_staging_production_stats.txt
+fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/grafana_running_staging_production_stats.txt"
 
 echo "$(date),$proxyStagingWebChecked,$proxyStagingWebHealthy,$proxyProductionWebChecked,$proxyProductionWebHealthy,$proxyStagingAdminChecked,$proxyStagingAdminHealthy,$proxyProductionAdminChecked,$proxyProductionAdminHealthy" > /FrinexBuildService/artifacts/grafana_proxy_stats.temp
 head -n 1000  /FrinexBuildService/artifacts/grafana_proxy_stats.txt >> /FrinexBuildService/artifacts/grafana_proxy_stats.temp
 mv /FrinexBuildService/artifacts/grafana_proxy_stats.temp /FrinexBuildService/artifacts/grafana_proxy_stats.txt
+fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/grafana_proxy_stats.txt"
 
 echo "generating stats for the number of Frinex experiment services on each node in the docker swarm"
 # echo -n "date" > /FrinexBuildService/artifacts/grafana_swarm_stats.temp
@@ -325,6 +332,7 @@ do
     echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.temp
     head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.txt >> /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.temp
     mv /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.temp /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.txt
+    fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage.txt"
     # end generate totals for each type
 
     # diff the previous to values and generate the change per period graphs
@@ -340,9 +348,13 @@ do
     echo "$(date),$currentRow" > /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.temp
     head -n 1000 /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.txt >> /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.temp
     mv /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.temp /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.txt
+    fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/grafana_experiment_"$buildType"_usage_diff.txt"
     # end generate totals for each type
 done
 echo "end generate some data for Grafana"
+
+# synchronise the /FrinexBuildService/artifacts/*/*_admin-public_usage_stats.json and grafana files to the swarm nodes
+/FrinexBuildService/script/sync_file_to_swarm_nodes.sh "$fileInNeedOfSync"
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
 # echo "$serviceByMemory"
