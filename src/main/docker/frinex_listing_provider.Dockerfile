@@ -27,6 +27,7 @@ RUN apk add --no-cache \
   rsync \
   docker \
   diffutils \
+  openssh \
   sudo
 RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/cgi
@@ -94,6 +95,15 @@ RUN chown -R www-data:daemon /FrinexBuildService
 RUN chown -R www-data:daemon /usr/local/apache2/htdocs/
 RUN chmod -R ug+rwx /FrinexBuildService
 RUN adduser -S frinex -u 101010
+RUN addgroup -g 101010 frinex
+RUN addgroup frinex frinex
+COPY .ssh/id_rsa /home/frinex/.ssh/id_rsa
+COPY .ssh/id_rsa.pub /home/frinex/.ssh/id_rsa.pub
+COPY .ssh/known_hosts /home/frinex/.ssh/known_hosts
+RUN chown -R frinex:nogroup /home/frinex/.ssh
+RUN chmod 600 /home/frinex/.ssh/*
+RUN chmod 700 /home/frinex/.ssh
+RUN chmod 644 /home/frinex/.ssh/*.pub
 WORKDIR /FrinexBuildService
 RUN chown www-data:www-data /usr/local/apache2/logs
-USER www-data
+USER frinex
