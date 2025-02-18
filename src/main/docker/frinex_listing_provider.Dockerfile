@@ -75,6 +75,7 @@ RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service create --name [a-
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker system prune -f' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Name}}' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Ports}}{{.Name}}' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]*}} [a-z0-9-_]*_staging_web' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]*}} [a-z0-9-_]*_staging_admin' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format {{[a-zA-Z.]*}} [a-z0-9-_]*_production_web' >> /etc/sudoers
