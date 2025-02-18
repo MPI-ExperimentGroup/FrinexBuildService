@@ -106,5 +106,6 @@ RUN chmod 700 /home/frinex/.ssh
 RUN chmod 644 /home/frinex/.ssh/*.pub
 WORKDIR /FrinexBuildService
 RUN chown www-data:www-data /usr/local/apache2/logs
+RUN chown frinex /FrinexBuildService/sleep_and_resurrect_docker_experiments.sh
 #USER frinex
 USER www-data
