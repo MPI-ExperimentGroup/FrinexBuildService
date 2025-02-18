@@ -354,8 +354,7 @@ done
 echo "end generate some data for Grafana"
 
 # synchronise the /FrinexBuildService/artifacts/*/*_admin-public_usage_stats.json and grafana files to the swarm nodes
-echo "fileInNeedOfSync: $fileInNeedOfSync"
-/FrinexBuildService/script/sync_file_to_swarm_nodes.sh "$fileInNeedOfSync"
+/FrinexBuildService/script/sync_file_to_swarm_nodes.sh $fileInNeedOfSync
 
 # serviceByMemory=$(docker stats --no-stream --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.CreatedAt}}" | sort -k 3 -h -r)
 # echo "$serviceByMemory"
