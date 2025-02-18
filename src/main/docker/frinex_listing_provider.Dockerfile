@@ -106,4 +106,5 @@ RUN chmod 700 /home/frinex/.ssh
 RUN chmod 644 /home/frinex/.ssh/*.pub
 WORKDIR /FrinexBuildService
 RUN chown www-data:www-data /usr/local/apache2/logs
-USER frinex
+#USER frinex
+USER www-data
