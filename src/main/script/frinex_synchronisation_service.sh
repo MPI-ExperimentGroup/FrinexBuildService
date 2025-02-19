@@ -134,7 +134,7 @@ do
         if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
           echo "syncing $nodeName"
           rsync --dry-run --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
-          --include="*/" --include="*_web.war" --include="*_admin.war" --include="*.commit" --exclude="*"
+          --include="*/" --include="*_web.war" --include="*_admin.war" --include="*_sources.war" --include="*.commit" --exclude="*"
           # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
           # --filter="- /FrinexBuildService/artifacts/*" \
           # --filter="- /FrinexBuildService/protected/*"
