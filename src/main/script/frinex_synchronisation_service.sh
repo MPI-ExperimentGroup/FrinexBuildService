@@ -131,23 +131,27 @@ do
         nodeName=$(echo $servicePortAndNode | sed 's/[0-9]*frinex_synchronisation_service_//g')
         echo "nodeName: $nodeName"
         echo "servicePort: $servicePort"
-        if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
-          echo "syncing $nodeName"
-          # --dry-run
-          rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
-          --include="*/" \
-          --include="*_web.war" \
-          --include="*_admin.war" \
-          --include="*_sources.war" \
-          --include="*-public_usage_stats.json" \
-          --include="*.commit" \
-          --exclude="*"
-          # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
-          # --filter="- /FrinexBuildService/artifacts/*" \
-          # --filter="- /FrinexBuildService/protected/*"
-          touch "/FrinexBuildService/$nodeName.lock"
+        if [ "$nodeName" == "$ServiceHostname" ]; then
+          echo "Skipping self node"
         else
-          echo "node sync lock file exists /FrinexBuildService/$nodeName.lock"
+          if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
+            echo "syncing $nodeName"
+            # --dry-run
+            rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
+            --include="*/" \
+            --include="*_web.war" \
+            --include="*_admin.war" \
+            --include="*_sources.war" \
+            --include="*-public_usage_stats.json" \
+            --include="*.commit" \
+            --exclude="*"
+            # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
+            # --filter="- /FrinexBuildService/artifacts/*" \
+            # --filter="- /FrinexBuildService/protected/*"
+            touch "/FrinexBuildService/$nodeName.lock"
+          else
+            echo "node sync lock file exists /FrinexBuildService/$nodeName.lock"
+          fi
         fi
         ((serviceCount++))
     done
