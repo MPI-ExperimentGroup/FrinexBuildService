@@ -56,6 +56,7 @@ RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker system prune -f' >> /etc/su
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image ls' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker image ls --format {{.Repository}}\:{{.Tag}}' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Name}}' >> /etc/sudoers
+RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Ports}}{{.Name}} -f name=frinex_synchronisation_service' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker node ps [a-zA-Z0-9-_.]*' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/sbin/sshd -D' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /bin/chown -R frinex /FrinexBuildService' >> /etc/sudoers
