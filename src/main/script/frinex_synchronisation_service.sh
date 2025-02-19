@@ -132,7 +132,7 @@ do
         echo "nodeName: $nodeName"
         echo "servicePort: $servicePort"
         if [ "$nodeName" == "$ServiceHostname" ]; then
-          echo "Skipping self node"
+          echo "This service is running on $ServiceHostname so skipping this node"
         else
           if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
             echo "syncing $nodeName"
