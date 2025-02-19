@@ -133,7 +133,8 @@ do
         echo "servicePort: $servicePort"
         if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
           echo "syncing $nodeName"
-          rsync --dry-run --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
+          # --dry-run
+          rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
           --include="*/" \
           --include="*_web.war" \
           --include="*_admin.war" \
