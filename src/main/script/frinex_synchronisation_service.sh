@@ -135,7 +135,7 @@ do
           echo "This service is running on $ServiceHostname so skipping this node"
         else
           if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
-            echo "syncing $nodeName"
+            echo "syncing from $nodeName"
             # --dry-run
             rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
             --include="*/" \
