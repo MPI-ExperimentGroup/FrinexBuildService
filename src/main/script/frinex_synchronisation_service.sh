@@ -123,6 +123,7 @@ do
     sudo docker system prune -f
     date
 
+    # to catch cases when this node has become out of sync due to down time rsync any differences from the other nodes
     # for each node rsync pull any missing files then make a lock file to prevent that node being pulled again
     for servicePortAndNode in $(sudo docker service ls --format "{{.Ports}}{{.Name}}" -f "name=frinex_synchronisation_service" | sed 's/[*:]//g' | sed 's/->22\/tcp//g')
     do
@@ -130,11 +131,17 @@ do
         nodeName=$(echo $servicePortAndNode | sed 's/[0-9]*frinex_synchronisation_service_//g')
         echo "nodeName: $nodeName"
         echo "servicePort: $servicePort"
-        rsync --dry-run --mkpath -apue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
-        --include="*/" --include="*.commit" --exclude="*"
-        # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
-        # --filter="- /FrinexBuildService/artifacts/*" \
-        # --filter="- /FrinexBuildService/protected/*"
+        if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
+          echo "syncing $nodeName"
+          rsync --dry-run --mkpath -apue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
+          --include="*/" --include="*.commit" --exclude="*"
+          # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
+          # --filter="- /FrinexBuildService/artifacts/*" \
+          # --filter="- /FrinexBuildService/protected/*"
+          touch "/FrinexBuildService/$nodeName.lock"
+        else
+          echo "node sync lock file exists /FrinexBuildService/$nodeName.lock"
+        fi
         ((serviceCount++))
     done
     date
