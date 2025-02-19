@@ -122,5 +122,21 @@ do
     # prune unused data on this node
     sudo docker system prune -f
     date
+
+    # for each node rsync pull any missing files then make a lock file to prevent that node being pulled again
+    for servicePortAndNode in $(sudo docker service ls --format "{{.Ports}}{{.Name}}" -f "name=frinex_synchronisation_service" | sed 's/[*:]//g' | sed 's/->22\/tcp//g')
+    do
+        servicePort=$(echo $servicePortAndNode | sed 's/frinex_synchronisation_service_[a-zA-Z0-9]*//g')
+        nodeName=$(echo $servicePortAndNode | sed 's/[0-9]*frinex_synchronisation_service_//g')
+        echo "nodeName: $nodeName"
+        echo "servicePort: $servicePort"
+        rsync --dry-run --mkpath -apue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
+        --include="*/" --include="*.commit" --exclude="*"
+        # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
+        # --filter="- /FrinexBuildService/artifacts/*" \
+        # --filter="- /FrinexBuildService/protected/*"
+        ((serviceCount++))
+    done
+    date
     sleep 1h
 done
