@@ -1368,9 +1368,13 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-win32-ia32.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-ia32.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-win32-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-darwin-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '.snap ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.snap &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '.AppImage ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.AppImage &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             // copy the electron online only versions
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-win32-x64-lt.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64-lt.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-darwin-x64-lt.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64-lt.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-lt.snap ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '-lt.snap &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
+            + ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-lt.AppImage ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '-lt.AppImage &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             //+ ' cp /FrinexBuildService/electron-' + stage + '-build/' + currentEntry.buildName + '-frinex-gui-*-linux-x64.zip ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64.zip &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt;'
             + ' chmod 775 -R ' + targetDirectory + '/' + currentEntry.buildName + '/;'
             + ' chown -R 101010 ' + targetDirectory + '/' + currentEntry.buildName + '/;'
@@ -1382,6 +1386,10 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64.zip '
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_win32-x64-lt.zip '
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_darwin-x64-lt.zip '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.snap '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.AppImage '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '-lt.snap '
+            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '-lt.AppImage '
             + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_electron.txt; ');
         syncDiffExperimentSwarmNodes(currentEntry.buildName);
         //resultString += "built&nbsp;";
@@ -1429,6 +1437,26 @@ function buildElectron(currentEntry, stage, buildArtifactsJson, buildArtifactsFi
     if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_linux-x64-lt.zip')) {
         resultString += '<a href="' + currentEntry.buildName + '_' + stage + '_linux-x64-lt.zip">linux-lt</a>&nbsp;';
         buildArtifactsJson.artifacts['linux'] = currentEntry.buildName + '_' + stage + '_linux-x64-lt.zip';
+        producedOutput = true;
+    }
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.snap')) {
+        resultString += '<a href="' + currentEntry.buildName + '_' + stage + '.snap">linux</a>&nbsp;';
+        buildArtifactsJson.artifacts['linux'] = currentEntry.buildName + '_' + stage + '.snap';
+        producedOutput = true;
+    }
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.AppImage')) {
+        resultString += '<a href="' + currentEntry.buildName + '_' + stage + '.AppImage">linux</a>&nbsp;';
+        buildArtifactsJson.artifacts['linux'] = currentEntry.buildName + '_' + stage + '.AppImage';
+        producedOutput = true;
+    }
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '-lt.snap')) {
+        resultString += '<a href="' + currentEntry.buildName + '_' + stage + '-lt.snap">linux-lt</a>&nbsp;';
+        buildArtifactsJson.artifacts['linux'] = currentEntry.buildName + '_' + stage + '-lt.snap';
+        producedOutput = true;
+    }
+    if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '-lt.AppImage')) {
+        resultString += '<a href="' + currentEntry.buildName + '_' + stage + '-lt.AppImage">linux-lt</a>&nbsp;';
+        buildArtifactsJson.artifacts['linux'] = currentEntry.buildName + '_' + stage + '-lt.AppImage';
         producedOutput = true;
     }
     if (fs.existsSync(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '.asar')) {
