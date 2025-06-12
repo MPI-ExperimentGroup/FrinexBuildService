@@ -87,15 +87,15 @@ else
         fi
 
         # update the frinex_examples
-        $workingDir/update_frinex_examples.sh "alpha"
+        bash $workingDir/update_frinex_examples.sh "alpha"
 
         # remove the corova and electron test build files
         rm -r $workingDir/src/main/test_data_cordova
         rm -r $workingDir/src/main/test_data_electron
 
         # remove any unused images and unused docker files
-        $workingDir/delete_unused_frinex_images.sh
-        $workingDir/clean_frinex_docker.sh
+        bash $workingDir/delete_unused_frinex_images.sh
+        bash $workingDir/clean_frinex_docker.sh
 
     fi;
 fi;
