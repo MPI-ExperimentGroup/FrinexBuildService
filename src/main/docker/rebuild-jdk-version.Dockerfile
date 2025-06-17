@@ -37,7 +37,7 @@ RUN cd /ExperimentTemplate/ \
 
 # clean out the static directory to prevent these files being used in the automated builds
 RUN rm -r /ExperimentTemplate/gwt-cordova/src/main/static/*
-RUN rm -r /root/.m2
+RUN rm -r ~/.m2
 RUN rm -r /test_data_cordova
 
 WORKDIR /target
