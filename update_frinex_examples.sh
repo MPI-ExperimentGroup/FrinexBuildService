@@ -33,7 +33,7 @@ else
     echo "update requested for $1 examples"
     # TODO: check for changes and always update examples using $1 version
     # make sure frinex_examples exists and has the correct permission 
-    docker run --rm -v gitCheckedout:/FrinexBuildService/git-checkedout frinexbuild:latest /bin/bash -c "\
+    docker run --user frinex --rm -v gitCheckedout:/FrinexBuildService/git-checkedout frinexbuild:latest /bin/bash -c "\
     mkdir -p /FrinexBuildService/git-checkedout/frinex_examples; \
     chown -R frinex:www-data /FrinexBuildService/git-checkedout/frinex_examples; \
     chmod -R ug+rwx /FrinexBuildService/git-checkedout/frinex_examples;"
