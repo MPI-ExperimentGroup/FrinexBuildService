@@ -57,7 +57,9 @@ docker run --user frinex --cpus=".5" --restart unless-stopped -v buildServerTarg
 echo "starting the frinex stats service"
 docker container stop frinex_stats;
 docker container rm frinex_stats
-docker run --rm -d -p 3000:3000 --name=frinex_stats frinex_stats; 
+# docker run --rm -d -p 3000:3000 --name=frinex_stats frinex_stats; 
+docker service rm frinex_stats
+docker service create -d --name frinex_stats -p 3000:3000 frinexbuild.mpi.nl/frinex_stats:latest
 
 read -p "Press enter to restart frinexbuild"
 # remove the old frinexbuild

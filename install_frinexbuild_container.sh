@@ -55,8 +55,9 @@ else
     docker build --rm -f docker/frinex_db_manager.Dockerfile -t frinex_db_manager:latest .
 
     # build the frinex stats service image
-    docker build --rm -f docker/frinexstats.Dockerfile -t frinex_stats:latest .
-    
+    docker build --rm -f docker/frinexstats.Dockerfile -t frinexbuild.mpi.nl/frinex_stats:latest .
+    docker image push frinexbuild.mpi.nl/frinex_stats:latest
+
     # This step is not needed in non swarm installations
     # create the frinex_db_manager bridge network 
     docker network create frinex_db_manager_net
