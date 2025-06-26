@@ -55,8 +55,8 @@ docker container rm frinex_service_manager
 docker run --user frinex --cpus=".5" --restart unless-stopped -v buildServerTarget:/FrinexBuildService/artifacts --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -dit --name frinex_service_manager frinex_listing_provider:latest bash -c "while true; do /FrinexBuildService/sleep_and_resurrect_docker_experiments.sh; sleep 1h; done;"
 
 echo "starting the frinex stats service"
-docker container stop frinex_stats;
-docker container rm frinex_stats
+# docker container stop frinex_stats;
+# docker container rm frinex_stats
 # docker run --rm -d -p 3000:3000 --name=frinex_stats frinex_stats; 
 docker service rm frinex_stats
 docker service create -d --name frinex_stats -p 3000:3000 frinexbuild.mpi.nl/frinex_stats:latest
