@@ -30,8 +30,8 @@ workingDir=$(pwd -P)
 read -p "Press enter to restart frinex_db_manager"
 # This step is not needed in non swarm installations
 # remove the old frinex_db_manager
-docker stop frinex_db_manager 
-docker container rm frinex_db_manager 
+# docker stop frinex_db_manager 
+# docker container rm frinex_db_manager 
 
 # If the DB users that are required by frinex_db_manager to create new databases and users do not exist then an error will be shown in the build listing.
 
