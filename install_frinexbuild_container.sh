@@ -53,6 +53,7 @@ else
     # This step is not needed in non swarm installations
     # build the frinex_db_manager
     docker build --rm -f docker/frinex_db_manager.Dockerfile -t frinex_db_manager:latest .
+    docker image push frinexbuild.mpi.nl/frinex_db_manager:latest
 
     # build the frinex stats service image
     docker build --rm -f docker/frinexstats.Dockerfile -t frinexbuild.mpi.nl/frinex_stats:latest .
