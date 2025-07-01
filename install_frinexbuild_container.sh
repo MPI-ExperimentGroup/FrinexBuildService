@@ -61,7 +61,7 @@ else
 
     # This step is not needed in non swarm installations
     # create the frinex_db_manager bridge network 
-    docker network create frinex_db_manager_net
+    docker network create --driver overlay --attachable frinex_db_manager_net
     # This step is not needed in non swarm installations
     # build the frinex_listing_provider
     docker build --rm -f docker/frinex_listing_provider.Dockerfile -t frinex_listing_provider:latest .
