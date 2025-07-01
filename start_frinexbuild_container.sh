@@ -39,7 +39,7 @@ read -p "Press enter to restart frinex_db_manager"
 # start the frinex_db_manager in the bridge network
 # docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --name frinex_db_manager -d frinex_db_manager:latest
 docker service rm frinex_db_manager
-docker service create -d --limit-cpu 0.5 --net frinex_db_manager_net --name frinex_db_manager frinexbuild.mpi.nl/frinex_db_manager:latest
+docker service create -d --limit-cpu 0.5 --network frinex_db_manager_net --name frinex_db_manager frinexbuild.mpi.nl/frinex_db_manager:latest
 
 read -p "Press enter to restart frinex_listing_provider"
 # remove the old frinex_listing_provider
