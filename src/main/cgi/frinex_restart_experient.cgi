@@ -32,7 +32,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
         echo "{"status":"sleeping"}"
         # echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     else
-        serviceStatus=$(sudo docker service ls | grep $cleanedInput | awk '{print $3}')
+        serviceStatus=$(sudo docker service ls | grep $cleanedInput | grep "1/1" | awk '{print $3}')
         # publishedPort=$(docker service ls | grep $cleanedInput | awk '{print $6}')
         echo "serviceStatus: $serviceStatus<br>"
         # echo "publishedPort: $publishedPort<br>"
