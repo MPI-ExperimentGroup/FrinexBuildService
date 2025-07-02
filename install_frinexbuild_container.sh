@@ -64,7 +64,8 @@ else
     docker network create --driver overlay --attachable frinex_db_manager_net
     # This step is not needed in non swarm installations
     # build the frinex_listing_provider
-    docker build --rm -f docker/frinex_listing_provider.Dockerfile -t frinex_listing_provider:latest .
+    docker build --rm -f docker/frinex_listing_provider.Dockerfile -t frinexbuild.mpi.nl/frinex_listing_provider:latest .
+    docker image push frinexbuild.mpi.nl/frinex_listing_provider:latest
 
     read -p "Press enter to update the settings.xml"
     # copy the maven settings to the .m2 directory that is a in volume and not the image used to perform the copy
