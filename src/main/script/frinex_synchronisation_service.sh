@@ -73,9 +73,9 @@ do
         if [[ $registryHasTags != *"$tagNameService"* ]]; then
         #   echo "$currentServiceImage tag missing"
           if [[ $imageList == *"$currentServiceImage"* ]]; then
-            echo "$currentServiceImage local found, not pushed so overlays data accumulation can be compared"
-            # echo "$currentServiceImage local found, can be pushed"
-            # sudo docker push "$currentServiceImage"
+          # echo "$currentServiceImage local found, not pushed so overlays data accumulation can be compared"
+            echo "$currentServiceImage local found, can be pushed"
+            sudo docker push "$currentServiceImage"
             localCount=$((localCount + 1))
           else
             missingCount=$((missingCount + 1))
@@ -83,9 +83,9 @@ do
         else
         #   echo "$currentServiceImage tag found"
           if [[ $imageList != *"$currentServiceImage"* ]]; then
-            echo "$currentServiceImage local missing, not pulled so overlays data accumulation can be compared"
-            # echo "$currentServiceImage local missing, can be pulled"
-            # sudo docker pull "$currentServiceImage"
+          # echo "$currentServiceImage local missing, not pulled so overlays data accumulation can be compared"
+            echo "$currentServiceImage local missing, can be pulled"
+            sudo docker pull "$currentServiceImage"
           else
             localCount=$((localCount + 1))
           fi
@@ -97,13 +97,13 @@ do
         # imageName=$(echo "$imageName" | cut -d ":" -f 1)
         # echo "imageList: $imageName"
         if [[ $serviceList != *"$imageName"* ]]; then
-            if [[ $imageName != *"<none>"* ]]; then        
-              echo "$imageName not a service, not removed so overlays data accumulation can be compared"
-              # echo "$imageName not a service, can be removed"
+            if [[ $imageName != *"<none>"* ]]; then
+            # echo "$imageName not a service, not removed so overlays data accumulation can be compared"
+              echo "$imageName not a service, can be removed"
               # TODO: clean up all the images with the tag <none>
               #   imageNameCleaned=$(echo $imageName | sed "s/:<none>/:/g";)
               #   sudo docker image rm "$imageNameCleaned"
-              # sudo docker image rm "$imageName"
+              sudo docker image rm "$imageName"
             else
                 untagedCount=$((untagedCount + 1))
             #     echo "$imageName leaving untaged image as is"
@@ -139,15 +139,16 @@ do
         else
           if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
             echo "syncing from $nodeName"
+            echo "skipping rsync so overlays data accumulation can be compared"
             # --dry-run
-            rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
-            --include="*/" \
-            --include="*_web.war" \
-            --include="*_admin.war" \
-            --include="*_sources.war" \
-            --include="*-public_usage_stats.json" \
-            --include="*.commit" \
-            --exclude="*"
+            # rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService /FrinexBuildService \
+            # --include="*/" \
+            # --include="*_web.war" \
+            # --include="*_admin.war" \
+            # --include="*_sources.war" \
+            # --include="*-public_usage_stats.json" \
+            # --include="*.commit" \
+            # --exclude="*"
             # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
             # --filter="- /FrinexBuildService/artifacts/*" \
             # --filter="- /FrinexBuildService/protected/*"
