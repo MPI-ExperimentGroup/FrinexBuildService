@@ -141,16 +141,16 @@ do
             echo "syncing from $nodeName"
             for volumeDirectory in artifacts protected; do
               echo "volume directory: $volumeDirectory"
-              # echo "skipping rsync so overlays data accumulation can be compared"
+              echo "skipping rsync so overlays data accumulation can be compared"
               # --dry-run
-              rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory \
-              --include="*/" \
-              --include="*_web.war" \
-              --include="*_admin.war" \
-              --include="*_sources.war" \
-              --include="*-public_usage_stats.json" \
-              --include="*.commit" \
-              --exclude="*"
+              # rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory \
+              # --include="*/" \
+              # --include="*_web.war" \
+              # --include="*_admin.war" \
+              # --include="*_sources.war" \
+              # --include="*-public_usage_stats.json" \
+              # --include="*.commit" \
+              # --exclude="*"
               # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
               # --filter="- /FrinexBuildService/artifacts/*" \
               # --filter="- /FrinexBuildService/protected/*"
