@@ -142,7 +142,7 @@ do
             for volumeDirectory in artifacts protected; do
               echo "volume directory: $volumeDirectory"
               echo "skipping (via dryrun) rsync so overlays data accumulation can be compared"
-              statisticsTempFile="/FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.temp"
+              statisticsTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp"
               rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory \
               --dry-run
               --include="*/" \
@@ -169,8 +169,8 @@ do
                   print currentDate "," m "," t "," s >> statisticsTempFile;
               }'
             done
-            tail -n +2 /FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.temp
-            mv /FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.temp /FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.txt
+            tail -n +2 /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp
+            mv /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
             touch "/FrinexBuildService/$nodeName.lock"
           else
             echo "node sync lock file exists /FrinexBuildService/$nodeName.lock"
