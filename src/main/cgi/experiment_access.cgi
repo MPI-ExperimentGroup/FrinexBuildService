@@ -33,7 +33,12 @@ echo "<br/>"
 cleanedExperimentName=$(echo $QUERY_STRING | sed 's/[^a-z_0-9]/_/g')
 echo "<!--$cleanedExperimentName-->";
 echo "<b>"
-# todo: add some informative messages to the user if no record is found
-grep "\"$cleanedExperimentName\"" ProtectedDirectory/tokens.json | sed 's/[,]//g'
+requiredUser="one@example.com"
+if [ "$REMOTE_USER" = "$requiredUser" ]; then
+    # todo: add some informative messages to the user if no record is found
+    grep "\"$cleanedExperimentName\"" ProtectedDirectory/tokens.json | sed 's/[,]//g'
+else
+    echo "Please contact $requiredUser for access"
+fi
 echo "</b>"
 echo "<br/>"
