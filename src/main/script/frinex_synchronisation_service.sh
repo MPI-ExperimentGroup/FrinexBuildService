@@ -141,20 +141,36 @@ do
             echo "syncing from $nodeName"
             for volumeDirectory in artifacts protected; do
               echo "volume directory: $volumeDirectory"
-              echo "skipping rsync so overlays data accumulation can be compared"
-              # --dry-run
-              # rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory \
-              # --include="*/" \
-              # --include="*_web.war" \
-              # --include="*_admin.war" \
-              # --include="*_sources.war" \
-              # --include="*-public_usage_stats.json" \
-              # --include="*.commit" \
-              # --exclude="*"
-              # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
-              # --filter="- /FrinexBuildService/artifacts/*" \
-              # --filter="- /FrinexBuildService/protected/*"
+              echo "skipping (via dryrun) rsync so overlays data accumulation can be compared"
+              statisticsTempFile="/FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.temp"
+              rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory \
+              --dry-run
+              --include="*/" \
+              --include="*_web.war" \
+              --include="*_admin.war" \
+              --include="*_sources.war" \
+              --include="*-public_usage_stats.json" \
+              --include="*.commit" \
+              --exclude="*"
+              --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
+              --filter="- /FrinexBuildService/artifacts/*" \
+              --filter="- /FrinexBuildService/protected/*" | grep -E '^\.f' | -v output="$statisticsTempFile" -v currentDate="$(date)" '
+              {
+                  flag = substr($0, 2, 9);
+                  size_diff = substr(flag, 2, 1) == "s";
+                  time_diff = substr(flag, 5, 1) == "t";
+                  missing   = substr(flag, 1, 1) == "+";
+                  if (missing) m++;
+                  if (time_diff) t++;
+                  if (size_diff) s++;
+              }
+              END {
+                  print "date,missing,mtime_diff,size_diff" > statisticsTempFile;
+                  print currentDate "," m "," t "," s >> statisticsTempFile;
+              }'
             done
+            tail -n +2 /FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.temp
+            mv /FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.temp /FrinexBuildService/artifacts/artifacts_$ServiceHostname_$nodeName.txt
             touch "/FrinexBuildService/$nodeName.lock"
           else
             echo "node sync lock file exists /FrinexBuildService/$nodeName.lock"
@@ -162,6 +178,10 @@ do
         fi
         ((serviceCount++))
     done
+    echo "date,untagedCount,missingCount,localCount" > /FrinexBuildService/artifacts/grafana_service_image_stats.temp
+    echo "$(date),$untagedCount,$missingCount,$localCount" >> /FrinexBuildService/artifacts/grafana_service_image_stats.temp
+    tail -n +2 /FrinexBuildService/artifacts/grafana_service_image_stats.txt | head -n 1000 >> /FrinexBuildService/artifacts/grafana_service_image_stats.temp
+    mv /FrinexBuildService/artifacts/grafana_service_image_stats.temp /FrinexBuildService/artifacts/grafana_service_image_stats.txt
     date
     sleep 1h
 done
