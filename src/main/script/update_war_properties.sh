@@ -12,7 +12,7 @@ for war in $war_path/*-admin.war; do
     echo "\"$war\": \"$randomString\"," >> $backup_path/randomString.log
     # Extract the target file's content
     unzip -p "$war" "$target_file" | \
-      sed -i "s/^$property_string=.*/$property_string=$randomString/" > temp_replacement_file
+      sed "s/^$property_string=.*/$property_string=$randomString/" > temp_replacement_file
 
     # Update the file inside the war
     zip -q -d "$war" "$target_file"  # delete the original
