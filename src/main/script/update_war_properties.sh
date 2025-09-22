@@ -1,6 +1,6 @@
 war_path=/srv/tomcat/webapps
 backup_path=~/webapps-backup
-target_file="WEB-INF/classes/applicaton.properties"
+target_file="WEB-INF/classes/application.properties"
 property_string=com.example.property.name
 mkdir $backup_path
 for war in $war_path/*-admin.war; do
