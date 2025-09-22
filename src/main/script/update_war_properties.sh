@@ -1,8 +1,12 @@
 war_path=/srv/tomcat/webapps
-backup_path=~/webapps-backup
+backup_path=/srv/webapps-backup
 target_file="WEB-INF/classes/application.properties"
-property_string=com.example.property.name
-mkdir $backup_path
+property_string=nl.mpi.tg.eg.frinex.admin.password
+temp_file=$backup_path/$target_file
+sudo mkdir $backup_path
+mkdir -p $backup_path/$(dirname "$target_file")
+sudo chmod a+w $backup_path
+rm $backup_path/randomString.log
 for war in $war_path/*-admin.war; do
 
   if unzip -l "$war" "$target_file" >/dev/null 2>&1; then
@@ -12,20 +16,16 @@ for war in $war_path/*-admin.war; do
     echo "\"$war\": \"$randomString\"," >> $backup_path/randomString.log
     # Extract the target file's content
     unzip -p "$war" "$target_file" | \
-      sed "s/^$property_string=.*/$property_string=$randomString/" > temp_replacement_file
+      sed "s/^$property_string=.*/$property_string=$randomString/" > $temp_file
 
+    cat $temp_file
     # Update the file inside the war
-    zip -q -d "$war" "$target_file"  # delete the original
-    zip -q "$war" temp_replacement_file -j -z <<< ""  # add modified file
+    sudo zip -q -d "$war" "$target_file"  # delete the original
+    (cd $backup_path && sudo zip -q "$war" "$target_file")  # add modified file
 
-    # Place it back with the correct path
-    zip -q "$war" -j temp_replacement_file
-    zip -q -d "$war" "$(basename temp_replacement_file)"
-    zip -q "$war" -j -z <<< "" "$target_file=temp_replacement_file"
-
-    echo "Updated $target_file in $war"
-    rm temp_replacement_file
+    rm $temp_file
   else
     echo "  $target_file not found in $war, skipping."
   fi
 done
+sudo chown tomcat:tomcat /srv/tomcat/webapps/*admin*.war
