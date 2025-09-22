@@ -9,7 +9,7 @@ for war in $war_path/*-admin.war; do
     echo "Modifying $target_file in $war..."
     cp -n $war $backup_path/
     randomString=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
-    echo "$war $randomString" >> $backup_path/randomString.log
+    echo "\"$war\": \"$randomString\"," >> $backup_path/randomString.log
     # Extract the target file's content
     unzip -p "$war" "$target_file" | \
       sed -i "s/^$property_string=.*/$property_string=$randomString/" > temp_replacement_file
