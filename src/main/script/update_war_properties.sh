@@ -4,8 +4,8 @@ target_file="WEB-INF/classes/application.properties"
 property_string=nl.mpi.tg.eg.frinex.admin.password
 temp_file=$backup_path/$target_file
 sudo mkdir $backup_path
-mkdir -p $backup_path/$(dirname "$target_file")
 sudo chmod a+w $backup_path
+mkdir -p $backup_path/$(dirname "$target_file")
 rm $backup_path/randomString.log
 for war in $war_path/*-admin.war; do
 
