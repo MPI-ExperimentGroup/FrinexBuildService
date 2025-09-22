@@ -1,8 +1,8 @@
 war_path=/srv/tomcat/webapps
-backup_path=/srv/tomcat/webapps-backup
+backup_path=~/webapps-backup
 target_file="WEB-INF/classes/applicaton.properties"
 property_string=com.example.property.name
-mkdir /srv/tomcat/webapps-backup
+mkdir $backup_path
 for war in $war_path/*-admin.war; do
 
   if unzip -l "$war" "$target_file" >/dev/null 2>&1; then
