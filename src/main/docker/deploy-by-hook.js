@@ -773,6 +773,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.configuration.admin.allowDelete=' + ((currentEntry.allowDelete != null) ? currentEntry.allowDelete : 'false')
             // admin login for staging is taken from the settings.xml rather than the publish.properties
             // + ' -Dexperiment.configuration.admin.password=' + stagingAdminToken
+            + ' -Dexperiment.configuration.securityGroup=_security_group_'
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
@@ -794,7 +795,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + '"';
         console.log(dockerString);
         try {
-            child_process.execSync(dockerString, { stdio: [0, 1, 2] });
+            child_process.execSync(dockerString.replace("_security_group_", currentEntry.securityGroup), { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.war")) {
                 // The 1.3-audiofix build image is so old that it cannot be run in the Docker swarm. If future support is needed then the stable image should instead be used to build 1.3-audiofix admin applications
                 if (deploymentType.includes('docker') && currentEntry.frinexVersion !== "1.3-audiofix") {
@@ -1203,8 +1204,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
         // console.log(dockerString);
         try {
             // after the log has been written replace the token with the admin password
-            child_process.execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
-            child_process.execSync(dockerString.replace("_security_group_", currentEntry.securityGroup), { stdio: [0, 1, 2] });
+            child_process.execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)).replace("_security_group_", currentEntry.securityGroup), { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 // The 1.3-audiofix build image is so old that it cannot be run in the Docker swarm. If future support is needed then the stable image should instead be used to build 1.3-audiofix admin applications
                 if (deploymentType.includes('docker') && (currentEntry.productionServer == null || currentEntry.productionServer.length == 0) && currentEntry.frinexVersion !== "1.3-audiofix") {
