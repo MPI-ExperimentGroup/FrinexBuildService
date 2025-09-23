@@ -468,8 +468,8 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "COPY " + warFileName + " /" + warFileName + "\n"
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
-        + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\", \"-Dmanagement.endpoints.web.exposure.include=mappings\"]\n" : "]\n")
-        // exposure.include=mappings enables /actuator/mappings
+        + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\", \"-Dmanagement.endpoints.web.exposure.include=mappings\", \"-Dmanagement.endpoint.mappings.enabled=true\"]\n" : "]\n")
+        // exposure.include=mappings and mappings.enabled enables /actuator/mappings
         // TODO: it should not be necessary to do a service start, but this needs to be tested 
         // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
         , { mode: 0o775 });
