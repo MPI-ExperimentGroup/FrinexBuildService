@@ -468,7 +468,8 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "COPY " + warFileName + " /" + warFileName + "\n"
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
-        + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\"]\n" : "]\n")
+        + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\", \"-Dmanagement.endpoints.web.exposure.include=mappings\"]\n" : "]\n")
+        // exposure.include=mappings enables /actuator/mappings
         // TODO: it should not be necessary to do a service start, but this needs to be tested 
         // note that manually stopping the services will cause an outage whereas replacing the service will minimise service disruption
         , { mode: 0o775 });
@@ -1163,6 +1164,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             // + ' -DversionCheck.buildType=' + 'stable'
             // only use a token for the admin password here so that the passwords do not get stored in the logs
             + ' -Dexperiment.configuration.admin.password=_admin_password_'
+            + ' -Dexperiment.configuration.securityGroup=_security_group_'
             + ' -Dexperiment.configuration.admin.allowDelete=' + ((currentEntry.allowDelete != null) ? currentEntry.allowDelete : 'false')
             + ((currentEntry.productionServer != null && currentEntry.productionServer.length > 0) ?
                 ' -Dexperiment.destinationServer=' + currentEntry.productionServer.replace(/^https?:\/\//, '')
@@ -1202,6 +1204,7 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
         try {
             // after the log has been written replace the token with the admin password
             child_process.execSync(dockerString.replace("_admin_password_", getExperimentToken(currentEntry.buildName)), { stdio: [0, 1, 2] });
+            child_process.execSync(dockerString.replace("_security_group_", currentEntry.securityGroup), { stdio: [0, 1, 2] });
             if (fs.existsSync(protectedDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production_admin.war")) {
                 // The 1.3-audiofix build image is so old that it cannot be run in the Docker swarm. If future support is needed then the stable image should instead be used to build 1.3-audiofix admin applications
                 if (deploymentType.includes('docker') && (currentEntry.productionServer == null || currentEntry.productionServer.length == 0) && currentEntry.frinexVersion !== "1.3-audiofix") {
