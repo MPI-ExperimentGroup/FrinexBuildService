@@ -56,7 +56,7 @@ RUN chown -R frinex /test_data_cordova
 RUN chown -R frinex /opus-recorder
 
 COPY docker/filter_config_files.sh /FrinexBuildService/
-RUN chmod +x /FrinexBuildService/filter_config_files.sh
+RUN chmod a+x /FrinexBuildService/filter_config_files.sh
 
 USER frinex
 
@@ -129,6 +129,7 @@ RUN rm -r /ExperimentTemplate/gwt-cordova/src/main/static/*
 
 WORKDIR /target
 #VOLUME ["m2Directory:/maven/.m2/", "webappsTomcatStaging:/usr/local/tomcat/webapps"]
+
 
 
 
