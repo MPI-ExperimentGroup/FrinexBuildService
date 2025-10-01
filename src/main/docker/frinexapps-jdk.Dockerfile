@@ -55,6 +55,9 @@ RUN chown -R frinex /test_data_electron
 RUN chown -R frinex /test_data_cordova
 RUN chown -R frinex /opus-recorder
 
+COPY docker/filter_config_files.sh /FrinexBuildService/
+RUN chmod +x /FrinexBuildService/filter_config_files.sh
+
 USER frinex
 
 RUN sed -i 's|<versionCheck.allowSnapshots>true</versionCheck.allowSnapshots>|<versionCheck.allowSnapshots>false</versionCheck.allowSnapshots>|g' /ExperimentTemplate/pom.xml
@@ -74,9 +77,7 @@ RUN cd /ExperimentTemplate \
     && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
     && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
 
-COPY docker/filter_config_files.sh /FrinexBuildService/
-# RUN chmod +x /FrinexBuildService/filter_config_files.sh
-RUN sh /FrinexBuildService/filter_config_files.sh
+RUN /FrinexBuildService/filter_config_files.sh
 
 RUN mkdir /ExperimentTemplate/target
 
@@ -128,6 +129,7 @@ RUN rm -r /ExperimentTemplate/gwt-cordova/src/main/static/*
 
 WORKDIR /target
 #VOLUME ["m2Directory:/maven/.m2/", "webappsTomcatStaging:/usr/local/tomcat/webapps"]
+
 
 
 
