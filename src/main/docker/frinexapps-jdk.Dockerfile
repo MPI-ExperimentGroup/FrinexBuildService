@@ -40,10 +40,6 @@ RUN git clone --depth 30000 https://github.com/MPI-ExperimentGroup/ExperimentTem
 #     && sed -i '/adaptive-vocabulary-assessment-module/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all AdaptiveVocabularyAssessmentModule)'-stable/}' /AdaptiveVocabularyAssessmentModule/AdaptiveVocabularyAssessmentModule/pom.xml /ExperimentTemplate/gwt-cordova/pom.xml \
 #     && sed -i '/common/{n;s/-testing-SNAPSHOT/.'$(git rev-list --count --all common)'-stable/}' /AdaptiveVocabularyAssessmentModule/AdaptiveVocabularyAssessmentModule/pom.xml
 
-COPY docker/filter_config_files.sh /FrinexBuildService/
-RUN chmod +x /FrinexBuildService/filter_config_files.sh
-RUN /FrinexBuildService/filter_config_files.sh
-
 # make the .m2 directory that will later be a volume
 RUN mkdir /maven
 RUN mkdir /maven/.m2
@@ -76,6 +72,10 @@ RUN cd /ExperimentTemplate \
 RUN cd /ExperimentTemplate \
     && sed -i '/frinex-parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml \
     && sed -i '/Frinex Parent/{n;s/-testing-SNAPSHOT/.'$(expr $(git rev-list --count --all) - 1)'-stable/}' /ExperimentTemplate/pom.xml /ExperimentTemplate/*/pom.xml
+
+COPY docker/filter_config_files.sh /FrinexBuildService/
+RUN chmod +x /FrinexBuildService/filter_config_files.sh
+RUN /FrinexBuildService/filter_config_files.sh
 
 RUN mkdir /ExperimentTemplate/target
 
@@ -127,4 +127,5 @@ RUN rm -r /ExperimentTemplate/gwt-cordova/src/main/static/*
 
 WORKDIR /target
 #VOLUME ["m2Directory:/maven/.m2/", "webappsTomcatStaging:/usr/local/tomcat/webapps"]
+
 
