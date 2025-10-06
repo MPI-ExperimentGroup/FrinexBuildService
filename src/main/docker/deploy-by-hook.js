@@ -468,7 +468,9 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "COPY " + warFileName + " /" + warFileName + "\n"
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
-        + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\"]\n" : "]\n")
+        + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\"\
+        ]\n" : "]\n")
+        // , \"--logging.level.org.springframework.security=DEBUG\", \"--logging.level.org.springframework.ldap=DEBUG\", \"--logging.level.org.springframework.ldap.core=TRACE\", \"--logging.level.org.springframework.ldap.authentication=DEBUG\"\
         // exposure.include=mappings and mappings.enabled enables /actuator/mappings
         // , \"-Dmanagement.endpoints.web.exposure.include=mappings\", \"-Dmanagement.endpoint.mappings.enabled=true\"
         // TODO: it should not be necessary to do a service start, but this needs to be tested 
