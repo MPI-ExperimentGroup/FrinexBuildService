@@ -60,37 +60,40 @@ do
 
     serviceList=$(sudo docker service ls | grep -E "_staging_web|_production_web|_staging_admin|_production_admin" | awk '{print $5}')
     imageList=$(sudo docker image ls --format "{{.Repository}}:{{.Tag}}" | grep -E "_staging_web|_production_web|_staging_admin|_production_admin")
-    for currentServiceImage in $serviceList
-    do
-        # echo "currentServiceImage: $currentServiceImage"
-        tagNameService=$(echo "$currentServiceImage" | cut -d ":" -f 2)
-        imageNameService=$(echo "$currentServiceImage" | cut -d ":" -f 1)
-        imageNamePart=$(echo "$imageNameService" | cut -d "/" -f 2)
-        # echo "serviceParts: $imageNameService $tagNameService"
-        # echo "imageNamePart: $imageNamePart"
-        registryHasTags=$(curl -sk "https://DOCKER_REGISTRY/v2/$imageNamePart/tags/list")
-        # echo "registryHasTags: $registryHasTags"
-        if [[ $registryHasTags != *"$tagNameService"* ]]; then
-        #   echo "$currentServiceImage tag missing"
-          if [[ $imageList == *"$currentServiceImage"* ]]; then
-          # echo "$currentServiceImage local found, not pushed so overlays data accumulation can be compared"
-            echo "$currentServiceImage local found, can be pushed"
-            sudo docker push "$currentServiceImage"
-            localCount=$((localCount + 1))
+    pushImages=false
+    if [ "$pushImages" = true ]; then
+      for currentServiceImage in $serviceList
+      do
+          # echo "currentServiceImage: $currentServiceImage"
+          tagNameService=$(echo "$currentServiceImage" | cut -d ":" -f 2)
+          imageNameService=$(echo "$currentServiceImage" | cut -d ":" -f 1)
+          imageNamePart=$(echo "$imageNameService" | cut -d "/" -f 2)
+          # echo "serviceParts: $imageNameService $tagNameService"
+          # echo "imageNamePart: $imageNamePart"
+          registryHasTags=$(curl -sk "https://DOCKER_REGISTRY/v2/$imageNamePart/tags/list")
+          # echo "registryHasTags: $registryHasTags"
+          if [[ $registryHasTags != *"$tagNameService"* ]]; then
+          #   echo "$currentServiceImage tag missing"
+            if [[ $imageList == *"$currentServiceImage"* ]]; then
+            # echo "$currentServiceImage local found, not pushed so overlays data accumulation can be compared"
+              echo "$currentServiceImage local found, can be pushed"
+              sudo docker push "$currentServiceImage"
+              localCount=$((localCount + 1))
+            else
+              missingCount=$((missingCount + 1))
+            fi
           else
-            missingCount=$((missingCount + 1))
+          #   echo "$currentServiceImage tag found"
+            if [[ $imageList != *"$currentServiceImage"* ]]; then
+            # echo "$currentServiceImage local missing, not pulled so overlays data accumulation can be compared"
+              echo "$currentServiceImage local missing, can be pulled"
+              sudo docker pull "$currentServiceImage"
+            else
+              localCount=$((localCount + 1))
+            fi
           fi
-        else
-        #   echo "$currentServiceImage tag found"
-          if [[ $imageList != *"$currentServiceImage"* ]]; then
-          # echo "$currentServiceImage local missing, not pulled so overlays data accumulation can be compared"
-            echo "$currentServiceImage local missing, can be pulled"
-            sudo docker pull "$currentServiceImage"
-          else
-            localCount=$((localCount + 1))
-          fi
-        fi
-    done
+      done
+    fi
     for imageName in $imageList
     do
         # tagName=$(echo "$imageName" | cut -d ":" -f 2)
