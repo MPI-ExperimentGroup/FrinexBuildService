@@ -162,8 +162,15 @@ do
               --filter="- /FrinexBuildService/protected/*" \
               frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory > $rsyncTempFile;
               grep -E '^.f' $rsyncTempFile | awk -v output="$statisticsTempFile" -v currentDate="$(date)" '
+              BEGIN {
+                  u = 0;
+                  s = 0;
+                  r = 0;
+                  t = 0;
+                  z = 0;
+              }
               {
-                  flag = substr($0, 2, 9);
+                  flag = substr($0, 1, 9);
                   size_diff = substr(flag, 2, 1) == "s";
                   time_diff = substr(flag, 5, 1) == "t";
                   send      = substr(flag, 1, 1) == ">";
@@ -173,11 +180,11 @@ do
                   if (send) s++;
                   if (receive) r++;
                   if (time_diff) t++;
-                  if (size_diff) s++;
+                  if (size_diff) z++;
               }
               END {
                   print "date,unchanged,send,receive,mtime_diff,size_diff" > output;
-                  print currentDate "," u "," s "," r "," t "," s >> output;
+                  print currentDate "," u "," s "," r "," t "," z >> output;
               }'
             done
             tail -n +2 /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp
