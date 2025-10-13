@@ -149,6 +149,7 @@ do
               statisticsTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp"
               rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" \
               --dry-run \
+              --itemize-changes \
               --include="*/" \
               --include="*_web.war" \
               --include="*_admin.war" \
@@ -171,8 +172,8 @@ do
                   if (size_diff) s++;
               }
               END {
-                  print "date,missing,mtime_diff,size_diff" > statisticsTempFile;
-                  print currentDate "," m "," t "," s >> statisticsTempFile;
+                  print "date,missing,mtime_diff,size_diff" > output;
+                  print currentDate "," m "," t "," s >> output;
               }'
             done
             tail -n +2 /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp
