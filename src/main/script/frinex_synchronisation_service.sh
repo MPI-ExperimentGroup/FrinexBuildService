@@ -145,19 +145,22 @@ do
             for volumeDirectory in artifacts protected; do
               echo "volume directory: $volumeDirectory"
               echo "skipping (via dryrun) rsync so overlays data accumulation can be compared"
+              rsyncTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.log"
               statisticsTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp"
-              rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory \
-              --dry-run
+              rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" \
+              --dry-run \
               --include="*/" \
               --include="*_web.war" \
               --include="*_admin.war" \
               --include="*_sources.war" \
               --include="*-public_usage_stats.json" \
               --include="*.commit" \
-              --exclude="*"
+              --exclude="*" \
               --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
               --filter="- /FrinexBuildService/artifacts/*" \
-              --filter="- /FrinexBuildService/protected/*" | grep -E '^\.f' | -v output="$statisticsTempFile" -v currentDate="$(date)" '
+              --filter="- /FrinexBuildService/protected/*" \
+              frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory > $rsyncTempFile;
+              grep -E '^\.f' $rsyncTempFile | awk -v output="$statisticsTempFile" -v currentDate="$(date)" '
               {
                   flag = substr($0, 2, 9);
                   size_diff = substr(flag, 2, 1) == "s";
