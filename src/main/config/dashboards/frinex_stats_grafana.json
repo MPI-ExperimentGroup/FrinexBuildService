@@ -1632,7 +1632,7 @@
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 60
       },
       "id": 12,
       "options": {
@@ -1774,7 +1774,7 @@
         "h": 11,
         "w": 12,
         "x": 12,
-        "y": 49
+        "y": 60
       },
       "id": 13,
       "options": {
@@ -1850,6 +1850,290 @@
         }
       ],
       "title": "Frinex Build Artifacts lux27-lux29",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "ae5pqbr21q0w0a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 71
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "date",
+              "text": "date",
+              "type": "timestamp"
+            },
+            {
+              "selector": "unchanged",
+              "text": "unchanged",
+              "type": "number"
+            },
+            {
+              "selector": "send",
+              "text": "send",
+              "type": "number"
+            },
+            {
+              "selector": "receive",
+              "text": "receive",
+              "type": "number"
+            },
+            {
+              "selector": "mtime_diff",
+              "text": "mtime_diff",
+              "type": "number"
+            },
+            {
+              "selector": "nsize_diffode3",
+              "text": "size_diff",
+              "type": "number"
+            }
+          ],
+          "csv_options": {
+            "columns": "date,unchanged,send,receive,mtime_diff,size_diff"
+          },
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "ae5pqbr21q0w0a"
+          },
+          "filters": [],
+          "format": "timeseries",
+          "global_query_id": "",
+          "json_options": {
+            "root_is_not_array": false
+          },
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "csv",
+          "url": "http://frinexbuild.mpi.nl/artifacts-lux28-lux27.txt",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Frinex Build Artifacts lux28-lux27",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "ae5pqbr21q0w0a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 71
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "date",
+              "text": "date",
+              "type": "timestamp"
+            },
+            {
+              "selector": "unchanged",
+              "text": "unchanged",
+              "type": "number"
+            },
+            {
+              "selector": "send",
+              "text": "send",
+              "type": "number"
+            },
+            {
+              "selector": "receive",
+              "text": "receive",
+              "type": "number"
+            },
+            {
+              "selector": "mtime_diff",
+              "text": "mtime_diff",
+              "type": "number"
+            },
+            {
+              "selector": "nsize_diffode3",
+              "text": "size_diff",
+              "type": "number"
+            }
+          ],
+          "csv_options": {
+            "columns": "date,unchanged,send,receive,mtime_diff,size_diff"
+          },
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "ae5pqbr21q0w0a"
+          },
+          "filters": [],
+          "format": "timeseries",
+          "global_query_id": "",
+          "json_options": {
+            "root_is_not_array": false
+          },
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "csv",
+          "url": "http://frinexbuild.mpi.nl/artifacts-lux29-lux27.txt",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Frinex Build Artifacts lux29-lux27",
       "type": "timeseries"
     }
   ],
