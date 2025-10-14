@@ -148,20 +148,27 @@ do
               echo "skipping (via dryrun) rsync so overlays data accumulation can be compared"
               rsyncTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.log"
               statisticsTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp"
-              rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" \
-              --dry-run \
-              --itemize-changes \
-              --include="*/" \
-              --include="*_web.war" \
-              --include="*_admin.war" \
-              --include="*_sources.war" \
-              --include="*-public_usage_stats.json" \
-              --include="*.commit" \
-              --exclude="*" \
-              --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
-              --filter="- /FrinexBuildService/artifacts/*" \
-              --filter="- /FrinexBuildService/protected/*" \
-              frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory > $rsyncTempFile;
+              find /FrinexBuildService/artifacts /FrinexBuildService/protected \
+                -type f \( -name '*_web.war' -o -name '*_admin.war' -o -name '*_sources.war' -o -name '*-public_usage_stats.json' -o -name '*.commit' \) \
+                -mmin +60 -print0 \
+                | rsync --files-from=- --from0 --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" \
+                --dry-run \
+                --itemize-changes \
+                frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory > $rsyncTempFile;
+              # rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" \
+              # --dry-run \
+              # --itemize-changes \
+              # --include="*/" \
+              # --include="*_web.war" \
+              # --include="*_admin.war" \
+              # --include="*_sources.war" \
+              # --include="*-public_usage_stats.json" \
+              # --include="*.commit" \
+              # --exclude="*" \
+              # --filter="+ /FrinexBuildService/artifacts/*/*.commit" \
+              # --filter="- /FrinexBuildService/artifacts/*" \
+              # --filter="- /FrinexBuildService/protected/*" \
+              # frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory /FrinexBuildService/$volumeDirectory > $rsyncTempFile;
               grep -E '^.f' $rsyncTempFile | awk -v output="$statisticsTempFile" -v currentDate="$(date)" '
               BEGIN {
                   u = 0;
@@ -190,6 +197,8 @@ do
             done
             tail -n +2 /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp
             mv /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
+            # push the sync stats to the other node for grafana
+            scp /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt frinex@$nodeName.mpi.nl:/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
             touch "/FrinexBuildService/$nodeName.lock"
           else
             echo "node sync lock file exists /FrinexBuildService/$nodeName.lock"
