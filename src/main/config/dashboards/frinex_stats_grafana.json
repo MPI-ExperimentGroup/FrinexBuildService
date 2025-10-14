@@ -1678,7 +1678,7 @@
               "type": "number"
             },
             {
-              "selector": "nsize_diffode3",
+              "selector": "size_diff",
               "text": "size_diff",
               "type": "number"
             }
@@ -1820,7 +1820,7 @@
               "type": "number"
             },
             {
-              "selector": "nsize_diffode3",
+              "selector": "size_diff",
               "text": "size_diff",
               "type": "number"
             }
@@ -1962,7 +1962,7 @@
               "type": "number"
             },
             {
-              "selector": "nsize_diffode3",
+              "selector": "size_diff",
               "text": "size_diff",
               "type": "number"
             }
@@ -2104,7 +2104,7 @@
               "type": "number"
             },
             {
-              "selector": "nsize_diffode3",
+              "selector": "size_diff",
               "text": "size_diff",
               "type": "number"
             }
