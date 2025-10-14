@@ -200,7 +200,7 @@ do
             tail -n +2 /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp
             mv /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
             # push the sync stats to the other node for grafana
-            scp /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt frinex@$nodeName.mpi.nl:/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
+            rsync -vapue "ssh -p $servicePort -o BatchMode=yes" /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt frinex@$nodeName.mpi.nl:/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
             touch "/FrinexBuildService/$nodeName.lock"
           else
             echo "node sync lock file exists /FrinexBuildService/$nodeName.lock"
