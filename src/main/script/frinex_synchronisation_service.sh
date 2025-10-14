@@ -151,10 +151,12 @@ do
               find /FrinexBuildService/artifacts /FrinexBuildService/protected \
                 -type f \( -name '*_web.war' -o -name '*_admin.war' -o -name '*_sources.war' -o -name '*-public_usage_stats.json' -o -name '*.commit' \) \
                 -mmin +60 -print0 \
-                | rsync --files-from=- --from0 --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" \
+                | rsync -vapue "ssh -p $servicePort -o BatchMode=yes" \
                 --dry-run \
                 --itemize-changes \
-                frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory > $rsyncTempFile;
+                --files-from=- --from0 \
+                --prune-empty-dirs --mkpath \
+                / frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory > $rsyncTempFile;
               # rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" \
               # --dry-run \
               # --itemize-changes \
