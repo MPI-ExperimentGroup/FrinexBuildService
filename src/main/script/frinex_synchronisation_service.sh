@@ -199,6 +199,8 @@ do
             done
             tail -n +2 /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp
             mv /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
+            # todo remove this sed line when done
+            sed -i '/,,,/d' /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
             # push the sync stats to the other node for grafana
             rsync -vapue "ssh -p $servicePort -o BatchMode=yes" /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt frinex@$nodeName.mpi.nl:/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
             touch "/FrinexBuildService/$nodeName.lock"
