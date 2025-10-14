@@ -143,8 +143,8 @@ do
           # if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
           if [ ! -e "/FrinexBuildService/$nodeName.lock" ] || [ "$(find "/FrinexBuildService/$nodeName.lock" -mmin +720)" ]; then
             echo "syncing from $nodeName"
-            for volumeDirectory in artifacts protected; do
-              echo "volume directory: $volumeDirectory"
+            # for volumeDirectory in artifacts protected; do
+            #   echo "volume directory: $volumeDirectory"
               echo "skipping (via dryrun) rsync so overlays data accumulation can be compared"
               rsyncTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.log"
               statisticsTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp"
@@ -156,7 +156,7 @@ do
                 --itemize-changes \
                 --files-from=- --from0 \
                 --prune-empty-dirs --mkpath \
-                / frinex@$nodeName.mpi.nl:/FrinexBuildService/$volumeDirectory > $rsyncTempFile;
+                / frinex@$nodeName.mpi.nl:/ > $rsyncTempFile;
               # rsync --prune-empty-dirs --mkpath -vapue "ssh -p $servicePort -o BatchMode=yes" \
               # --dry-run \
               # --itemize-changes \
@@ -196,7 +196,7 @@ do
                   print "date,unchanged,send,receive,mtime_diff,size_diff" > output;
                   print currentDate "," u "," s "," r "," t "," z >> output;
               }'
-            done
+            # done
             tail -n +2 /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt | head -n 1000 >> /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp
             mv /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
             # todo remove this sed line when done
