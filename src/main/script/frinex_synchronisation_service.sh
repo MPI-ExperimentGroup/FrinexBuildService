@@ -226,6 +226,7 @@ do
             # sed -i '/,,,/d' /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
             # push the sync stats to the other node for grafana
             rsync -vapue "ssh -p $servicePort -o BatchMode=yes" /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt frinex@$nodeName.mpi.nl:/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.txt
+            rsync -vapue "ssh -p $servicePort -o BatchMode=yes" /FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.log frinex@$nodeName.mpi.nl:/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.log
             touch "/FrinexBuildService/$nodeName.lock"
           else
             echo "node sync lock file exists /FrinexBuildService/$nodeName.lock"
