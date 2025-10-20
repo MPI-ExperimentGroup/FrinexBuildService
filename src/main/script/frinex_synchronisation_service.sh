@@ -152,7 +152,8 @@ do
           echo "This service is running on $ServiceHostname so skipping this node"
         else
           # if ! [ -e "/FrinexBuildService/$nodeName.lock" ] ; then
-          if [ ! -e "/FrinexBuildService/$nodeName.lock" ] || [ "$(find "/FrinexBuildService/$nodeName.lock" -mmin +720)" ]; then
+          #  -mmin +720
+          if [ ! -e "/FrinexBuildService/$nodeName.lock" ] || [ "$(find "/FrinexBuildService/$nodeName.lock" -mmin +360)" ]; then
             echo "syncing from $nodeName"
             # for volumeDirectory in artifacts protected; do
             #   echo "volume directory: $volumeDirectory"
