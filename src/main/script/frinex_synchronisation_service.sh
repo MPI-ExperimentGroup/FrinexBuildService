@@ -168,7 +168,7 @@ do
             echo "syncing from $nodeName"
             # for volumeDirectory in artifacts protected; do
             #   echo "volume directory: $volumeDirectory"
-              echo "skipping (via dryrun) rsync so overlays data accumulation can be compared"
+              # echo "skipping (via dryrun) rsync so overlays data accumulation can be compared"
               rsyncTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.log"
               statisticsTempFile="/FrinexBuildService/artifacts/artifacts-$ServiceHostname-$nodeName.temp"
               find /FrinexBuildService/artifacts /FrinexBuildService/protected \
