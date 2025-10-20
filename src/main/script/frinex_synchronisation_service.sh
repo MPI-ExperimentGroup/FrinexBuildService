@@ -58,6 +58,8 @@ do
     # rm -rf /FrinexBuildService/protected/protected/*
     # rmdir /FrinexBuildService/protected/protected
 
+    stat /FrinexBuildService/protected/with_stimulus_example/with_stimulus_example.xml.commit
+
     untagedCount=0;
     missingCount=0;
     localCount=0;
