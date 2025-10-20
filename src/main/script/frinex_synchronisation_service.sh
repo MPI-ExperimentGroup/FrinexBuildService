@@ -175,7 +175,6 @@ do
                 -type f \( -name '*_web.war' -o -name '*_admin.war' -o -name '*_sources.war' -o -name '*-public_usage_stats.json' -o -name '*.commit' \) \
                 -mmin +60 -print0 \
                 | rsync -vvvapue "ssh -p $servicePort -o BatchMode=yes" \
-                --dry-run \
                 --itemize-changes \
                 --files-from=- --from0 \
                 --prune-empty-dirs --mkpath \
