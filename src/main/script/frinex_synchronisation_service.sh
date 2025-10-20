@@ -128,18 +128,18 @@ do
     # prune unused data on this node
     sudo docker system prune -f
     date
-    if [ "lux27" == "$ServiceHostname" ]; then
-      echo "forcing generic_example sync"
-      find /FrinexBuildService/artifacts /FrinexBuildService/protected \
-                -type f \( -name '*generic_example*_web.war' -o -name '*generic_example*_admin.war' -o -name '*generic_example*_sources.war' -o -name '*generic_example*-public_usage_stats.json' -o -name '*generic_example*.commit' \) \
-                -mmin +60 -print0 \
-                | rsync -vapue "ssh -p $servicePort -o BatchMode=yes" \
-                --dry-run \
-                --itemize-changes \
-                --files-from=- --from0 \
-                --prune-empty-dirs --mkpath \
-                / frinex@lux29.mpi.nl:/ >> "/FrinexBuildService/artifacts/artifacts-$ServiceHostname-forcing-generic_example-sync.log"
-    fi
+    # if [ "lux27" == "$ServiceHostname" ]; then
+    #   echo "forcing generic_example sync"
+    #   find /FrinexBuildService/artifacts /FrinexBuildService/protected \
+    #             -type f \( -name '*generic_example*_web.war' -o -name '*generic_example*_admin.war' -o -name '*generic_example*_sources.war' -o -name '*generic_example*-public_usage_stats.json' -o -name '*generic_example*.commit' \) \
+    #             -mmin +60 -print0 \
+    #             | rsync -vapue "ssh -p $servicePort -o BatchMode=yes" \
+    #             --dry-run \
+    #             --itemize-changes \
+    #             --files-from=- --from0 \
+    #             --prune-empty-dirs --mkpath \
+    #             / frinex@lux29.mpi.nl:/ >> "/FrinexBuildService/artifacts/artifacts-$ServiceHostname-forcing-generic_example-sync.log"
+    # fi
     # to catch cases when this node has become out of sync due to down time rsync any differences from the other nodes
     # for each node rsync pull any missing files then make a lock file to prevent that node being pulled again
     for servicePortAndNode in $(sudo docker service ls --format "{{.Ports}}{{.Name}}" -f "name=frinex_synchronisation_service" | sed 's/[*:]//g' | sed 's/->22\/tcp//g')
