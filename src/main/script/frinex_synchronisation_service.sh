@@ -60,6 +60,8 @@ do
 
     stat /FrinexBuildService/protected/with_stimulus_example/with_stimulus_example.xml.commit
 
+    stat /FrinexBuildService/artifacts/addressee_memory/addressee_memory_production_admin-public_usage_stats.json
+    
     untagedCount=0;
     missingCount=0;
     localCount=0;
