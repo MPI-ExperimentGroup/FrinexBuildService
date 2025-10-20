@@ -51,6 +51,13 @@ do
     #     sudo docker image ls
     # fi
 
+    echo "cleaning up /FrinexBuildService/artifacts/artifacts/"
+    rm -rf /FrinexBuildService/artifacts/artifacts/*
+    rmdir /FrinexBuildService/artifacts/artifacts
+    echo "cleaning up /FrinexBuildService/protected/protected/"
+    rm -rf /FrinexBuildService/protected/protected/*
+    rmdir /FrinexBuildService/protected/protected
+    
     untagedCount=0;
     missingCount=0;
     localCount=0;
