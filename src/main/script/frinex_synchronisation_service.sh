@@ -206,8 +206,8 @@ do
                   flag = substr($0, 1, 9);
                   size_diff = substr(flag, 2, 1) == "s";
                   time_diff = substr(flag, 5, 1) == "t";
-                  send      = substr(flag, 1, 1) == ">";
-                  receive   = substr(flag, 1, 1) == "<";
+                  send      = substr(flag, 1, 1) == "<";
+                  receive   = substr(flag, 1, 1) == ">";
                   unchanged = substr(flag, 1, 1) == ".";
                   if (unchanged) u++;
                   if (send) s++;
