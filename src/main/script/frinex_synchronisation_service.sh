@@ -57,6 +57,9 @@ do
     # echo "cleaning up /FrinexBuildService/protected/protected/"
     # rm -rf /FrinexBuildService/protected/protected/*
     # rmdir /FrinexBuildService/protected/protected
+    echo "cleaning up /FrinexBuildService/protected/webapps-backup/"
+    rm -rf /FrinexBuildService/protected/webapps-backup/*
+    rmdir /FrinexBuildService/protected/webapps-backup
 
     stat /FrinexBuildService/protected/with_stimulus_example/with_stimulus_example.xml.commit
 
