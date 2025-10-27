@@ -469,7 +469,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "COPY " + warFileName + " /" + warFileName + "\n"
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
-        + ", \"--experiment.configuration.requestScalingUrl=" + requestScalingUrl + "\", \"--experiment.configuration.informReadyUrl=" + proxyUpdateTrigger + "\""
+        + ", \"--nl.mpi.tg.eg.frinex.requestScalingUrl=" + requestScalingUrl + "\", \"--nl.mpi.tg.eg.frinex.informReadyUrl=" + proxyUpdateTrigger + "\""
         + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\"\
         ]\n" : "]\n")
         // , \"--logging.level.org.springframework.security=DEBUG\", \"--logging.level.org.springframework.ldap=DEBUG\", \"--logging.level.org.springframework.ldap.core=TRACE\", \"--logging.level.org.springframework.ldap.authentication=DEBUG\"\
