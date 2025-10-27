@@ -26,9 +26,12 @@ targetDir=TargetDirectory
 
 maxInstances=10
 serviceName=$(echo "$query" | sed -n 's/^.*service=\([[0-9a-z_]+]*\).*$/\1/p')
+avgMs=$(echo "$query" | sed -n 's/^.*avgMs=\([[0-9a-z_]+]*\).*$/\1/p')
 instanceCount=$(docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
 
-echo "maxInstances: @maxInstances, instanceCount: $instanceCount, serviceName: $serviceName" >> $targetDir/request_scaling.log
+echo "$(date),$maxInstances,$instanceCount,$avgMs,$serviceName" > $targetDir/request_scaling.temp
+head -n 1000  $targetDir/request_scaling.txt >> $targetDir/request_scaling.temp
+mv $targetDir/request_scaling.temp $targetDir/request_scaling.txt
 
 echo "Content-type: text/html"
 echo ''
