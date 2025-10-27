@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Copyright (C) 2025 Max Planck Institute for Psycholinguistics
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+# @since 27 Oct 2025 11:58 AM (creation date)
+# @author Peter Withers <peter.withers@mpi.nl>
+
+cd $(dirname "$0")
+targetDir=TargetDirectory
+
+# this script checks the number of instances of a service and will scale up to a set limit
+
+maxInstances=10
+serviceName=$(echo "$query" | sed -n 's/^.*service=\([[0-9a-z_]+]*\).*$/\1/p')
+instanceCount=$(docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
+
+echo "maxInstances: @maxInstances, instanceCount: $instanceCount, serviceName: $serviceName" >> $targetDir/request_scaling.log
+
+echo "Content-type: text/html"
+echo ''
+
+echo "maxInstances: @maxInstances<br/>"
+echo "serviceName: $serviceName<br/>"
+echo "instanceCount: $instanceCount<br/>"
