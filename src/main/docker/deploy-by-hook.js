@@ -49,6 +49,7 @@ const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
 const dockerRegistry = properties.get('dockerservice.dockerRegistry');
 const proxyUpdateTrigger = properties.get('dockerservice.proxyUpdateTrigger');
+const requestScalingUrl = properties.get('dockerservice.requestScalingUrl');
 const dockerServiceOptions = properties.get('dockerservice.serviceOptions');
 const buildContainerOptions = properties.get('settings.buildContainerOptions');
 const taskContainerOptions = properties.get('settings.taskContainerOptions');
@@ -468,6 +469,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "COPY " + warFileName + " /" + warFileName + "\n"
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
+        + ", \"--experiment.configuration.requestScalingUrl=" + requestScalingUrl + "\", \"--experiment.configuration.informReadyUrl=" + proxyUpdateTrigger + "\""
         + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\"\
         ]\n" : "]\n")
         // , \"--logging.level.org.springframework.security=DEBUG\", \"--logging.level.org.springframework.ldap=DEBUG\", \"--logging.level.org.springframework.ldap.core=TRACE\", \"--logging.level.org.springframework.ldap.authentication=DEBUG\"\
@@ -569,7 +571,6 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.webservice=' + configServer
             + ' -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building'
             + ' -DversionCheck.allowSnapshots=' + 'false'
-            + ' -Dexperiment.configuration.informReadyUrl=' + proxyUpdateTrigger
             // + ' -DversionCheck.buildType=' + 'stable'
             // TODO: usage of currentEntry.stagingServer is not implemented for targeting tomcat deployments nor undeployments, it is currently only used to tell the GUI application where its URL is for websockets and mobile apps
             + ((currentEntry.stagingServer != null && currentEntry.stagingServer.length > 0) ?
@@ -780,7 +781,6 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-            + ' -Dexperiment.configuration.informReadyUrl=' + proxyUpdateTrigger
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
             //+ ' rm -r /usr/local/tomcat/webapps/' + currentEntry.buildName + '_staging_admin.war'
             // + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging_admin.txt;"
