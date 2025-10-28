@@ -35,7 +35,7 @@ mv $targetDir/request_scaling.temp $targetDir/request_scaling.txt
 
 echo "Content-type: text/html"
 echo ''
-
-echo "maxInstances: @maxInstances<br/>"
-echo "serviceName: $serviceName<br/>"
-echo "instanceCount: $instanceCount<br/>"
+echo "ok"
+# echo "maxInstances: $maxInstances<br/>"
+# echo "serviceName: $serviceName<br/>"
+# echo "instanceCount: $instanceCount<br/>"
