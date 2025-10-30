@@ -25,10 +25,10 @@ targetDir=TargetDirectory
 # this script checks the number of instances of a service and will scale up to a set limit
 
 maxInstances=10
-echo "$query"
-serviceName=$(echo "$query" | sed -n 's/^.*service=\([0-9a-z_]*\).*$/\1/p')
+echo "$QUERY_STRING"
+serviceName=$(echo "$QUERY_STRING" | sed -n 's/^.*service=\([0-9a-z_]*\).*$/\1/p')
 echo "$serviceName"
-avgMs=$(echo "$query" | sed -n 's/^.*avgMs=\([0-9a-z_]*\).*$/\1/p')
+avgMs=$(echo "$QUERY_STRING" | sed -n 's/^.*avgMs=\([0-9a-z_]*\).*$/\1/p')
 echo "$avgMs"
 instanceCount=$(docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
 echo "$instanceCount"
