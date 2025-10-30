@@ -33,4 +33,4 @@ workingDir=$(pwd -P)
 # started by a speparate CGI script
 
 # this process is also handled by the frinex_service_manager which is started with frinexbuild
-docker run -v buildServerTarget:/FrinexBuildService/artifacts --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -it --rm --name manage_experiment_services frinex_listing_provider:latest bash -c "/FrinexBuildService/sleep_and_resurrect_docker_experiments.sh"
+docker run -v buildServerTarget:/FrinexBuildService/artifacts --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -it --rm --name manage_experiment_services frinexbuild.mpi.nl/frinex_listing_provider:latest bash -c "/FrinexBuildService/sleep_and_resurrect_docker_experiments.sh"
