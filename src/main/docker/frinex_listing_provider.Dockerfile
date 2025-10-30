@@ -50,6 +50,7 @@ RUN proxyUpdateTrigger=$(grep proxyUpdateTrigger /FrinexBuildService/publish.pro
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/request_scaling.cgi
 RUN rm /FrinexBuildService/publish.properties
 RUN cat /FrinexBuildService/cgi/frinex_restart_experient.cgi
+RUN cat /FrinexBuildService/cgi/request_scaling.cgi
 # make sure the mod_cgi module is loaded by httpd
 RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_module modules/mod_cgi.so" /usr/local/apache2/conf/httpd.conf
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
