@@ -25,9 +25,13 @@ targetDir=TargetDirectory
 # this script checks the number of instances of a service and will scale up to a set limit
 
 maxInstances=10
-serviceName=$(echo "$query" | sed -n 's/^.*service=\([[0-9a-z_]+]*\).*$/\1/p')
-avgMs=$(echo "$query" | sed -n 's/^.*avgMs=\([[0-9a-z_]+]*\).*$/\1/p')
+echo "$query"
+serviceName=$(echo "$query" | sed -n 's/^.*service=\([0-9a-z_]*\).*$/\1/p')
+echo "$serviceName"
+avgMs=$(echo "$query" | sed -n 's/^.*avgMs=\([0-9a-z_]*\).*$/\1/p')
+echo "$avgMs"
 instanceCount=$(docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
+echo "$instanceCount"
 
 echo "$(date),$maxInstances,$instanceCount,$avgMs,$serviceName" > $targetDir/request_scaling.temp
 head -n 1000  $targetDir/request_scaling.txt >> $targetDir/request_scaling.temp
