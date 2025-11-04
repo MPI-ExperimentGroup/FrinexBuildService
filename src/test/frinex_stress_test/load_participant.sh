@@ -96,7 +96,7 @@ for i in {1..6000}; do
 
     # frinexbq4_media_data_total.value 78
     # 78 / 493
-    curl --silent --show-error --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "audioType=ogg" --form "downloadPermittedWindowMs=1000" --form "dataBlob=@/frinex_load_test/test_data/100ms_a.ogg"  $currentUrl/mediaBlob
+    curl --silent --show-error --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "mediaType=ogg" --form "downloadPermittedWindowMs=1000" --form "dataBlob=@/frinex_load_test/test_data/100ms_a.ogg"  $currentUrl/mediaBlob
 done
 # frinexbq4_group_data_total.value 0
 date
