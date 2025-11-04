@@ -28,12 +28,15 @@ cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
 
-docker build --no-cache -f frinex_load_test.Dockerfile -t DockerRegistry/frinex_load_test:latest .
-docker push DockerRegistry/frinex_load_test:latest
+# docker build --no-cache -f frinex_load_test.Dockerfile -t DockerRegistry/frinex_load_test:latest .
+# docker push DockerRegistry/frinex_load_test:latest
 
-docker service create --name frinex_load_test --replicas 150 DockerRegistry/frinex_load_test:latest bash "/frinex_load_test/load_test.sh"
+# docker service create --name frinex_load_test --replicas 50 DockerRegistry/frinex_load_test:latest "/frinex_load_test/load_test.sh"
 
-docker service logs -f frinex_load_test
+# docker service logs -f frinex_load_test
+
+docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:latest .
+docker run -it --rm frinex_load_test:latest sh
 
 read -p "Press enter to terminate the frinex_load_test service"
 docker service rm frinex_load_test

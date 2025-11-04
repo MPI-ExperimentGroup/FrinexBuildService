@@ -33,6 +33,9 @@ else
     # get the latest version of this repository
     git pull
 
+    # the frinex_load_test should not be runing but we remove it now in case it is
+    docker service rm frinex_load_test
+
     docker system prune
     
     # build the frinexbuild dockerfile
