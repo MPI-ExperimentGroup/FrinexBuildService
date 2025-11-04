@@ -32,7 +32,7 @@ avgMs=$(echo "$QUERY_STRING" | sed -n 's/^.*avgMs=\([0-9a-z_]*\).*$/\1/p')
 echo "$avgMs"
 avgMs=$(echo "$QUERY_STRING" | sed -n 's/^.*status=\([0-9a-z_]*\).*$/\1/p')
 echo "$status"
-instanceCount=$(docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
+instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
 echo "$instanceCount"
 
 echo "$(date),$maxInstances,$instanceCount,$avgMs,$serviceName,$status" > $targetDir/request_scaling.temp
