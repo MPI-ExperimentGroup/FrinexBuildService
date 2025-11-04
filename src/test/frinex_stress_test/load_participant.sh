@@ -97,6 +97,6 @@ for i in {1..6000}; do
     # frinexbq4_media_data_total.value 78
     # 78 / 493
     curl --silent --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "audioType=ogg" --form "downloadPermittedWindowMs=1000" --form "dataBlob=@/FrinexBuildService/test_data/100ms_a.ogg"  $currentUrl/audioBlob
-# done
+done
 # frinexbq4_group_data_total.value 0
 date

@@ -31,3 +31,4 @@ COPY frinex_stress_test/test_data/100ms_a.ogg /frinex_load_test/test_data
 COPY frinex_stress_test/load_participant.sh /frinex_load_test/
 COPY frinex_stress_test/load_test.sh /frinex_load_test/
 RUN chmod a+x /frinex_load_test/load_*.sh
+WORKDIR /frinex_load_test/
