@@ -42,7 +42,7 @@ lockfile="$targetDir/request_scaling.lock"
     flock -n 200 || exit 1
     echo "date,maxInstances,instanceCount,avgMs,requests,service,status" > $targetDir/request_scaling.temp
     echo "$(date),$maxInstances,$instanceCount,$avgMs,$total,$serviceName,$status" >> $targetDir/request_scaling.temp
-    head -n 1000 $targetDir/request_scaling.txt >> $targetDir/request_scaling.temp
+    tail -n +2 $targetDir/request_scaling.txt | head -n 1000 >> $targetDir/request_scaling.temp
     mv $targetDir/request_scaling.temp $targetDir/request_scaling.txt
 ) 200>"$lockfile"
 echo "Content-type: text/html"
