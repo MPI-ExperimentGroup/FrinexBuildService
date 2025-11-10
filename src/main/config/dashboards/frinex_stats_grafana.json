@@ -2151,7 +2151,7 @@
           "source": "url",
           "url": "https://frinexstaging.mpi.nl/load_test_target-admin/public_count_stats?from=${__from:date:iso}&to=${__to:date:iso}",
           "parser": "jsonata",
-          "jsonata": "$map($, function($v) { {'name': $v.target, 'fields': [{'name': 'Time','type': 'time','values': $map($v.datapoints, function($d){$d[1]})},{'name': 'Value','type': 'number','values': $map($v.datapoints, function($d){$d[0]})}]} })"
+          "jsonata": "$reduce($map($, function($v) {$map($v.datapoints, function($dp) {{\"target\": $v.target,\"timestamp\": $dp[1],\"value\": $dp[0]}})}),function($acc, $val) {$append($acc, $val)},[])"
         }
       ],
       "fieldConfig": {
