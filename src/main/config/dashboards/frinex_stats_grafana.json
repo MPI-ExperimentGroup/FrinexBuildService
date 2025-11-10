@@ -2136,34 +2136,131 @@
       "title": "Frinex Build Artifacts lux29->lux27",
       "type": "timeseries"
     }, {
-      "type": "timeseries",
-      "title": "load_test_target",
-      "id": 3,
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "ae5pqbr21q0w0a"
       },
-      "targets": [
-        {
-          "refId": "A",
-          "type": "json",
-          "format": "timeseries",
-          "source": "url",
-          "url": "https://frinexstaging.mpi.nl/load_test_target-admin/public_count_stats?from=${__from:date:iso}&to=${__to:date:iso}",
-          "parser": "jsonata",
-          "jsonata": "$reduce($map($, function($v) {$map($v.datapoints, function($dp) {{\"target\": $v.target,\"timestamp\": $dp[1],\"value\": $dp[0]}})}),function($acc, $val) {$append($acc, $val)},[])"
-        }
-      ],
       "fieldConfig": {
         "defaults": {
-          "unit": "none"
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 49
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "options": {
-        "legend": { "showLegend": true },
-        "tooltip": { "mode": "single" }
-      },
-      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 0 }
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "count",
+              "text": "count",
+              "type": "number"
+            },
+            {
+              "selector": "time",
+              "text": "time",
+              "type": "timestamp"
+            },
+            {
+              "selector": "table",
+              "text": "table",
+              "type": "string"
+            }
+          ],
+          "csv_options": {
+            "columns": "time,table,count"
+          },
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "ae5pqbr21q0w0a"
+          },
+          "filters": [],
+          "format": "timeseries",
+          "global_query_id": "",
+          "json_options": {
+            "root_is_not_array": false
+          },
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "csv",
+          "url": "https://frinexstaging.mpi.nl/load_test_target-admin/public_count_csv?from=${__from:date:iso}&to=${__to:date:iso}",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "load_test_target",
+      "type": "timeseries"
     }
   ],
   "preload": false,
