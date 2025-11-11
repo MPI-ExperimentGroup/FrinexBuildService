@@ -35,9 +35,13 @@ scriptDir=$(pwd -P)
 
 # docker service logs -f frinex_load_test
 
+# read -p "Press enter to terminate the frinex_load_test service"
+# docker service rm frinex_load_test
+
 docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:latest .
 for i in $(seq 1 100); do
-    docker run -it --rm frinex_load_test:latest sh /frinex_load_test/load_test.sh
-done 
-read -p "Press enter to terminate the frinex_load_test service"
-docker service rm frinex_load_test
+    docker run -it --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh
+done
+
+watch -n 2 'docker ps -a --filter "name=load_test_"'
+
