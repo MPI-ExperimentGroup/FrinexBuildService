@@ -40,7 +40,7 @@ scriptDir=$(pwd -P)
 
 docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:latest .
 for i in $(seq 1 100); do
-    docker run -it --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh
+    docker run -d --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh
 done
 
 watch -n 2 'docker ps -a --filter "name=load_test_"'
