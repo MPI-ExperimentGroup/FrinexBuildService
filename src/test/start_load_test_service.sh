@@ -31,12 +31,13 @@ scriptDir=$(pwd -P)
 # docker build --no-cache -f frinex_load_test.Dockerfile -t DockerRegistry/frinex_load_test:latest .
 # docker push DockerRegistry/frinex_load_test:latest
 
-# docker service create --name frinex_load_test --replicas 50 DockerRegistry/frinex_load_test:latest "/frinex_load_test/load_test.sh"
+# docker service create --restart-condition none --name frinex_load_test --replicas 50 DockerRegistry/frinex_load_test:latest "/frinex_load_test/load_test.sh"
 
 # docker service logs -f frinex_load_test
 
 docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:latest .
-docker run -it --rm frinex_load_test:latest sh
-
+for i in $(seq 1 100); do
+    docker run -it --rm frinex_load_test:latest sh /frinex_load_test/load_test.sh
+done 
 read -p "Press enter to terminate the frinex_load_test service"
 docker service rm frinex_load_test
