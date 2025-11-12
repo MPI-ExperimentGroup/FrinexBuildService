@@ -47,6 +47,17 @@ lockfile="$targetDir/request_scaling.lock"
 ) 200>"$lockfile"
 echo "Content-type: text/html"
 echo ''
+if (( avgMs > 2000 )); then
+  if (( instanceCount < maxInstances )); then
+    ((instanceCount++))
+    echo "Scaling to $instanceCount <br/>"
+    sudo docker service scale "${serviceName}=${instanceCount}"
+  else
+    echo "Already max instances <br/>"
+  fi
+else
+  echo "avgMs ($avgMs) <= 2000 <br/>"
+fi
 echo "ok"
 # echo "maxInstances: $maxInstances<br/>"
 # echo "serviceName: $serviceName<br/>"
