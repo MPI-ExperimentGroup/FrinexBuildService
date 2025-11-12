@@ -36,6 +36,7 @@ status=$(echo "$QUERY_STRING" | sed -n 's/^.*status=\([0-9a-z_]*\).*$/\1/p')
 # echo "$status"
 instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
 # echo "$instanceCount"
+runningCount=$(sudo docker service ps --filter "desired-state=running" --format '{{.CurrentState}}' "$serviceName" | grep -c "Running")
 
 lockfile="$targetDir/request_scaling.lock"
 (
@@ -48,12 +49,16 @@ lockfile="$targetDir/request_scaling.lock"
 echo "Content-type: text/html"
 echo ''
 if (( avgMs > 250 )); then
-  if (( instanceCount < maxInstances )); then
-    ((instanceCount++))
-    echo "Scaling to $instanceCount <br/>"
-    sudo docker service scale "${serviceName}=${instanceCount}"
+  if (( runningCount < instanceCount )); then
+    echo "Waiting instances $runningCount of $instanceCount<br/>"
   else
-    echo "Already max instances <br/>"
+    if (( instanceCount < maxInstances )); then
+        ((instanceCount++))
+        echo "Scaling to $instanceCount <br/>"
+        sudo docker service scale "${serviceName}=${instanceCount}"
+    else
+        echo "Already max instances <br/>"
+    fi
   fi
 else
   echo "avgMs ($avgMs) <= 500 : $instanceCount<br/>"
