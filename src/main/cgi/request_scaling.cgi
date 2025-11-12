@@ -47,7 +47,7 @@ lockfile="$targetDir/request_scaling.lock"
 ) 200>"$lockfile"
 echo "Content-type: text/html"
 echo ''
-if (( avgMs > 500 )); then
+if (( avgMs > 250 )); then
   if (( instanceCount < maxInstances )); then
     ((instanceCount++))
     echo "Scaling to $instanceCount <br/>"
