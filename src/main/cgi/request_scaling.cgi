@@ -24,7 +24,7 @@ targetDir=TargetDirectory
 
 # this script checks the number of instances of a service and will scale up to a set limit
 
-maxInstances=10
+maxInstances=15
 # echo "$QUERY_STRING"
 serviceName=$(echo "$QUERY_STRING" | sed -n 's/^.*service=\([0-9a-z_]*\).*$/\1/p')
 # echo "$serviceName"
@@ -47,7 +47,7 @@ lockfile="$targetDir/request_scaling.lock"
 ) 200>"$lockfile"
 echo "Content-type: text/html"
 echo ''
-if (( avgMs > 2000 )); then
+if (( avgMs > 500 )); then
   if (( instanceCount < maxInstances )); then
     ((instanceCount++))
     echo "Scaling to $instanceCount <br/>"
@@ -56,7 +56,7 @@ if (( avgMs > 2000 )); then
     echo "Already max instances <br/>"
   fi
 else
-  echo "avgMs ($avgMs) <= 2000 <br/>"
+  echo "avgMs ($avgMs) <= 500 : $instanceCount<br/>"
 fi
 echo "ok"
 # echo "maxInstances: $maxInstances<br/>"
