@@ -38,6 +38,8 @@ instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Re
 # echo "$instanceCount"
 runningCount=$(sudo docker service ps --filter "desired-state=running" --format '{{.CurrentState}}' "$serviceName" | grep -c "Running")
 
+lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName")
+
 lockfile="$targetDir/request_scaling.lock"
 (
     flock -n 200 || exit 1
@@ -48,29 +50,33 @@ lockfile="$targetDir/request_scaling.lock"
     
     echo "Content-type: text/html"
     echo ''
-    if (( avgMs > 250 )); then
-        if (( runningCount < instanceCount )); then
-            echo "Waiting instances $runningCount of $instanceCount<br/>"
-        else
-            if (( instanceCount < maxInstances )); then
-                ((instanceCount++))
-                echo "Scaling up $instanceCount <br/>"
-                sudo docker service scale "${serviceName}=${instanceCount}"
-            else
-                echo "Already max instances <br/>"
-            fi
-        fi
+    if [[ $(date -d "$lastUpdate" +%s) -gt $(( $(date +%s) - 300 )) ]]; then
+        echo "$serviceName lastUpdate $lastUpdate"
     else
-        if (( avgMs < 5 && instanceCount > 1 )); then
+        if (( avgMs > 250 )); then
             if (( runningCount < instanceCount )); then
-                echo "Waiting instances $avgMs<br/>"
+                echo "Waiting instances $runningCount of $instanceCount<br/>"
             else
-                ((instanceCount--))
-                echo "Scaling down $instanceCount <br/>"
-                sudo docker service scale "${serviceName}=${instanceCount}"
+                if (( instanceCount < maxInstances )); then
+                    ((instanceCount++))
+                    echo "Scaling up $instanceCount <br/>"
+                    sudo docker service scale "${serviceName}=${instanceCount}"
+                else
+                    echo "Already max instances <br/>"
+                fi
             fi
         else
-            echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
+            if (( avgMs < 5 && instanceCount > 1 )); then
+                if (( runningCount < instanceCount )); then
+                    echo "Waiting instances $avgMs<br/>"
+                else
+                    ((instanceCount--))
+                    echo "Scaling down $instanceCount <br/>"
+                    sudo docker service scale "${serviceName}=${instanceCount}"
+                fi
+            else
+                echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
+            fi
         fi
     fi
     echo "ok"
