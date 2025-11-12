@@ -49,19 +49,29 @@ lockfile="$targetDir/request_scaling.lock"
 echo "Content-type: text/html"
 echo ''
 if (( avgMs > 250 )); then
-  if (( runningCount < instanceCount )); then
-    echo "Waiting instances $runningCount of $instanceCount<br/>"
-  else
-    if (( instanceCount < maxInstances )); then
-        ((instanceCount++))
-        echo "Scaling to $instanceCount <br/>"
-        sudo docker service scale "${serviceName}=${instanceCount}"
+    if (( runningCount < instanceCount )); then
+        echo "Waiting instances $runningCount of $instanceCount<br/>"
     else
-        echo "Already max instances <br/>"
+        if (( instanceCount < maxInstances )); then
+            ((instanceCount++))
+            echo "Scaling up $instanceCount <br/>"
+            sudo docker service scale "${serviceName}=${instanceCount}"
+        else
+            echo "Already max instances <br/>"
+        fi
     fi
-  fi
 else
-  echo "avgMs ($avgMs) <= 500 : $instanceCount<br/>"
+    if (( avgMs < 5 && instanceCount > 1 )); then
+        if (( runningCount < instanceCount )); then
+            echo "Waiting instances $avgMs<br/>"
+        else
+            ((instanceCount--))
+            echo "Scaling down $instanceCount <br/>"
+            sudo docker service scale "${serviceName}=${instanceCount}"
+        fi
+    else
+        echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
+    fi
 fi
 echo "ok"
 # echo "maxInstances: $maxInstances<br/>"
