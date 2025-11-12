@@ -45,35 +45,36 @@ lockfile="$targetDir/request_scaling.lock"
     echo "$(date),$maxInstances,$instanceCount,$avgMs,$total,$serviceName,$status" >> $targetDir/request_scaling.temp
     tail -n +2 $targetDir/request_scaling.txt | head -n 1000 >> $targetDir/request_scaling.temp
     mv $targetDir/request_scaling.temp $targetDir/request_scaling.txt
-) 200>"$lockfile"
-echo "Content-type: text/html"
-echo ''
-if (( avgMs > 250 )); then
-    if (( runningCount < instanceCount )); then
-        echo "Waiting instances $runningCount of $instanceCount<br/>"
-    else
-        if (( instanceCount < maxInstances )); then
-            ((instanceCount++))
-            echo "Scaling up $instanceCount <br/>"
-            sudo docker service scale "${serviceName}=${instanceCount}"
-        else
-            echo "Already max instances <br/>"
-        fi
-    fi
-else
-    if (( avgMs < 5 && instanceCount > 1 )); then
+    
+    echo "Content-type: text/html"
+    echo ''
+    if (( avgMs > 250 )); then
         if (( runningCount < instanceCount )); then
-            echo "Waiting instances $avgMs<br/>"
+            echo "Waiting instances $runningCount of $instanceCount<br/>"
         else
-            ((instanceCount--))
-            echo "Scaling down $instanceCount <br/>"
-            sudo docker service scale "${serviceName}=${instanceCount}"
+            if (( instanceCount < maxInstances )); then
+                ((instanceCount++))
+                echo "Scaling up $instanceCount <br/>"
+                sudo docker service scale "${serviceName}=${instanceCount}"
+            else
+                echo "Already max instances <br/>"
+            fi
         fi
     else
-        echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
+        if (( avgMs < 5 && instanceCount > 1 )); then
+            if (( runningCount < instanceCount )); then
+                echo "Waiting instances $avgMs<br/>"
+            else
+                ((instanceCount--))
+                echo "Scaling down $instanceCount <br/>"
+                sudo docker service scale "${serviceName}=${instanceCount}"
+            fi
+        else
+            echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
+        fi
     fi
-fi
-echo "ok"
+    echo "ok"
+) 200>"$lockfile"
 # echo "maxInstances: $maxInstances<br/>"
 # echo "serviceName: $serviceName<br/>"
 # echo "instanceCount: $instanceCount<br/>"
