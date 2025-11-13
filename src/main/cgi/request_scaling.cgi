@@ -50,9 +50,10 @@ lockfile="$targetDir/request_scaling.lock"
     
     echo "Content-type: text/html"
     echo ''
-    if [[ $(date -d "$lastUpdate" +%s) -gt $(( $(date +%s) - 300 )) ]]; then
-        echo "$serviceName lastUpdate $lastUpdate"
-    else
+    echo "$lastUpdate"
+    # if [[ $(date -d "$lastUpdate" +%s) -gt $(( $(date +%s) - 300 )) ]]; then
+        # echo "$serviceName lastUpdate $lastUpdate"
+    # else
         if (( avgMs > 250 )); then
             if (( runningCount < instanceCount )); then
                 echo "Waiting instances $runningCount of $instanceCount<br/>"
@@ -78,7 +79,7 @@ lockfile="$targetDir/request_scaling.lock"
                 echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
             fi
         fi
-    fi
+    # fi
     echo "ok"
 ) 200>"$lockfile"
 # echo "maxInstances: $maxInstances<br/>"
