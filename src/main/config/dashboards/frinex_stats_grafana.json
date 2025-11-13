@@ -2361,7 +2361,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "requests"
+                  "avgMs"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -2436,6 +2436,7 @@
               "type": "string"
             }
           ],
+          "filterExpression": "service == \"load_test_target_staging_admin\"",
           "filters": [],
           "format": "table",
           "global_query_id": "",
