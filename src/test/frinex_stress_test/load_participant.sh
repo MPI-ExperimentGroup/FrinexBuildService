@@ -84,7 +84,8 @@ for i in {1..12}; do
     # 6567 / 75 = 88
     curl --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server_'$(cat /proc/sys/kernel/random/uuid)'","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "3001"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server_'$(cat /proc/sys/kernel/random/uuid)'","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "6000"}]' -H 'Content-Type: application/json' $currentUrl/stimulusResponse
 done
-for i in {1..6000}; do
+# for i in {1..6000}; do # 100ms_a.ogg
+for i in {1..20}; do # audioA-30s.wav
     # RAN and Verbal fluency for one participant:
     # MediaData: 12 rows
     # MediaData: 4 rows
@@ -96,7 +97,7 @@ for i in {1..6000}; do
 
     # frinexbq4_media_data_total.value 78
     # 78 / 493
-    curl --silent --show-error --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "mediaType=ogg" --form "partNumber=0" --form "dataBlob=@/frinex_load_test/test_data/100ms_a.ogg"  $currentUrl/mediaBlob
+    curl --silent --show-error --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "mediaType=ogg" --form "partNumber=0" --form "dataBlob=@/frinex_load_test/test_data/audioA-30s.wav"  $currentUrl/mediaBlob
 done
 # frinexbq4_group_data_total.value 0
 date
