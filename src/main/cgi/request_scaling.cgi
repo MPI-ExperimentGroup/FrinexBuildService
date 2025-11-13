@@ -38,7 +38,7 @@ instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Re
 # echo "$instanceCount"
 runningCount=$(sudo docker service ps --filter "desired-state=running" --format '{{.CurrentState}}' "$serviceName" | grep -c "Running")
 
-lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName")
+lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName" | sed -E 's/\.[0-9]+//; s/ UTC//')
 
 lockfile="$targetDir/request_scaling.lock"
 (
@@ -51,9 +51,9 @@ lockfile="$targetDir/request_scaling.lock"
     echo "Content-type: text/html"
     echo ''
     echo "$lastUpdate"
-    # if [[ $(date -d "$lastUpdate" +%s) -gt $(( $(date +%s) - 300 )) ]]; then
-        # echo "$serviceName lastUpdate $lastUpdate"
-    # else
+    if [[ $(date -d "$lastUpdate" +%s) -gt $(( $(date +%s) - 300 )) ]]; then
+        echo "$serviceName lastUpdate $lastUpdate"
+    else
         if (( avgMs > 250 )); then
             if (( runningCount < instanceCount )); then
                 echo "Waiting instances $runningCount of $instanceCount<br/>"
@@ -79,7 +79,7 @@ lockfile="$targetDir/request_scaling.lock"
                 echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
             fi
         fi
-    # fi
+    fi
     echo "ok"
 ) 200>"$lockfile"
 # echo "maxInstances: $maxInstances<br/>"
