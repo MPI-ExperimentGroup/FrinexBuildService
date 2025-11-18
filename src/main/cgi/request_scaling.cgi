@@ -66,18 +66,19 @@ lockfile="$targetDir/request_scaling.lock"
                     echo "Already max instances <br/>"
                 fi
             fi
-        else
-            if (( avgMs < 5 && instanceCount > 1 )); then
-                if (( runningCount < instanceCount )); then
-                    echo "Waiting instances $avgMs<br/>"
-                else
-                    ((instanceCount--))
-                    echo "Scaling down $instanceCount <br/>"
-                    sudo docker service scale "${serviceName}=${instanceCount}"
-                fi
-            else
-                echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
-            fi
+        # until nginx has two instances we are not scalling down because each change will trigger and nginx reload
+        # else
+        #     if (( avgMs < 5 && instanceCount > 1 )); then
+        #         if (( runningCount < instanceCount )); then
+        #             echo "Waiting instances $avgMs<br/>"
+        #         else
+        #             ((instanceCount--))
+        #             echo "Scaling down $instanceCount <br/>"
+        #             sudo docker service scale "${serviceName}=${instanceCount}"
+        #         fi
+        #     else
+        #         echo "avgMs: $avgMs <= 500 : $instanceCount<br/>"
+        #     fi
         fi
     fi
     echo "ok"
