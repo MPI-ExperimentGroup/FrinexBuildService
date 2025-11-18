@@ -10,4 +10,4 @@ for i in {1..80}; do
     # pidof curl | wc -w
 done
 wait
-cat "load_participant_*.log"
+cat load_participant_*.log
