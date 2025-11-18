@@ -9,5 +9,5 @@ for i in {1..80}; do
     # pidof load_participant.sh | wc -w
     # pidof curl | wc -w
 done
-time wait
+wait
 cat "load_participant_*.log"
