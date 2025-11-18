@@ -43,5 +43,6 @@ for i in $(seq 1 100); do
     docker run -d --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh
 done
 
-watch -n 2 'docker ps -a --filter "name=load_test_"'
+# watch -n 2 'docker ps -a --filter "name=load_test_"'
 
+docker logs -f $(docker ps --filter "name=load_test_" -q) | tee "load_test_output_$(date +"%Y%m%d%H%M").log"
