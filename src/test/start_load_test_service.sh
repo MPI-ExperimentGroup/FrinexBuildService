@@ -40,6 +40,10 @@ scriptDir=$(pwd -P)
 
 docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:latest .
 for i in $(seq 1 100); do
+    docker stop load_test_$i
+    docker rm load_test_$i
+done
+for i in $(seq 1 100); do
     docker run -d --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh
     docker logs -f load_test_$i > "$scriptDir/load_test_${i}_$(date +%Y%m%d%H%M).log" &
 done
