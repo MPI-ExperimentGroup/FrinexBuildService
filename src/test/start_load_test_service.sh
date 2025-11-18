@@ -52,4 +52,4 @@ done
 
 # docker logs -f $(docker ps --filter "name=load_test_" -q) | tee "load_test_output_$(date +"%Y%m%d%H%M").log"
 
-tail -f "$scriptDir/load_test_*_$(date +%Y%m%d)*.log"
+tail -f $scriptDir/load_test_*_$(date +%Y%m%d)*.log
