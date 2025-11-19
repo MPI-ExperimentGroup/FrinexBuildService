@@ -61,7 +61,9 @@ lockfile="$targetDir/request_scaling.lock"
                 if (( instanceCount < maxInstances )); then
                     ((instanceCount++))
                     echo "Scaling up $instanceCount <br/>"
-                    sudo docker service scale "${serviceName}=${instanceCount}"
+                    # sudo docker service scale "${serviceName}=${instanceCount}"
+                    sudo docker service update --publish-rm 8080 $serviceName
+                    sudo docker service update --publish-add target=8080,mode=host --replicas "$instanceCount" "$serviceName"
                 else
                     echo "Already max instances <br/>"
                 fi
