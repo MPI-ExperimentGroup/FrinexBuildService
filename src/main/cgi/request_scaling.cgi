@@ -75,7 +75,7 @@ lockfile="$targetDir/request_scaling.lock"
                     echo "hostPort: $hostPort"
                     imageDateTag=$(unzip -p /FrinexBuildService/protected/$experimentName/$(echo "$serviceName.war" | sed "s/_admin.war/_web.war/g") version.json | grep compileDate | sed "s/[^0-9]//g")
                     echo "imageDateTag: $imageDateTag"
-                    sudo docker service create --name $cleanedInput-$instanceCount DOCKER_SERVICE_OPTIONS -d --publish mode=host,target=8080,published=$hostPort DOCKER_REGISTRY/$serviceName:$imageDateTag # &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+                    sudo docker service create --name $serviceName-$instanceCount DOCKER_SERVICE_OPTIONS -d --publish mode=host,target=8080,published=$hostPort DOCKER_REGISTRY/$serviceName:$imageDateTag # &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
                     # sudo docker service update --publish-rm 8080 $serviceName
                     # sudo docker service update --publish-add target=8080,mode=host --replicas "$instanceCount" "$serviceName"
                 else
