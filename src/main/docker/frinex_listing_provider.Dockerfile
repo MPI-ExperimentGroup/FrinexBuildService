@@ -95,6 +95,7 @@ RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect -
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service scale [a-z0-9-_]*=[0-9]*' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ps *' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service update *' >> /etc/sudoers
+RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service create *' >> /etc/sudoers
 
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /bin/chown -R frinex\:www-data /FrinexBuildService/artifacts/[a-z0-9-_]*/' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /bin/chmod -R ug+rwx /FrinexBuildService/artifacts/[a-z0-9-_]*/' >> /etc/sudoers
