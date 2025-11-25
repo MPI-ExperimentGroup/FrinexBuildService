@@ -73,8 +73,9 @@ for serviceName in $serviceListUnique; do
     urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")
     echo "location /" $serviceName " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://" $serviceName "_upstreams/" $urlName ";\n}\n" >> /usr/local/apache2/htdocs/frinex_staging_locations.v2
     
-    echo "upstream $serviceName {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+    echo "upstream ${serviceName}_upstreams {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
+        echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
         node=$(docker service ps --format '{{.Node}}' "$instanceName")
         port=$(docker service inspect "$instanceName" --format '{{(index .Endpoint.Ports 0).PublishedPort}}')
         echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
