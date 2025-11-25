@@ -76,9 +76,12 @@ for serviceName in $serviceListUnique; do
     echo "upstream ${serviceName}_upstreams {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
         echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
-        node=$(docker service ps --format '{{.Node}}' "$instanceName")
-        port=$(docker service inspect "$instanceName" --format '{{(index .Endpoint.Ports 0).PublishedPort}}')
-        echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+        ports=$(docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
+        docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" | while read node; do
+            for port in $ports; do
+                echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+            done
+        done
     done
     echo "}" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
 done 
