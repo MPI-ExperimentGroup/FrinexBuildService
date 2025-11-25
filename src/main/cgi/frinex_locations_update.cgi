@@ -75,8 +75,8 @@ for serviceName in $serviceListUnique; do
     
     echo "upstream $serviceName {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
-        node=$(docker service ps --format '{{.Node}}' "$service")
-        port=$(docker service inspect "$service" --format '{{(index .Endpoint.Ports 0).PublishedPort}}')
+        node=$(docker service ps --format '{{.Node}}' "$instanceName")
+        port=$(docker service inspect "$instanceName" --format '{{(index .Endpoint.Ports 0).PublishedPort}}')
         echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
     done
     echo "}" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
