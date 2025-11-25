@@ -32,6 +32,14 @@ serviceList="$(sudo docker service ls \
     | grep -v -E " 0/" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
+serviceListUnique="$(sudo docker service ls --format '{{.Name}}' \
+    | grep -E "_admin|_web" \
+    | sed 's/_[0-9]\+$//' \
+    | sort -u)"
+
+serviceListAll="$(sudo docker service ls --format '{{.Name}}' \
+    | grep -E "_admin|_web")"
+
 echo "$serviceList" \
     | grep -E "_admin|_web" \
     | grep -E "_production" \
@@ -58,6 +66,21 @@ echo "$serviceList" \
     | grep -E "_staging" \
     | awk '{print "upstream " $1 " {\n server lux27.mpi.nl:" $6 ";\n server lux28.mpi.nl:" $6 ";\n server lux29.mpi.nl:" $6 ";\n}\n"}' \
     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
+
+echo "" > /usr/local/apache2/htdocs/frinex_staging_locations.v2
+echo "" > /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+for serviceName in $serviceListUnique; do
+    urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")
+    echo "location /" $serviceName " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://" $serviceName "_upstreams/" $urlName ";\n}\n" >> /usr/local/apache2/htdocs/frinex_staging_locations.v2
+    
+    echo "upstream $serviceName {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+    for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
+        node=$(docker service ps --format '{{.Node}}' "$service")
+        port=$(docker service inspect "$service" --format '{{(index .Endpoint.Ports 0).PublishedPort}}')
+        echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+    done
+    echo "}" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+done 
 
 echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 # for runningWar in $(curl -k -s https://ems15.mpi.nl/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g")
