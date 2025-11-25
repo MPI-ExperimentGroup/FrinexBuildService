@@ -24,6 +24,9 @@
 
 # This script creates nginx configuraiton fragments as static files to be served via HTTPD
 
+exec 200>"/tmp/frinex_locations_update.lock"
+flock -n 200 || { echo "Content-type: text/plain"; echo; echo "already running"; exit 1; }
+
 echo "Content-type: text/json"
 echo ''
 # this | grep -v -E " 0/" \ is there to bypas docker when the services have not come up, if they are runing on tomcat they will be sent there
@@ -67,24 +70,27 @@ echo "$serviceList" \
     | awk '{print "upstream " $1 " {\n server lux27.mpi.nl:" $6 ";\n server lux28.mpi.nl:" $6 ";\n server lux29.mpi.nl:" $6 ";\n}\n"}' \
     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
-echo "" > /usr/local/apache2/htdocs/frinex_staging_locations.v2
-echo "" > /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+echo "" > /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp
+echo "" > /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
 for serviceName in $serviceListUnique; do
     urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")
-    echo "location /" $serviceName " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://" $serviceName "_upstreams/" $urlName ";\n}\n" >> /usr/local/apache2/htdocs/frinex_staging_locations.v2
+    echo "location /" $serviceName " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://" $serviceName "_upstreams/" $urlName ";\n}\n" >> /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp
     
-    echo "upstream ${serviceName}_upstreams {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+    echo "upstream ${serviceName}_upstreams {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
-        echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
-        ports=$(docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
-        docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" | while read node; do
+        echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
+        ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
+        echo "# $ports" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
+        sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" | while read node; do
             for port in $ports; do
-                echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+                echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
             done
         done
     done
-    echo "}" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+    echo "}" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
 done 
+mv /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp /usr/local/apache2/htdocs/frinex_staging_locations.v2
+mv /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
 
 echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 # for runningWar in $(curl -k -s https://ems15.mpi.nl/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g")
