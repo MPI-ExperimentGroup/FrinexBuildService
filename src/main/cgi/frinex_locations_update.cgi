@@ -74,20 +74,20 @@ echo "" > /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp
 echo "" > /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
 for serviceName in $serviceListUnique; do
     urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")
-    echo "location /" $serviceName " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://" $serviceName "_upstreams/" $urlName ";\n}\n" >> /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp
+    echo "location /" $serviceName " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://" $serviceName "/" $urlName ";\n}\n" >> /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp
     
-    echo "upstream ${serviceName}_upstreams {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
+    echo "upstream ${serviceName} {" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
-        echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
+        # echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
-        echo "# $ports" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
+        # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
         sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" | while read node; do
             for port in $ports; do
                 echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
             done
         done
     done
-    echo "}" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
+    echo "}\n" >> /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
 done 
 mv /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp /usr/local/apache2/htdocs/frinex_staging_locations.v2
 mv /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
