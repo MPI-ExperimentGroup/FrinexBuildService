@@ -34,7 +34,8 @@ total=$(echo "$QUERY_STRING" | sed -n 's/^.*total=\([0-9a-z_]*\).*$/\1/p')
 # echo "$total"
 status=$(echo "$QUERY_STRING" | sed -n 's/^.*status=\([0-9a-z_]*\).*$/\1/p')
 # echo "$status"
-instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
+# instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
+instanceCount=$(sudo docker service ls | grep "$serviceName" | wc -l)
 # echo "$instanceCount"
 runningCount=$(sudo docker service ps --filter "desired-state=running" --format '{{.CurrentState}}' "$serviceName" | grep -c "Running")
 
