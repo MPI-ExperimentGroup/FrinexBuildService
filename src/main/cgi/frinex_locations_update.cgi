@@ -57,18 +57,18 @@ echo "$serviceList" \
     > /usr/local/apache2/htdocs/frinex_production_upstreams.txt
 
 # | awk '{print "location /" $2 "X {\n proxy_pass http://" $1 "/" $2 "X;\n proxy_set_header X-Forwarded-Prefix /" $2 "X;\n proxy_set_header X-Forwarded-Host tomcatstaging;\n proxy_set_header X-Forwarded-Proto https;\n proxy_set_header X-Forwarded-Port 443;\n}\n location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
-echo "$serviceList" \
-    | grep -E "_admin|_web" \
-    | grep -E "_staging" \
-    | awk '{print "location /" $2 "X {\n proxy_http_version 1.1;\n proxy_set_header Upgrade $http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host $http_host;\n proxy_pass http://" $1 "/" $2 "X;\n}\n"}' \
-    | sed 's/_staging_webX//g' \
-    | sed 's/_staging_adminX/-admin/g' \
-    > /usr/local/apache2/htdocs/frinex_staging_locations.txt
+# echo "$serviceList" \
+#     | grep -E "_admin|_web" \
+#     | grep -E "_staging" \
+#     | awk '{print "location /" $2 "X {\n proxy_http_version 1.1;\n proxy_set_header Upgrade $http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host $http_host;\n proxy_pass http://" $1 "/" $2 "X;\n}\n"}' \
+#     | sed 's/_staging_webX//g' \
+#     | sed 's/_staging_adminX/-admin/g' \
+#     > /usr/local/apache2/htdocs/frinex_staging_locations.txt
 
-echo "$serviceList" \
-    | grep -E "_staging" \
-    | awk '{print "upstream " $1 " {\n server lux27.mpi.nl:" $6 ";\n server lux28.mpi.nl:" $6 ";\n server lux29.mpi.nl:" $6 ";\n}\n"}' \
-    > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
+# echo "$serviceList" \
+#     | grep -E "_staging" \
+#     | awk '{print "upstream " $1 " {\n server lux27.mpi.nl:" $6 ";\n server lux28.mpi.nl:" $6 ";\n server lux29.mpi.nl:" $6 ";\n}\n"}' \
+#     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
 echo "" > /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp
 echo "" > /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
@@ -81,7 +81,7 @@ for serviceName in $serviceListUnique; do
         deploymentType="staging"
     fi
     urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")
-    echo -e "location /$serviceName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+    echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
     
     echo "upstream ${serviceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
@@ -96,8 +96,8 @@ for serviceName in $serviceListUnique; do
     done
     echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
 done 
-mv /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp /usr/local/apache2/htdocs/frinex_staging_locations.v2
-mv /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_staging_upstreams.v2
+mv /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp /usr/local/apache2/htdocs/frinex_staging_locations.txt
+mv /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 mv /usr/local/apache2/htdocs/frinex_production_locations.v2.tmp /usr/local/apache2/htdocs/frinex_production_locations.v2
 mv /usr/local/apache2/htdocs/frinex_production_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_production_upstreams.v2
 
