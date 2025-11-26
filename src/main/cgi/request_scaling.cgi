@@ -37,7 +37,8 @@ status=$(echo "$QUERY_STRING" | sed -n 's/^.*status=\([0-9a-z_]*\).*$/\1/p')
 # instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
 instanceCount=$(sudo docker service ls | grep "$serviceName" | wc -l)
 # echo "$instanceCount"
-runningCount=$(sudo docker service ps --filter "desired-state=running" --format '{{.CurrentState}}' "$serviceName" | grep -c "Running")
+# runningCount=$(sudo docker service ps --filter "desired-state=running" --format '{{.CurrentState}}' "$serviceName" | grep -c "Running")
+runningCount=$(sudo docker service ls | grep "$serviceName" | grep "1/1" | wc -l)
 
 lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName" | sed -E 's/\.[0-9]+//; s/ UTC//')
 
