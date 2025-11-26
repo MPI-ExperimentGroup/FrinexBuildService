@@ -81,7 +81,7 @@ for serviceName in $serviceListUnique; do
         deploymentType="staging"
     fi
     urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")
-    echo -e "location /" $serviceName " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://" $serviceName "/" $urlName ";\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+    echo -e "location /$serviceName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
     
     echo "upstream ${serviceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
@@ -90,7 +90,7 @@ for serviceName in $serviceListUnique; do
         # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
         sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" | while read node; do
             for port in $ports; do
-                echo "server $node:$port;" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+                echo "   server $node:$port;" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
             done
         done
     done
