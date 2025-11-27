@@ -53,10 +53,13 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             contextPath=$(echo "$cleanedInput" | sed 's/_production_web$//g'| sed 's/_production_admin$/-admin/g' | sed 's/_staging_web$//g'| sed 's/_staging_admin$/-admin/g')
             # only the web component has the compile date so this is used for the tag of both admin and web images
             imageDateTag=$(unzip -p /FrinexBuildService/protected/$experimentDirectory/$(echo "$cleanedInput.war" | sed "s/_admin.war/_web.war/g") version.json | grep compileDate | sed "s/[^0-9]//g")
-            echo "imageDateTag: $imageDateTag"
-            echo "FROM eclipse-temurin:21-jdk-alpine" > /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
-            echo "COPY $cleanedInput.war /$cleanedInput.war" >> /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
-            echo "CMD [\"java\", \"-jar\", \"/$cleanedInput.war\", \"--server.servlet.context-path=/$contextPath\", \"--server.forward-headers-strategy=FRAMEWORK\"]" >> /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
+            
+            # because this Docker file is out of date (for example does not have --nl.mpi.tg.eg.frinex.informReadyUrl) this section has been omitted and we now expect the Docker file to always exist
+            # echo "imageDateTag: $imageDateTag"
+            # echo "FROM eclipse-temurin:21-jdk-alpine" > /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
+            # echo "COPY $cleanedInput.war /$cleanedInput.war" >> /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
+            # echo "CMD [\"java\", \"-jar\", \"/$cleanedInput.war\", \"--server.servlet.context-path=/$contextPath\", \"--server.forward-headers-strategy=FRAMEWORK\"]" >> /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker
+            
             # chmod a+rwx /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # cat /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # cat /FrinexBuildService/protected/$experimentDirectory/$comparisonServiceName.Docker &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
