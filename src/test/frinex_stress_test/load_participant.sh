@@ -127,7 +127,7 @@ for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
     # pause for 10 seconds because the participant can't upload audio before it has been recorded
     sleep 10
 
-    curl --write-out "mediaBlob:%{http_code}," --silent --show-error --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "mediaType=ogg" --form "partNumber=0" --form "dataBlob=@/frinex_load_test/test_data/audio_10s.wav"  $currentUrl/mediaBlob || echo "mediaBlob:000,";
+    curl --write-out "mediaBlob:%{http_code}," --silent --show-error --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "mediaType=ogg" --form "partNumber=0" --form "dataBlob=@/frinex_load_test/test_data/audio_recorder_10s.ogg"  $currentUrl/mediaBlob || echo "mediaBlob:000,";
 done
 # frinexbq4_group_data_total.value 0
 date
