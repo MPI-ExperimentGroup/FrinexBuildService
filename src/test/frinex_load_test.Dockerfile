@@ -28,6 +28,7 @@ RUN mkdir /frinex_load_test/test_data
 COPY frinex_stress_test/test_data/100ms_v.mp4 /frinex_load_test/test_data
 COPY frinex_stress_test/test_data/100ms_a.ogg /frinex_load_test/test_data
 COPY frinex_stress_test/test_data/audio_10s.wav /frinex_load_test/test_data
+COPY frinex_stress_test/test_data/audio_recorder_10s.ogg /frinex_load_test/test_data
 
 COPY frinex_stress_test/load_participant.sh /frinex_load_test/
 COPY frinex_stress_test/load_test.sh /frinex_load_test/
