@@ -53,12 +53,14 @@ done
 
 # docker logs -f $(docker ps --filter "name=load_test_" -q) | tee "load_test_output_$(date +"%Y%m%d%H%M").log"
 
-tail -f $scriptDir/load_test_*_$startDate.log
+# tail -f $scriptDir/load_test_*_$startDate.log
 
 for i in $(seq 1 100); do
     echo "docker wait load_test_$i"
     docker wait "load_test_$i"
 done
+
+echo "Process ran from $startDate until $(date '+%Y%m%d%H%M')" >> "$scriptDir/load_test_$startDate.log"
 
 echo "generating stats" >> "$scriptDir/load_test_$startDate.log"
 
@@ -70,10 +72,10 @@ echo "mediaBlob:500s" >> "$scriptDir/load_test_$startDate.log"
 grep -oh "mediaBlob:5" src/test/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
 
 echo "200s" >> "$scriptDir/load_test_$startDate.log"
-grep -oh ":2" src/test/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+grep -Eoh ":2[0-9]{2}," src/test/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
 echo "400s" >> "$scriptDir/load_test_$startDate.log"
-grep -oh ":4" src/test/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+grep -Eoh ":4[0-9]{2}," src/test/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
 echo "500s" >> "$scriptDir/load_test_$startDate.log"
-grep -oh ":5" src/test/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+grep -Eoh ":5[0-9]{2}," src/test/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
 
 cat "$scriptDir/load_test_$startDate.log"
