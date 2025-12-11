@@ -22,7 +22,22 @@
 
 FROM eclipse-temurin:21-jdk-alpine
 
-RUN apk add --no-cache git bash unzip zip imagemagick graphviz maven vim file
+RUN curl -o /tmp/harica-root.crt https://repo.harica.gr/repo/certs/harica_root_ca_2021.pem && \
+    curl -o /tmp/harica-intermediate.crt https://repo.harica.gr/repo/certs/harica_tls_rsa_ca_2021.pem
+
+RUN keytool -import -trustcacerts -noprompt \
+    -alias harica-root \
+    -file /tmp/harica-root.crt \
+    -keystore $JAVA_HOME/lib/security/cacerts \
+    -storepass changeit
+
+RUN keytool -import -trustcacerts -noprompt \
+    -alias harica-intermediate \
+    -file /tmp/harica-intermediate.crt \
+    -keystore $JAVA_HOME/lib/security/cacerts \
+    -storepass changeit
+
+RUN apk add --no-cache git bash unzip zip imagemagick graphviz maven vim file ca-certificates curl
 
 # the webjars for recorderjs are all very out of date, so we reply on a checked out copy of https://github.com/chris-rudmin/opus-recorder.git-->
 RUN git clone https://github.com/chris-rudmin/opus-recorder.git
