@@ -492,7 +492,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":$imageDateTag \n"
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":$imageDateTag \n"
         // + "sudo docker service rm " + serviceName + " || true\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
-        + "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + serviceName + "\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
+        + "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + serviceName + "[_0-9]+\" | xargs -r sudo docker service rm || true\n"
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":$imageDateTag\n"
         + "sudo docker system prune -f\n";
     try {
