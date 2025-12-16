@@ -179,9 +179,11 @@ for serviceName in $serviceNameArray; do
                         canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
                         canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
                         # echo "adminServiceName: $adminServiceName"
-                        sudo docker service rm "$adminServiceName"
+                        # sudo docker service rm "$adminServiceName"
+                        sudo docker service ls --format '{{.Name}}' | grep -Ei "^${adminServiceName}[_0-9]+" | xargs -r sudo docker service rm
                         # echo "webServiceName: $webServiceName"
-                        sudo docker service rm "$webServiceName"
+                        # sudo docker service rm "$webServiceName"
+                        sudo docker service ls --format '{{.Name}}' | grep -Ei "^${webServiceName}[_0-9]+" | xargs -r sudo docker service rm
                         echo ""
                         echo 'no recent use so can be terminated';
                     fi
@@ -190,9 +192,11 @@ for serviceName in $serviceNameArray; do
                     canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
                     canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
                     # echo "adminServiceName: $adminServiceName"
-                    sudo docker service rm "$adminServiceName"
+                    # sudo docker service rm "$adminServiceName"
+                    sudo docker service ls --format '{{.Name}}' | grep -Ei "^${adminServiceName}[_0-9]+" | xargs -r sudo docker service rm
                     # echo "webServiceName: $webServiceName"
-                    sudo docker service rm "$webServiceName"
+                    # sudo docker service rm "$webServiceName"
+                    sudo docker service ls --format '{{.Name}}' | grep -Ei "^${webServiceName}[_0-9]+" | xargs -r sudo docker service rm
                     echo ""
                     echo 'broken so can be terminated';
                     rm /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
@@ -209,7 +213,8 @@ for serviceName in $serviceNameArray; do
                     needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
                     needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
                     echo "healthResult: $healthResult"
-                    sudo docker service rm "$webServiceName"
+                    # sudo docker service rm "$webServiceName"
+                    sudo docker service ls --format '{{.Name}}' | grep -Ei "^${webServiceName}[_0-9]+" | xargs -r sudo docker service rm
                     # sudo docker service update "$webServiceName"
                     # sudo docker service update --force "$webServiceName"
                     echo ""

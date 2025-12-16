@@ -211,7 +211,8 @@ function unDeploy(currentEntry) {
 
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_web && "
-        dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + " || true\n"
+        // dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + " || true\n"
+        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" +  + currentEntry.buildName + "_staging_web\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
     }
     if (deploymentType.includes('staging_tomcat')) {
         var buildContainerName = currentEntry.buildName + '_undeploy';
@@ -261,7 +262,8 @@ function unDeploy(currentEntry) {
     var dockerString = "";
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_admin && "
-        dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_admin' + " || true\n"
+        // dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_admin' + " || true\n"
+        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" +  + currentEntry.buildName + "_staging_admin\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
     }
     if (deploymentType.includes('staging_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
@@ -310,7 +312,8 @@ function unDeploy(currentEntry) {
     var dockerString = "";
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_web && "
-        dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_web' + " || true\n"
+        // dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_web' + " || true\n"
+        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" +  + currentEntry.buildName + "_production_web\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
     }
     if (deploymentType.includes('production_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
@@ -363,7 +366,8 @@ function unDeploy(currentEntry) {
     var dockerString = "";
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_admin && "
-        dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_admin' + " || true\n"
+        // dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_admin' + " || true\n"
+        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" +  + currentEntry.buildName + "_production_admin\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
     }
     if (deploymentType.includes('production_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
@@ -487,7 +491,8 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "sudo docker build --force-rm --no-cache -f " + serviceName + ".Docker -t " + dockerRegistry + "/" + serviceName + ":$imageDateTag .\n"
         // + "docker tag " + serviceName + " " + dockerRegistry + "/" + serviceName + ":$imageDateTag \n"
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":$imageDateTag \n"
-        + "sudo docker service rm " + serviceName + " || true\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
+        // + "sudo docker service rm " + serviceName + " || true\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
+        + "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + serviceName + "\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
         + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":$imageDateTag\n"
         + "sudo docker system prune -f\n";
     try {

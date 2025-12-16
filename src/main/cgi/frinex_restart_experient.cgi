@@ -71,7 +71,8 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             sudo docker push DOCKER_REGISTRY/$cleanedInput:$imageDateTag &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker push DOCKER_REGISTRY/$comparisonServiceName:$imageDateTag &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Cleaning up<br>"
-            sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            sudo docker service ls --format '{{.Name}}' | grep -Ei "^${cleanedInput}[_0-9]+" | xargs -r sudo docker service rm &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            # sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker service rm $comparisonServiceName &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Starting<br>"
             sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:$imageDateTag &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
