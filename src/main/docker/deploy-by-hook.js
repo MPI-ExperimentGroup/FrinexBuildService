@@ -212,7 +212,7 @@ function unDeploy(currentEntry) {
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_web && "
         // dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_web' + " || true\n"
-        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" +  + currentEntry.buildName + "_staging_web\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
+        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + currentEntry.buildName + "_staging_web\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
     }
     if (deploymentType.includes('staging_tomcat')) {
         var buildContainerName = currentEntry.buildName + '_undeploy';
@@ -263,7 +263,7 @@ function unDeploy(currentEntry) {
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_staging_admin && "
         // dockerString += "sudo docker service rm " + currentEntry.buildName + '_staging_admin' + " || true\n"
-        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" +  + currentEntry.buildName + "_staging_admin\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
+        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + currentEntry.buildName + "_staging_admin\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
     }
     if (deploymentType.includes('staging_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
@@ -313,7 +313,7 @@ function unDeploy(currentEntry) {
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_web && "
         // dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_web' + " || true\n"
-        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" +  + currentEntry.buildName + "_production_web\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
+        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + currentEntry.buildName + "_production_web\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
     }
     if (deploymentType.includes('production_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
@@ -367,7 +367,7 @@ function unDeploy(currentEntry) {
     if (deploymentType.includes('docker')) {
         // dockerString += "sudo docker service ls | grep " + currentEntry.buildName + "_production_admin && "
         // dockerString += "sudo docker service rm " + currentEntry.buildName + '_production_admin' + " || true\n"
-        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" +  + currentEntry.buildName + "_production_admin\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
+        dockerString += "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + currentEntry.buildName + "_production_admin\"[_0-9]+\" | xargs -r sudo docker service rm || true\n"
     }
     if (deploymentType.includes('production_tomcat')) {
         dockerString += 'sudo docker container rm -f ' + buildContainerName
