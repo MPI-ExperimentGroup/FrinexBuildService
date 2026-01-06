@@ -74,8 +74,20 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             sudo docker service ls --format '{{.Name}}' | grep -Ei "^${cleanedInput}[_0-9]+" | xargs -r sudo docker service rm &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker service rm $comparisonServiceName &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            instanceCount=$(sudo docker service ls | grep "$cleanedInput" | wc -l)
+            lineNumber=$(grep -n -m1 "$cleanedInput" /FrinexBuildService/artifacts/ports.txt | cut -d: -f1);
+            if [ -z "$lineNumber" ]; then
+                echo "$cleanedInput" >> /FrinexBuildService/artifacts/ports.txt
+                lineNumber=$(wc -l < /FrinexBuildService/artifacts/ports.txt)
+                # synchronise ports.txt to the other swarm nodes
+                bash /FrinexBuildService/script/sync_delete_from_swarm_nodes.sh /FrinexBuildService/artifacts/ports.txt &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            fi
+            echo "lineNumber: $lineNumber" &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            hostPort=$(( 10000 + (lineNumber * 20) + $instanceCount ))
+            echo "hostPort: $hostPort" &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            echo "imageDateTag: $imageDateTag" &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Starting<br>"
-            sudo docker service create --name $cleanedInput DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$cleanedInput:$imageDateTag &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+            sudo docker service create --name ${cleanedInput}_${instanceCount} DOCKER_SERVICE_OPTIONS -d --publish mode=host,target=8080,published=$hostPort DOCKER_REGISTRY/$cleanedInput:$imageDateTag &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             sudo docker system prune -f &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker service create --name $comparisonServiceName DOCKER_SERVICE_OPTIONS -d -p 8080 DOCKER_REGISTRY/$comparisonServiceName:$imageDateTag &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             echo "Please reload this page in a few minutes<br>"
