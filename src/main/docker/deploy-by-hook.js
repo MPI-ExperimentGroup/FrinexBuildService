@@ -493,8 +493,9 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "sudo docker push " + dockerRegistry + "/" + serviceName + ":$imageDateTag \n"
         // + "sudo docker service rm " + serviceName + " || true\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + serviceName + "[_0-9]+\" | xargs -r sudo docker service rm || true\n"
-        + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":$imageDateTag\n"
-        + "sudo docker system prune -f\n";
+        + "curl \"http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?"+serviceName+"\"\n"
+        // + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":$imageDateTag\n"
+        // + "sudo docker system prune -f\n";
     try {
         // console.log(serviceSetupString);
         // TODO: this need not be a syncronous step only the update and trigger need to be done in a result promise
