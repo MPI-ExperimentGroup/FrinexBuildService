@@ -44,6 +44,9 @@ for i in $(seq 1 100); do
     docker stop load_test_$i
     docker rm load_test_$i
 done
+
+docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
+
 for i in $(seq 1 100); do
     docker run -d --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh
     docker logs -f load_test_$i > "$scriptDir/load_test_${i}_$startDate.log" &
@@ -60,6 +63,8 @@ for i in $(seq 1 100); do
     docker wait "load_test_$i"
 done
 
+docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
+
 echo "Process ran from $startDate until $(date '+%Y%m%d%H%M')" >> "$scriptDir/load_test_$startDate.log"
 
 echo "generating stats" >> "$scriptDir/load_test_$startDate.log"
@@ -72,6 +77,60 @@ echo "mediaBlob:500s" >> "$scriptDir/load_test_$startDate.log"
 grep -oh "mediaBlob:5" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
 echo "mediaBlob:000s" >> "$scriptDir/load_test_$startDate.log"
 grep -oh "mediaBlob:0" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+
+echo "metadata:200s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "metadata:2" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "metadata:400s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "metadata:4" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "metadata:500s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "metadata:5" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "metadata:000s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "metadata:0" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+
+echo "screenChange:200s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "screenChange:2" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "screenChange:400s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "screenChange:4" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "screenChange:500s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "screenChange:5" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "screenChange:000s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "screenChange:0" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+
+echo "tagEvent:200s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "tagEvent:2" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "tagEvent:400s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "tagEvent:4" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "tagEvent:500s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "tagEvent:5" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "tagEvent:000s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "tagEvent:0" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+
+echo "tagPairEvent:200s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "tagPairEvent:2" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "tagPairEvent:400s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "tagPairEvent:4" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "tagPairEvent:500s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "tagPairEvent:5" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "tagPairEvent:000s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "tagPairEvent:0" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+
+echo "timeStamp:200s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "timeStamp:2" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "timeStamp:400s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "timeStamp:4" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "timeStamp:500s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "timeStamp:5" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "timeStamp:000s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "timeStamp:0" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+
+echo "stimulusResponse:200s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "stimulusResponse:2" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "stimulusResponse:400s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "stimulusResponse:4" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "stimulusResponse:500s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "stimulusResponse:5" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+echo "stimulusResponse:000s" >> "$scriptDir/load_test_$startDate.log"
+grep -oh "stimulusResponse:0" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
 
 echo "200s" >> "$scriptDir/load_test_$startDate.log"
 grep -Eoh ":2[0-9]{2}," $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
