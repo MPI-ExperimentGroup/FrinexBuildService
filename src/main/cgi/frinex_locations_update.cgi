@@ -30,12 +30,12 @@ flock -n 200 || { echo "Content-type: text/plain"; echo; echo "already running";
 echo "Content-type: text/json"
 echo ''
 # this | grep -v -E " 0/" \ is there to bypas docker when the services have not come up, if they are runing on tomcat they will be sent there
-serviceList="$(sudo docker service ls \
-    | grep -E "replicated" \
-    | grep -E "_admin|_web" \
-    | sed 's/_[0-9]\+$//' \
-    | grep -v -E " 0/" \
-    | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
+# serviceList="$(sudo docker service ls \
+#     | grep -E "replicated" \
+#     | grep -E "_admin|_web" \
+#     | sed 's/_[0-9]\+$//' \
+#     | grep -v -E " 0/" \
+#     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
 serviceListUnique="$(sudo docker service ls --format '{{.Name}}' \
     | grep -E "_admin|_web" \
@@ -45,7 +45,7 @@ serviceListUnique="$(sudo docker service ls --format '{{.Name}}' \
 serviceListAll="$(sudo docker service ls --format '{{.Name}}' \
     | grep -E "_admin|_web")"
 
-echo "$serviceList" \
+echo "$serviceListUnique" \
     | grep -E "_admin|_web" \
     | grep -E "_production" \
     | awk '{print "location /" $2 " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade $http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host $http_host;\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
@@ -53,7 +53,7 @@ echo "$serviceList" \
     | sed 's/_production_admin {/-admin {/g' \
     > /usr/local/apache2/htdocs/frinex_production_locations.txt
 
-echo "$serviceList" \
+echo "$serviceListUnique" \
     | grep -E "_production" \
     | awk '{print "upstream " $1 " {\n server lux27.mpi.nl:" $6 ";\n server lux28.mpi.nl:" $6 ";\n server lux29.mpi.nl:" $6 ";\n}\n"}' \
     > /usr/local/apache2/htdocs/frinex_production_upstreams.txt
@@ -116,7 +116,7 @@ echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 
 experimentList="$(ls /FrinexBuildService/protected/*/*.war | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.war//g')"
 echo "$experimentList" | sort > /usr/local/apache2/htdocs/frinex_all_experiments.txt
-echo "$serviceList" | awk '{print $2}' | sort > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
+echo "$serviceListUnique" | awk '{print $2}' | sort > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
 comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apache2/htdocs/frinex_runnning_experiments.txt > /usr/local/apache2/htdocs/frinex_stopped_experiments.txt
 #  | sed 's/_production_admin/_production-admin/g' | sed 's/_staging_admin/_staging-admin/g'
 # awk 'BEGIN {printf "location ^~ ("} {printf $0 "|"} END {printf ") {\nproxy_pass https://frinexbuild:8010/cgi-bin/frinex_restart_experient.cgi?$1;\n}\n"}' /usr/local/apache2/htdocs/frinex_stopped_experiments.txt | sed 's/||/|/g' | sed 's/(|/(/g' | sed 's/|)/)/g' > /usr/local/apache2/htdocs/frinex_stopped_locations.txt
