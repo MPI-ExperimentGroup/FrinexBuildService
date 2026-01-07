@@ -33,6 +33,7 @@ echo ''
 serviceList="$(sudo docker service ls \
     | grep -E "replicated" \
     | grep -E "_admin|_web" \
+    | sed 's/_[0-9]\+$//' \
     | grep -v -E " 0/" \
     | sed 's/[*:]//g' | sed 's/->8080\/tcp//g')"
 
