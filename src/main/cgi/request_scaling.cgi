@@ -61,7 +61,7 @@ lockfile="$targetDir/request_scaling.lock"
                 echo "Waiting instances $runningCount of $instanceCount<br/>"
             else
                 if (( instanceCount < maxInstances )); then
-                    ((instanceCount++))
+                    # ((instanceCount++))
                     echo "Scaling up $instanceCount <br/>"
                     experimentName=$(echo "$serviceName" | sed 's/_production_web$//g'| sed 's/_production_admin$//g' | sed 's/_staging_web$//g'| sed 's/_staging_admin$//g')
                     echo "experimentName: $experimentName"
