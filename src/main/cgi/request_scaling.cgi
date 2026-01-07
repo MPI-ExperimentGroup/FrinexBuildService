@@ -40,7 +40,7 @@ instanceCount=$(sudo docker service ls | grep "$serviceName" | wc -l)
 # runningCount=$(sudo docker service ps --filter "desired-state=running" --format '{{.CurrentState}}' "$serviceName" | grep -c "Running")
 runningCount=$(sudo docker service ls | grep "$serviceName" | grep "1/1" | wc -l)
 
-lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName" | sed -E 's/\.[0-9]+//; s/ UTC//')
+lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "${serviceName}_$((instanceCount - 1))" | sed -E 's/\.[0-9]+//; s/ UTC//')
 
 lockfile="$targetDir/request_scaling.lock"
 (
