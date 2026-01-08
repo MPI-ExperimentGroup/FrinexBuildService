@@ -74,7 +74,6 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             sudo docker service ls --format '{{.Name}}' | grep -Ei "^${cleanedInput}[_0-9]+" | xargs -r sudo docker service rm &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker service rm $cleanedInput &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
             # sudo docker service rm $comparisonServiceName &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
-            sudo docker service ls --format '{{.Name}}' | grep -Ei "^${cleanedInput}[_0-9]+" | xargs -r sudo docker service rm
             instanceCount=$(sudo docker service ls | grep "$cleanedInput" | wc -l)
             lineNumber=$(grep -n -m1 "$cleanedInput" /FrinexBuildService/artifacts/ports.txt | cut -d: -f1);
             if [ -z "$lineNumber" ]; then
