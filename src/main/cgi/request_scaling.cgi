@@ -35,10 +35,10 @@ total=$(echo "$QUERY_STRING" | sed -n 's/^.*total=\([0-9a-z_]*\).*$/\1/p')
 status=$(echo "$QUERY_STRING" | sed -n 's/^.*status=\([0-9a-z_]*\).*$/\1/p')
 # echo "$status"
 # instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
-instanceCount=$(sudo docker service ls | grep "$serviceName" | wc -l)
+instanceCount=$(sudo docker service ls --format '{{.Name}}' | grep "^$serviceName" | wc -l)
 # echo "$instanceCount"
 # runningCount=$(sudo docker service ps --filter "desired-state=running" --format '{{.CurrentState}}' "$serviceName" | grep -c "Running")
-runningCount=$(sudo docker service ls | grep "$serviceName" | grep "1/1" | wc -l)
+# runningCount=$(sudo docker service ls | grep "$serviceName" | grep "1/1" | wc -l)
 
 lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "${serviceName}_$((instanceCount - 1))" | sed -E 's/\.[0-9]+//; s/ UTC//')
 
@@ -57,9 +57,9 @@ lockfile="$targetDir/request_scaling.lock"
         echo "$serviceName lastUpdate $lastUpdate"
     else
         if (( avgMs > 250 )); then
-            if (( runningCount < instanceCount )); then
-                echo "Waiting instances $runningCount of $instanceCount<br/>"
-            else
+            # if (( runningCount < instanceCount )); then
+            #     echo "Waiting instances $runningCount of $instanceCount<br/>"
+            # else
                 if (( instanceCount < maxInstances )); then
                     # ((instanceCount++))
                     echo "Scaling up $instanceCount <br/>"
@@ -85,7 +85,7 @@ lockfile="$targetDir/request_scaling.lock"
                 else
                     echo "Already max instances <br/>"
                 fi
-            fi
+            # fi
         # until nginx has two instances we are not scalling down because each change will trigger and nginx reload
         # else
         #     if (( avgMs < 5 && instanceCount > 1 )); then
