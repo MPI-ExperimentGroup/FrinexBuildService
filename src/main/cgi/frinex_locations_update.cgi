@@ -91,7 +91,7 @@ for serviceName in $serviceListUnique; do
     if [ "$isFirstService" = true ]; then
         isFirstService=false
     else
-        echo -n "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
+        echo "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
     fi
     echo -n "\"${serviceName}\": [" >> /FrinexBuildService/artifacts/services.json.v2.tmp
     isFirstInstance=true
@@ -105,7 +105,7 @@ for serviceName in $serviceListUnique; do
                 if [ "$isFirstInstance" = true ]; then
                     isFirstInstance=false
                 else
-                    echo -n "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
+                    echo "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
                 fi
                 echo -n "{\"node\": \"${node}\", \"port\": \"${port}\"}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
             done
