@@ -35,7 +35,7 @@ serviceListUnique="$(sudo docker service ls --format '{{.Name}}' \
 serviceListAll="$(sudo docker service ls --format '{{.Name}}' \
     | grep -E "_admin|_web")"
 
-echo "{"
+# echo "{"
 isFirstService=true
 for serviceName in $serviceListUnique; do
     if [[ $serviceName == *_production_admin || $serviceName == *_production_web ]]; then
@@ -43,17 +43,14 @@ for serviceName in $serviceListUnique; do
     else
         deploymentType="staging"
     fi
-    urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")
-    http://$serviceName/$urlName;
-    
-    
-    if [ "$isFirstService" = true ]; then
-        isFirstService=false
-    else
-        echo ","
-    fi
-    echo -n "\"https://frinex${deploymentType}/${urlName}\": "
-    if curl -fsS https://frinex${deploymentType}/${urlName}/actuator/health >/dev/null; then
+    urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")    
+    # if [ "$isFirstService" = true ]; then
+    #     isFirstService=false
+    # else
+    #     echo ","
+    # fi
+    echo -n "\"https://frinex${deploymentType}.mpi.nl/${urlName}\": "
+    if curl -fsS https://frinex${deploymentType}.mpi.nl/${urlName}/actuator/health >/dev/null; then
         echo "OK"
     else
         echo "FAIL"
@@ -63,20 +60,20 @@ for serviceName in $serviceListUnique; do
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
         while read -r node; do
             for port in $ports; do
-                echo -n "\"http://$node:$port}/${urlName}\": "
-                if curl -fsS http://$node:$port}/${urlName}/actuator/health >/dev/null; then
+                echo -n "\"http://${node}:${port}/${urlName}\": "
+                if curl -fsS http://${node}:{$port}/${urlName}/actuator/health >/dev/null; then
                     echo "OK"
                 else
                     echo "FAIL"
                 fi
-                if [ "$isFirstInstance" = true ]; then
-                    isFirstInstance=false
-                else
-                    echo ","
-                fi
+                # if [ "$isFirstInstance" = true ]; then
+                #     isFirstInstance=false
+                # else
+                #     echo ","
+                # fi
             done
         done < <(sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName")
     done
-    echo -e "}"
+    # echo -e "}"
 done 
-echo "}"
+# echo "}"
