@@ -21,7 +21,7 @@
 # http://<frinexbuild>/frinex_restart_experient.log
 
 # make a list of all experiments that are running even if only the web or admin service is running
-serviceNameArray=$(sudo docker service ls --format '{{.Name}}' | grep -E "_staging_web$|_staging_admin$|_production_web$|_production_admin$" | sed 's/_web$/_admin/g' | sort | uniq)
+serviceNameArray=$(sudo docker service ls --format '{{.Name}}' | sed -E 's/_(web|admin)([_0-9]+)?$/_admin/' | grep -E "_staging_admin$|_production_admin$" | sort | uniq)
 totalConsidered=0
 canBeTerminated=0
 hasRecentUse=0
