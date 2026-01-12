@@ -1,0 +1,82 @@
+#!/bin/bash
+#
+# Copyright (C) 2026 Max Planck Institute for Psycholinguistics
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+
+#
+# @since 12 Jan 2026 15:55 PM (creation date)
+# @author Peter Withers <peter.withers@mpi.nl>
+#
+
+# This script calls actuator health on all experiment service instances
+
+echo "Content-type: text/json"
+echo ''
+
+serviceListUnique="$(sudo docker service ls --format '{{.Name}}' \
+    | grep -E "_admin|_web" \
+    | sed 's/_[0-9]\+$//' \
+    | sort -u)"
+
+serviceListAll="$(sudo docker service ls --format '{{.Name}}' \
+    | grep -E "_admin|_web")"
+
+echo "{"
+isFirstService=true
+for serviceName in $serviceListUnique; do
+    if [[ $serviceName == *_production_admin || $serviceName == *_production_web ]]; then
+        deploymentType="production"
+    else
+        deploymentType="staging"
+    fi
+    urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")
+    http://$serviceName/$urlName;
+    
+    
+    if [ "$isFirstService" = true ]; then
+        isFirstService=false
+    else
+        echo ","
+    fi
+    echo -n "\"https://frinex${deploymentType}/${urlName}\": "
+    if curl -fsS https://frinex${deploymentType}/${urlName}/actuator/health >/dev/null; then
+        echo "OK"
+    else
+        echo "FAIL"
+    fi
+    isFirstInstance=true
+    for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
+        ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
+        while read -r node; do
+            for port in $ports; do
+                echo -n "\"http://$node:$port}/${urlName}\": "
+                if curl -fsS http://$node:$port}/${urlName}/actuator/health >/dev/null; then
+                    echo "OK"
+                else
+                    echo "FAIL"
+                fi
+                if [ "$isFirstInstance" = true ]; then
+                    isFirstInstance=false
+                else
+                    echo ","
+                fi
+            done
+        done < <(sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName")
+    done
+    echo -e "}"
+done 
+echo "}"
