@@ -107,7 +107,7 @@ for serviceName in $serviceListUnique; do
                 else
                     echo -n "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
                 fi
-                echo -n "\"node\": \"${node}\", \"port\": \"${port}\"" >> /FrinexBuildService/artifacts/services.json.v2.tmp
+                echo -n "{\"node\": \"${node}\", \"port\": \"${port}\"}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
             done
         done
     done
