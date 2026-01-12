@@ -99,7 +99,7 @@ for serviceName in $serviceListUnique; do
         # echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
         # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-        sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" | while read node; do
+        while read -r node; do
             for port in $ports; do
                 echo "   server $node:$port;" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
                 if [ "$isFirstInstance" = true ]; then
@@ -109,7 +109,7 @@ for serviceName in $serviceListUnique; do
                 fi
                 echo -n "{\"node\": \"${node}\", \"port\": \"${port}\"}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
             done
-        done
+        done < <(sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName")
     done
     echo -n "]" >> /FrinexBuildService/artifacts/services.json.v2.tmp
     echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
