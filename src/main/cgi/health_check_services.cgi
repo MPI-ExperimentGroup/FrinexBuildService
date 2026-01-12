@@ -50,7 +50,7 @@ for serviceName in $serviceListUnique; do
     #     echo ","
     # fi
     echo -n "\"https://frinex${deploymentType}.mpi.nl/${urlName}\": "
-    if ! curl -sS --connect-timeout 5 "https://frinex${deploymentType}.mpi.nl/${urlName}/actuator/health" >/dev/null; then
+    if ! curl -sS --connect-timeout 5 "https://frinex${deploymentType}.mpi.nl/${urlName}/actuator/health" >/dev/null 2>/dev/null; then
         rc=$?
         if [ $rc -eq 60 ]; then
             echo -n "CERT_INVALID "
