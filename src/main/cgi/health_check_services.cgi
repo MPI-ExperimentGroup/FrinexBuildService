@@ -43,7 +43,7 @@ for serviceName in $serviceListUnique; do
     else
         deploymentType="staging"
     fi
-    urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' <<< "$serviceName")    
+    urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' -e 's/_production_web//' -e 's/_production_admin/-admin/' <<< "$serviceName")    
     # if [ "$isFirstService" = true ]; then
     #     isFirstService=false
     # else
@@ -56,7 +56,7 @@ for serviceName in $serviceListUnique; do
             echo -n "CERT_INVALID "
         fi
     fi
-    if curl -k -fsS "https://frinex${deploymentType}.mpi.nl/${urlName}/actuator/health" >/dev/null; then
+    if curl -k -fsS "https://frinex${deploymentType}.mpi.nl/${urlName}/actuator/health" >/dev/null 2>/dev/null; then
         echo "OK"
     else
         echo "FAIL"
