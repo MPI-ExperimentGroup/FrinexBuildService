@@ -76,6 +76,8 @@ echo "" > /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp
 echo "" > /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
 echo "" > /usr/local/apache2/htdocs/frinex_production_locations.v2.tmp
 echo "" > /usr/local/apache2/htdocs/frinex_production_upstreams.v2.tmp
+echo "{" > /FrinexBuildService/artifacts/services.json.v2.tmp
+isFirstService=true
 for serviceName in $serviceListUnique; do
     if [[ $serviceName == *_production_admin || $serviceName == *_production_web ]]; then
         deploymentType="production"
@@ -86,6 +88,13 @@ for serviceName in $serviceListUnique; do
     echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
     
     echo "upstream ${serviceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+    if [ "$isFirstService" = true ]; then
+        isFirstService=false
+    else
+        echo -n "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
+    fi
+    echo -n "\"${serviceName}\": [" >> /FrinexBuildService/artifacts/services.json.v2.tmp
+    isFirstInstance=true
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
         # echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
@@ -93,11 +102,19 @@ for serviceName in $serviceListUnique; do
         sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" | while read node; do
             for port in $ports; do
                 echo "   server $node:$port;" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+                if [ "$isFirstInstance" = true ]; then
+                    isFirstInstance=false
+                else
+                    echo -n "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
+                fi
+                echo -n "\"node\": \"${node}\", \"port\": \"${port}\"" >> /FrinexBuildService/artifacts/services.json.v2.tmp
             done
         done
     done
+    echo -n "]" >> /FrinexBuildService/artifacts/services.json.v2.tmp
     echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
 done 
+echo "}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
 mv /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp /usr/local/apache2/htdocs/frinex_staging_locations.txt
 mv /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 mv /usr/local/apache2/htdocs/frinex_production_locations.v2.tmp /usr/local/apache2/htdocs/frinex_production_locations.v2
