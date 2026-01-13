@@ -103,18 +103,18 @@ for serviceName in $serviceNameArray; do
             # echo "webServiceName: $webServiceName"
             # echo "webContextPath: $webContextPath"
             # echo "artifactsDirectory: $experimentArtifactsDirectory"
-            servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
-            echo "servicePortNumber: $servicePortNumber"
-            if [[ "$servicePortNumber" ]]; then
+            # servicePortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $adminServiceName | awk '{print $4}')
+            # echo "servicePortNumber: $servicePortNumber"
+            # if [[ "$servicePortNumber" ]]; then
                 sudo chown -R frinex:www-data /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
                 sudo chmod -R ug+rwx /FrinexBuildService/artifacts/$experimentArtifactsDirectory/
-                curl --silent http://frinexbuild:$servicePortNumber/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
-
+                
                 # check the service connection throught the proxy
                 if [[ "$serviceName" == *"_production_admin" ]]; then
                     echo production; 
                     ((proxyProductionWebChecked++))
                     ((proxyProductionAdminChecked++))
+                    curl --silent https://frinexproduction.mpi.nl/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
                     headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyProductionWebHealthy++))
@@ -131,6 +131,7 @@ for serviceName in $serviceNameArray; do
                     echo staging;
                     ((proxyStagingWebChecked++))
                     ((proxyStagingAdminChecked++))
+                    curl --silent https://frinexstaging.mpi.nl/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
                     headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyStagingWebHealthy++))
@@ -145,9 +146,9 @@ for serviceName in $serviceNameArray; do
                     fi
                 fi
                 # end check the service connection throught the proxy
-            else
-                echo "servicePortNumber not found so using the last known public_usage_stats"
-            fi
+            # else
+            #     echo "servicePortNumber not found so using the last known public_usage_stats"
+            # fi
             # cat /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
             # echo ""
             echo ""
