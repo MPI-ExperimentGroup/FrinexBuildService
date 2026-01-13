@@ -252,7 +252,7 @@ for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates
 done
 
 if (( $canBeTerminated > 0 )); then
-    curl PROXY_UPDATE_TRIGGER
+    curl -k PROXY_UPDATE_TRIGGER
 fi
 
 # docker logs -f frinex_service_manager | grep -B 10 -E "(requesting|starting|updating|broken|terminated)"
