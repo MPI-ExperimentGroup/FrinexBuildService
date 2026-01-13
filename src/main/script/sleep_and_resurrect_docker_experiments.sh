@@ -204,29 +204,34 @@ for serviceName in $serviceNameArray; do
                 fi
             fi
             # if its not been shutdown then check the web component and kill if not healthy (we could "service update --force" but that might keep repeating)
-            webPortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $webServiceName | awk '{print $4}')
-            if [[ "$webPortNumber" ]]; then
-                healthResult=$(curl -k --silent -H 'Content-Type: application/json' http://frinexbuild:$webPortNumber/$webContextPath/actuator/health)
-                if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
-                    echo "web component OK"
-                else
-                    ((needsUpdating++))
-                    needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
-                    needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
-                    echo "healthResult: $healthResult"
-                    # sudo docker service rm "$webServiceName"
-                    sudo docker service ls --format '{{.Name}}' | grep -Ei "^${webServiceName}[_0-9]*" | xargs -r sudo docker service rm
-                    # sudo docker service update "$webServiceName"
-                    # sudo docker service update --force "$webServiceName"
-                    echo ""
-                    echo "broken web component";
-                    # echo "updating web component";
-                fi
+            # webPortNumber=$(sudo docker service inspect --format "{{.Endpoint.Ports}}" $webServiceName | awk '{print $4}')
+            # if [[ "$webPortNumber" ]]; then
+            if [[ $webServiceName == *_production_web ]]; then
+                deploymentType="production"
+            else
+                deploymentType="staging"
+            fi
+            healthResult=$(curl -k --silent -H 'Content-Type: application/json' https://frinex${deploymentType}.mpi.nl/${webContextPath}/actuator/health)
+            if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
+                echo "web component OK"
+            else
+                ((needsUpdating++))
+                needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
+                needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
+                echo "healthResult: $healthResult"
+                # sudo docker service rm "$webServiceName"
+                sudo docker service ls --format '{{.Name}}' | grep -Ei "^${webServiceName}[_0-9]*" | xargs -r sudo docker service rm
+                # sudo docker service update "$webServiceName"
+                # sudo docker service update --force "$webServiceName"
+                echo ""
+                echo "broken web component";
+                # echo "updating web component";
+            fi
             # else
             #     ((needsUpdating++))
             #     echo "starting web componet"
             #     curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$webServiceName"
-            fi
+            # fi
         else
             ((recentyStarted++))
             recentyStartedStaging=$(( $recentyStartedStaging + $isStaging ))
