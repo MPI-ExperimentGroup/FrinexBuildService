@@ -114,7 +114,7 @@ for serviceName in $serviceNameArray; do
                     echo production; 
                     ((proxyProductionWebChecked++))
                     ((proxyProductionAdminChecked++))
-                    curl --silent https://frinexproduction.mpi.nl/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
+                    curl -k --silent https://frinexproduction.mpi.nl/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
                     headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyProductionWebHealthy++))
@@ -131,7 +131,7 @@ for serviceName in $serviceNameArray; do
                     echo staging;
                     ((proxyStagingWebChecked++))
                     ((proxyStagingAdminChecked++))
-                    curl --silent https://frinexstaging.mpi.nl/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
+                    curl -k --silent https://frinexstaging.mpi.nl/$adminContextPath/public_usage_stats > /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
                     headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyStagingWebHealthy++))
