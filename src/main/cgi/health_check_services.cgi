@@ -62,7 +62,7 @@ for serviceName in $serviceListUnique; do
         echo "FAIL"
     fi
     isFirstInstance=true
-    for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
+    for instanceName in $(printf "%s\n" "$serviceListAll" | grep "^$serviceName"); do
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
         while read -r node; do
             for port in $ports; do

@@ -95,7 +95,7 @@ for serviceName in $serviceListUnique; do
     fi
     echo -n "\"${serviceName}\": [" >> /FrinexBuildService/artifacts/services.json.v2.tmp
     isFirstInstance=true
-    for instanceName in $(printf "%s\n" "$serviceListAll" | grep "$serviceName"); do
+    for instanceName in $(printf "%s\n" "$serviceListAll" | grep "^$serviceName"); do
         # echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
         # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
