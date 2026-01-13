@@ -38,12 +38,15 @@ scriptDir=$(pwd -P)
 # read -p "Press enter to terminate the frinex_load_test service"
 # docker service rm frinex_load_test
 
-startDate=$(date +%Y%m%d%H%M)
 docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:latest .
 for i in $(seq 1 100); do
     docker stop load_test_$i
+done
+for i in $(seq 1 100); do
     docker rm load_test_$i
 done
+
+startDate=$(date +%Y%m%d%H%M)
 
 docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
 
