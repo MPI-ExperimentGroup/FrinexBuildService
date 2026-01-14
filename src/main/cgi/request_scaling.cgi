@@ -77,7 +77,8 @@ lockfile="$targetDir/request_scaling.lock"
                     imageDateTag=$(unzip -p /FrinexBuildService/protected/$experimentName/$(echo "$serviceName.war" | sed "s/_admin.war/_web.war/g") version.json | grep compileDate | sed "s/[^0-9]//g")
                     echo "imageDateTag: $imageDateTag"
                     # todo: put the scaling back in when the locations and upstreams can cope with the new setup
-                    sudo docker service create --name ${serviceName}_${instanceCount} DOCKER_SERVICE_OPTIONS -d --publish mode=host,target=8080,published=$hostPort DOCKER_REGISTRY/$serviceName:$imageDateTag
+                    # thi first instance is started with DOCKER_SERVICE_OPTIONS and subsequent instances are started with DOCKER_SCALED_OPTIONS
+                    sudo docker service create --name ${serviceName}_${instanceCount} DOCKER_SCALED_OPTIONS -d --publish mode=host,target=8080,published=$hostPort DOCKER_REGISTRY/$serviceName:$imageDateTag
                     #sudo docker service scale "${serviceName}=${instanceCount}"
 
                     # sudo docker service update --publish-rm 8080 $serviceName
