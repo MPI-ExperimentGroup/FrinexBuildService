@@ -478,6 +478,21 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + ", \"--nl.mpi.tg.eg.frinex.informReadyUrl=" + proxyUpdateTrigger + "\""
         + ", \"--nl.mpi.tg.eg.frinex.serviceName=" + serviceName + "\""
         + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\"\
+        , \"-Ddebug=true\"\
+        , \"-Dlogging.level.root=INFO\"\
+        , \"-Dlogging.level.org.springframework=DEBUG\"\
+        , \"-Dlogging.level.org.springframework.web=DEBUG\"\
+        , \"-Dlogging.level.org.springframework.web.servlet.DispatcherServlet=TRACE\"\
+        , \"-Dlogging.level.org.springframework.http=TRACE\"\
+        , \"-Dlogging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG\"\
+        , \"-Dlogging.level.org.eclipse.jetty=DEBUG\"\
+        , \"-Dlogging.level.org.eclipse.jetty.server=DEBUG\"\
+        , \"-Dlogging.level.org.eclipse.jetty.server.HttpChannel=DEBUG\"\
+        , \"-Dlogging.level.org.eclipse.jetty.server.handler=DEBUG\"\
+        , \"-Dlogging.level.org.eclipse.jetty.io=DEBUG\"\
+        , \"-Dserver.error.include-message=always\"\
+        , \"-Dserver.error.include-binding-errors=always\"\
+        , \"-Dserver.error.include-stacktrace=always\"\
         ]\n" : "]\n")
         // , \"--logging.level.org.springframework.security=DEBUG\", \"--logging.level.org.springframework.ldap=DEBUG\", \"--logging.level.org.springframework.ldap.core=TRACE\", \"--logging.level.org.springframework.ldap.authentication=DEBUG\"\
         // exposure.include=mappings and mappings.enabled enables /actuator/mappings
