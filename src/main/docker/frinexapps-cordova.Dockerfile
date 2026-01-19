@@ -25,7 +25,7 @@ FROM eclipse-temurin:11-jdk-jammy
 # RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
-RUN apt-get -y install unzip zip build-essential imagemagick nodejs vim file ca-certificates curl gnupg
+RUN apt-get -y install unzip zip build-essential imagemagick nodejs vim file ca-certificates curl gnupg git
 
 # install node the updated way
 RUN mkdir -p /etc/apt/keyrings
