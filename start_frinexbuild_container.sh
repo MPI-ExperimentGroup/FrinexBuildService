@@ -98,15 +98,15 @@ docker service create \
   --restart-condition any \
   --network frinex_db_manager_net \
   --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
-  -v /etc/localtime:/etc/localtime:ro \
-  -v m2Directory:/maven/.m2/ \
-  -v gitRepositories:/FrinexBuildService/git-repositories \
-  -v webappsTomcatStaging:/usr/local/tomcat/webapps \
-  -v incomingDirectory:/FrinexBuildService/incoming \
-  -v listingDirectory:/FrinexBuildService/listing \
-  -v processingDirectory:/FrinexBuildService/processing \
-  -v buildServerTarget:/FrinexBuildService/artifacts \
-  -v protectedDirectory:/FrinexBuildService/protected \
+  --mount type=bind,src=/etc/localtime,dst=/etc/localtime,readonly \
+  --mount type=volume,src=m2Directory,dst=/maven/.m2 \
+  --mount type=volume,src=gitRepositories,dst=/FrinexBuildService/git-repositories \
+  --mount type=volume,src=webappsTomcatStaging,dst=/usr/local/tomcat/webapps \
+  --mount type=volume,src=incomingDirectory,dst=/FrinexBuildService/incoming \
+  --mount type=volume,src=listingDirectory,dst=/FrinexBuildService/listing \
+  --mount type=volume,src=processingDirectory,dst=/FrinexBuildService/processing \
+  --mount type=volume,src=buildServerTarget,dst=/FrinexBuildService/artifacts \
+  --mount type=volume,src=protectedDirectory,dst=/FrinexBuildService/protected \
   --limit-cpu 0.5 \
   -p 80:80 \
   -p 8070:80 \
