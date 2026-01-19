@@ -40,7 +40,8 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g yarn
+# RUN npm install -g yarn
+RUN yarn --version
 
 # install node the updated way
 # RUN mkdir -p /etc/apt/keyrings
