@@ -88,7 +88,31 @@ docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --user r
 # for adminWar in /FrinexBuildService/protected/*/*_admin.war; do zip -d $adminWar \*_cordova.aab \*_ios.zip \*_cordova.apk \*-x64-lt.zip \*-x64.zip \*_android.zip \*-x64-lt.zip; done;
 
 # start the frinexbuild container with access to /var/run/docker.sock so that it can create sibling containers of frinexapps
-docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -v m2Directory:/maven/.m2/ -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+# docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -v m2Directory:/maven/.m2/ -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+
+docker service rm frinexbuild
+docker service create \
+  --name frinexbuild \
+  --replicas 1 \
+  --constraint 'node.hostname==lux27' \
+  --restart-condition any \
+  --network frinex_db_manager_net \
+  --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v m2Directory:/maven/.m2/ \
+  -v gitRepositories:/FrinexBuildService/git-repositories \
+  -v webappsTomcatStaging:/usr/local/tomcat/webapps \
+  -v incomingDirectory:/FrinexBuildService/incoming \
+  -v listingDirectory:/FrinexBuildService/listing \
+  -v processingDirectory:/FrinexBuildService/processing \
+  -v buildServerTarget:/FrinexBuildService/artifacts \
+  -v protectedDirectory:/FrinexBuildService/protected \
+  --limit-cpu 0.5 \
+  -p 80:80 \
+  -p 8070:80 \
+  -d \
+  frinexbuild:latest
+
 # --net frinex_synchronisation_net 
 # 2024-07-18 removed the gitCheckedout from the frinexbuild container because it can be recreated as required and its deletion saves disk space
 # -v gitCheckedout:/FrinexBuildService/git-checkedout 
