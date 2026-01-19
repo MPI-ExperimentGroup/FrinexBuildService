@@ -39,7 +39,7 @@ do
     echo $compileDate
     echo $compileDateTag
     # build the compile date based version based on alpha:
-    if docker build --no-cache --build-arg lastCommitDate="$compileDate" -f docker/rebuild-jdk-version.Dockerfile -t "frinexapps-jdk:$compileDateTag" . 
+    if docker build --build-arg lastCommitDate="$compileDate" -f docker/rebuild-jdk-version.Dockerfile -t "frinexapps-jdk:$compileDateTag" . 
     then 
         # tag the compileDate version with its own build version
         compileDateVersion=$(docker run --rm -w /ExperimentTemplate/gwt-cordova "frinexapps-jdk:$compileDateTag" /bin/bash -c "cat /ExperimentTemplate/gwt-cordova.version")
