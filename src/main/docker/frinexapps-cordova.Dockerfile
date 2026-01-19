@@ -20,19 +20,32 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM eclipse-temurin:11-jdk-jammy
+FROM node:22-bullseye
+# FROM eclipse-temurin:11-jdk-jammy
 # RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 # RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
-RUN apt-get -y install unzip zip build-essential imagemagick nodejs vim file ca-certificates curl gnupg git
+RUN apt-get update && apt-get install -y \
+    openjdk-11-jdk \
+    unzip \
+    file \
+    imagemagick \
+    vim \
+    gnupg \
+    zip \
+    git \
+    build-essential \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # install node the updated way
-RUN mkdir -p /etc/apt/keyrings
-RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-RUN apt-get update
-RUN apt-get install nodejs -y
+# RUN mkdir -p /etc/apt/keyrings
+# RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+# RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+# RUN apt-get update
+# RUN apt-get install nodejs -y
 # end install node the updated way
 
 # set up gradle manually so we get a more recent version
