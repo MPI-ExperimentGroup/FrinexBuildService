@@ -25,7 +25,7 @@ FROM node:22-bullseye
 #ENV JAVA_OPTS="--add-modules java.se.ee"
 # installing node this way has been depricated
 # RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-# RUN dpkg --add-architecture i386
+RUN dpkg --add-architecture i386
 # RUN apt-get update
 # RUN apt-get -y install unzip zip mono-devel build-essential imagemagick nodejs vim wine32 file ca-certificates curl gnupg git
 RUN apt-get update && apt-get install -y \
