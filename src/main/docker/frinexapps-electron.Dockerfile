@@ -20,25 +20,39 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM eclipse-temurin:11-jdk-jammy
+FROM node:22-bullseye
+# FROM eclipse-temurin:11-jdk-jammy
 #ENV JAVA_OPTS="--add-modules java.se.ee"
 # installing node this way has been depricated
 # RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-RUN dpkg --add-architecture i386
-RUN apt-get update
-RUN apt-get -y install unzip zip mono-devel build-essential imagemagick nodejs vim wine32 file ca-certificates curl gnupg git
+# RUN dpkg --add-architecture i386
+# RUN apt-get update
+# RUN apt-get -y install unzip zip mono-devel build-essential imagemagick nodejs vim wine32 file ca-certificates curl gnupg git
+RUN apt-get update && apt-get install -y \
+    unzip \
+    zip \
+    mono-devel \
+    build-essential \
+    imagemagick \
+    vim \
+    wine32 \
+    file \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g yarn
 
 # install node the updated way
-RUN mkdir -p /etc/apt/keyrings
-RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-RUN apt-get update
-RUN apt-get install nodejs -y
+# RUN mkdir -p /etc/apt/keyrings
+# RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+# RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+# RUN apt-get update
+# RUN apt-get install nodejs -y
 # end install node the updated way
 
 #RUN apt-get -y install git node.js npm mono-devel
 #RUN npm config set strict-ssl false # todo: remove this stale ssl work around 
-RUN npm install npm -g # update npm
+# RUN npm install npm -g # update npm
 #RUN npm install -g electron-forge asar
 #RUN electron-forge init init-setup-project
 #RUN cd init-setup-project \
@@ -61,9 +75,9 @@ RUN npm install npm -g # update npm
 #RUN wget https://github.com/electron/electron/releases/download/v2.0.10/electron-v2.0.10-darwin-x64.zip -O /electron/darwin-x64.zip
 #RUN wget https://github.com/electron/electron/releases/download/v2.0.10/electron-v2.0.10-win32-x64.zip -O /electron/win32-x64.zip
 
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt update && apt install yarn
+# RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+# RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+# RUN apt update && apt install yarn
 
 RUN git clone https://github.com/electron-userland/electron-webpack-quick-start.git
 RUN cd electron-webpack-quick-start \
