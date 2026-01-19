@@ -26,7 +26,7 @@ FROM eclipse-temurin:11-jdk-jammy
 # RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN dpkg --add-architecture i386
 RUN apt-get update
-RUN apt-get -y install unzip zip mono-devel build-essential imagemagick nodejs vim wine32 file ca-certificates curl gnupg
+RUN apt-get -y install unzip zip mono-devel build-essential imagemagick nodejs vim wine32 file ca-certificates curl gnupg git
 
 # install node the updated way
 RUN mkdir -p /etc/apt/keyrings
