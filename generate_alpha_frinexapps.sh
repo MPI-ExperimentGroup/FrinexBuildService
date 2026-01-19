@@ -35,7 +35,7 @@ else
     git pull
 
     # build the frinexapps-jdk dockerfile:
-    if docker build --no-cache -f docker/frinexapps-jdk.Dockerfile -t frinexapps-jdk:alpha . 
+    if docker build -f docker/frinexapps-jdk.Dockerfile -t frinexapps-jdk:alpha . 
     then 
         # tag the alpha version with its own build version
         alphaVersion=$(docker run --rm -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:alpha /bin/bash -c "cat /ExperimentTemplate/gwt-cordova.version")
@@ -65,27 +65,27 @@ else
         docker rm -f cordova_electron_temp
 
         # build the frinexapps-cordova dockerfile:
-        if docker build --no-cache -f docker/frinexapps-cordova.Dockerfile -t frinexapps-cordova:alpha .
+        if docker build -f docker/frinexapps-cordova.Dockerfile -t frinexapps-cordova:alpha .
         then
             docker tag frinexapps-cordova:alpha frinexapps-cordova:$alphaVersion
             echo "frinexapps-cordova ok"
         fi
 
         # build the frinexapps-electron dockerfile:
-        if docker build --no-cache -f docker/frinexapps-electron.Dockerfile -t frinexapps-electron:alpha .
+        if docker build -f docker/frinexapps-electron.Dockerfile -t frinexapps-electron:alpha .
         then
             docker tag frinexapps-electron:alpha frinexapps-electron:$alphaVersion
             echo "frinexapps-electron ok"
         fi
 
         # build the frinexapps_vr dockerfile:
-        if docker build -f docker/frinexapps_vr.Dockerfile -t frinexapps_vr:alpha .
-        then
-            docker tag frinexapps-vr:alpha frinexapps-vr:$alphaVersion
-            echo "frinexapps-vr ok"
-        else
-            echo "frinexapps-vr failed"
-        fi
+        # if docker build -f docker/frinexapps_vr.Dockerfile -t frinexapps_vr:alpha .
+        # then
+        #     docker tag frinexapps-vr:alpha frinexapps-vr:$alphaVersion
+        #     echo "frinexapps-vr ok"
+        # else
+        #     echo "frinexapps-vr failed"
+        # fi
 
         # update the frinex_examples
         bash $workingDir/update_frinex_examples.sh "alpha"
