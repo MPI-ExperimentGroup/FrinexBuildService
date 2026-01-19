@@ -26,7 +26,7 @@
 #RUN apk upgrade # --fix-missing
 #RUN apk add unzip zip alpine-sdk gradle imagemagick maven nodejs npm vim nodejs git
 #RUN dpkg --add-architecture i386 && apk update && apk -y install wine32
-FROM openjdk:11-jdk-slim
+FROM eclipse-temurin:11-jdk-jammy
 #ENV JAVA_OPTS="--add-modules java.se.ee"
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN dpkg --add-architecture i386

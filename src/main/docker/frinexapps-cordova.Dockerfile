@@ -20,7 +20,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM openjdk:11-jdk-slim
+FROM eclipse-temurin:11-jdk-jammy
 # RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 # RUN dpkg --add-architecture i386
 RUN apt-get update # --fix-missing

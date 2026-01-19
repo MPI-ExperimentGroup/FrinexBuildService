@@ -20,7 +20,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM openjdk:11-jdk-slim
+FROM eclipse-temurin:11-jdk-jammy
 #ENV JAVA_OPTS="--add-modules java.se.ee"
 # installing node this way has been depricated
 # RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
