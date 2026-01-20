@@ -44,6 +44,7 @@ import os from 'os';
 import diskSpace from 'check-disk-space';
 import generatePassword from 'omgopass';
 import sslChecker from 'ssl-checker';
+import tls from 'tls';
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
@@ -510,8 +511,8 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         // + "sudo docker service rm " + serviceName + " || true\n" // this might not be a smooth transition to rm first, but at this point we do not know if there is an existing service to use service update
         + "sudo docker service ls --format '{{.Name}}' | grep -Ei \"^" + serviceName + "[_0-9]*\" | xargs -r sudo docker service rm || true\n"
         + "curl \"" + restartServiceUrl + "?" + serviceName + "\"\n"
-        // + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":$imageDateTag\n"
-        // + "sudo docker system prune -f\n";
+    // + "sudo docker service create --name " + serviceName + " " + dockerServiceOptions + " -d -p 8080 " + dockerRegistry + "/" + serviceName + ":$imageDateTag\n"
+    // + "sudo docker system prune -f\n";
     try {
         // console.log(serviceSetupString);
         // TODO: this need not be a syncronous step only the update and trigger need to be done in a result promise
@@ -1062,9 +1063,9 @@ function deployProductionGui(currentEntry, retryCounter) {
                             // update artifacts.json
                             fs.writeFileSync(buildArtifactsFileName, JSON.stringify(buildArtifactsJson, null, 4), { mode: 0o775 });
                             syncFileToSwarmNodes(targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web_sources.jar '
-                            + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
-                            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
-                            + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt; ');
+                                + protectedDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
+                                + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production_web.war '
+                                + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_production.txt; ');
                             syncDiffExperimentSwarmNodes(currentEntry.buildName);
                             // build cordova 
                             if (currentEntry.isAndroid || currentEntry.isiOS) {
@@ -1530,8 +1531,8 @@ function buildVirtualReality(currentEntry, stage, buildArtifactsJson, buildArtif
         // rename artifacts zip and log to the mounted output folder
 
         var dockerString = 'sudo docker container rm -f ' + currentEntry.buildName + '_' + stage + '_vr'
-         + ' &> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_vr.txt;'
-        + '"';
+            + ' &> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_' + stage + '_vr.txt;'
+            + '"';
         // console.log(dockerString);
         child_process.execSync(dockerString, { stdio: [0, 1, 2] });
         //resultString += "built&nbsp;";
@@ -2305,19 +2306,43 @@ function updateDocumentation() {
     };
 }
 
+function hasMissingIntermediate(host, port) {
+    return new Promise((resolve) => {
+        const socket = tls.connect(
+            {host, port, servername: host, rejectUnauthorized: false},
+            () => {
+                const cert = socket.getPeerCertificate(true);
+                socket.end();
+                let depth = 0;
+                let current = cert;
+                while (current) {
+                    depth++;
+                    if (!current.issuerCertificate || current.issuerCertificate === current) {
+                        break;
+                    }
+                    current = current.issuerCertificate;
+                }
+                // leaf + intermediate + root = 3
+                resolve(depth < 3);
+            }
+        );
+        socket.on("error", () => resolve(true));
+    });
+}
+
 function checkServerCertificates() {
     buildHistoryJson.certificateStatus = "";
     certificateCheckList.split(",").forEach(function (checkItem) {
-        var certificateUrl = checkItem.split(":")[0];
-        var certificatePort = checkItem.split(":")[1];
-        sslChecker(certificateUrl, { method: "GET", port: certificatePort }).then(result => {
+        const [certificateUrl, certificatePort] = checkItem.split(":");
+        sslChecker(certificateUrl, { method: "GET", port: certificatePort }).then(async result => {
             console.log("checkServerCertificates\n" + checkItem + " : ");
             console.log(result);
-            buildHistoryJson.certificateStatus += checkItem + " certificate " + result.daysRemaining + " days remaining<br>";
-        }).catch(error => {
-            console.log("checkServerCertificates\n" + checkItem + " : " + error.message);
-            buildHistoryJson.certificateStatus += checkItem + " " + error.message + "<br>";
-        });
+            const missingIntermediate = await hasMissingIntermediate(certificateUrl, certificatePort);
+            buildHistoryJson.certificateStatus += checkItem + " certificate " + result.daysRemaining + " days remaining" + (missingIntermediate ? "missing intermediate certificate" : "") + "<br>";
+            }).catch(error => {
+                console.log("checkServerCertificates\n" + checkItem + " : " + error.message);
+                buildHistoryJson.certificateStatus += checkItem + " " + error.message + "<br>";
+            });
     });
 }
 
