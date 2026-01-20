@@ -41,10 +41,10 @@ scriptDir=$(pwd -P)
 
 docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:latest .
 for i in $(seq 1 100); do
-    docker stop load_test_$i
+    docker stop load_test_$i || true
 done
 for i in $(seq 1 100); do
-    docker rm load_test_$i
+    docker rm load_test_$i || true
 done
 
 startDate=$(date +%Y%m%d%H%M)
