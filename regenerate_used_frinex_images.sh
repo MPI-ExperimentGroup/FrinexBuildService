@@ -49,5 +49,8 @@ do
         docker tag "frinexapps-electron:alpha" frinexapps-electron:$compileDateVersion
 
         docker rmi "frinexapps-jdk:$compileDateTag"
+    else
+        echo "frinexapps-jdk:$compileDateTag $compileDateVersion failed"
+        exit
     fi
 done
