@@ -47,5 +47,7 @@ do
         docker tag "frinexapps-jdk:$compileDateTag" frinexapps-jdk:$compileDateVersion
         docker tag "frinexapps-cordova:alpha" frinexapps-cordova:$compileDateVersion
         docker tag "frinexapps-electron:alpha" frinexapps-electron:$compileDateVersion
+
+        docker rmi "frinexapps-jdk:$compileDateTag"
     fi
 done
