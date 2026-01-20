@@ -44,7 +44,7 @@ import os from 'os';
 import diskSpace from 'check-disk-space';
 import generatePassword from 'omgopass';
 import sslChecker from 'ssl-checker';
-import tls from 'tls';
+// import tls from 'tls';
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
@@ -2306,29 +2306,29 @@ function updateDocumentation() {
     };
 }
 
-function hasMissingIntermediate(host, port) {
-    return new Promise((resolve) => {
-        const socket = tls.connect(
-            {host, port, servername: host, rejectUnauthorized: false},
-            () => {
-                const cert = socket.getPeerCertificate(true);
-                socket.end();
-                let depth = 0;
-                let current = cert;
-                while (current) {
-                    depth++;
-                    if (!current.issuerCertificate || current.issuerCertificate === current) {
-                        break;
-                    }
-                    current = current.issuerCertificate;
-                }
-                // leaf + intermediate + root = 3
-                resolve(depth < 3);
-            }
-        );
-        socket.on("error", () => resolve(true));
-    });
-}
+// function hasMissingIntermediate(host, port) {
+//     return new Promise((resolve) => {
+//         const socket = tls.connect(
+//             {host, port, servername: host, rejectUnauthorized: false},
+//             () => {
+//                 const cert = socket.getPeerCertificate(true);
+//                 socket.end();
+//                 let depth = 0;
+//                 let current = cert;
+//                 while (current) {
+//                     depth++;
+//                     if (!current.issuerCertificate || current.issuerCertificate === current) {
+//                         break;
+//                     }
+//                     current = current.issuerCertificate;
+//                 }
+//                 // leaf + intermediate + root = 3
+//                 resolve(depth < 3);
+//             }
+//         );
+//         socket.on("error", () => resolve(true));
+//     });
+// }
 
 function checkServerCertificates() {
     buildHistoryJson.certificateStatus = "";
@@ -2337,8 +2337,8 @@ function checkServerCertificates() {
         sslChecker(certificateUrl, { method: "GET", port: certificatePort }).then(async result => {
             console.log("checkServerCertificates\n" + checkItem + " : ");
             console.log(result);
-            const missingIntermediate = await hasMissingIntermediate(certificateUrl, certificatePort);
-            buildHistoryJson.certificateStatus += checkItem + " certificate " + result.daysRemaining + " days remaining" + (missingIntermediate ? "missing intermediate certificate" : "") + "<br>";
+            // const missingIntermediate = await hasMissingIntermediate(certificateUrl, certificatePort);
+            buildHistoryJson.certificateStatus += checkItem + " certificate " + result.daysRemaining + " days remaining" + (result.valid? "" : ", invalid") + "<br>";
             }).catch(error => {
                 console.log("checkServerCertificates\n" + checkItem + " : " + error.message);
                 buildHistoryJson.certificateStatus += checkItem + " " + error.message + "<br>";
