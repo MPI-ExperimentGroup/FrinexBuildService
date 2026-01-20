@@ -49,7 +49,7 @@ else
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /ExperimentTemplate/gwt-cordova frinexapps-jdk:alpha /bin/bash -c "cp /ExperimentTemplate/ExperimentDesigner/src/test/resources/frinex-rest-output/frinex.html /FrinexBuildService/artifacts/alpha.html"
         docker run --user root --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "chown frinex:www-data /FrinexBuildService/artifacts/*.xsd; chown frinex:www-data /FrinexBuildService/artifacts/*.html;"
         docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "sed -i \"s|webjars/jquery/jquery.min.js|/lib/jquery.min.js|g\" /FrinexBuildService/artifacts/alpha.html;"
-        docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "diff /FrinexBuildService/artifacts/beta.html /FrinexBuildService/artifacts/alpha.html > /FrinexBuildService/artifacts/alpha-beta.diff; diff /FrinexBuildService/artifacts/stable.html /FrinexBuildService/artifacts/alpha.html > /FrinexBuildService/artifacts/alpha-stable.diff;"
+        # docker run --rm -v buildServerTarget:/FrinexBuildService/artifacts -w /FrinexBuildService frinexbuild:latest /bin/bash -c "diff /FrinexBuildService/artifacts/beta.html /FrinexBuildService/artifacts/alpha.html > /FrinexBuildService/artifacts/alpha-beta.diff; diff /FrinexBuildService/artifacts/stable.html /FrinexBuildService/artifacts/alpha.html > /FrinexBuildService/artifacts/alpha-stable.diff;"
         
         # copy the maven settings to the .m2 directory that is a in volume
         cat $workingDir/src/main/config/settings.xml | docker run -v m2Directory:/maven/.m2/ -i frinexapps-jdk:alpha /bin/bash -c 'cat > /maven/.m2/settings.xml'
@@ -98,5 +98,7 @@ else
         bash $workingDir/delete_unused_frinex_images.sh
         bash $workingDir/clean_frinex_docker.sh
 
+        # regenerate any images that are in use
+        bash $workingDir/regenerate_used_frinex_images.sh
     fi;
 fi;
