@@ -69,6 +69,9 @@ else
         then
             docker tag frinexapps-cordova:alpha frinexapps-cordova:$alphaVersion
             echo "frinexapps-cordova ok"
+        else
+            echo "frinexapps-cordova failed"
+            exit
         fi
 
         # build the frinexapps-electron dockerfile:
@@ -76,6 +79,9 @@ else
         then
             docker tag frinexapps-electron:alpha frinexapps-electron:$alphaVersion
             echo "frinexapps-electron ok"
+        else
+            echo "frinexapps-electron failed"
+            exit
         fi
 
         # build the frinexapps_vr dockerfile:
@@ -85,6 +91,7 @@ else
         #     echo "frinexapps-vr ok"
         # else
         #     echo "frinexapps-vr failed"
+        #     exit
         # fi
 
         # update the frinex_examples
@@ -100,5 +107,8 @@ else
 
         # regenerate any images that are in use
         bash $workingDir/regenerate_used_frinex_images.sh
+    else
+        echo "frinexapps-jdk failed"
+        exit
     fi;
 fi;

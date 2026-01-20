@@ -29,7 +29,7 @@ inUseCompileDates=$(docker run --rm -v buildServerTarget:/FrinexBuildService/art
 echo "inUseCompileDates:"
 echo "$inUseCompileDates"
 
-cd src/main/
+cd $(dirname "$0")/src/main/
 
 IFS=$'\n'
 for compileDateString in $inUseCompileDates
