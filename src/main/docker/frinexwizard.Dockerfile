@@ -22,7 +22,7 @@
 
 FROM eclipse-temurin:24-jdk-alpine
 
-ENV JAVA_TOOL_OPTIONS="--add-opens=java.base/sun.nio.ch=org.jruby.dist --add-opens=java.base/sun.nio.ch=org.jruby.core"
+# ENV JAVA_TOOL_OPTIONS="--add-opens=java.base/sun.nio.ch=org.jruby.dist --add-opens=java.base/sun.nio.ch=org.jruby.core"
 
 # RUN apt-get update
 # RUN apt-get -y upgrade

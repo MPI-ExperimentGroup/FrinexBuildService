@@ -472,7 +472,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
     const dockerFilePath = protectedDirectory + "/" + currentEntry.buildName + "/" + serviceName + ".Docker";
     fs.writeFileSync(dockerFilePath,
         "FROM eclipse-temurin:24-jdk-alpine\n"
-        + "ENV JAVA_TOOL_OPTIONS=\"--add-opens=java.base/sun.nio.ch=org.jruby.dist --add-opens=java.base/sun.nio.ch=org.jruby.core\"\n"
+        // + "ENV JAVA_TOOL_OPTIONS=\"--add-opens=java.base/sun.nio.ch=org.jruby.dist --add-opens=java.base/sun.nio.ch=org.jruby.core\"\n"
         + "COPY " + warFileName + " /" + warFileName + "\n"
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
