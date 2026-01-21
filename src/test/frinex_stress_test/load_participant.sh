@@ -1,10 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
 # do not run this on a machine that is in use, this script is designed to cause load on the server and will insert records into the DB
-currentUrl="https://localhost:8443/load_test_target-admin"
+currentUrl="$1"
 currentUserId="hammer_$(cat /proc/sys/kernel/random/uuid)"
 echo "<tr><td>$currentUrl</td><td>$currentUserId</td><td>"
     # --connect-timeout 1 --max-time 2 
+
+echo "currentUrl: $currentUrl"
 
 ###################
 # mpiprevalence_v2_DeploymentsAccessed.value 5

@@ -25,6 +25,10 @@ set -Eeuo pipefail
 
 # This script runs frinex load test services to test the load handling capacity of the given server
 
+currentUrl="$1"
+echo "currentUrl: $currentUrl"
+# currentUrl="https://localhost:8443/load_test_target-admin"
+
 cd $(dirname "$0")
 scriptDir=$(pwd -P)
 #echo $scriptDir
@@ -49,10 +53,11 @@ done
 
 startDate=$(date +%Y%m%d%H%M)
 
+echo "currentUrl: $currentUrl" >> "$scriptDir/load_test_$startDate.log"
 docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
 
 for i in $(seq 1 100); do
-    docker run -d --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh
+    docker run -d --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh "$currentUrl"
     docker logs -f load_test_$i > "$scriptDir/load_test_${i}_$startDate.log" &
 done
 
