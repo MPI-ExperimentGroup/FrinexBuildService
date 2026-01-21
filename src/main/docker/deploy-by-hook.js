@@ -478,6 +478,8 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\", \"--server.forward-headers-strategy=FRAMEWORK\""
         + ", \"--nl.mpi.tg.eg.frinex.requestScalingUrl=" + requestScalingUrl + "\""
         + ", \"--nl.mpi.tg.eg.frinex.informReadyUrl=" + proxyUpdateTrigger + "\""
+        + ", \"--server.jetty.threads.min=8\""
+        + ", \"--server.jetty.threads.max=40\""
         + ", \"--nl.mpi.tg.eg.frinex.serviceName=" + serviceName + "\""
         + ((currentEntry.state === "debug") ? ", \"--trace\", \"-Dspring.jpa.show-sql=true\", \"-Dspring.jpa.properties.hibernate.format_sql=true\"\
         , \"-Ddebug=true\"\

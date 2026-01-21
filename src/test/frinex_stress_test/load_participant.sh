@@ -34,7 +34,20 @@ for i in {1..20}; do
     # maybe five seconds between connections is reasonable 
     sleep 5
 
-    curl --write-out "metadata:%{http_code}," --silent --show-error --output /dev/null -k -H 'Accept-Language: es' -d '[{"userId": "'$currentUserId'"}]' -H 'Content-Type: application/json' $currentUrl/metadata || echo "metadata:000,";
+    # curl --write-out "metadata:%{http_code}," --silent --show-error --output /dev/null -k -H 'Accept-Language: es' -d '[{"userId": "'$currentUserId'"}]' -H 'Content-Type: application/json' $currentUrl/metadata || echo "metadata:000,";
+
+    status=$(curl -sS -o /dev/null -w '%{http_code}' -k \
+        -H 'Accept-Language: es' \
+        -H 'Content-Type: application/json' \
+        -d "[{\"userId\":\"$currentUserId\"}]" \
+        "$currentUrl/metadata") \
+        || { echo "metadata:000,"; exit 1; }
+
+        echo "metadata:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
 done
 for i in {1..27}; do
     # RAN and Verbal fluency for one participant:
@@ -49,7 +62,20 @@ for i in {1..27}; do
     # maybe five seconds between connections is reasonable 
     sleep 5
 
-    curl --write-out "screenChange:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"viewDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server"},{"viewDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "with_hammer_server_example","userId": "'$currentUserId'","screenName": "hammer_server"}]' -H 'Content-Type: application/json' $currentUrl/screenChange || echo "screenChange:000,";
+    # curl --write-out "screenChange:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"viewDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server"},{"viewDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "with_hammer_server_example","userId": "'$currentUserId'","screenName": "hammer_server"}]' -H 'Content-Type: application/json' $currentUrl/screenChange || echo "screenChange:000,";
+
+    status=$(curl -sS -o /dev/null -w '%{http_code}' -k \
+        -H 'Accept-Language: es' \
+        -H 'Content-Type: application/json' \
+        -d '[{"viewDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server"},{"viewDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "with_hammer_server_example","userId": "'$currentUserId'","screenName": "hammer_server"}]' \
+        "$currentUrl/screenChange") \
+        || { echo "screenChange:000,"; exit 1; }
+
+        echo "screenChange:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
 done
 for i in {1..35}; do
     # RAN and Verbal fluency for one participant:
@@ -64,7 +90,21 @@ for i in {1..35}; do
     # maybe five seconds between connections is reasonable 
     sleep 5
     
-    curl --write-out "tagEvent:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","eventTag": "hammer_server","tagValue": "hammer_server","eventMs": "0"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","eventTag": "hammer_server","tagValue": "hammer_server","eventMs": "0"}]' -H 'Content-Type: application/json' $currentUrl/tagEvent || echo "tagEvent:000,";
+    # curl --write-out "tagEvent:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","eventTag": "hammer_server","tagValue": "hammer_server","eventMs": "0"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","eventTag": "hammer_server","tagValue": "hammer_server","eventMs": "0"}]' -H 'Content-Type: application/json' $currentUrl/tagEvent || echo "tagEvent:000,";
+
+    status=$(curl -sS -o /dev/null -w '%{http_code}' -k \
+        -H 'Accept-Language: es' \
+        -H 'Content-Type: application/json' \
+        -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","eventTag": "hammer_server","tagValue": "hammer_server","eventMs": "0"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","eventTag": "hammer_server","tagValue": "hammer_server","eventMs": "0"}]' \
+        "$currentUrl/tagEvent") \
+        || { echo "tagEvent:000,"; exit 1; }
+
+        echo "tagEvent:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
+
 done
 for i in {1..25}; do
     # RAN and Verbal fluency for one participant:
@@ -79,7 +119,20 @@ for i in {1..25}; do
     # maybe five seconds between connections is reasonable 
     sleep 5
 
-    curl --write-out "tagPairEvent:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 0,"eventTag": "hammer_server","tagValue1": "hammer_server","tagValue2": "hammer_server","eventMs": "8999"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 0,"eventTag": "hammer_server","tagValue1": "hammer_server","tagValue2": "hammer_server","eventMs": "8999"}]' -H 'Content-Type: application/json' $currentUrl/tagPairEvent || echo "tagPairEvent:000,";
+    # curl --write-out "tagPairEvent:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 0,"eventTag": "hammer_server","tagValue1": "hammer_server","tagValue2": "hammer_server","eventMs": "8999"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 0,"eventTag": "hammer_server","tagValue1": "hammer_server","tagValue2": "hammer_server","eventMs": "8999"}]' -H 'Content-Type: application/json' $currentUrl/tagPairEvent || echo "tagPairEvent:000,";
+
+    status=$(curl -sS -o /dev/null -w '%{http_code}' -k \
+        -H 'Accept-Language: es' \
+        -H 'Content-Type: application/json' \
+        -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 0,"eventTag": "hammer_server","tagValue1": "hammer_server","tagValue2": "hammer_server","eventMs": "8999"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 0,"eventTag": "hammer_server","tagValue1": "hammer_server","tagValue2": "hammer_server","eventMs": "8999"}]' \
+        "$currentUrl/tagPairEvent") \
+        || { echo "tagPairEvent:000,"; exit 1; }
+
+        echo "tagPairEvent:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
 done
 for i in {1..276}; do
     # RAN and Verbal fluency for one participant:
@@ -95,7 +148,20 @@ for i in {1..276}; do
     # maybe five seconds between connections is reasonable 
     sleep 5
 
-    curl --write-out "timeStamp:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","eventTag": "With Stimuli Screen","eventMs": "6"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","eventTag": "hammer_server","eventMs": "2999"}]' -H 'Content-Type: application/json' $currentUrl/timeStamp || echo "timeStamp:000,";
+    # curl --write-out "timeStamp:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","eventTag": "With Stimuli Screen","eventMs": "6"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","eventTag": "hammer_server","eventMs": "2999"}]' -H 'Content-Type: application/json' $currentUrl/timeStamp || echo "timeStamp:000,";
+
+    status=$(curl -sS -o /dev/null -w '%{http_code}' -k \
+        -H 'Accept-Language: es' \
+        -H 'Content-Type: application/json' \
+        -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","eventTag": "With Stimuli Screen","eventMs": "6"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","eventTag": "hammer_server","eventMs": "2999"}]' \
+        "$currentUrl/timeStamp") \
+        || { echo "timeStamp:000,"; exit 1; }
+
+        echo "timeStamp:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
 done
 for i in {1..12}; do
     # RAN and Verbal fluency for one participant:
@@ -110,7 +176,20 @@ for i in {1..12}; do
     # maybe five seconds between connections is reasonable 
     sleep 5
 
-    curl --write-out "stimulusResponse:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server_'$(cat /proc/sys/kernel/random/uuid)'","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "3001"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server_'$(cat /proc/sys/kernel/random/uuid)'","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "6000"}]' -H 'Content-Type: application/json' $currentUrl/stimulusResponse || echo "stimulusResponse:000,";
+    # curl --write-out "stimulusResponse:%{http_code}," --silent --show-error --output /dev/null -k -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server_'$(cat /proc/sys/kernel/random/uuid)'","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "3001"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server_'$(cat /proc/sys/kernel/random/uuid)'","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "6000"}]' -H 'Content-Type: application/json' $currentUrl/stimulusResponse || echo "stimulusResponse:000,";
+
+    status=$(curl -sS -o /dev/null -w '%{http_code}' -k \
+        -H 'Accept-Language: es' \
+        -H 'Content-Type: application/json' \
+        -d '[{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server_'$(cat /proc/sys/kernel/random/uuid)'","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "3001"},{"tagDate" : "'$(date +"%Y-%m-%dT%H:%M:%S.000+0100")'","experimentName": "hammer_server","userId": "'$currentUserId'","screenName": "hammer_server","dataChannel": 1,"responseGroup": "ratingButton","stimulusId": "hammer_server_'$(cat /proc/sys/kernel/random/uuid)'","response": "hammer_server","isCorrect": null,"gamesPlayed": "0","totalScore": "0","totalPotentialScore": "0","currentScore": "0","correctStreak": "0","errorStreak": "0","potentialScore": "0","maxScore": "0","maxErrors": "0","maxCorrectStreak": "0","maxErrorStreak": "0","maxPotentialScore": "0","eventMs": "6000"}]' \
+        "$currentUrl/stimulusResponse") \
+        || { echo "stimulusResponse:000,"; exit 1; }
+
+        echo "stimulusResponse:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
 done
 # for i in {1..6000}; do # 100ms_a.ogg
 for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
@@ -130,7 +209,26 @@ for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
     # pause for 10 seconds because the participant can't upload audio before it has been recorded
     sleep 5
 
-    curl --write-out "mediaBlob:%{http_code}," --silent --show-error --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "mediaType=ogg" --form "partNumber=0" --form "dataBlob=@/frinex_load_test/test_data/audio_recorder_10s.ogg"  $currentUrl/mediaBlob || echo "mediaBlob:000,";
+    # curl --write-out "mediaBlob:%{http_code}," --silent --show-error --output /dev/null -k --request POST -H 'Accept-Language: es' -H "Content-Type:multipart/form-data" --form "userId=$currentUserId" --form "screenName=hammer_server" --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" --form "mediaType=ogg" --form "partNumber=0" --form "dataBlob=@/frinex_load_test/test_data/audio_recorder_10s.ogg"  $currentUrl/mediaBlob || echo "mediaBlob:000,";
+
+    status=$(curl -sS -o /dev/null -w '%{http_code}' -k \
+        -H 'Accept-Language: es' \
+        -H 'Content-Type: application/json' \
+        --request POST \
+        --form "userId=$currentUserId" \
+        --form "screenName=hammer_server" \
+        --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" \
+        --form "mediaType=ogg" \
+        --form "partNumber=0" \
+        --form "dataBlob=@/frinex_load_test/test_data/audio_recorder_10s.ogg" \
+        "$currentUrl/mediaBlob") \
+        || { echo "mediaBlob:000,"; exit 1; }
+
+        echo "mediaBlob:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
 done
 # frinexbq4_group_data_total.value 0
 date
