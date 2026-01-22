@@ -231,4 +231,5 @@ for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
         esac
 done
 # frinexbq4_group_data_total.value 0
+echo "load_participant completed $(date),"
 date
