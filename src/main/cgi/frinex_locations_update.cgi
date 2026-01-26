@@ -45,18 +45,18 @@ serviceListUnique="$(sudo docker service ls --format '{{.Name}}' \
 serviceListAll="$(sudo docker service ls --format '{{.Name}}' \
     | grep -E "_admin|_web")"
 
-echo "$serviceListUnique" \
-    | grep -E "_admin|_web" \
-    | grep -E "_production" \
-    | awk '{print "location /" $2 " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade $http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host $http_host;\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
-    | sed 's/_production_web {/ {/g' \
-    | sed 's/_production_admin {/-admin {/g' \
-    > /usr/local/apache2/htdocs/frinex_production_locations.txt
+# echo "$serviceListUnique" \
+#     | grep -E "_admin|_web" \
+#     | grep -E "_production" \
+#     | awk '{print "location /" $2 " {\n proxy_http_version 1.1;\n proxy_set_header Upgrade $http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host $http_host;\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
+#     | sed 's/_production_web {/ {/g' \
+#     | sed 's/_production_admin {/-admin {/g' \
+#     > /usr/local/apache2/htdocs/frinex_production_locations.txt
 
-echo "$serviceListUnique" \
-    | grep -E "_production" \
-    | awk '{print "upstream " $1 " {\n server lux27.mpi.nl:" $6 ";\n server lux28.mpi.nl:" $6 ";\n server lux29.mpi.nl:" $6 ";\n}\n"}' \
-    > /usr/local/apache2/htdocs/frinex_production_upstreams.txt
+# echo "$serviceListUnique" \
+#     | grep -E "_production" \
+#     | awk '{print "upstream " $1 " {\n server lux27.mpi.nl:" $6 ";\n server lux28.mpi.nl:" $6 ";\n server lux29.mpi.nl:" $6 ";\n}\n"}' \
+#     > /usr/local/apache2/htdocs/frinex_production_upstreams.txt
 
 # | awk '{print "location /" $2 "X {\n proxy_pass http://" $1 "/" $2 "X;\n proxy_set_header X-Forwarded-Prefix /" $2 "X;\n proxy_set_header X-Forwarded-Host tomcatstaging;\n proxy_set_header X-Forwarded-Proto https;\n proxy_set_header X-Forwarded-Port 443;\n}\n location /" $2 " {\n proxy_pass http://" $1 "/" $2 ";\n}\n"}' \
 # echo "$serviceList" \
@@ -117,8 +117,8 @@ done
 echo "}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
 mv /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp /usr/local/apache2/htdocs/frinex_staging_locations.txt
 mv /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
-mv /usr/local/apache2/htdocs/frinex_production_locations.v2.tmp /usr/local/apache2/htdocs/frinex_production_locations.v2
-mv /usr/local/apache2/htdocs/frinex_production_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_production_upstreams.v2
+mv /usr/local/apache2/htdocs/frinex_production_locations.v2.tmp /usr/local/apache2/htdocs/frinex_production_locations.txt
+mv /usr/local/apache2/htdocs/frinex_production_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_production_upstreams.txt
 
 echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 # for runningWar in $(curl -k -s https://ems15.mpi.nl/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g")
