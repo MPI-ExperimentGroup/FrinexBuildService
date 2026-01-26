@@ -106,7 +106,7 @@ else
         bash $workingDir/clean_frinex_docker.sh
 
         # regenerate any images that are in use
-        bash $workingDir/regenerate_used_frinex_images.sh
+        # bash $workingDir/regenerate_used_frinex_images.sh
     else
         echo "frinexapps-jdk failed"
         exit
