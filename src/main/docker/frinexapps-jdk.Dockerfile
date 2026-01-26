@@ -29,15 +29,15 @@ RUN apk add --no-cache git bash unzip zip imagemagick graphviz maven vim file ca
 # RUN curl -o /tmp/harica-root.crt https://repo.harica.gr/repo/certs/harica_root_ca_2021.pem && \
 #     curl -o /tmp/harica-intermediate.crt https://repo.harica.gr/repo/certs/harica_tls_rsa_ca_2021.pem
 
-COPY chain.pem /tmp/harica-chain.pem
-RUN keytool -importcert \
-    -noprompt \
-    -trustcacerts \
-    -alias harica-chain \
-    -file /tmp/harica-chain.pem \
-    -keystore $JAVA_HOME/lib/security/cacerts \
-    -storepass changeit \
-    && rm /tmp/harica-chain.pem
+# COPY chain.pem /tmp/harica-chain.pem
+# RUN keytool -importcert \
+#     -noprompt \
+#     -trustcacerts \
+#     -alias harica-chain \
+#     -file /tmp/harica-chain.pem \
+#     -keystore $JAVA_HOME/lib/security/cacerts \
+#     -storepass changeit \
+#     && rm /tmp/harica-chain.pem
 
 # RUN openssl x509 -in /tmp/harica-root.crt -out /tmp/harica-root-clean.crt
 
