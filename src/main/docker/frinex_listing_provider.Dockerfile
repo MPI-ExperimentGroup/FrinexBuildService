@@ -85,9 +85,9 @@ RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service create --
 
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker system prune -f' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service rm *' >> /etc/sudoers
-RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker docker events *' >> /etc/sudoers
-RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker docker inspect *' >> /etc/sudoers
-RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker docker node inspect *' >> /etc/sudoers
+RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker events *' >> /etc/sudoers
+RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker inspect *' >> /etc/sudoers
+RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker node inspect *' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Name}}' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls --format {{.Ports}}{{.Name}}' >> /etc/sudoers
