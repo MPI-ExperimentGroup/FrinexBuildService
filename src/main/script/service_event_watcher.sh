@@ -1,9 +1,9 @@
 #!/bin/bash
 SETTLE_DELAY=15
 sudo docker events --filter type=container --format '{{.Time}} {{.Action}} {{.Actor.ID}}' | while read -r timestamp action container_id; do
-    if [[ "$service" =~ ^.*_(admin|web)_[0-9]+$ ]]; then
-        if [[ "$action" =~ start|running|stop|die ]]; then
-            service=$(sudo docker inspect -f '{{index .Config.Labels "com.docker.swarm.service.name"}}' "$container_id" 2>/dev/null || echo "N/A")
+    if [[ "$action" =~ start|running|stop|die ]]; then
+        service=$(sudo docker inspect -f '{{index .Config.Labels "com.docker.swarm.service.name"}}' "$container_id" 2>/dev/null || echo "N/A")
+        if [[ "$service" =~ ^.*_(admin|web)_[0-9]+$ ]]; then
             node_id=$(sudo docker inspect -f '{{index .Config.Labels "com.docker.swarm.node.id"}}' "$container_id" 2>/dev/null || echo "")
             if [[ -n "$node_id" ]]; then
                 if [[ "$action" =~ start|running ]]; then
