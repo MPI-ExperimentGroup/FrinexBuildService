@@ -55,6 +55,9 @@ docker container rm frinex_service_manager
 # start the frinex_service_manager
 # TODO: once per hour is probably a bit too often unless we are also generating munin stats
 docker run --user frinex --cpus=".5" --restart unless-stopped -v buildServerTarget:/FrinexBuildService/artifacts --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -dit --name frinex_service_manager frinexbuild.mpi.nl/frinex_listing_provider:latest bash -c "while true; do /FrinexBuildService/sleep_and_resurrect_docker_experiments.sh; sleep 1h; done;"
+
+docker stop service_event_watcher 
+docker container rm service_event_watcher 
 #TODO: service_event_watcher might be more efficient at updating the locations and upstreams for the current CGI
 docker run --user frinex --cpus=".5" --restart unless-stopped -v buildServerTarget:/FrinexBuildService/artifacts --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -dit --name service_event_watcher frinexbuild.mpi.nl/frinex_listing_provider:latest bash -c "while true; do /FrinexBuildService/service_event_watcher.sh; sleep 1; done;"
 
