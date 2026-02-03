@@ -92,14 +92,14 @@ for serviceName in $serviceListUnique; do
     portalUrlName=$(sed -e 's/-admin$/-portal/' <<< "$urlName")
     portalServiceName=$(sed -e 's/_admin$/_portal/' <<< "$serviceName")
     
-    if [[ "$urlName" == *_web ]]; then
-        echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
-    else
+    if [[ "$serviceName" == *_admin ]]; then
         echo -e "location ~ ^/$urlName/(actuator/health|assignValue|completeValue|validate|mock_validate|mediaBlob|screenChange|timeStamp|metadata|tagEvent|tagPairEvent|stimulusResponse|groupEvent)$ {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
         # echo -e "location /$urlName {\n return 403;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
         # TODO: replace this friendly redirect with the 403
         echo -e "location /$urlName {\n return 302 /$portalUrlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
         echo -e "location /$portalUrlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$portalServiceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+    else
+        echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
     fi
     
     echo "upstream ${serviceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
@@ -130,7 +130,7 @@ for serviceName in $serviceListUnique; do
     done
     echo -n "]" >> /FrinexBuildService/artifacts/services.json.v2.tmp
     echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-    if [[ "$urlName" != *_web ]]; then
+    if [[ "$serviceName" == *_admin ]]; then
         echo "upstream ${portalServiceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp    
         echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
         echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
