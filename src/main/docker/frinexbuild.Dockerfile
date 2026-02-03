@@ -90,6 +90,7 @@ COPY static/buildlisting.js /FrinexBuildService/
 COPY docker/package.json /FrinexBuildService/
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/deploy-by-hook.js
 COPY config/publish.properties /FrinexBuildService/
+RUN sed -i 's/\r$//' /FrinexBuildService/publish.properties
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/publish.properties
 RUN sed -i "s|ProtectedDirectory|/FrinexBuildService/protected|g" /FrinexBuildService/publish.properties
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/publish.properties
