@@ -834,7 +834,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
                 }
                 console.log("frinex-admin finished");
                 var browseLabel = ((currentEntry.state === "staging" || currentEntry.state === "production")) ? "browse" : currentEntry.state;
-                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt?' + new Date().getTime() + '">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar">download</a>&nbsp;<a href="' + stagingServerUrl + '/' + currentEntry.buildName + '-admin">' + browseLabel + '</a>&nbsp;<a href="' + stagingServerUrl + '/' + currentEntry.buildName + '-admin/monitoring">monitor</a>', "staging", "admin", false, false, true, new Date().getTime() - stageStartTime);
+                storeResult(currentEntry.buildName, '<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt?' + new Date().getTime() + '">log</a>&nbsp;<a href="' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin_sources.jar">download</a>&nbsp;<a href="' + stagingServerUrl + '/' + currentEntry.buildName + '-portal">' + browseLabel + '</a>&nbsp;<a href="' + stagingServerUrl + '/' + currentEntry.buildName + '-portal/monitoring">monitor</a>', "staging", "admin", false, false, true, new Date().getTime() - stageStartTime);
                 buildArtifactsJson.artifacts['admin'] = currentEntry.buildName + "_staging_admin_sources.jar";
                 // update artifacts.json
                 // save the build artifacts JSON to the httpd directory
