@@ -34,17 +34,16 @@
 
 "use strict";
 
-import PropertiesReaderModule from 'properties-reader';
-const PropertiesReader = PropertiesReaderModule.propertiesReader;
+const { default: PropertiesReader } = await import("properties-reader");
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
-import child_process from 'child_process';
-import got from 'got';
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
-import diskSpace from 'check-disk-space';
-import generatePassword from 'omgopass';
-import sslChecker from 'ssl-checker';
+const { default: child_process } = await import("child_process");
+const { default: got } = await import("got");
+const { default: fs } = await import("fs");
+const { default: path } = await import("path");
+const { default: os } = await import("os");
+const { default: diskSpace } = await import("check-disk-space");
+const { default: generatePassword } = await import("omgopass");
+const { default: sslChecker } = await import("ssl-checker");
 // import tls from 'tls';
 const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
