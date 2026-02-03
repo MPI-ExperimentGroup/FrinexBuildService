@@ -34,7 +34,8 @@
 
 "use strict";
 
-const { default: PropertiesReader } = await import("properties-reader");
+const { default: PropertiesReaderModule } = await import("properties-reader");
+const PropertiesReader = PropertiesReaderModule.propertiesReader;
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 const { default: child_process } = await import("child_process");
 const { default: got } = await import("got");
