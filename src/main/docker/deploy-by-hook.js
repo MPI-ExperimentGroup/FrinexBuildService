@@ -34,8 +34,9 @@
 
 "use strict";
 
-import PropertiesReader from 'properties-reader';
-const properties = PropertiesReader.default('ScriptsDirectory/publish.properties');
+import PropertiesReaderModule from 'properties-reader';
+const PropertiesReader = PropertiesReaderModule.propertiesReader;
+const properties = PropertiesReader('ScriptsDirectory/publish.properties');
 import child_process from 'child_process';
 import got from 'got';
 import fs from 'fs';
