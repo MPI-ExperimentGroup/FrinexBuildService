@@ -497,7 +497,7 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
         , \"-Dserver.error.include-message=always\"\
         , \"-Dserver.error.include-binding-errors=always\"\
         , \"-Dserver.error.include-stacktrace=always\"\
-        ]\n" : "]\n")
+        , \"-Djavamelody.enabled=true\"]\n" : ", \"-Djavamelody.enabled=false\"]\n")
         // , \"--logging.level.org.springframework.security=DEBUG\", \"--logging.level.org.springframework.ldap=DEBUG\", \"--logging.level.org.springframework.ldap.core=TRACE\", \"--logging.level.org.springframework.ldap.authentication=DEBUG\"\
         // exposure.include=mappings and mappings.enabled enables /actuator/mappings
         // , \"-Dmanagement.endpoints.web.exposure.include=mappings\", \"-Dmanagement.endpoint.mappings.enabled=true\"
