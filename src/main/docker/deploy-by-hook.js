@@ -32,7 +32,7 @@
  *        npm install properties-reader
  */
 
-import PropertiesReader from 'properties-reader';
+// import PropertiesReader from 'properties-reader';
 // import { exec, spawn } from 'node:child_process';
 // import child_process from 'node:child_process';
 import * as child_process from 'node:child_process';
@@ -43,35 +43,40 @@ import os from 'node:os';
 import diskSpace from 'check-disk-space';
 import generatePassword from 'omgopass';
 import sslChecker from 'ssl-checker';
-const properties = PropertiesReader('ScriptsDirectory/publish.properties');
-const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
-const deploymentType = properties.get('settings.deploymentType');
-const dockerRegistry = properties.get('dockerservice.dockerRegistry');
-const proxyUpdateTrigger = properties.get('dockerservice.proxyUpdateTrigger');
-const restartServiceUrl = properties.get('settings.restartServiceUrl');
-const requestScalingUrl = properties.get('dockerservice.requestScalingUrl');
-const dockerServiceOptions = properties.get('dockerservice.serviceOptions');
-const buildContainerOptions = properties.get('settings.buildContainerOptions');
-const taskContainerOptions = properties.get('settings.taskContainerOptions');
-const listingDirectory = properties.get('settings.listingDirectory');
-const certificateCheckList = properties.get('settings.certificateCheckList');
-const incomingDirectory = properties.get('settings.incomingDirectory');
-const processingDirectory = properties.get('settings.processingDirectory');
-const buildHost = properties.get('settings.buildHost');
+import ini from 'ini';
+import { fileURLToPath } from 'node:url';
+
+const publishProperties = fs.readFileSync('ScriptsDirectory/publish.properties', 'utf-8');
+const properties = ini.parse(publishProperties);
+// const properties = PropertiesReader('ScriptsDirectory/publish.properties');
+const concurrentBuildCount = properties.settings.concurrentBuildCount;
+const deploymentType = properties.settings.deploymentType;
+const dockerRegistry = properties.dockerservice.dockerRegistry;
+const proxyUpdateTrigger = properties.dockerservice.proxyUpdateTrigger;
+const restartServiceUrl = properties.settings.restartServiceUrl;
+const requestScalingUrl = properties.dockerservice.requestScalingUrl;
+const dockerServiceOptions = properties.dockerservice.serviceOptions;
+const buildContainerOptions = properties.settings.buildContainerOptions;
+const taskContainerOptions = properties.settings.taskContainerOptions;
+const listingDirectory = properties.settings.listingDirectory;
+const certificateCheckList = properties.settings.certificateCheckList;
+const incomingDirectory = properties.settings.incomingDirectory;
+const processingDirectory = properties.settings.processingDirectory;
+const buildHost = properties.settings.buildHost;
 const staticFilesDirectory = incomingDirectory + '/static';
-const targetDirectory = properties.get('settings.targetDirectory');
-const protectedDirectory = properties.get('settings.protectedDirectory');
-const configServer = properties.get('webservice.configServer');
-const stagingServer = properties.get('staging.serverName');
-const stagingServerUrl = properties.get('staging.serverUrl');
-const stagingGroupsSocketUrl = properties.get('staging.groupsSocketUrl');
-const stagingDbHost = properties.get('staging.dbHost');
+const targetDirectory = properties.settings.targetDirectory;
+const protectedDirectory = properties.settings.protectedDirectory;
+const configServer = properties.webservice.configServer;
+const stagingServer = properties.staging.serverName;
+const stagingServerUrl = properties.staging.serverUrl;
+const stagingGroupsSocketUrl = properties.staging.groupsSocketUrl;
+const stagingDbHost = properties.staging.dbHost;
 // admin login for staging is taken from the settings.xml rather than the publish.properties
-// const stagingAdminToken = properties.get('staging.adminToken');
-const productionServer = properties.get('production.serverName');
-const productionServerUrl = properties.get('production.serverUrl');
-const productionGroupsSocketUrl = properties.get('production.groupsSocketUrl');
-const productionDbHost = properties.get('production.dbHost');
+// const stagingAdminToken = properties.staging.adminToken;
+const productionServer = properties.production.serverName;
+const productionServerUrl = properties.production.serverUrl;
+const productionGroupsSocketUrl = properties.production.groupsSocketUrl;
+const productionDbHost = properties.production.dbHost;
 
 var resultsFile; // this is set once in startResult after the file is populated
 const statsFile = fs.openSync(targetDirectory + "/buildstats.txt", "a"); //{ flags: 'w', mode: 0o775 });
