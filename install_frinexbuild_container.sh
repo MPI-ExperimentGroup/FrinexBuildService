@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
 # Copyright (C) 2020 Max Planck Institute for Psycholinguistics
 #
