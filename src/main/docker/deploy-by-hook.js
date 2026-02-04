@@ -32,21 +32,18 @@
  *        npm install properties-reader
  */
 
-"use strict";
-
-const { default: PropertiesReaderModule } = await import("properties-reader");
-const PropertiesReader = PropertiesReaderModule.propertiesReader;
+import PropertiesReader from 'properties-reader';
+// import { exec, spawn } from 'node:child_process';
+// import child_process from 'node:child_process';
+import * as child_process from 'node:child_process';
+import got from 'got';
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import diskSpace from 'check-disk-space';
+import generatePassword from 'omgopass';
+import sslChecker from 'ssl-checker';
 const properties = PropertiesReader('ScriptsDirectory/publish.properties');
-const { default: child_process } = await import("child_process");
-const { default: got } = await import("got");
-const { default: fs } = await import("fs");
-const { default: path } = await import("path");
-const { default: os } = await import("os");
-const { default: diskSpace } = await import("check-disk-space");
-const { default: generatePassword } = await import("omgopass");
-const { default: sslChecker } = await import("ssl-checker");
-// import tls from 'tls';
-const m2Settings = properties.get('settings.m2Settings');
 const concurrentBuildCount = properties.get('settings.concurrentBuildCount');
 const deploymentType = properties.get('settings.deploymentType');
 const dockerRegistry = properties.get('dockerservice.dockerRegistry');
