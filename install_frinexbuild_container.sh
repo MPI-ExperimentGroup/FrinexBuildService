@@ -36,7 +36,7 @@ else
 
     # the frinex_load_test should not be runing but we remove it now in case it is
     # TODO: later versions have numbered instances of frinex_load_test_N
-    docker service rm frinex_load_test
+    docker service rm frinex_load_test || true
 
     docker system prune
     
