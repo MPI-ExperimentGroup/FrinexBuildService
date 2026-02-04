@@ -116,7 +116,7 @@ for serviceName in $serviceListUnique; do
     lastServerEntry=''
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "^$serviceName"); do
         # echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-        ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
+        ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName" || true)
         # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
         while read -r node; do
             for port in $ports; do
@@ -129,7 +129,7 @@ for serviceName in $serviceListUnique; do
                 fi
                 echo -n "{\"node\": \"${node}\", \"port\": \"${port}\"}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
             done
-        done < <(sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName")
+        done < <(sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" || true)
     done
     echo -n "]" >> /FrinexBuildService/artifacts/services.json.v2.tmp
     echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
