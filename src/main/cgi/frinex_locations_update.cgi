@@ -89,8 +89,8 @@ for serviceName in $serviceListUnique; do
     # echo -e "location ~ ^/$urlName/(public_usage_stats|public_quick_stats|public_count_stats|public_count_csv|actuator)(/|$) {\n return 403;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
     echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
     
-    # portalUrlName=$(sed -e 's/-admin$/-portal/' <<< "$urlName")
-    # portalServiceName=$(sed -e 's/_admin$/_portal/' <<< "$serviceName")
+    portalUrlName=$(sed -e 's/-admin$/-portal/' <<< "$urlName")
+    portalServiceName=$(sed -e 's/_admin$/_portal/' <<< "$serviceName")
     
     # if [[ "$serviceName" == *_admin ]]; then
 
