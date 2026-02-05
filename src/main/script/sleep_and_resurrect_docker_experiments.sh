@@ -248,18 +248,18 @@ serviceNameUpdatedArray=$(sudo docker service ls --format '{{.Name}}' | sed -E '
 for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*_admin-public_usage_stats.json | awk -F '/' '{print $5}' | sed 's/_admin-public_usage_stats.json//g'); do
     echo "expectedServiceName: $expectedServiceName"
     if [[ $serviceNameUpdatedArray == *"${expectedServiceName}_admin"* ]]; then
-        echo "$expectedServiceName OK"
+        echo "${expectedServiceName}_admin OK"
     else
         ((needsStarting++))
-        echo "$expectedServiceName requesting start up"
+        echo "${expectedServiceName}_admin requesting start up"
         curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?${expectedServiceName}_admin"
     fi
     if [[ $serviceNameUpdatedArray == *"${expectedServiceName}_web"* ]]; then
-        echo "$expectedServiceName OK"
+        echo "${expectedServiceName}_web OK"
     else
         ((needsStarting++))
-        echo "$expectedServiceName requesting start up"
-        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?{$expectedServiceName}_web"
+        echo "${expectedServiceName}_web requesting start up"
+        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?${expectedServiceName}_web"
     fi
 done
 
