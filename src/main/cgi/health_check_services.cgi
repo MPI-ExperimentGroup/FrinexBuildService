@@ -44,6 +44,7 @@ for serviceName in $serviceListUnique; do
         deploymentType="staging"
     fi
     urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' -e 's/_production_web//' -e 's/_production_admin/-admin/' <<< "$serviceName")    
+    portalUrlName=$(sed -e 's/-admin$/-portal/' <<< "$urlName")
     # if [ "$isFirstService" = true ]; then
     #     isFirstService=false
     # else
