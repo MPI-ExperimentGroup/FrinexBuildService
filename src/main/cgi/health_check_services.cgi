@@ -61,6 +61,12 @@ for serviceName in $serviceListUnique; do
     else
         echo "FAIL"
     fi
+    echo -n "\"https://frinex${deploymentType}.mpi.nl/${portalUrlName}\": "
+    if curl -k -fsS "https://frinex${deploymentType}.mpi.nl/${portalUrlName}/actuator/health" >/dev/null 2>/dev/null; then
+        echo "OK"
+    else
+        echo "FAIL"
+    fi    
     isFirstInstance=true
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "^$serviceName"); do
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName")
