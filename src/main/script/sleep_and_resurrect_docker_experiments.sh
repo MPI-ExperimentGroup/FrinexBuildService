@@ -244,15 +244,21 @@ for serviceName in $serviceNameArray; do
 done
 
 echo "starting missing services"
-serviceNameUpdatedArray=$(sudo docker service ls --format '{{.Name}}' | sed -E 's/_(web|admin)([_0-9]+)?$/_admin/' | grep -E "_staging_admin$|_production_admin$" | sort | uniq)
+serviceNameUpdatedArray=$(sudo docker service ls --format '{{.Name}}' | sed -E 's/_web([_0-9]+)?$/_web/' | sed -E 's/_admin([_0-9]+)?$/_admin/' | grep -E "_staging_web$|_production_web|_staging_admin$|_production_admin$" | sort | uniq)
 for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" /FrinexBuildService/artifacts/*/*_admin-public_usage_stats.json | awk -F '/' '{print $5}' | sed 's/_admin-public_usage_stats.json//g'); do
     echo "expectedServiceName: $expectedServiceName"
-    if [[ $serviceNameUpdatedArray == *"$expectedServiceName"* ]]; then
+    if [[ $serviceNameUpdatedArray == *"${expectedServiceName}_admin"* ]]; then
         echo "$expectedServiceName OK"
     else
         ((needsStarting++))
         echo "$expectedServiceName requesting start up"
         curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?${expectedServiceName}_admin"
+    fi
+    if [[ $serviceNameUpdatedArray == *"${expectedServiceName}_web"* ]]; then
+        echo "$expectedServiceName OK"
+    else
+        ((needsStarting++))
+        echo "$expectedServiceName requesting start up"
         curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?{$expectedServiceName}_web"
     fi
 done
