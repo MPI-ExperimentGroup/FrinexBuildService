@@ -44,7 +44,6 @@ import diskSpace from 'check-disk-space';
 import generatePassword from 'omgopass';
 import sslChecker from 'ssl-checker';
 import ini from 'ini';
-import { fileURLToPath } from 'node:url';
 
 const publishProperties = fs.readFileSync('ScriptsDirectory/publish.properties', 'utf-8');
 const properties = ini.parse(publishProperties);
