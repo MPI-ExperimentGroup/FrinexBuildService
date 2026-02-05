@@ -117,27 +117,29 @@ for serviceName in $serviceListUnique; do
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "^$serviceName"); do
         # echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName" || true)
-        # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-        while read -r node; do
-            for port in $ports; do
-                singleServiceEntry="   server $node:$port;"
-                echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-                if [ "$isFirstInstance" = true ]; then
-                    isFirstInstance=false
-                else
-                    echo "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
-                fi
-                echo -n "{\"node\": \"${node}\", \"port\": \"${port}\"}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
-            done
-        done < <(sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" || true)
+        if [ -n "$ports" ]; then
+            # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+            while read -r node; do
+                for port in $ports; do
+                    singleServiceEntry="   server $node:$port;"
+                    echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+                    if [ "$isFirstInstance" = true ]; then
+                        isFirstInstance=false
+                    else
+                        echo "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
+                    fi
+                    echo -n "{\"node\": \"${node}\", \"port\": \"${port}\"}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
+                done
+            done < <(sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" || true)
+        fi
     done
     echo -n "]" >> /FrinexBuildService/artifacts/services.json.v2.tmp
     echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-    if [[ "$serviceName" == *_admin ]]; then
-        echo "upstream ${portalServiceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp    
-        echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-        echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-    fi
+    # if [[ "$serviceName" == *_admin ]]; then
+    #     echo "upstream ${portalServiceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp    
+    #     echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+    #     echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+    # fi
 done 
 echo "}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
 mv /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp /usr/local/apache2/htdocs/frinex_staging_locations.txt
