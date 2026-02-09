@@ -87,7 +87,7 @@ for serviceName in $serviceListUnique; do
     urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' -e 's/_production_web//' -e 's/_production_admin/-admin/' <<< "$serviceName")
 
     # echo -e "location ~ ^/$urlName/(public_usage_stats|public_quick_stats|public_count_stats|public_count_csv|actuator)(/|$) {\n return 403;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
-    echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+    # echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
     
     portalUrlName=$(sed -e 's/-admin$/-portal/' <<< "$urlName")
     portalServiceName=$(sed -e 's/_admin$/_portal/' <<< "$serviceName")
