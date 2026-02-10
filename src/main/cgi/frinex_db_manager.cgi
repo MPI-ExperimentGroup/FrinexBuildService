@@ -64,7 +64,6 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
                 echo ''
             fi
             if [[ "$appNameInternal" == "load_test_target" ]]; then
-            then
                 tablesToUpdate=("data_deletion_log" "event_time" "group_data" "audio_data" "screen_data" "stimulus_response" "tag_data" "tag_pair_data" "time_stamp" "participant")
                 for table in "${tablesToUpdate[@]}"; do
                     echo "Processing GenerationType.IDENTITY on table: $table"
