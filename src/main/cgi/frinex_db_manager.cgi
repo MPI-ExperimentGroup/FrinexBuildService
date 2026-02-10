@@ -67,7 +67,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
                 tablesToUpdate=("data_deletion_log" "event_time" "group_data" "audio_data" "screen_data" "stimulus_response" "tag_data" "tag_pair_data" "time_stamp" "participant")
                 for table in "${tablesToUpdate[@]}"; do
                     echo "Processing GenerationType.IDENTITY on table: $table"
-                    tableResult=$(psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d "frinex_${appNameInternal}_db" -v ON_ERROR_STOP=1 -tAc "
+                    tableResult=$(PGPASSWORD='DatabaseStagingPass' psql -h DatabaseStagingUrl -p DatabaseStagingPort -U db_manager_frinex_staging -d "frinex_${appNameInternal}_db" -v ON_ERROR_STOP=1 -tAc "
                     DO \$\$
                     DECLARE
                         max_id BIGINT;
