@@ -64,7 +64,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
                 echo ''
             fi
             if [[ "$appNameInternal" == "load_test_target" ]]; then
-                echo "Processing GenerationType.IDENTITY: $appNameInternal"
+                messageString="$messageString\nProcessing GenerationType.IDENTITY: $appNameInternal"
                 tableResult=$(PGPASSWORD='DatabaseStagingPass' psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${appNameInternal}_user -d "frinex_${appNameInternal}_db" -v ON_ERROR_STOP=1 -tAc "
                 DO $$
                 DECLARE
