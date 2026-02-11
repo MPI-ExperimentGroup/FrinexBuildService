@@ -30,6 +30,7 @@ RUN mkdir /FrinexBuildService/
 RUN mkdir /FrinexBuildService/cgi
 COPY config/frinex_db_manager.conf  /FrinexBuildService/
 COPY cgi/frinex_db_manager.cgi  /FrinexBuildService/cgi/
+COPY script/migrate_db.sh  /FrinexBuildService/script/
 COPY stats/bootstrap_munin_statistics.sh  /FrinexBuildService/stats/
 COPY stats/cronjob_munin_statistics.sh /FrinexBuildService/stats/cronjob_munin_staging_statistics.sh
 COPY stats/cronjob_munin_statistics.sh /FrinexBuildService/stats/cronjob_munin_production_statistics.sh
@@ -51,6 +52,12 @@ RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildServic
 RUN sed -i "s|DatabaseProductionPort|5434|g" /FrinexBuildService/stats/*_*_production_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
 RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/cgi/frinex_db_manager.cgi
+RUN sed -i "s|DatabaseStagingUrl|staging.example.com|g" /FrinexBuildService/script/migrate_db.sh
+RUN sed -i "s|DatabaseStagingPort|5433|g" /FrinexBuildService/script/migrate_db.sh
+RUN sed -i "s|DatabaseProductionUrl|production.example.com|g" /FrinexBuildService/script/migrate_db.sh
+RUN sed -i "s|DatabaseProductionPort|5434|g" /FrinexBuildService/script/migrate_db.sh
+RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/script/migrate_db.sh
+RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/script/migrate_db.sh
 # TODO: the DatabaseProductionPass and DatabaseStagingPass are currently the same and should be changed
 RUN sed -i "s|DatabaseStagingPass|example|g" /FrinexBuildService/stats/*_*_staging_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
 RUN sed -i "s|DatabaseProductionPass|example|g" /FrinexBuildService/stats/*_*_production_statistics.sh /FrinexBuildService/stats/bootstrap_munin_statistics.sh
