@@ -66,7 +66,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
             if [[ "$appNameInternal" == "load_test_target" ]]; then
                 messageString="$messageString\nProcessing GenerationType.IDENTITY: $appNameInternal"
                 tableResult=$(PGPASSWORD='DatabaseStagingPass' psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${appNameInternal}_user -d "frinex_${appNameInternal}_db" -v ON_ERROR_STOP=1 -tAc "
-                DO $$
+                DO \$\$
                 DECLARE
                     tbl TEXT;
                     max_id BIGINT;
@@ -111,7 +111,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
                         RAISE NOTICE 'Updated %, new identity starts at %', tbl, max_id + 1;
                     END LOOP;
                 END
-                $$;
+                \$\$;
                 SELECT 'TABLE_UPDATE_STATUS: SUCCESS';
                 ")
                 messageString="$messageString\n$tableResult"
