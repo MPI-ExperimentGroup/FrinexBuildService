@@ -72,6 +72,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
                     DECLARE
                         max_id BIGINT;
                         col_default TEXT;
+                        is_identity TEXT;
                     BEGIN
                         SELECT column_default, is_identity INTO col_default, is_identity FROM information_schema.columns WHERE table_name = '$table' AND column_name = 'id' AND table_schema = 'public';
                         IF is_identity = 'YES' THEN
