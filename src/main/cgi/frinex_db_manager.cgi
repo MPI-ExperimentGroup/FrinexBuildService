@@ -112,6 +112,7 @@ if [[ "$QUERY_STRING" =~ ^frinex_[a-z0-9_]*_db$ ]]; then
                         END LOOP;
                     END
                     $$;
+                    SELECT 'TABLE_UPDATE_STATUS: SUCCESS';
                     ")
                     messageString="$messageString\n$tableResult"
                 done
