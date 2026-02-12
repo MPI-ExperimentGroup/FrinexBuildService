@@ -213,7 +213,6 @@ for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
 
     status=$(curl -ksS -o /dev/null -w '%{http_code}' \
         -H 'Accept-Language: es' \
-        -H 'Content-Type: application/json' \
         --request POST \
         --form "userId=$currentUserId" \
         --form "screenName=hammer_server" \
