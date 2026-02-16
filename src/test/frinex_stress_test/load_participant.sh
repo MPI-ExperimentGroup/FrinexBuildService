@@ -9,6 +9,8 @@ echo "<tr><td>$currentUrl</td><td>$currentUserId</td><td>"
 
 echo "currentUrl: $currentUrl"
 
+echo "load_participant start $(date),"
+
 ###################
 # mpiprevalence_v2_DeploymentsAccessed.value 5
 # mpiprevalence_v2_MediaResponses.value 0

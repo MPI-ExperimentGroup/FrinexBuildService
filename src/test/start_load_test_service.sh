@@ -150,4 +150,10 @@ grep -Eoh ":5[0-9]{2}," $scriptDir/load_test_*_$startDate.log | wc -l >> "$scrip
 echo "000s" >> "$scriptDir/load_test_$startDate.log"
 grep -Eoh ":0[0-9]{2}," $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
 
+echo "started count:" >> "$scriptDir/load_test_$startDate.log"
+grep "load_participant start" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+
+echo "completed count:" >> "$scriptDir/load_test_$startDate.log"
+grep "load_participant completed" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
+
 cat "$scriptDir/load_test_$startDate.log"
