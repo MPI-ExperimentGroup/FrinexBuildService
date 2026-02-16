@@ -51,6 +51,7 @@ for i in $(seq 1 100); do
     docker rm load_test_$i || true
 done
 
+startEpoch=$(date +%s)
 startDate=$(date +%Y%m%d%H%M)
 
 echo "currentUrl: $currentUrl" >> "$scriptDir/load_test_$startDate.log"
@@ -74,7 +75,9 @@ done
 
 docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
 
-echo "Process ran from $startDate until $(date '+%Y%m%d%H%M')" >> "$scriptDir/load_test_$startDate.log"
+endEpoch=$(date +%s)
+duration=$((endEpoch - startEpoch))
+echo "Process ran from $startDate until $(date '+%Y%m%d%H%M'), duration: ${duration}s" >> "$scriptDir/load_test_$startDate.log"
 
 echo "generating stats" >> "$scriptDir/load_test_$startDate.log"
 
