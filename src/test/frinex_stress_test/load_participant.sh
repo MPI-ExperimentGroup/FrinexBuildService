@@ -28,29 +28,6 @@ echo "load_participant start $(date),"
 ###################
 
 # frinexbq4_ParticipantsSeen_total.value 493
-for i in {1..20}; do
-    # RAN and Verbal fluency for one participant:
-    # Participant: 20 rows
-    # Participant: 16 rows
-
-    # maybe five seconds between connections is reasonable 
-    sleep 2
-
-    # curl --write-out "metadata:%{http_code}," --silent --show-error --output /dev/null -k -H 'Accept-Language: es' -d '[{"userId": "'$currentUserId'"}]' -H 'Content-Type: application/json' $currentUrl/metadata || echo "metadata:000,";
-
-    status=$(curl --max-time 0.5 -ksS -o /dev/null -w '%{http_code}' \
-        -H 'Accept-Language: es' \
-        -H 'Content-Type: application/json' \
-        -d "[{\"userId\":\"$currentUserId\"}]" \
-        "$currentUrl/metadata") \
-        || { echo "metadata:000,"; exit 1; }
-
-        echo "metadata:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
-done
 for i in {1..27}; do
     # RAN and Verbal fluency for one participant:
     # ScreenData: 27 rows
@@ -226,6 +203,29 @@ for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
         || { echo "mediaBlob:000,"; exit 1; }
 
         echo "mediaBlob:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
+done
+for i in {1..20}; do
+    # RAN and Verbal fluency for one participant:
+    # Participant: 20 rows
+    # Participant: 16 rows
+
+    # maybe five seconds between connections is reasonable 
+    sleep 2
+
+    # curl --write-out "metadata:%{http_code}," --silent --show-error --output /dev/null -k -H 'Accept-Language: es' -d '[{"userId": "'$currentUserId'"}]' -H 'Content-Type: application/json' $currentUrl/metadata || echo "metadata:000,";
+
+    status=$(curl --max-time 0.5 -ksS -o /dev/null -w '%{http_code}' \
+        -H 'Accept-Language: es' \
+        -H 'Content-Type: application/json' \
+        -d "[{\"userId\":\"$currentUserId\"}]" \
+        "$currentUrl/metadata") \
+        || { echo "metadata:000,"; exit 1; }
+
+        echo "metadata:$status,"
         case "$status" in
         2??) : ;;
         *) exit 1 ;;
