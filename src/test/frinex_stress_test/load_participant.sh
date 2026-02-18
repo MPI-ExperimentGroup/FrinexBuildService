@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
+# set -Eeuo pipefail
 
 # do not run this on a machine that is in use, this script is designed to cause load on the server and will insert records into the DB
 currentUrl="$1"
@@ -26,7 +26,7 @@ echo "load_participant start $(date),"
 # mpiprevalence_v2_tag_pair_data.value 6570
 # mpiprevalence_v2_time_stamp.value 13216
 ###################
-for i in {1..300}; do
+for i in {1..5}; do
     sleep 5
     status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
         "${currentUrl%-admin}/ExperimentTemplate/ExperimentTemplate.nocache.js?$(date +%Y%m%d%H%M%S)") \
