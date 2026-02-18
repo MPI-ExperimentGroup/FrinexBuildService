@@ -29,7 +29,7 @@ echo "load_participant start $(date),"
 for i in {1..5}; do
     sleep 5
     status=$(curl -ksS -o /dev/null -w '%{http_code}' \
-        "${currentUrl%-admin}/ExperimentTemplate/ExperimentTemplate.nocache.js?$(date +%Y%m%d%H%M%S)" \
+        "${currentUrl%-admin}/ExperimentTemplate/ExperimentTemplate.nocache.js?$(date +%Y%m%d%H%M%S)") \
         || { echo "nocachejs:000,"; exit 1; }
 
         echo "nocachejs:$status,"
