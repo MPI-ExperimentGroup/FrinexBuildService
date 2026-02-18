@@ -26,7 +26,18 @@ echo "load_participant start $(date),"
 # mpiprevalence_v2_tag_pair_data.value 6570
 # mpiprevalence_v2_time_stamp.value 13216
 ###################
+for i in {1..5}; do
+    sleep 5
+    status=$(curl -ksS -o /dev/null -w '%{http_code}' \
+        "${currentUrl%-admin}/ExperimentTemplate/ExperimentTemplate.nocache.js?$(date +%Y%m%d%H%M%S)" \
+        || { echo "nocachejs:000,"; exit 1; }
 
+        echo "nocachejs:$status,"
+        case "$status" in
+        2??) : ;;
+        *) exit 1 ;;
+        esac
+done
 # frinexbq4_ParticipantsSeen_total.value 493
 for i in {1..27}; do
     # RAN and Verbal fluency for one participant:
