@@ -26,7 +26,7 @@ echo "load_participant start $(date),"
 # mpiprevalence_v2_tag_pair_data.value 6570
 # mpiprevalence_v2_time_stamp.value 13216
 ###################
-for i in {1..5}; do
+for i in {1..300}; do
     sleep 5
     status=$(curl -ksS -o /dev/null -w '%{http_code}' \
         "${currentUrl%-admin}/ExperimentTemplate/ExperimentTemplate.nocache.js?$(date +%Y%m%d%H%M%S)") \
