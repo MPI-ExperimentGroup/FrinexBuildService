@@ -24,7 +24,7 @@ targetDir=TargetDirectory
 
 # this script checks the number of instances of a service and will scale up to a set limit
 
-maxInstances=3
+maxInstances=6
 # echo "$QUERY_STRING"
 serviceName=$(echo "$QUERY_STRING" | sed -n 's/^.*service=\([0-9a-z_]*\).*$/\1/p')
 # echo "$serviceName"
