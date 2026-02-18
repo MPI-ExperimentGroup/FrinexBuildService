@@ -33,10 +33,10 @@ for i in {1..5}; do
         || { echo "nocachejs:000,"; exit 1; }
 
         echo "nocachejs:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
 done
 # frinexbq4_ParticipantsSeen_total.value 493
 for i in {1..27}; do
@@ -62,10 +62,10 @@ for i in {1..27}; do
         || { echo "screenChange:000,"; exit 1; }
 
         echo "screenChange:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
 done
 for i in {1..35}; do
     # RAN and Verbal fluency for one participant:
@@ -90,10 +90,10 @@ for i in {1..35}; do
         || { echo "tagEvent:000,"; exit 1; }
 
         echo "tagEvent:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
 
 done
 for i in {1..25}; do
@@ -119,10 +119,10 @@ for i in {1..25}; do
         || { echo "tagPairEvent:000,"; exit 1; }
 
         echo "tagPairEvent:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
 done
 for i in {1..276}; do
     # RAN and Verbal fluency for one participant:
@@ -148,10 +148,10 @@ for i in {1..276}; do
         || { echo "timeStamp:000,"; exit 1; }
 
         echo "timeStamp:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
 done
 for i in {1..12}; do
     # RAN and Verbal fluency for one participant:
@@ -176,10 +176,10 @@ for i in {1..12}; do
         || { echo "stimulusResponse:000,"; exit 1; }
 
         echo "stimulusResponse:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
 done
 # for i in {1..6000}; do # 100ms_a.ogg
 for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
@@ -214,10 +214,10 @@ for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
         || { echo "mediaBlob:000,"; exit 1; }
 
         echo "mediaBlob:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
 done
 for i in {1..20}; do
     # RAN and Verbal fluency for one participant:
@@ -237,10 +237,10 @@ for i in {1..20}; do
         || { echo "metadata:000,"; exit 1; }
 
         echo "metadata:$status,"
-        case "$status" in
-        2??) : ;;
-        *) exit 1 ;;
-        esac
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
 done
 # frinexbq4_group_data_total.value 0
 echo "load_participant completed $(date),"

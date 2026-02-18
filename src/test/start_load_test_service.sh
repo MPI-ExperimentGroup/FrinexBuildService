@@ -84,13 +84,13 @@ seconds=$((duration % 60))
 
 echo "generating stats" >> "$scriptDir/load_test_$startDate.log"
 
-echo "nocachejs:200s" >> "$scriptDir/load_test_$startDate.log"
+echo -n "nocachejs:200s        " >> "$scriptDir/load_test_$startDate.log"
 grep -oh "nocachejs:2" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
-echo "nocachejs:400s" >> "$scriptDir/load_test_$startDate.log"
+echo -n "nocachejs:400s        " >> "$scriptDir/load_test_$startDate.log"
 grep -oh "nocachejs:4" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
-echo "nocachejs:500s" >> "$scriptDir/load_test_$startDate.log"
+echo -n "nocachejs:500s        " >> "$scriptDir/load_test_$startDate.log"
 grep -oh "nocachejs:5" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
-echo "nocachejs:000s" >> "$scriptDir/load_test_$startDate.log"
+echo -n "nocachejs:000s        " >> "$scriptDir/load_test_$startDate.log"
 grep -oh "nocachejs:0" $scriptDir/load_test_*_$startDate.log | wc -l >> "$scriptDir/load_test_$startDate.log"
 
 echo -n "mediaBlob:200s        " >> "$scriptDir/load_test_$startDate.log"
