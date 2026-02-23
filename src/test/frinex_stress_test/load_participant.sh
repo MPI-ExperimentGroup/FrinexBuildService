@@ -242,6 +242,18 @@ for i in {1..20}; do
         # *) exit 1 ;;
         # esac
 done
+for i in {1..5}; do
+    sleep 5
+    status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
+        "${currentUrl%-admin}/ExperimentTemplate/jquery/jquery.min.js?$(date +%Y%m%d%H%M%S)") \
+        || status="000" #|| { echo "nocachejs:000,"; exit 1; }
+
+        echo "jqueryminjs:$status,"
+        # case "$status" in
+        # 2??) : ;;
+        # *) exit 1 ;;
+        # esac
+done
 # frinexbq4_group_data_total.value 0
 echo "load_participant completed $(date),"
 date
