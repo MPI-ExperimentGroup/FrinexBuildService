@@ -245,7 +245,7 @@ done
 for i in {1..5}; do
     sleep 5
     status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
-        "${currentUrl%-admin}/ExperimentTemplate/jquery/jquery.min.js?$(date +%Y%m%d%H%M%S)") \
+        "${currentUrl%-admin}/jquery/jquery.min.js?$(date +%Y%m%d%H%M%S)") \
         || status="000" #|| { echo "nocachejs:000,"; exit 1; }
 
         echo "jqueryminjs:$status,"
