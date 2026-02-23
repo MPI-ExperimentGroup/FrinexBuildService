@@ -71,7 +71,7 @@ else
             echo "frinexapps-cordova ok"
         else
             echo "frinexapps-cordova failed"
-            exit
+            exit 1
         fi
 
         # build the frinexapps-electron dockerfile:
@@ -81,7 +81,7 @@ else
             echo "frinexapps-electron ok"
         else
             echo "frinexapps-electron failed"
-            exit
+            exit 1
         fi
 
         # build the frinexapps_vr dockerfile:
@@ -91,7 +91,7 @@ else
         #     echo "frinexapps-vr ok"
         # else
         #     echo "frinexapps-vr failed"
-        #     exit
+        #     exit 1
         # fi
 
         # update the frinex_examples
@@ -109,6 +109,6 @@ else
         # bash $workingDir/regenerate_used_frinex_images.sh
     else
         echo "frinexapps-jdk failed"
-        exit
+        exit 1
     fi;
 fi;
