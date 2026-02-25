@@ -51,4 +51,17 @@ for appNameInternal in "${appNameList[@]}"; do
             echo "Done: $table"
         fi
     done
+    # TODO: consider manually creating the indexes rather than @Entity @Table @Index in spring
+    # PGPASSWORD='DatabaseStagingPass' psql -h DatabaseStagingUrl -p DatabaseStagingPort -U frinex_${appNameInternal}_user -d "frinex_${appNameInternal}_db" -c \
+    # "CREATE INDEX CONCURRENTLY idx_tagdata_distinct
+    # ON tag_data (
+    #     user_id,
+    #     screen_name,
+    #     event_tag,
+    #     tag_value,
+    #     event_ms,
+    #     tag_date,
+    #     submit_date DESC
+    # );
+    # "
 done
