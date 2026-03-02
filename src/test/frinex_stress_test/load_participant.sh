@@ -206,7 +206,7 @@ for i in {1..60}; do # 60 X audioA-10s.wav = 10 minutes
         --request POST \
         --form "userId=$currentUserId" \
         --form "screenName=hammer_server" \
-        --form "stimulusId=hammer_server_'$(cat /proc/sys/kernel/random/uuid)'" \
+        --form "stimulusId=hammer_server_$(cat /proc/sys/kernel/random/uuid)" \
         --form "mediaType=ogg" \
         --form "partNumber=0" \
         --form "dataBlob=@/frinex_load_test/test_data/audio_recorder_10s.ogg" \
