@@ -26,14 +26,18 @@ targetDir=TargetDirectory
 
 maxInstances=8
 # echo "$QUERY_STRING"
-serviceName=$(echo "$QUERY_STRING" | sed -n 's/^.*service=\([0-9a-z_]*\).*$/\1/p')
-# echo "$serviceName"
-avgMs=$(echo "$QUERY_STRING" | sed -n 's/^.*avgMs=\([0-9a-z_]*\).*$/\1/p')
-# echo "$avgMs"
-total=$(echo "$QUERY_STRING" | sed -n 's/^.*total=\([0-9a-z_]*\).*$/\1/p')
-# echo "$total"
-status=$(echo "$QUERY_STRING" | sed -n 's/^.*status=\([0-9a-z_]*\).*$/\1/p')
-# echo "$status"
+serviceName=$(echo "$QUERY_STRING" | sed -n 's/.*service=\([^&]*\).*/\1/p')
+avgMs=$(echo "$QUERY_STRING" | sed -n 's/.*avgMs=\([^&]*\).*/\1/p')
+total=$(echo "$QUERY_STRING" | sed -n 's/.*total=\([^&]*\).*/\1/p')
+status=$(echo "$QUERY_STRING" | sed -n 's/.*status=\([^&]*\).*/\1/p')
+jvmMemoryUsed=$(echo "$QUERY_STRING" | sed -n 's/.*jvmMemoryUsed=\([^&]*\).*/\1/p')
+jvmMemoryMax=$(echo "$QUERY_STRING" | sed -n 's/.*jvmMemoryMax=\([^&]*\).*/\1/p')
+cpuUsage=$(echo "$QUERY_STRING" | sed -n 's/.*cpuUsage=\([^&]*\).*/\1/p')
+threadsBusy=$(echo "$QUERY_STRING" | sed -n 's/.*threadsBusy=\([^&]*\).*/\1/p')
+dbActive=$(echo "$QUERY_STRING" | sed -n 's/.*dbActive=\([^&]*\).*/\1/p')
+dbIdle=$(echo "$QUERY_STRING" | sed -n 's/.*dbIdle=\([^&]*\).*/\1/p')
+dbPending=$(echo "$QUERY_STRING" | sed -n 's/.*dbPending=\([^&]*\).*/\1/p')
+dbMax=$(echo "$QUERY_STRING" | sed -n 's/.*dbMax=\([^&]*\).*/\1/p')
 # instanceCount=$(sudo docker service inspect --format '{{.Spec.Mode.Replicated.Replicas}}' "$serviceName")
 instanceCount=$(sudo docker service ls --format '{{.Name}}' | grep "^$serviceName" | wc -l)
 # echo "$instanceCount"
@@ -45,8 +49,8 @@ lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "${serviceNam
 lockfile="$targetDir/request_scaling.lock"
 (
     flock -n 200 || exit 1
-    echo "date,maxInstances,instanceCount,avgMs,requests,service,status" > $targetDir/request_scaling.temp
-    echo "$(date),$maxInstances,$instanceCount,$avgMs,$total,$serviceName,$status" >> $targetDir/request_scaling.temp
+    echo "date,maxInstances,instanceCount,avgMs,requests,service,status,cpuUsage,jvmMemoryUsed,jvmMemoryMax,threadsBusy,dbActive,dbIdle,dbPending,dbMax" > $targetDir/request_scaling.temp
+    echo "$(date +'%Y-%m-%d %H:%M:%S'),$maxInstances,$instanceCount,$avgMs,$total,$serviceName,$status,$cpuUsage,$jvmMemoryUsed,$jvmMemoryMax,$threadsBusy,$dbActive,$dbIdle,$dbPending,$dbMax" >> $targetDir/request_scaling.temp
     tail -n +2 $targetDir/request_scaling.txt | head -n 1000 >> $targetDir/request_scaling.temp
     mv $targetDir/request_scaling.temp $targetDir/request_scaling.txt
     
