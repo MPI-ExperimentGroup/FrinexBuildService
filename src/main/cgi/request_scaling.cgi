@@ -30,6 +30,7 @@ serviceName=$(echo "$QUERY_STRING" | sed -n 's/.*service=\([^&]*\).*/\1/p')
 avgMs=$(echo "$QUERY_STRING" | sed -n 's/.*avgMs=\([^&]*\).*/\1/p')
 total=$(echo "$QUERY_STRING" | sed -n 's/.*total=\([^&]*\).*/\1/p')
 status=$(echo "$QUERY_STRING" | sed -n 's/.*status=\([^&]*\).*/\1/p')
+container=$(echo "$QUERY_STRING" | sed -n 's/.*container=\([^&]*\).*/\1/p')
 jvmMemoryUsed=$(echo "$QUERY_STRING" | sed -n 's/.*jvmMemoryUsed=\([^&]*\).*/\1/p')
 jvmMemoryMax=$(echo "$QUERY_STRING" | sed -n 's/.*jvmMemoryMax=\([^&]*\).*/\1/p')
 cpuUsage=$(echo "$QUERY_STRING" | sed -n 's/.*cpuUsage=\([^&]*\).*/\1/p')
@@ -49,8 +50,8 @@ lastUpdate=$(sudo docker service inspect --format '{{.UpdatedAt}}' "${serviceNam
 lockfile="$targetDir/request_scaling.lock"
 (
     flock -n 200 || exit 1
-    echo "date,maxInstances,instanceCount,avgMs,requests,service,status,cpuUsage,jvmMemoryUsed,jvmMemoryMax,threadsBusy,dbActive,dbIdle,dbPending,dbMax" > $targetDir/request_scaling.temp
-    echo "$(date +'%Y-%m-%d %H:%M:%S'),$maxInstances,$instanceCount,$avgMs,$total,$serviceName,$status,$cpuUsage,$jvmMemoryUsed,$jvmMemoryMax,$threadsBusy,$dbActive,$dbIdle,$dbPending,$dbMax" >> $targetDir/request_scaling.temp
+    echo "date,maxInstances,instanceCount,avgMs,requests,service,container,status,cpuUsage,jvmMemoryUsed,jvmMemoryMax,threadsBusy,dbActive,dbIdle,dbPending,dbMax" > $targetDir/request_scaling.temp
+    echo "$(date +'%Y-%m-%d %H:%M:%S'),$maxInstances,$instanceCount,$avgMs,$total,$serviceName,$container,$status,$cpuUsage,$jvmMemoryUsed,$jvmMemoryMax,$threadsBusy,$dbActive,$dbIdle,$dbPending,$dbMax" >> $targetDir/request_scaling.temp
     tail -n +2 $targetDir/request_scaling.txt | head -n 1000 >> $targetDir/request_scaling.temp
     mv $targetDir/request_scaling.temp $targetDir/request_scaling.txt
     

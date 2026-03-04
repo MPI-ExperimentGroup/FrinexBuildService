@@ -1730,6 +1730,56 @@
               "selector": "service",
               "text": "service",
               "type": "string"
+            },
+            {
+              "selector": "container",
+              "text": "container",
+              "type": "string"
+            },
+            {
+              "selector": "status",
+              "text": "status",
+              "type": "string"
+            },
+            {
+              "selector": "jvmMemoryUsed",
+              "text": "jvmMemoryUsed",
+              "type": "number"
+            },
+            {
+              "selector": "jvmMemoryMax",
+              "text": "jvmMemoryMax",
+              "type": "number"
+            },
+            {
+              "selector": "cpuUsage",
+              "text": "cpuUsage",
+              "type": "number"
+            },
+            {
+              "selector": "threadsBusy",
+              "text": "threadsBusy",
+              "type": "number"
+            },
+            {
+              "selector": "dbActive",
+              "text": "dbActive",
+              "type": "number"
+            },
+            {
+              "selector": "dbIdle",
+              "text": "dbIdle",
+              "type": "number"
+            },
+            {
+              "selector": "dbPending",
+              "text": "dbPending",
+              "type": "number"
+            },
+            {
+              "selector": "dbMax",
+              "text": "dbMax",
+              "type": "number"
             }
           ],
           "filterExpression": "service == \"load_test_target_staging_admin\"",
