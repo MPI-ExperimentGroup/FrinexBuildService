@@ -58,9 +58,8 @@ startDate=$(date +%Y%m%d%H%M)
 #    server lux27:10026;
 #    server lux28:10027;
 
-#    lux28:10020;lux28:10021;lux28:10023;
+#    lux28:10020 lux28 10021 lux28:10023
 
-IFS=';'
 for currentUrl in $1; do
     echo "currentUrl: $currentUrl"
     if [ -n "$currentUrl" ]; then
