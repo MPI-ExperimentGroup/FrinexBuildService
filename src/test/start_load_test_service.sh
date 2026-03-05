@@ -62,9 +62,10 @@ startDate=$(date +%Y%m%d%H%M)
 
 IFS=';'
 for currentUrl in $1; do
+    echo "currentUrl: $currentUrl"
     if [ -n "$currentUrl" ]; then
-        echo "currentUrl: $currentUrl"
         logName=$(echo "$currentUrl" | tr ':;' '')
+        echo "logName: $logName"
         for i in $(seq 1 100); do
             docker stop load_test_$logName_$i || true
         done
