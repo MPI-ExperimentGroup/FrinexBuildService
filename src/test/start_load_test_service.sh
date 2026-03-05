@@ -25,8 +25,8 @@
 
 # This script runs frinex load test services to test the load handling capacity of the given server
 
-currentUrl="$1"
-echo "currentUrl: $currentUrl"
+# currentUrl="$1"
+# echo "currentUrl: $currentUrl"
 # currentUrl="https://localhost:8443/load_test_target-admin"
 
 cd $(dirname "$0")
@@ -44,33 +44,57 @@ scriptDir=$(pwd -P)
 # docker service rm frinex_load_test
 
 docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:latest .
-for i in $(seq 1 100); do
-    docker stop load_test_$i || true
-done
-for i in $(seq 1 100); do
-    docker rm load_test_$i || true
-done
 
 startEpoch=$(date +%s)
 startDate=$(date +%Y%m%d%H%M)
 
-echo "currentUrl: $currentUrl" >> "$scriptDir/load_test_$startDate.log"
-docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
 
-for i in $(seq 1 100); do
-    docker run -d --rm --name load_test_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh "$currentUrl"
-    docker logs -f load_test_$i > "$scriptDir/load_test_${i}_$startDate.log" &
+#    server lux28:10020;
+#    server lux28:10021;
+#    server lux27:10022;
+#    server lux28:10023;
+#    server lux29:10024;
+#    server lux28:10025;
+#    server lux27:10026;
+#    server lux28:10027;
+
+#    lux28:10020;lux28:10021;lux28:10023;
+
+IFS=';'
+for currentUrl in $1; do
+    if [ -n "$currentUrl" ]; then
+        echo "currentUrl: $currentUrl"
+        logName=$(echo "$currentUrl" | tr ':;' '')
+        for i in $(seq 1 100); do
+            docker stop load_test_$logName_$i || true
+        done
+        for i in $(seq 1 100); do
+            docker rm load_test_$logName_$i || true
+        done
+
+        echo "currentUrl: $currentUrl" >> "$scriptDir/load_test_$startDate.log"
+        docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
+
+        for i in $(seq 1 100); do
+            docker run -d --rm --name load_test_$logName_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh "$currentUrl"
+            docker logs -f load_test_$logName_$i > "$scriptDir/load_test_$logName_${i}_$startDate.log" &
+        done
+    fi
 done
-
 # watch -n 2 'docker ps -a --filter "name=load_test_"'
 
 # docker logs -f $(docker ps --filter "name=load_test_" -q) | tee "load_test_output_$(date +"%Y%m%d%H%M").log"
 
 # tail -f $scriptDir/load_test_*_$startDate.log
-
-for i in $(seq 1 100); do
-    echo "docker wait load_test_$i"
-    docker wait "load_test_$i"
+for currentUrl in $1; do
+    if [ -n "$currentUrl" ]; then
+        echo "currentUrl: $currentUrl"
+        logName=$(echo "$currentUrl" | tr ':;' '')
+        for i in $(seq 1 100); do
+            echo "docker wait load_test_$logName_$i"
+            docker wait "load_test_$logName_$i"
+        done
+    fi
 done
 
 docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
