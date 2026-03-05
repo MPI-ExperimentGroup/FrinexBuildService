@@ -66,18 +66,18 @@ for currentUrl in $1; do
         logName=$(echo "$currentUrl" | tr ':;' '__')
         echo "logName: $logName"
         for i in $(seq 1 100); do
-            docker stop load_test_$logName_$i || true
+            docker stop load_test_${logName}_$i || true
         done
         for i in $(seq 1 100); do
-            docker rm load_test_$logName_$i || true
+            docker rm load_test_${logName}_$i || true
         done
 
         echo "currentUrl: $currentUrl" >> "$scriptDir/load_test_$startDate.log"
         docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
 
         for i in $(seq 1 100); do
-            docker run -d --rm --name load_test_$logName_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh "$currentUrl"
-            docker logs -f load_test_$logName_$i > "$scriptDir/load_test_$logName_${i}_$startDate.log" &
+            docker run -d --rm --name load_test_${logName}_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh "$currentUrl"
+            docker logs -f load_test_${logName}_$i > "$scriptDir/load_test_${logName}_${i}_$startDate.log" &
         done
     fi
 done
@@ -91,8 +91,8 @@ for currentUrl in $1; do
         echo "currentUrl: $currentUrl"
         logName=$(echo "$currentUrl" | tr ':;' '')
         for i in $(seq 1 100); do
-            echo "docker wait load_test_$logName_$i"
-            docker wait "load_test_$logName_$i"
+            echo "docker wait load_test_${logName}_$i"
+            docker wait "load_test_${logName}_$i"
         done
     fi
 done
