@@ -26,7 +26,10 @@ echo "load_participant start $(date),"
 # mpiprevalence_v2_tag_pair_data.value 6570
 # mpiprevalence_v2_time_stamp.value 13216
 ###################
-if [[ $currentUrl == *-admin ]]; then
+if [[ $currentUrl =~ :[0-9]+(/|$) ]]; then
+    # port number detected so direct service assumed
+    echo "skipping nocachejs"
+else
     for i in {1..5}; do
         sleep 5
         status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
@@ -39,8 +42,6 @@ if [[ $currentUrl == *-admin ]]; then
             # *) exit 1 ;;
             # esac
     done
-else
-    echo "skipping nocachejs"
 fi
 # frinexbq4_ParticipantsSeen_total.value 493
 for i in {1..27}; do
@@ -246,7 +247,10 @@ for i in {1..20}; do
         # *) exit 1 ;;
         # esac
 done
-if [[ $currentUrl == *-admin ]]; then
+if [[ $currentUrl =~ :[0-9]+(/|$) ]]; then
+    # port number detected so direct service assumed
+    echo "skipping nocachejs"
+else
     for i in {1..5}; do
         sleep 5
         status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
@@ -259,8 +263,6 @@ if [[ $currentUrl == *-admin ]]; then
             # *) exit 1 ;;
             # esac
     done
-else
-    echo "skipping nocachejs"
 fi
 # frinexbq4_group_data_total.value 0
 echo "load_participant completed $(date),"
