@@ -87,9 +87,10 @@ done
 
 # tail -f $scriptDir/load_test_*_$startDate.log
 for currentUrl in $1; do
+    echo "currentUrl: $currentUrl"
     if [ -n "$currentUrl" ]; then
-        echo "currentUrl: $currentUrl"
-        logName=$(echo "$currentUrl" | tr ':;' '')
+        logName=$(echo "$currentUrl" | tr '/:;' '___')
+        echo "logName: $logName"
         for i in $(seq 1 100); do
             echo "docker wait load_test_${logName}_$i"
             docker wait "load_test_${logName}_$i"
