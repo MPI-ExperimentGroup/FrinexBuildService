@@ -48,18 +48,6 @@ docker build --no-cache -f frinex_load_test.Dockerfile -t frinex_load_test:lates
 startEpoch=$(date +%s)
 startDate=$(date +%Y%m%d%H%M)
 
-
-#    server lux28:10020;
-#    server lux28:10021;
-#    server lux27:10022;
-#    server lux28:10023;
-#    server lux29:10024;
-#    server lux28:10025;
-#    server lux27:10026;
-#    server lux28:10027;
-
-#    lux28:10020 lux28 10021 lux28:10023
-
 for currentUrl in $@; do
     echo "currentUrl: $currentUrl"
     if [ -n "$currentUrl" ]; then
@@ -81,7 +69,7 @@ for currentUrl in $@; do
     if [ -n "$currentUrl" ]; then
         logName=$(echo "$currentUrl" | tr '/:;' '___')
         echo "logName: $logName"
-        for i in $(seq 1 100); do
+        for i in $(seq 1 10); do
             docker run -d --rm --name load_test_${logName}_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh "$currentUrl"
             docker logs -f load_test_${logName}_$i > "$scriptDir/load_test_${logName}_${i}_$startDate.log" &
         done
