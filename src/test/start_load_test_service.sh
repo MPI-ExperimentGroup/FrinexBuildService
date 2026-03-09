@@ -74,7 +74,12 @@ for currentUrl in $@; do
 
         echo "currentUrl: $currentUrl" >> "$scriptDir/load_test_$startDate.log"
         docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
-
+done
+for currentUrl in $@; do
+    echo "currentUrl: $currentUrl"
+    if [ -n "$currentUrl" ]; then
+        logName=$(echo "$currentUrl" | tr '/:;' '___')
+        echo "logName: $logName"
         for i in $(seq 1 100); do
             docker run -d --rm --name load_test_${logName}_$i frinex_load_test:latest sh /frinex_load_test/load_test.sh "$currentUrl"
             docker logs -f load_test_${logName}_$i > "$scriptDir/load_test_${logName}_${i}_$startDate.log" &
