@@ -28,7 +28,7 @@
 
 PGPASSFILE=/FrinexBuildService/frinex_db_user_authentication
 export PGPASSFILE
-appNameList=("load_test_target" "with_stimulus_example")
+appNameList=("load_test_target" "with_stimulus_example" "thijs_test_3")
 for appNameInternal in "${appNameList[@]}"; do
     echo "Database: $appNameInternal"
     tablesToUpdate=("data_deletion_log" "event_time" "group_data" "audio_data" "screen_data" "stimulus_response" "tag_data" "tag_pair_data" "time_stamp" "participant")
