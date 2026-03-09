@@ -1772,8 +1772,18 @@
               "type": "number"
             },
             {
-              "selector": "dbBusy",
-              "text": "dbBusy",
+              "selector": "jettyMax",
+              "text": "jettyMax",
+              "type": "number"
+            },
+            {
+              "selector": "jettyJobs",
+              "text": "jettyJobs",
+              "type": "number"
+            },
+            {
+              "selector": "gcOverhead",
+              "text": "gcOverhead",
               "type": "number"
             },
             {
