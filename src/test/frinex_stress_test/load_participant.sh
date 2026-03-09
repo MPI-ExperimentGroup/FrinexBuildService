@@ -26,18 +26,22 @@ echo "load_participant start $(date),"
 # mpiprevalence_v2_tag_pair_data.value 6570
 # mpiprevalence_v2_time_stamp.value 13216
 ###################
-for i in {1..5}; do
-    sleep 5
-    status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
-        "${currentUrl%-admin}/ExperimentTemplate/ExperimentTemplate.nocache.js?$(date +%Y%m%d%H%M%S)") \
-        || status="000" #|| { echo "nocachejs:000,"; exit 1; }
+if [[ $currentUrl == *-admin ]]; then
+    for i in {1..5}; do
+        sleep 5
+        status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
+            "${currentUrl%-admin}/ExperimentTemplate/ExperimentTemplate.nocache.js?$(date +%Y%m%d%H%M%S)") \
+            || status="000" #|| { echo "nocachejs:000,"; exit 1; }
 
-        echo "nocachejs:$status,"
-        # case "$status" in
-        # 2??) : ;;
-        # *) exit 1 ;;
-        # esac
-done
+            echo "nocachejs:$status,"
+            # case "$status" in
+            # 2??) : ;;
+            # *) exit 1 ;;
+            # esac
+    done
+else
+    echo "skipping nocachejs"
+fi
 # frinexbq4_ParticipantsSeen_total.value 493
 for i in {1..27}; do
     # RAN and Verbal fluency for one participant:
@@ -242,18 +246,22 @@ for i in {1..20}; do
         # *) exit 1 ;;
         # esac
 done
-for i in {1..5}; do
-    sleep 5
-    status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
-        "${currentUrl%-admin}/jquery/jquery.min.js?$(date +%Y%m%d%H%M%S)") \
-        || status="000" #|| { echo "nocachejs:000,"; exit 1; }
+if [[ $currentUrl == *-admin ]]; then
+    for i in {1..5}; do
+        sleep 5
+        status=$(curl --max-time 2.0 -ksS -o /dev/null -w '%{http_code}' \
+            "${currentUrl%-admin}/jquery/jquery.min.js?$(date +%Y%m%d%H%M%S)") \
+            || status="000" #|| { echo "nocachejs:000,"; exit 1; }
 
-        echo "jqueryminjs:$status,"
-        # case "$status" in
-        # 2??) : ;;
-        # *) exit 1 ;;
-        # esac
-done
+            echo "jqueryminjs:$status,"
+            # case "$status" in
+            # 2??) : ;;
+            # *) exit 1 ;;
+            # esac
+    done
+else
+    echo "skipping nocachejs"
+fi
 # frinexbq4_group_data_total.value 0
 echo "load_participant completed $(date),"
 date
