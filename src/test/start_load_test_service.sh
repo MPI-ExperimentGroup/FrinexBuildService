@@ -74,6 +74,7 @@ for currentUrl in $@; do
 
         echo "currentUrl: $currentUrl" >> "$scriptDir/load_test_$startDate.log"
         docker service ls | grep load_test >> "$scriptDir/load_test_$startDate.log"
+    fi
 done
 for currentUrl in $@; do
     echo "currentUrl: $currentUrl"
