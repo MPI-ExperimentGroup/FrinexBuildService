@@ -60,7 +60,7 @@ startDate=$(date +%Y%m%d%H%M)
 
 #    lux28:10020 lux28 10021 lux28:10023
 
-for currentUrl in $1; do
+for currentUrl in $@; do
     echo "currentUrl: $currentUrl"
     if [ -n "$currentUrl" ]; then
         logName=$(echo "$currentUrl" | tr '/:;' '___')
@@ -86,7 +86,7 @@ done
 # docker logs -f $(docker ps --filter "name=load_test_" -q) | tee "load_test_output_$(date +"%Y%m%d%H%M").log"
 
 # tail -f $scriptDir/load_test_*_$startDate.log
-for currentUrl in $1; do
+for currentUrl in $@; do
     echo "currentUrl: $currentUrl"
     if [ -n "$currentUrl" ]; then
         logName=$(echo "$currentUrl" | tr '/:;' '___')
