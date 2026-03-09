@@ -1772,8 +1772,8 @@
               "type": "number"
             },
             {
-              "selector": "dbPending",
-              "text": "dbPending",
+              "selector": "dbBusy",
+              "text": "dbBusy",
               "type": "number"
             },
             {
