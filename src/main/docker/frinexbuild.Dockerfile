@@ -65,6 +65,7 @@ COPY static/stats.js /FrinexBuildService/docs/
 COPY cgi/repository_setup.cgi /FrinexBuildService/cgi/
 COPY cgi/request_build.cgi /FrinexBuildService/cgi/
 COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
+COPY script/build_admin_war.sh /FrinexBuildService/script/
 COPY script/generate_commit_files.sh /FrinexBuildService/script/
 COPY script/sync_file_to_swarm_nodes.sh /FrinexBuildService/script/
 COPY script/sync_delete_from_swarm_nodes.sh /FrinexBuildService/script/
