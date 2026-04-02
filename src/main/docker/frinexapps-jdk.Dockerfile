@@ -118,10 +118,7 @@ RUN cd /ExperimentTemplate \
 # RUN cd /ExperimentTemplate/gwt-cordova \
 #     && mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec > /ExperimentTemplate/gwt-cordova.version
 RUN cd /ExperimentTemplate \
-    && mvn install -N \
-    && cd /ExperimentTemplate/gwt-cordova \
-    && mvn help:evaluate -Dexpression=project.version -q -DforceStdout \
-    > /ExperimentTemplate/gwt-cordova.version
+    && mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl gwt-cordova > /ExperimentTemplate/gwt-cordova.version
 
 # RUN cd /ExperimentTemplate \
 #     && mvn clean install -Dgwt.draftCompile=true -DskipTests=true -Dgwt.collapse-all-properties=true -Dexperiment.configuration.name=with_stimulus_example
