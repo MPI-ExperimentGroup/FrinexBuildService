@@ -773,7 +773,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + ' -v m2Directory:/maven/.m2/'
             + ' -w /ExperimentTemplate frinexapps-jdk:'
             // + ((["load_test_target", "with_stimulus_example", "thijs_test_3"].includes(currentEntry.buildName)) ? 'admin-beta' : ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable'))
-            + ((["load_test_target", "with_stimulus_example", "thijs_test_3"].includes(currentEntry.buildName)) ? 'admin-beta' : 'admin-stable')
+            + ((currentEntry.frinexVersion === "alpha") ? "alpha" : (["load_test_target", "with_stimulus_example", "thijs_test_3"].includes(currentEntry.buildName)) ? 'admin-beta' : 'admin-stable')
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             // using sed to replace the destinationServerUrl with destinationServer for older build images, new build images did not need this but since the addition of the proxy it is now required for all
             + " sed -i 's|>\\${experiment.destinationServer}/manager/text|>https://\\${experiment.destinationServer}/manager/text|g' /ExperimentTemplate/pom.xml;"
