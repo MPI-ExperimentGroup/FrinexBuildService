@@ -42,7 +42,7 @@ import path from 'node:path';
 import os from 'node:os';
 import diskSpace from 'check-disk-space';
 import generatePassword from 'omgopass';
-import sslChecker from 'ssl-checker';
+import tls from 'node:tls';
 import ini from 'ini';
 
 const publishProperties = fs.readFileSync('ScriptsDirectory/publish.properties', 'utf-8');
@@ -2339,20 +2339,61 @@ function updateDocumentation() {
 //     });
 // }
 
-function checkServerCertificates() {
+function getCertificateInfo(host, port = 443) {
+    return new Promise((resolve, reject) => {
+        const socket = tls.connect(
+            port,
+            host,
+            { servername: host, rejectUnauthorized: false },
+            () => {
+                const cert = socket.getPeerCertificate();
+                if (!cert || !cert.valid_to) {
+                    reject(new Error("No certificate found"));
+                    socket.end();
+                    return;
+                }
+                const validTo = new Date(cert.valid_to);
+                const now = new Date();
+                const daysRemaining = Math.floor(
+                    (validTo - now) / (1000 * 60 * 60 * 24)
+                );
+                resolve({
+                    valid: daysRemaining > 0,
+                    daysRemaining,
+                    validTo
+                });
+                socket.end();
+            }
+        );
+        socket.on('error', reject);
+    });
+}
+
+async function checkServerCertificates() {
     buildHistoryJson.certificateStatus = "";
-    certificateCheckList.split(",").forEach(function (checkItem) {
+    const checks = certificateCheckList.split(",");
+    for (const checkItem of checks) {
         const [certificateUrl, certificatePort] = checkItem.split(":");
-        sslChecker(certificateUrl, { method: "GET", port: certificatePort }).then(async result => {
+        try {
+            const result = await getCertificateInfo(
+                certificateUrl,
+                certificatePort || 443
+            );
             console.log("checkServerCertificates\n" + checkItem + " : ");
             console.log(result);
-            // const missingIntermediate = await hasMissingIntermediate(certificateUrl, certificatePort);
-            buildHistoryJson.certificateStatus += checkItem + " certificate " + result.daysRemaining + " days remaining" + (result.valid? "" : ", invalid") + "<br>";
-            }).catch(error => {
-                console.log("checkServerCertificates\n" + checkItem + " : " + error.message);
-                buildHistoryJson.certificateStatus += checkItem + " " + error.message + "<br>";
-            });
-    });
+            buildHistoryJson.certificateStatus +=
+                checkItem +
+                " certificate " +
+                result.daysRemaining +
+                " days remaining" +
+                (result.valid ? "" : ", invalid") +
+                "<br>";
+        } catch (error) {
+            console.log("checkServerCertificates\n" + checkItem + " : " + error.message
+            );
+            buildHistoryJson.certificateStatus += checkItem + " " + error.message + "<br>";
+        }
+    }
 }
 
 function prepareImageList() {
