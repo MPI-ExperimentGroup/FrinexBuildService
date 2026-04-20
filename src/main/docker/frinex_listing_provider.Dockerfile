@@ -62,6 +62,8 @@ RUN sed -i "/^LoadModule alias_module modules\/mod_alias.so/a LoadModule cgi_mod
 RUN cat /FrinexBuildService/frinex_db_manager.conf >> /usr/local/apache2/conf/httpd.conf
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
 
+RUN sed -i 's/^Timeout .*/Timeout 120/' /usr/local/apache2/conf/httpd.conf || true
+
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker build --no-cache --force-rm -f /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_staging_web.Docker -t [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_web\:[0-9]* /FrinexBuildService/protected/[a-z0-9-_]*' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker build --no-cache --force-rm -f /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_staging_admin.Docker -t [a-zA-Z0-9-_.]*/[a-z0-9-_]*_staging_admin\:[0-9]* /FrinexBuildService/protected/[a-z0-9-_]*' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker build --no-cache --force-rm -f /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_production_web.Docker -t [a-zA-Z0-9-_.]*/[a-z0-9-_]*_production_web\:[0-9]* /FrinexBuildService/protected/[a-z0-9-_]*' >> /etc/sudoers
