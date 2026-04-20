@@ -77,11 +77,11 @@ serviceListAll="$(sudo docker service ls --format '{{.Name}}' \
 #     | awk '{print "upstream " $1 " {\n server lux27.mpi.nl:" $6 ";\n server lux28.mpi.nl:" $6 ";\n server lux29.mpi.nl:" $6 ";\n}\n"}' \
 #     > /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
 
-echo "" > /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp
-echo "" > /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp
-echo "" > /usr/local/apache2/htdocs/frinex_production_locations.v2.tmp
-echo "" > /usr/local/apache2/htdocs/frinex_production_upstreams.v2.tmp
-echo "{" > /FrinexBuildService/artifacts/services.json.v2.tmp
+echo "" > /usr/local/apache2/htdocs/frinex_staging_locations.v2_$$.tmp
+echo "" > /usr/local/apache2/htdocs/frinex_staging_upstreams.v2_$$.tmp
+echo "" > /usr/local/apache2/htdocs/frinex_production_locations.v2_$$.tmp
+echo "" > /usr/local/apache2/htdocs/frinex_production_upstreams.v2_$$.tmp
+echo "{" > /FrinexBuildService/artifacts/services.json.v2_$$.tmp
 isFirstService=true
 for serviceName in $serviceListUnique; do
     if [[ $serviceName == *_production_admin || $serviceName == *_production_web ]]; then
@@ -91,68 +91,68 @@ for serviceName in $serviceListUnique; do
     fi
     urlName=$(sed -e 's/_staging_web//' -e 's/_staging_admin/-admin/' -e 's/_production_web//' -e 's/_production_admin/-admin/' <<< "$serviceName")
 
-    # echo -e "location ~ ^/$urlName/(public_usage_stats|public_quick_stats|public_count_stats|public_count_csv|actuator)(/|$) {\n return 403;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
-    # echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+    # echo -e "location ~ ^/$urlName/(public_usage_stats|public_quick_stats|public_count_stats|public_count_csv|actuator)(/|$) {\n return 403;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
+    # echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
     
     portalUrlName=$(sed -e 's/-admin$/-portal/' <<< "$urlName")
     portalServiceName=$(sed -e 's/_admin$/_portal/' <<< "$serviceName")
     
     if [[ "$serviceName" == *_admin ]]; then
 
-        # echo -e "location ~ ^/$urlName/(actuator/health|assignValue|completeValue|validate|mock_validate|mediaBlob|screenChange|timeStamp|metadata|tagEvent|tagPairEvent|stimulusResponse|groupEvent)$ {\n rewrite ^/$urlName/(.*)$ /$1 break; proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
-        echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Host \$host;\n proxy_set_header X-Forwarded-Host \$host;\n proxy_set_header X-Forwarded-Proto \$scheme;\n proxy_set_header X-Forwarded-For \$remote_addr;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+        # echo -e "location ~ ^/$urlName/(actuator/health|assignValue|completeValue|validate|mock_validate|mediaBlob|screenChange|timeStamp|metadata|tagEvent|tagPairEvent|stimulusResponse|groupEvent)$ {\n rewrite ^/$urlName/(.*)$ /$1 break; proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$serviceName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
+        echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Host \$host;\n proxy_set_header X-Forwarded-Host \$host;\n proxy_set_header X-Forwarded-Proto \$scheme;\n proxy_set_header X-Forwarded-For \$remote_addr;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
 
-        # echo -e "location /$urlName {\n return 403;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+        # echo -e "location /$urlName {\n return 403;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
         # TODO: replace this friendly redirect with the 403
-        # echo -e "location /$urlName {\n return 302 /$portalUrlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
-        # echo -e "location /$portalUrlName {\n proxy_http_version 1.1;\n proxy_set_header X-Forwarded-Prefix /$portalUrlName;\n proxy_set_header X-Forwarded-Host \$host;\n proxy_set_header X-Forwarded-Proto \$scheme;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$portalServiceName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
-        echo -e "location /$portalUrlName/ {\n proxy_http_version 1.1;\n proxy_set_header X-Forwarded-Host \$host;\n proxy_set_header X-Forwarded-Proto \$scheme;\n proxy_set_header X-Forwarded-For \$remote_addr;\n proxy_set_header Host \$host;\n rewrite ^/$portalUrlName/?(.*)$ /$urlName/\$1 break;\n proxy_cookie_path /$urlName /$portalUrlName;\n proxy_pass http://$portalServiceName/;\n proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\n proxy_set_header X-Forwarded-Prefix /$portalUrlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+        # echo -e "location /$urlName {\n return 302 /$portalUrlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
+        # echo -e "location /$portalUrlName {\n proxy_http_version 1.1;\n proxy_set_header X-Forwarded-Prefix /$portalUrlName;\n proxy_set_header X-Forwarded-Host \$host;\n proxy_set_header X-Forwarded-Proto \$scheme;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$http_host;\n proxy_pass http://$portalServiceName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
+        echo -e "location /$portalUrlName/ {\n proxy_http_version 1.1;\n proxy_set_header X-Forwarded-Host \$host;\n proxy_set_header X-Forwarded-Proto \$scheme;\n proxy_set_header X-Forwarded-For \$remote_addr;\n proxy_set_header Host \$host;\n rewrite ^/$portalUrlName/?(.*)$ /$urlName/\$1 break;\n proxy_cookie_path /$urlName /$portalUrlName;\n proxy_pass http://$portalServiceName/;\n proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\n proxy_set_header X-Forwarded-Prefix /$portalUrlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
         # proxy_set_header X-Forwarded-Prefix /$portalUrlName;\n 
     else
-        echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$host;\n proxy_set_header X-Forwarded-Host \$host;\n proxy_set_header X-Forwarded-Proto \$scheme;\n proxy_set_header X-Forwarded-For \$remote_addr;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2.tmp
+        echo -e "location /$urlName {\n proxy_http_version 1.1;\n proxy_set_header Upgrade \$http_upgrade;\n proxy_set_header Connection \"upgrade\";\n proxy_set_header Host \$host;\n proxy_set_header X-Forwarded-Host \$host;\n proxy_set_header X-Forwarded-Proto \$scheme;\n proxy_set_header X-Forwarded-For \$remote_addr;\n proxy_pass http://$serviceName/$urlName;\n}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_locations.v2_$$.tmp
     fi
     
-    echo "upstream ${serviceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+    echo "upstream ${serviceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2_$$.tmp
     if [ "$isFirstService" = true ]; then
         isFirstService=false
     else
-        echo "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
+        echo "," >> /FrinexBuildService/artifacts/services.json.v2_$$.tmp
     fi
-    echo -n "\"${serviceName}\": [" >> /FrinexBuildService/artifacts/services.json.v2.tmp
+    echo -n "\"${serviceName}\": [" >> /FrinexBuildService/artifacts/services.json.v2_$$.tmp
     isFirstInstance=true
     lastServerEntry=''
     for instanceName in $(printf "%s\n" "$serviceListAll" | grep "^$serviceName"); do
-        # echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+        # echo "# $instanceName" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2_$$.tmp
         ports=$(sudo docker service inspect --format '{{range .Endpoint.Ports}}{{.PublishedPort}} {{end}}' "$instanceName" || true)
         if [ -n "$ports" ]; then
-            # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+            # echo "# $ports" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2_$$.tmp
             while read -r node; do
                 for port in $ports; do
                     singleServiceEntry="   server $node:$port;"
-                    echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+                    echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2_$$.tmp
                     if [ "$isFirstInstance" = true ]; then
                         isFirstInstance=false
                     else
-                        echo "," >> /FrinexBuildService/artifacts/services.json.v2.tmp
+                        echo "," >> /FrinexBuildService/artifacts/services.json.v2_$$.tmp
                     fi
-                    echo -n "{\"node\": \"${node}\", \"port\": \"${port}\"}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
+                    echo -n "{\"node\": \"${node}\", \"port\": \"${port}\"}" >> /FrinexBuildService/artifacts/services.json.v2_$$.tmp
                 done
             done < <(sudo docker service ps --filter "desired-state=running" --format '{{.Node}}' "$instanceName" || true)
         fi
     done
-    echo -n "]" >> /FrinexBuildService/artifacts/services.json.v2.tmp
-    echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+    echo -n "]" >> /FrinexBuildService/artifacts/services.json.v2_$$.tmp
+    echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2_$$.tmp
     if [[ "$serviceName" == *_admin ]]; then
-        echo "upstream ${portalServiceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp    
-        echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
-        echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2.tmp
+        echo "upstream ${portalServiceName} {" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2_$$.tmp    
+        echo "$singleServiceEntry" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2_$$.tmp
+        echo -e "}\n" >> /usr/local/apache2/htdocs/frinex_${deploymentType}_upstreams.v2_$$.tmp
     fi
 done 
-echo "}" >> /FrinexBuildService/artifacts/services.json.v2.tmp
-mv /usr/local/apache2/htdocs/frinex_staging_locations.v2.tmp /usr/local/apache2/htdocs/frinex_staging_locations.txt
-mv /usr/local/apache2/htdocs/frinex_staging_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
-mv /usr/local/apache2/htdocs/frinex_production_locations.v2.tmp /usr/local/apache2/htdocs/frinex_production_locations.txt
-mv /usr/local/apache2/htdocs/frinex_production_upstreams.v2.tmp /usr/local/apache2/htdocs/frinex_production_upstreams.txt
+echo "}" >> /FrinexBuildService/artifacts/services.json.v2_$$.tmp
+mv /usr/local/apache2/htdocs/frinex_staging_locations.v2_$$.tmp /usr/local/apache2/htdocs/frinex_staging_locations.txt
+mv /usr/local/apache2/htdocs/frinex_staging_upstreams.v2_$$.tmp /usr/local/apache2/htdocs/frinex_staging_upstreams.txt
+mv /usr/local/apache2/htdocs/frinex_production_locations.v2_$$.tmp /usr/local/apache2/htdocs/frinex_production_locations.txt
+mv /usr/local/apache2/htdocs/frinex_production_upstreams.v2_$$.tmp /usr/local/apache2/htdocs/frinex_production_upstreams.txt
 
 echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 # for runningWar in $(curl -k -s https://ems15.mpi.nl/running_experiments.json | grep -E "\"" | sed "s/\"//g" |sed "s/,//g")
