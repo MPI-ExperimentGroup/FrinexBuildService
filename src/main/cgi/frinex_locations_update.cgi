@@ -24,11 +24,16 @@
 
 # This script creates nginx configuraiton fragments as static files to be served via HTTPD
 
-exec 200>"/tmp/frinex_locations_update.lock"
-flock -n 200 || { echo "Content-type: text/plain"; echo; echo "already running"; exit 1; }
-
 echo "Content-type: text/json"
-echo ''
+echo ""
+
+exec 200>"/tmp/frinex_locations_update.lock"
+
+if ! flock -n 200; then
+  echo '{"status":"already running"}'
+  exit 0
+fi
+
 # this | grep -v -E " 0/" \ is there to bypas docker when the services have not come up, if they are runing on tomcat they will be sent there
 # serviceList="$(sudo docker service ls \
 #     | grep -E "replicated" \
