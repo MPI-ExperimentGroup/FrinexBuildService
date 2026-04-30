@@ -29,16 +29,29 @@
 echo "Content-type: text/html"
 echo ''
 echo "<br/>"
-# the experiment name will only contain lowercase, numbers and underscore so we remove any other characters to prevent unwanted behaviour
+# the experiment name will only contain lowercase, numbers, and underscores
 cleanedExperimentName=$(echo $QUERY_STRING | sed 's/[^a-z_0-9]/_/g')
 echo "<!--$cleanedExperimentName-->";
 echo "<b>"
-requiredUser="one@example.com"
-if [ "$REMOTE_USER" = "$requiredUser" ]; then
-    # todo: add some informative messages to the user if no record is found
+# List of allowed users
+allowedUsers=("one@example.com" "two@example.com" "three@example.com")
+
+# Check if the current user is allowed
+userAllowed=false
+for user in "${allowedUsers[@]}"; do
+    if [ "$REMOTE_USER" = "$user" ]; then
+        userAllowed=true
+        break
+    fi
+done
+
+if [ "$userAllowed" = true ]; then
+    # Display matching records
     grep "\"$cleanedExperimentName\"" ProtectedDirectory/tokens.json | sed 's/[,]//g'
 else
-    echo "Please contact $requiredUser for access"
+    # Join all allowed users into a comma-separated string for display
+    contactList=$(IFS=, ; echo "${allowedUsers[*]}")
+    echo "Please contact one of the following users for access: $contactList"
 fi
 echo "</b>"
 echo "<br/>"
