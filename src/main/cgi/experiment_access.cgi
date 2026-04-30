@@ -39,7 +39,7 @@ allowedUsers=("one@example.com" "two@example.com" "three@example.com")
 # Check if the current user is allowed
 userAllowed=false
 for user in "${allowedUsers[@]}"; do
-    if [ "$REMOTE_USER" = "$user" ]; then
+    if [ "${REMOTE_USER,,}" = "${user,,}" ]; then
         userAllowed=true
         break
     fi
