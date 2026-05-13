@@ -55,6 +55,12 @@ proxyStagingAdminHealthy=0
 proxyProductionAdminChecked=0
 proxyProductionAdminHealthy=0
 
+# during the tomcat to docker change over we are testing the production test URL here
+proxyProductionTestWebChecked=0
+proxyProductionTestWebHealthy=0
+proxyProductionTestAdminChecked=0
+proxyProductionTestAdminHealthy=0
+
 fileInNeedOfSync=""
 
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
@@ -127,6 +133,22 @@ for serviceName in $serviceNameArray; do
                     else
                         echo "Not proxyProductionAdminHealthy $adminContextPath"
                     fi
+                    # START during the tomcat to docker change over we are testing the production test URL here
+                    ((proxyProductionTestWebChecked++))
+                    ((proxyProductionTestAdminChecked++))
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproductiontest.mpi.nl/$webContextPath/actuator/health | grep "Content-Type")
+                    if [[ "$headerResult" == *"json"* ]]; then
+                        ((proxyProductionTestWebHealthy++))
+                    else
+                        echo "Not proxyProductionTestWebHealthy $webContextPath"
+                    fi
+                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproductiontest.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
+                    if [[ "$headerResult" == *"json"* ]]; then
+                        ((proxyProductionTestAdminHealthy++))
+                    else
+                        echo "Not proxyProductionTestAdminHealthy $adminContextPath"
+                    fi
+                    # END during the tomcat to docker change over we are testing the production test URL here
                 else 
                     echo staging;
                     ((proxyStagingWebChecked++))
@@ -317,7 +339,7 @@ head -n 1000  /FrinexBuildService/artifacts/grafana_running_staging_production_s
 mv /FrinexBuildService/artifacts/grafana_running_staging_production_stats.temp /FrinexBuildService/artifacts/grafana_running_staging_production_stats.txt
 fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/grafana_running_staging_production_stats.txt"
 
-echo "$(date),$proxyStagingWebChecked,$proxyStagingWebHealthy,$proxyProductionWebChecked,$proxyProductionWebHealthy,$proxyStagingAdminChecked,$proxyStagingAdminHealthy,$proxyProductionAdminChecked,$proxyProductionAdminHealthy" > /FrinexBuildService/artifacts/grafana_proxy_stats.temp
+echo "$(date),$proxyStagingWebChecked,$proxyStagingWebHealthy,$proxyProductionWebChecked,$proxyProductionWebHealthy,$proxyStagingAdminChecked,$proxyStagingAdminHealthy,$proxyProductionAdminChecked,$proxyProductionAdminHealthy,$proxyProductionTestWebChecked,$proxyProductionTestWebHealthy,$proxyProductionTestAdminChecked,$proxyProductionTestAdminHealthy" > /FrinexBuildService/artifacts/grafana_proxy_stats.temp
 head -n 1000  /FrinexBuildService/artifacts/grafana_proxy_stats.txt >> /FrinexBuildService/artifacts/grafana_proxy_stats.temp
 mv /FrinexBuildService/artifacts/grafana_proxy_stats.temp /FrinexBuildService/artifacts/grafana_proxy_stats.txt
 fileInNeedOfSync="$fileInNeedOfSync /FrinexBuildService/artifacts/grafana_proxy_stats.txt"

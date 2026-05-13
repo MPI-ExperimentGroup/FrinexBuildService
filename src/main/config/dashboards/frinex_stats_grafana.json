@@ -705,7 +705,7 @@
             }
           ],
           "csv_options": {
-            "columns": "date,proxyStagingWebChecked,proxyStagingWebHealthy,proxyProductionWebChecked,proxyProductionWebHealthy,proxyStagingAdminChecked,proxyStagingAdminHealthy,proxyProductionAdminChecked,proxyProductionAdminHealthy"
+            "columns": "date,proxyStagingWebChecked,proxyStagingWebHealthy,proxyProductionWebChecked,proxyProductionWebHealthy,proxyStagingAdminChecked,proxyStagingAdminHealthy,proxyProductionAdminChecked,proxyProductionAdminHealthy,proxyProductionTestWebChecked,proxyProductionTestWebHealthy,proxyProductionTestAdminChecked,proxyProductionTestAdminHealthy"
           },
           "datasource": {
             "type": "yesoreyeram-infinity-datasource",
@@ -840,10 +840,30 @@
               "selector": "proxyProductionAdminHealthy",
               "text": "proxyProductionAdminHealthy",
               "type": "number"
+            },
+            {
+              "selector": "proxyProductionTestWebChecked",
+              "text": "proxyProductionTestWebChecked",
+              "type": "number"
+            },
+            {
+              "selector": "proxyProductionTestWebHealthy",
+              "text": "proxyProductionTestWebHealthy",
+              "type": "number"
+            },
+            {
+              "selector": "proxyProductionTestAdminChecked",
+              "text": "proxyProductionTestAdminChecked",
+              "type": "number"
+            },
+            {
+              "selector": "proxyProductionTestAdminHealthy",
+              "text": "proxyProductionTestAdminHealthy",
+              "type": "number"
             }
           ],
           "csv_options": {
-            "columns": "date,proxyStagingWebChecked,proxyStagingWebHealthy,proxyProductionWebChecked,proxyProductionWebHealthy,proxyStagingAdminChecked,proxyStagingAdminHealthy,proxyProductionAdminChecked,proxyProductionAdminHealthy"
+            "columns": "date,proxyStagingWebChecked,proxyStagingWebHealthy,proxyProductionWebChecked,proxyProductionWebHealthy,proxyStagingAdminChecked,proxyStagingAdminHealthy,proxyProductionAdminChecked,proxyProductionAdminHealthy,proxyProductionTestWebChecked,proxyProductionTestWebHealthy,proxyProductionTestAdminChecked,proxyProductionTestAdminHealthy"
           },
           "datasource": {
             "type": "yesoreyeram-infinity-datasource",
