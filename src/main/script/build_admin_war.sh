@@ -70,19 +70,19 @@ sudo docker run --rm $buildContainerOptions --name $buildContainerName \
             + ' -Dexperiment.isScalable=' + currentEntry.isScalable
             + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
-            + " &>> " + targetDirectory + "/${buildName}/${buildName}_staging_admin.txt;"
+            + " &>> /FrinexBuildService/artifacts/${buildName}/${buildName}_staging_admin.txt;"
             //+ ' rm -r /usr/local/tomcat/webapps/${buildName}_staging_admin.war'
-            // + " &>> " + targetDirectory + "/${buildName}/${buildName}_staging_admin.txt;"
+            // + " &>> /FrinexBuildService/artifacts/${buildName}/${buildName}_staging_admin.txt;"
             //+ ' cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*.war /usr/local/tomcat/webapps/${buildName}_staging_admin.war'
-            // + " &>> " + targetDirectory + "/${buildName}/${buildName}_staging_admin.txt;"
+            // + " &>> /FrinexBuildService/artifacts/${buildName}/${buildName}_staging_admin.txt;"
             + ' cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war ' + protectedDirectory + '/${buildName}/${buildName}_staging_admin.war'
-            + " &>> " + targetDirectory + "/${buildName}/${buildName}_staging_admin.txt;"
+            + " &>> /FrinexBuildService/artifacts/${buildName}/${buildName}_staging_admin.txt;"
             + ' mv /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*-sources.jar /FrinexBuildService/artifacts/${buildName}/${buildName}_staging_admin_sources.jar'
-            + " &>> " + targetDirectory + "/${buildName}/${buildName}_staging_admin.txt;"
-            + " chmod 775 -R " + protectedDirectory + "/${buildName}/;"
-            + " chmod 775 -R " + targetDirectory + "/${buildName}/;"
-            + " chown -R 101010 " + targetDirectory + "/${buildName}/;"
-            + " chown -R 101010 " + protectedDirectory + "/${buildName}/;"
+            + " &>> /FrinexBuildService/artifacts/${buildName}/${buildName}_staging_admin.txt;"
+            + " chmod 775 -R /FrinexBuildService/protected/${buildName}/;"
+            + " chmod 775 -R /FrinexBuildService/artifacts/${buildName}/;"
+            + " chown -R 101010 /FrinexBuildService/artifacts/${buildName}/;"
+            + " chown -R 101010 /FrinexBuildService/protected/${buildName}/;"
             + ' echo "build complete" &>> /FrinexBuildService/artifacts/${buildName}/${buildName}_staging_admin.txt;'
             + '"'
             child_process.execSync(dockerString.replace("_security_group_", currentEntry.securityGroup ?? ''), { stdio: [0, 1, 2] });
