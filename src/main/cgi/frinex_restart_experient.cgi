@@ -109,9 +109,9 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
 else
     echo "The experiment $cleanedInput does not exist."
     echo "$(date), not found, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
-    if [[ "$QUERY_STRING" == *_staging_admin ]]; then
+    if [[ "$cleanedInput" == *_staging_admin ]]; then
         echo "ends with _staging_admin"
-        if [[ "$QUERY_STRING" == "load_test_target_staging_admin" ]]; then
+        if [[ "$cleanedInput" == "load_test_target_staging_admin" ]]; then
             echo "exact match load_test_target_staging_admin"
             # at this point we can trigger src/main/script/build_admin_war.sh
         fi
