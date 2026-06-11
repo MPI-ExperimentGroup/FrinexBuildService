@@ -1,3 +1,4 @@
+#!/bin/bash
 cleanedInput="$1"
 
 if [[ ! "$cleanedInput" =~ ^[a-z0-9_]+$ ]]; then
@@ -80,30 +81,30 @@ echo "securityGroup: $securityGroup"
             # + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             # -Dexperiment.groupsSocketUrl=$stagingGroupsSocketUrl \
 
-sudo docker container rm -f $buildContainerName &> /dev/null;
+sudo docker container rm -f "$buildContainerName" &> /dev/null;
 sudo docker run --rm $buildContainerOptions \
-                --name $buildContainerName \
+                --name "$buildContainerName" \
                 -v processingDirectory:/FrinexBuildService/processing \
                 -v buildServerTarget:/FrinexBuildService/artifacts \
                 -v protectedDirectory:/FrinexBuildService/protected \
                 -v m2Directory:/maven/.m2/ \
-                -w /ExperimentTemplate frinexapps-jdk:$frinexVersion \
+                -w /ExperimentTemplate "frinexapps-jdk:$frinexVersion" \
                 /bin/bash -c "cd /ExperimentTemplate/registration; \
                     mvn clean compile package \
                     -gs /maven/.m2/settings.xml \
                     -DskipTests \
                     -q \
-                    -Dexperiment.configuration.name=$buildName \
-                    -Dexperiment.webservice=$configServer \
+                    -Dexperiment.configuration.name='$buildName' \
+                    -Dexperiment.webservice='$configServer' \
                     -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building \
                     -Dexperiment.artifactsJsonDirectory=/FrinexBuildService/artifacts/$buildName/included_artifacts/ \
                     -DversionCheck.allowSnapshots=false \
-                    -Dexperiment.destinationServer=$stagingServer \
-                    -Dexperiment.destinationServerUrl=$stagingServerUrl \
-                    -Dexperiment.configuration.db.host=$stagingDbHost \
-                    -Dexperiment.configuration.admin.allowDelete=$allowDelete \
-                    -Dexperiment.configuration.securityGroup=$securityGroup; \
-                    cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war'; \
+                    -Dexperiment.destinationServer='$stagingServer' \
+                    -Dexperiment.destinationServerUrl='$stagingServerUrl' \
+                    -Dexperiment.configuration.db.host='$stagingDbHost' \
+                    -Dexperiment.configuration.admin.allowDelete='$allowDelete' \
+                    -Dexperiment.configuration.securityGroup='$securityGroup'; \
+                    cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war; \
                     mv /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*-sources.jar /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin_sources.jar; \
                     chmod 775 -R /FrinexBuildService/protected/$buildName/; \
                     chmod 775 -R /FrinexBuildService/artifacts/$buildName/; \
@@ -111,4 +112,5 @@ sudo docker run --rm $buildContainerOptions \
                     chown -R 101010 /FrinexBuildService/protected/$buildName/; \
                     echo \"build $buildContainerName complete\"; \
                 ";
-            
+# sync the built WAR and JAR files
+bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin_sources.jar;
