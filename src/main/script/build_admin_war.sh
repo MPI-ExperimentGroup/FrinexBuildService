@@ -22,9 +22,9 @@ buildContainerName="$cleanedInput"
 frinexVersion="admin-stable" #            + ((currentEntry.frinexVersion === "alpha") ? "alpha" : 'admin-stable')
 buildContainerOptions=$(grep buildContainerOptions /FrinexBuildService/publish.properties | sed "s/buildContainerOptions[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
 configServer=$(grep configServer /FrinexBuildService/publish.properties | sed "s/configServer[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
-stagingServer=$(grep stagingServer /FrinexBuildService/publish.properties | sed "s/stagingServer[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
-stagingServerUrl=$(grep stagingServerUrl /FrinexBuildService/publish.properties | sed "s/stagingServerUrl[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
-stagingDbHost=$(grep stagingDbHost /FrinexBuildService/publish.properties | sed "s/stagingDbHost[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
+stagingServer=$(awk '/^\[staging\]/{f=1;next} /^\[/{f=0} f && /^serverName[ ]*=/{sub(/^serverName[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
+stagingServerUrl=$(awk '/^\[staging\]/{f=1;next} /^\[/{f=0} f && /^serverUrl[ ]*=/{sub(/^serverUrl[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
+stagingDbHost=$(awk '/^\[staging\]/{f=1;next} /^\[/{f=0} f && /^dbHost[ ]*=/{sub(/^dbHost[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
 allowDelete=$(grep -o 'allowDataDeletion="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/allowDataDeletion="//;s/"//' || echo 'false')
 securityGroup=$(grep -o 'securityGroup="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/securityGroup="//;s/"//' || echo '')
 
