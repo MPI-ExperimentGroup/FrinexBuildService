@@ -24,8 +24,8 @@ configServer=$(grep configServer /FrinexBuildService/publish.properties | sed "s
 stagingServer=$(grep stagingServer /FrinexBuildService/publish.properties | sed "s/stagingServer[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
 stagingServerUrl=$(grep stagingServerUrl /FrinexBuildService/publish.properties | sed "s/stagingServerUrl[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
 stagingDbHost=$(grep stagingDbHost /FrinexBuildService/publish.properties | sed "s/stagingDbHost[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
-#TODO: allowDelete=allowDelete=' + ((currentEntry.allowDelete != null) ? currentEntry.allowDelete : 'false')
-#TODO: securityGroup=("_security_group_", currentEntry.securityGroup ?? ''), { stdio: [0, 1, 2] });
+allowDelete=$(grep -oP 'allowDataDeletion="\K[^"]+' /FrinexBuildService/artifacts/$buildName/$buildName.xml || echo 'false')
+securityGroup=$(grep -oP 'securityGroup="\K[^"]+' /FrinexBuildService/artifacts/$buildName/$buildName.xml || echo '')
 
 
 echo "cleanedInput: $cleanedInput"
@@ -37,6 +37,8 @@ echo "configServer: $configServer"
 echo "stagingServer: $stagingServer"
 echo "stagingServerUrl: $stagingServerUrl"
 echo "stagingDbHost: $stagingDbHost"
+echo "allowDelete: $allowDelete"
+echo "securityGroup: $securityGroup"
 
             # // + ((["load_test_target", "with_stimulus_example", "thijs_test_3"].includes(buildName)) ? 'admin-beta' : ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable'))
             # + ((["load_test_target", "with_stimulus_example", "thijs_test_3"].includes(buildName)) ? 'admin-beta' : 'admin-stable')
