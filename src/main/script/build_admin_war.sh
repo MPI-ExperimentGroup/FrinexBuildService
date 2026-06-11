@@ -12,6 +12,7 @@ if [[ ! "$cleanedInput" =~ _(staging|production)_(web|admin)$ ]]; then
 fi
 
 buildName=$(echo "$cleanedInput" | sed -E 's/_(staging|production)_(web|admin)$//')
+deployEnv=$(echo "$cleanedInput" | sed -E 's/.*_(staging|production)_.*/\1/')
 
 if [ ! -f "/FrinexBuildService/artifacts/$buildName/$buildName.xml" ]; then
     echo "Config file not found: /FrinexBuildService/artifacts/$buildName/$buildName.xml" >&2
@@ -22,9 +23,9 @@ buildContainerName="$cleanedInput"
 frinexVersion="admin-stable" #            + ((currentEntry.frinexVersion === "alpha") ? "alpha" : 'admin-stable')
 buildContainerOptions=$(grep buildContainerOptions /FrinexBuildService/publish.properties | sed "s/buildContainerOptions[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
 configServer=$(grep configServer /FrinexBuildService/publish.properties | sed "s/configServer[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
-stagingServer=$(awk '/^\[staging\]/{f=1;next} /^\[/{f=0} f && /^serverName[ ]*=/{sub(/^serverName[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
-stagingServerUrl=$(awk '/^\[staging\]/{f=1;next} /^\[/{f=0} f && /^serverUrl[ ]*=/{sub(/^serverUrl[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
-stagingDbHost=$(awk '/^\[staging\]/{f=1;next} /^\[/{f=0} f && /^dbHost[ ]*=/{sub(/^dbHost[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
+destinationServer=$(awk -v env="$deployEnv" '$0=="["env"]"{f=1;next} /^\[/{f=0} f && /^serverName[ ]*=/{sub(/^serverName[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
+destinationServerUrl=$(awk -v env="$deployEnv" '$0=="["env"]"{f=1;next} /^\[/{f=0} f && /^serverUrl[ ]*=/{sub(/^serverUrl[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
+destinationDbHost=$(awk -v env="$deployEnv" '$0=="["env"]"{f=1;next} /^\[/{f=0} f && /^dbHost[ ]*=/{sub(/^dbHost[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
 allowDelete=$(grep -o 'allowDataDeletion="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/allowDataDeletion="//;s/"//' || echo 'false')
 securityGroup=$(grep -o 'securityGroup="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/securityGroup="//;s/"//' || echo '')
 
@@ -34,10 +35,11 @@ echo "buildName: $buildName"
 echo "buildContainerName: $buildContainerName"
 echo "buildContainerOptions: $buildContainerOptions"
 echo "frinexVersion: $frinexVersion"
+echo "deployEnv: $deployEnv"
 echo "configServer: $configServer"
-echo "stagingServer: $stagingServer"
-echo "stagingServerUrl: $stagingServerUrl"
-echo "stagingDbHost: $stagingDbHost"
+echo "destinationServer: $destinationServer"
+echo "destinationServerUrl: $destinationServerUrl"
+echo "destinationDbHost: $destinationDbHost"
 echo "allowDelete: $allowDelete"
 echo "securityGroup: $securityGroup"
 
@@ -99,9 +101,9 @@ sudo docker run --rm $buildContainerOptions \
                     -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building \
                     -Dexperiment.artifactsJsonDirectory=/FrinexBuildService/artifacts/$buildName/included_artifacts/ \
                     -DversionCheck.allowSnapshots=false \
-                    -Dexperiment.destinationServer='$stagingServer' \
-                    -Dexperiment.destinationServerUrl='$stagingServerUrl' \
-                    -Dexperiment.configuration.db.host='$stagingDbHost' \
+                    -Dexperiment.destinationServer='$destinationServer' \
+                    -Dexperiment.destinationServerUrl='$destinationServerUrl' \
+                    -Dexperiment.configuration.db.host='$destinationDbHost' \
                     -Dexperiment.configuration.admin.allowDelete='$allowDelete' \
                     -Dexperiment.configuration.securityGroup='$securityGroup'; \
                     cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war; \
