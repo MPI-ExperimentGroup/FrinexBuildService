@@ -25,8 +25,8 @@ configServer=$(grep configServer /FrinexBuildService/publish.properties | sed "s
 stagingServer=$(grep stagingServer /FrinexBuildService/publish.properties | sed "s/stagingServer[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
 stagingServerUrl=$(grep stagingServerUrl /FrinexBuildService/publish.properties | sed "s/stagingServerUrl[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
 stagingDbHost=$(grep stagingDbHost /FrinexBuildService/publish.properties | sed "s/stagingDbHost[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
-allowDelete=$(grep -oP 'allowDataDeletion="\K[^"]+' /FrinexBuildService/artifacts/$buildName/$buildName.xml || echo 'false')
-securityGroup=$(grep -oP 'securityGroup="\K[^"]+' /FrinexBuildService/artifacts/$buildName/$buildName.xml || echo '')
+allowDelete=$(grep -o 'allowDataDeletion="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/allowDataDeletion="//;s/"//' || echo 'false')
+securityGroup=$(grep -o 'securityGroup="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/securityGroup="//;s/"//' || echo '')
 
 
 echo "cleanedInput: $cleanedInput"
