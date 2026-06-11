@@ -20,20 +20,23 @@ fi
 buildContainerName="$cleanedInput"
 frinexVersion="admin-stable" #            + ((currentEntry.frinexVersion === "alpha") ? "alpha" : 'admin-stable')
 buildContainerOptions=$(grep buildContainerOptions /FrinexBuildService/publish.properties | sed "s/buildContainerOptions[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
-#TODO:const configServer = properties.webservice.configServer;
-#TODO:const stagingServer = properties.staging.serverName;
-#TODO:const stagingServerUrl = properties.staging.serverUrl;
-#TODO:const stagingGroupsSocketUrl = properties.staging.groupsSocketUrl;
-#TODO:const stagingDbHost = properties.staging.dbHost;
+configServer=$(grep configServer /FrinexBuildService/publish.properties | sed "s/configServer[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
+stagingServer=$(grep stagingServer /FrinexBuildService/publish.properties | sed "s/stagingServer[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
+stagingServerUrl=$(grep stagingServerUrl /FrinexBuildService/publish.properties | sed "s/stagingServerUrl[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
+stagingDbHost=$(grep stagingDbHost /FrinexBuildService/publish.properties | sed "s/stagingDbHost[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
 #TODO: allowDelete=allowDelete=' + ((currentEntry.allowDelete != null) ? currentEntry.allowDelete : 'false')
 #TODO: securityGroup=("_security_group_", currentEntry.securityGroup ?? ''), { stdio: [0, 1, 2] });
 
 
 echo "cleanedInput: $cleanedInput"
-echo "buildContainerOptions: $buildContainerOptions"
-echo "buildContainerName: $buildContainerName"
 echo "buildName: $buildName"
+echo "buildContainerName: $buildContainerName"
+echo "buildContainerOptions: $buildContainerOptions"
 echo "frinexVersion: $frinexVersion"
+echo "configServer: $configServer"
+echo "stagingServer: $stagingServer"
+echo "stagingServerUrl: $stagingServerUrl"
+echo "stagingDbHost: $stagingDbHost"
 
             # // + ((["load_test_target", "with_stimulus_example", "thijs_test_3"].includes(buildName)) ? 'admin-beta' : ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable'))
             # + ((["load_test_target", "with_stimulus_example", "thijs_test_3"].includes(buildName)) ? 'admin-beta' : 'admin-stable')
@@ -97,16 +100,13 @@ sudo docker run --rm $buildContainerOptions \
                     -Dexperiment.destinationServerUrl=$stagingServerUrl \
                     -Dexperiment.configuration.db.host=$stagingDbHost \
                     -Dexperiment.configuration.admin.allowDelete=$allowDelete \
-                    -Dexperiment.configuration.securityGroup=$securityGroup \
-                    &>> /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin.txt; \
-                    cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war' \
-                    &>> /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin.txt; \
-                    mv /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*-sources.jar /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin_sources.jar \
-                    &>> /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin.txt; \
+                    -Dexperiment.configuration.securityGroup=$securityGroup; \
+                    cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war'; \
+                    mv /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*-sources.jar /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin_sources.jar; \
                     chmod 775 -R /FrinexBuildService/protected/$buildName/; \
                     chmod 775 -R /FrinexBuildService/artifacts/$buildName/; \
                     chown -R 101010 /FrinexBuildService/artifacts/$buildName/; \
                     chown -R 101010 /FrinexBuildService/protected/$buildName/; \
-                    echo \"build complete\" &>> /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin.txt; \
+                    echo \"build $buildContainerName complete\"; \
                 ";
             
