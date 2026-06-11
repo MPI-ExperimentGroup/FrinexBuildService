@@ -10,11 +10,16 @@ if [[ ! "$cleanedInput" =~ _(staging|production)_(web|admin)$ ]]; then
     exit 1
 fi
 
-buildContainerOptions=$(grep buildContainerOptions /FrinexBuildService/publish.properties | sed "s/buildContainerOptions[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
-buildContainerName="$cleanedInput"
 buildName=$(echo "$cleanedInput" | sed -E 's/_(staging|production)_(web|admin)$//')
-frinexVersion="admin-stable" #            + ((currentEntry.frinexVersion === "alpha") ? "alpha" : 'admin-stable')
 
+if [ ! -f "/FrinexBuildService/artifacts/$buildName/$buildName.xml" ]; then
+    echo "Config file not found: /FrinexBuildService/artifacts/$buildName/$buildName.xml" >&2
+    exit 1
+fi
+
+buildContainerName="$cleanedInput"
+frinexVersion="admin-stable" #            + ((currentEntry.frinexVersion === "alpha") ? "alpha" : 'admin-stable')
+buildContainerOptions=$(grep buildContainerOptions /FrinexBuildService/publish.properties | sed "s/buildContainerOptions[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r");
 #TODO:const configServer = properties.webservice.configServer;
 #TODO:const stagingServer = properties.staging.serverName;
 #TODO:const stagingServerUrl = properties.staging.serverUrl;
@@ -37,7 +42,6 @@ echo "frinexVersion: $frinexVersion"
 #             // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
             
 #   terminate existing docker containers by name 
-var buildContainerName = $buildName + '_staging_admin';
         # // var dockerString = 'sudo docker container rm -f ' + buildContainerName
         #     /* not currently required */ //+ ' --net="host" ' // enables the container to connect to ports on the host, so that maven can access tomcat manager
         #     // # the maven settings and its .m2 directory need to be in the volume m2Directory:/maven/.m2/
