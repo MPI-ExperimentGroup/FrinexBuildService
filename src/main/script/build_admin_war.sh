@@ -83,7 +83,10 @@ echo "securityGroup: $securityGroup"
             # + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             # -Dexperiment.groupsSocketUrl=$stagingGroupsSocketUrl \
 
+echo "removing build container"
 sudo docker container rm -f "$buildContainerName" &> /dev/null;
+
+echo "starting build container"
 sudo docker run --rm $buildContainerOptions \
                 --name "$buildContainerName" \
                 -v processingDirectory:/FrinexBuildService/processing \
@@ -115,4 +118,5 @@ sudo docker run --rm $buildContainerOptions \
                     echo \"build $buildContainerName complete\"; \
                 ";
 # sync the built WAR and JAR files
+echo "sync the built WAR and JAR files"
 bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin_sources.jar;
