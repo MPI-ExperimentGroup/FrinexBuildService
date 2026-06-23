@@ -86,10 +86,15 @@ echo "securityGroup: $securityGroup"
 echo "removing build container"
 sudo docker container rm -f "$buildContainerName" &> /dev/null;
 
+# It might be useful to copy the XML into the processing but that might interact with other build processes which we dont want
+# -v processingDirectory:/FrinexBuildService/processing \
+# cp /FrinexBuildService/artifacts/$buildName/$buildName.xml /FrinexBuildService/processing/${deployEnv}-building/${buildName}.xml;
+# -v /FrinexBuildService/artifacts/$buildName/$buildName.xml:/FrinexBuildService/processing/${deployEnv}-building/$buildName.xml:ro \
+
 echo "starting build container"
 sudo docker run --name "$buildContainerName" \
                 --rm $buildContainerOptions \
-                -v processingDirectory:/FrinexBuildService/processing \
+                -v /FrinexBuildService/artifacts/$buildName/$buildName.xml:/FrinexBuildService/processing/${deployEnv}-building/$buildName.xml:ro \
                 -v buildServerTarget:/FrinexBuildService/artifacts \
                 -v protectedDirectory:/FrinexBuildService/protected \
                 -v m2Directory:/maven/.m2/ \
@@ -101,7 +106,7 @@ sudo docker run --name "$buildContainerName" \
                     -q \
                     -Dexperiment.configuration.name='$buildName' \
                     -Dexperiment.webservice='$configServer' \
-                    -Dexperiment.configuration.path=/FrinexBuildService/processing/staging-building \
+                    -Dexperiment.configuration.path=/FrinexBuildService/processing/${deployEnv}-building \
                     -Dexperiment.artifactsJsonDirectory=/FrinexBuildService/artifacts/$buildName/included_artifacts/ \
                     -DversionCheck.allowSnapshots=false \
                     -Dexperiment.destinationServer='$destinationServer' \
@@ -109,8 +114,8 @@ sudo docker run --name "$buildContainerName" \
                     -Dexperiment.configuration.db.host='$destinationDbHost' \
                     -Dexperiment.configuration.admin.allowDelete='$allowDelete' \
                     -Dexperiment.configuration.securityGroup='$securityGroup'; \
-                    cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war; \
-                    mv /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*-sources.jar /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin_sources.jar; \
+                    cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war /FrinexBuildService/protected/$buildName/${buildName}_${deployEnv}_admin.war; \
+                    mv /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*-sources.jar /FrinexBuildService/artifacts/$buildName/${buildName}_${deployEnv}_admin_sources.jar; \
                     chmod 775 -R /FrinexBuildService/protected/$buildName/; \
                     chmod 775 -R /FrinexBuildService/artifacts/$buildName/; \
                     chown -R 101010 /FrinexBuildService/artifacts/$buildName/; \
@@ -119,4 +124,4 @@ sudo docker run --name "$buildContainerName" \
                 ";
 # sync the built WAR and JAR files
 echo "sync the built WAR and JAR files"
-bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh /FrinexBuildService/protected/$buildName/${buildName}_staging_admin.war /FrinexBuildService/artifacts/$buildName/${buildName}_staging_admin_sources.jar;
+bash /FrinexBuildService/script/sync_file_to_swarm_nodes.sh /FrinexBuildService/protected/$buildName/${buildName}_${deployEnv}_admin.war /FrinexBuildService/artifacts/$buildName/${buildName}_${deployEnv}_admin_sources.jar;
