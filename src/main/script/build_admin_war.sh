@@ -87,8 +87,8 @@ echo "removing build container"
 sudo docker container rm -f "$buildContainerName" &> /dev/null;
 
 echo "starting build container"
-sudo docker run --rm $buildContainerOptions \
-                --name "$buildContainerName" \
+sudo docker run --name "$buildContainerName" \
+                --rm $buildContainerOptions \
                 -v processingDirectory:/FrinexBuildService/processing \
                 -v buildServerTarget:/FrinexBuildService/artifacts \
                 -v protectedDirectory:/FrinexBuildService/protected \
