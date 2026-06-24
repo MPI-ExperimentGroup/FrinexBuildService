@@ -87,14 +87,14 @@ echo "removing build container"
 sudo docker container rm -f "$buildContainerName" &> /dev/null;
 
 # It might be useful to copy the XML into the processing but that might interact with other build processes which we dont want
-# -v processingDirectory:/FrinexBuildService/processing \
-# cp /FrinexBuildService/artifacts/$buildName/$buildName.xml /FrinexBuildService/processing/${deployEnv}-building/${buildName}.xml;
 # -v /FrinexBuildService/artifacts/$buildName/$buildName.xml:/FrinexBuildService/processing/${deployEnv}-building/$buildName.xml:ro \
+# -v /FrinexBuildService/artifacts/$buildName/$buildName.xml:/FrinexBuildService/processing/${deployEnv}-building/$buildName.xml:ro \
+cp /FrinexBuildService/artifacts/$buildName/$buildName.xml /FrinexBuildService/processing/${deployEnv}-building/${buildName}.xml;
 
 echo "starting build container"
 sudo docker run --name "$buildContainerName" \
                 --rm $buildContainerOptions \
-                -v /FrinexBuildService/artifacts/$buildName/$buildName.xml:/FrinexBuildService/processing/${deployEnv}-building/$buildName.xml:ro \
+                -v processingDirectory:/FrinexBuildService/processing \
                 -v buildServerTarget:/FrinexBuildService/artifacts \
                 -v protectedDirectory:/FrinexBuildService/protected \
                 -v m2Directory:/maven/.m2/ \
