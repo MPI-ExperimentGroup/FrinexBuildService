@@ -65,6 +65,7 @@ COPY static/stats.js /FrinexBuildService/docs/
 COPY cgi/repository_setup.cgi /FrinexBuildService/cgi/
 COPY cgi/request_build.cgi /FrinexBuildService/cgi/
 COPY cgi/experiment_access.cgi /FrinexBuildService/cgi/
+COPY cgi/build_admin_war.cgi /FrinexBuildService/cgi/
 COPY script/build_admin_war.sh /FrinexBuildService/script/
 COPY script/generate_commit_files.sh /FrinexBuildService/script/
 COPY script/sync_file_to_swarm_nodes.sh /FrinexBuildService/script/
@@ -130,6 +131,7 @@ RUN addgroup frinex frinex
 # the use of daemon in these permissions failed when using Apache/2.4.52 so daemon has been replaced with www-data in this section
 # RUN echo '%daemon ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /bin/bash /FrinexBuildService/script/build_admin_war.sh *' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
