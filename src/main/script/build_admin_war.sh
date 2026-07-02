@@ -28,6 +28,22 @@ destinationServerUrl=$(awk -v env="$deployEnv" '$0=="["env"]"{f=1;next} /^\[/{f=
 destinationDbHost=$(awk -v env="$deployEnv" '$0=="["env"]"{f=1;next} /^\[/{f=0} f && /^dbHost[ ]*=/{sub(/^dbHost[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
 allowDelete=$(grep -o 'allowDataDeletion="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/allowDataDeletion="//;s/"//' || echo 'false')
 securityGroup=$(grep -o 'securityGroup="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/securityGroup="//;s/"//' || echo '')
+# the adminPassword for staging is taken from the settings.xml rather than the publish.properties and therefore should not be passed to the build process at all
+# the adminPassword for production is taken from the /FrinexBuildService/protected/tokens.json
+if [ "$deployEnv" == "staging" ]; then
+    # TODO: for all web version this should also be empty, eg web|admin
+    adminPasswordArg=""
+else
+    tokensFile="/FrinexBuildService/protected/tokens.json"
+    adminPassword=$(awk -F'"' -v key="$buildName" '$2 == key {print $4; exit}' "$tokensFile" 2>/dev/null)
+    # TODO: this entry should already be present at this point, however we could replace the equivalent section from deploy=by-hook.js
+    if [ -z "$adminPassword" ]; then
+        adminPassword=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 20)
+        { printf '{\n'; awk -F'"' 'NF >= 4 {print "    \"" $2 "\": \"" $4 "\","}' "$tokensFile" 2>/dev/null; printf '    "%s": "%s"\n}\n' "$buildName" "$adminPassword"; } > "${tokensFile}.tmp"
+        mv "${tokensFile}.tmp" "$tokensFile" && chmod 775 "$tokensFile"
+    fi
+    adminPasswordArg="-Dexperiment.configuration.admin.password='${adminPassword}'"
+fi
 
 
 echo "cleanedInput: $cleanedInput"
@@ -113,6 +129,7 @@ sudo docker run --name "$buildContainerName" \
                     -Dexperiment.destinationServerUrl='$destinationServerUrl' \
                     -Dexperiment.configuration.db.host='$destinationDbHost' \
                     -Dexperiment.configuration.admin.allowDelete='$allowDelete' \
+                    $adminPasswordArg \
                     -Dexperiment.configuration.securityGroup='$securityGroup'; \
                     cp /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*.war /FrinexBuildService/protected/$buildName/${buildName}_${deployEnv}_admin.war; \
                     mv /ExperimentTemplate/registration/target/${buildName}-frinex-admin-*-*-sources.jar /FrinexBuildService/artifacts/$buildName/${buildName}_${deployEnv}_admin_sources.jar; \

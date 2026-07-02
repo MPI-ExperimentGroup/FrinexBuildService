@@ -38,14 +38,14 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             echo "$version is >= 1.8.0"
         else
             echo "$version is < 1.8.0"
-            echo "this war needs to be updated, renaming old war to $(cleanedInput}_${version}.war"
-            mv /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war /FrinexBuildService/protected/$experimentDirectory/$(cleanedInput}_${version}.war
+            echo "this war needs to be updated, renaming old war to ${cleanedInput}_${version}.war"
+            mv /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war /FrinexBuildService/protected/$experimentDirectory/${cleanedInput}_${version}.war
             echo "Please reload this page<br>"
             echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
         fi
     fi
     if  [ "$QUERY_STRING" == "$cleanedInput&actuator/health" ] || [ "$QUERY_STRING" == "$cleanedInput&health" ]; then
-        echo "{"status":"sleeping"}"
+        echo '{"status":"sleeping"}'
         # echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     else
         serviceStatus=$(sudo docker service ls | grep $cleanedInput | grep "1/1" | awk '{print $3}')
@@ -110,7 +110,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
         fi
     fi
-else if [ -f /FrinexBuildService/artifacts/$experimentDirectory/$experimentDirectory.xml ]; then
+elif [ -f /FrinexBuildService/artifacts/$experimentDirectory/$experimentDirectory.xml ]; then
     echo "The experiment ${cleanedInput}.war does not exist."
     echo "$(date), not found, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     if [[ "$cleanedInput" == *_staging_admin || "$cleanedInput" == *_production_admin ]]; then
