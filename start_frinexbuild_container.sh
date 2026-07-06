@@ -74,17 +74,17 @@ docker stop frinexbuild
 docker container rm frinexbuild 
 
 # make sure the relevant directories have the correct permissions after an install or update
-docker run -v gitRepositories:/FrinexBuildService/git-repositories -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -v m2Directory:/maven/.m2/ --rm -it --user root --name frinexbuild-permissions frinexbuild:latest bash -c \
+docker run -v gitRepositories:/FrinexBuildService/git-repositories -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -v m2Directory:/maven/.m2/ --rm -it --user root --name frinexbuild-permissions frinexbuild.mpi.nl/frinexbuild:latest bash -c \
     "chmod -R ug+rwx /FrinexBuildService; chown -R frinex:www-data /FrinexBuildService/artifacts; chmod -R ug+rwx /FrinexBuildService/artifacts; chown -R www-data:daemon /FrinexBuildService/git-repositories; chmod -R ug+rwx /FrinexBuildService/git-repositories; chown -R frinex:www-data /FrinexBuildService/docs; chmod -R ug+rwx /FrinexBuildService/docs; chown -R frinex:www-data /FrinexBuildService/protected; chmod -R ug+rwx /FrinexBuildService/protected;chown -R frinex:www-data /FrinexBuildService/incoming; chmod -R ug+rwx /FrinexBuildService/incoming; chown -R frinex:www-data /FrinexBuildService/listing; chmod -R ug+rwx /FrinexBuildService/listing; chown -R frinex:www-data /FrinexBuildService/processing; chmod -R ug+rwx /FrinexBuildService/processing; chown -R frinex:www-data /maven; chmod -R ug+rwx /maven;";
 #  -v gitCheckedout:/FrinexBuildService/git-checkedout
 # chown -R www-data:daemon /FrinexBuildService/git-checkedout; chmod -R ug+rwx /FrinexBuildService/git-checkedout;
 
 # move the old logs out of the way, note that this could overwrite old out of the way logs from the same date
-docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --user root --name frinexbuild-moveoldlogs frinexbuild:latest bash -c \
+docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --user root --name frinexbuild-moveoldlogs frinexbuild.mpi.nl/frinexbuild:latest bash -c \
     "mkdir artifacts/logs-$(date +%F)/; mv artifacts/git-*.txt artifacts/json_to_xml.txt artifacts/sync_swarm_nodes.txt artifacts/update_schema_docs.txt artifacts/logs-$(date +%F)/; cp /FrinexBuildService/buildlisting.html /FrinexBuildService/artifacts/index.html; chmod -R ug+rwx /FrinexBuildService/artifacts/index.html; chown -R frinex:www-data /FrinexBuildService/artifacts/index.html";
 
 # iterate the git checkout directories and reset them in case they were damaged in an unexpected shutdown
-# docker run -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name frinexbuild-reset-git-co frinexbuild:latest bash -c \
+# docker run -v gitCheckedout:/FrinexBuildService/git-checkedout --rm -it --name frinexbuild-reset-git-co frinexbuild.mpi.nl/frinexbuild:latest bash -c \
 #     "cd /FrinexBuildService/git-checkedout/; for checkoutDirectory in /FrinexBuildService/git-checkedout/*/ ; do cd \$checkoutDirectory; pwd; if [ -f .git/index.lock ]; then rm .git/index.lock; git restore .; fi; if [ -f .git/shallow.lock ]; then rm .git/shallow.lock; git restore .; fi; done;";
 # -v $workingDir/BackupFiles:/BackupFiles
 # chown -R frinex:daemon /BackupFiles; chmod -R ug+rwx /BackupFiles
@@ -93,7 +93,7 @@ docker run  -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --user r
 # for adminWar in /FrinexBuildService/protected/*/*_admin.war; do zip -d $adminWar \*_cordova.aab \*_ios.zip \*_cordova.apk \*-x64-lt.zip \*-x64.zip \*_android.zip \*-x64-lt.zip; done;
 
 # start the frinexbuild container with access to /var/run/docker.sock so that it can create sibling containers of frinexapps
-# docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -v m2Directory:/maven/.m2/ -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+# docker run --cpus=".5" --restart unless-stopped --net frinex_db_manager_net --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -v m2Directory:/maven/.m2/ -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild.mpi.nl/frinexbuild:latest
 
 docker service rm frinexbuild
 docker service create \
@@ -123,8 +123,8 @@ docker service create \
 # -v gitCheckedout:/FrinexBuildService/git-checkedout 
 
 # in non swarm installations the frinex_db_manager_net is excluded as follows
-#docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild:latest
+#docker run --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v m2Directory:/maven/.m2/ -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts -v protectedDirectory:/FrinexBuildService/protected -dit --name frinexbuild  -p 80:80 -p 8070:80 frinexbuild.mpi.nl/frinexbuild:latest
 # -v $workingDir/BackupFiles:/BackupFiles 
 # -v wizardExperiments:/FrinexBuildService/wizard-experiments 
 # the -v m2Directory:/maven/.m2/ volume is not strictly needed in this container but it makes it easer to run docker purge without destroying the .m2/settings.xml etc
-# docker run  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinexbuild-temp frinexbuild:latest bash
+# docker run  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock -v gitCheckedout:/FrinexBuildService/git-checkedout -v gitRepositories:/FrinexBuildService/git-repositories -v webappsTomcatStaging:/usr/local/tomcat/webapps -v incomingDirectory:/FrinexBuildService/incoming -v listingDirectory:/FrinexBuildService/listing -v processingDirectory:/FrinexBuildService/processing -v buildServerTarget:/FrinexBuildService/artifacts --rm -it --name frinexbuild-temp frinexbuild.mpi.nl/frinexbuild:latest bash

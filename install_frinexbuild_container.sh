@@ -41,7 +41,7 @@ else
     docker system prune
     
     # build the frinexbuild dockerfile
-    docker build --no-cache -f docker/frinexbuild.Dockerfile -t frinexbuild:latest .
+    docker build --no-cache -f docker/frinexbuild.Dockerfile -t frinexbuild.mpi.nl/frinexbuild:latest .
     docker image push frinexbuild.mpi.nl/frinexbuild:latest
 
     # build a tomcat docker image to test deployments
