@@ -116,7 +116,7 @@ docker service create \
   -p 80:80 \
   -p 8070:80 \
   -d \
-  frinexbuild:latest
+  frinexbuild.mpi.nl/frinexbuild:latest
 
 # --net frinex_synchronisation_net 
 # 2024-07-18 removed the gitCheckedout from the frinexbuild container because it can be recreated as required and its deletion saves disk space
