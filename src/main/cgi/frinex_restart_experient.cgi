@@ -34,10 +34,10 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
             grep '^projectVersion=' |
             cut -d= -f2
         )
-        if printf '%s\n%s\n' "1.8.0" "${version%%-*}" | sort -V -C; then
-            echo "$version is >= 1.8.0"
+        if printf '%s\n%s\n' "1.8.1171" "${version%%-*}" | sort -V -C; then
+            echo "$version is >= 1.8.1171"
         else
-            echo "$version is < 1.8.0"
+            echo "$version is < 1.8.1171"
             echo "this war needs to be updated, renaming old war to ${cleanedInput}_${version}.war"
             mv /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war /FrinexBuildService/protected/$experimentDirectory/${cleanedInput}_${version}.war
             echo "Please reload this page<br>"
