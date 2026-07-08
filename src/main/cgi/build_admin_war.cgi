@@ -24,13 +24,42 @@
 
 # This CGI triggers build_admin_war.sh so it can be called via HTTP
 # from frinex_restart_experient.cgi in the frinex_listing_provider container.
-echo "Content-type: text/html"
-echo ''
 cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_]+).*/\1/p')
 if [ -z "$cleanedInput" ]; then
+    echo "Content-type: text/html"
+    echo ''
     echo "No experiment name provided."
     exit 0
 fi
+
+runningBuilds=$(sudo docker ps --filter "ancestor=frinexapps-jdk:admin-stable" --format "{{.Names}}" 2>/dev/null)
+if [ $? -ne 0 ]; then
+    echo "Status: 503 Service Unavailable"
+    echo "Content-type: text/html"
+    echo ''
+    echo "Build service check failed, try again later<br>"
+    exit 0
+fi
+runningCount=$(echo "$runningBuilds" | grep -c .)
+if [ "$runningCount" -ge 2 ]; then
+    echo "Status: 429 Too Many Requests"
+    echo "Content-type: text/html"
+    echo ''
+    echo "Build server busy, try again later<br>"
+    exit 0
+fi
+
+alreadyBuilding=$(sudo docker ps --filter "name=^${cleanedInput}$" --format "{{.Names}}" 2>/dev/null)
+if [ -n "$alreadyBuilding" ]; then
+    echo "Status: 409 Conflict"
+    echo "Content-type: text/html"
+    echo ''
+    echo "Build already in progress for $cleanedInput<br>"
+    exit 0
+fi
+
+echo "Content-type: text/html"
+echo ''
 echo "Build triggered for $cleanedInput<br>"
 nohup nice sudo -u frinex bash /FrinexBuildService/script/build_admin_war.sh "$cleanedInput" >> /usr/local/apache2/htdocs/frinex_build_admin_war.log 2>&1 &
 echo "Build started, check build log for output<br>"
