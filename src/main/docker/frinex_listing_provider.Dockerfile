@@ -109,6 +109,8 @@ RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service update *'
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service create *' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker service inspect --format *' >> /etc/sudoers
 
+RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /bin/mv /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_staging_admin.war /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_staging_admin_*.war' >> /etc/sudoers
+RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /bin/mv /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_production_admin.war /FrinexBuildService/protected/[a-z0-9-_]*/[a-z0-9-_]*_production_admin_*.war' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /bin/chown -R frinex\:www-data /FrinexBuildService/artifacts/[a-z0-9-_]*/' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /bin/chmod -R ug+rwx /FrinexBuildService/artifacts/[a-z0-9-_]*/' >> /etc/sudoers
 RUN echo 'www-data, frinex ALL=(ALL) NOPASSWD: /usr/bin/docker node ps [a-zA-Z0-9-_.]*' >> /etc/sudoers

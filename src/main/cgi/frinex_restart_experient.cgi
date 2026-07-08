@@ -39,7 +39,7 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
         else
             echo "$version is < 1.8.1171"
             echo "this war needs to be updated, renaming old war to ${cleanedInput}_${version}.war"
-            mv /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war /FrinexBuildService/protected/$experimentDirectory/${cleanedInput}_${version}.war
+            sudo mv /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war /FrinexBuildService/protected/$experimentDirectory/${cleanedInput}_${version}.war
             echo "Please reload this page<br>"
             echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
         fi
