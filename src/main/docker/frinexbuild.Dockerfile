@@ -134,6 +134,7 @@ RUN addgroup frinex frinex
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/node --use_strict /FrinexBuildService/deploy-by-hook.js' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /bin/bash /FrinexBuildService/script/build_admin_war.sh *' >> /etc/sudoers
 RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker service ls' >> /etc/sudoers
+RUN echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/docker ps *' >> /etc/sudoers
 RUN echo 'frinex ALL=(ALL) NOPASSWD: /usr/bin/docker' >> /etc/sudoers
 # make sure that the required files are accessable by httpd
 # RUN chown -R frinex:daemon /FrinexBuildService
