@@ -115,7 +115,7 @@ elif [ -f /FrinexBuildService/artifacts/$experimentDirectory/$experimentDirector
     echo "$(date), not found, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     if [[ "$cleanedInput" == *_staging_admin || "$cleanedInput" == *_production_admin ]]; then
         echo "Building admin war for $cleanedInput<br>"
-        curl -sk "BUILD_ADMIN_WAR_URL?$cleanedInput" &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
+        curl -sk -u "BUILD_ADMIN_WAR_CREDENTIALS" "BUILD_ADMIN_WAR_URL?$cleanedInput" &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
         echo "Please reload this page in a few minutes<br>"
         echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
     fi

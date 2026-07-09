@@ -54,6 +54,7 @@ RUN proxyUpdateTrigger=$(grep proxyUpdateTrigger /FrinexBuildService/publish.pro
 RUN proxyUpdateTrigger=$(grep proxyUpdateTrigger /FrinexBuildService/publish.properties | sed "s/proxyUpdateTrigger[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s|PROXY_UPDATE_TRIGGER|$proxyUpdateTrigger|g" /FrinexBuildService/sleep_and_resurrect_docker_experiments.sh
 RUN proxyUpdateTrigger=$(grep proxyUpdateTrigger /FrinexBuildService/publish.properties | sed "s/proxyUpdateTrigger[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s|PROXY_UPDATE_TRIGGER|$proxyUpdateTrigger|g" /FrinexBuildService/service_event_watcher.sh
 RUN buildAdminWarUrl=$(grep buildAdminWarUrl /FrinexBuildService/publish.properties | sed "s/buildAdminWarUrl[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s|BUILD_ADMIN_WAR_URL|$buildAdminWarUrl|g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
+RUN buildAdminWarCredentials=$(grep buildAdminWarCredentials /FrinexBuildService/publish.properties | sed "s/buildAdminWarCredentials[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s|BUILD_ADMIN_WAR_CREDENTIALS|$buildAdminWarCredentials|g" /FrinexBuildService/cgi/frinex_restart_experient.cgi
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/request_scaling.cgi
 RUN rm /FrinexBuildService/publish.properties
 RUN cat /FrinexBuildService/cgi/frinex_restart_experient.cgi
