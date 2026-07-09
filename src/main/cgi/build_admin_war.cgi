@@ -45,7 +45,7 @@ if [ "$runningCount" -ge CONCURRENT_BUILD_COUNT ]; then
     echo "Status: 429 Too Many Requests"
     echo "Content-type: text/html"
     echo ''
-    echo "Build server busy, try again later<br>"
+    echo "Build server busy ($runningCount/CONCURRENT_BUILD_COUNT slots in use: $runningBuilds), try again later<br>"
     exit 0
 fi
 
@@ -60,6 +60,6 @@ fi
 
 echo "Content-type: text/html"
 echo ''
-echo "Build triggered for $cleanedInput<br>"
+echo "Build triggered for $cleanedInput ($runningCount/CONCURRENT_BUILD_COUNT slots in use)<br>"
 nohup nice sudo -u frinex bash /FrinexBuildService/script/build_admin_war.sh "$cleanedInput" >> /usr/local/apache2/htdocs/frinex_build_admin_war.log 2>&1 &
 echo "Build started, check build log for output<br>"
