@@ -41,7 +41,7 @@ if [ $? -ne 0 ]; then
     exit 0
 fi
 runningCount=$(echo "$runningBuilds" | grep -c .)
-if [ "$runningCount" -ge 2 ]; then
+if [ "$runningCount" -ge CONCURRENT_BUILD_COUNT ]; then
     echo "Status: 429 Too Many Requests"
     echo "Content-type: text/html"
     echo ''

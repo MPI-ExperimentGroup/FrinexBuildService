@@ -106,6 +106,7 @@ RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /Fri
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/repository_setup.cgi
 RUN sed -i "s|TargetDirectory|/FrinexBuildService/artifacts|g" /FrinexBuildService/cgi/request_build.cgi
 RUN sed -i "s|ProtectedDirectory|/FrinexBuildService/protected|g" /FrinexBuildService/cgi/experiment_access.cgi
+RUN concurrentBuildCount=$(grep concurrentBuildCount /FrinexBuildService/publish.properties | sed "s/concurrentBuildCount[ ]*=[ ]*//g" | tr -d "\n" | tr -d "\r"); sed -i "s|CONCURRENT_BUILD_COUNT|$concurrentBuildCount|g" /FrinexBuildService/cgi/build_admin_war.cgi
 RUN sed -i "s|RepositoriesDirectory|/FrinexBuildService/git-repositories|g" /FrinexBuildService/post-receive
 RUN sed -i "s|ScriptsDirectory|/FrinexBuildService|g" /FrinexBuildService/post-receive
 COPY docker/create_frinex_build_repository.sh /FrinexBuildService/create_frinex_build_repository.sh
