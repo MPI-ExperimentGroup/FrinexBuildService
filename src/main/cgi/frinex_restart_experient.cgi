@@ -28,26 +28,28 @@ echo ''
 cleanedInput=$(echo "$QUERY_STRING" | sed -En 's/([0-9a-z_]+).*/\1/p')
 experimentDirectory=$(echo "$cleanedInput" | sed 's/_production_web$//g'| sed 's/_production_admin$//g' | sed 's/_staging_web$//g'| sed 's/_staging_admin$//g')
 if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; then
-    if [[ "$QUERY_STRING" == *_admin ]]; then
-        version=$(
-            unzip -p /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war WEB-INF/classes/Version.properties |
-            grep '^projectVersion=' |
-            cut -d= -f2
-        )
-        if printf '%s\n%s\n' "1.8.1171" "${version%%-*}" | sort -V -C; then
-            echo "$version is >= 1.8.1171"
-        else
-            echo "$version is < 1.8.1171"
-            echo "this war needs to be updated, renaming old war to ${cleanedInput}_${version}.war"
-            sudo mv /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war /FrinexBuildService/protected/$experimentDirectory/${cleanedInput}_${version}.war
-            echo "Please reload this page<br>"
-            echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
-        fi
-    fi
     if  [ "$QUERY_STRING" == "$cleanedInput&actuator/health" ] || [ "$QUERY_STRING" == "$cleanedInput&health" ]; then
         echo '{"status":"sleeping"}'
         # echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     else
+        if [[ "$QUERY_STRING" == *_admin ]]; then
+            version=$(
+                unzip -p /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war WEB-INF/classes/Version.properties |
+                grep '^projectVersion=' |
+                cut -d= -f2
+            )
+            if printf '%s\n%s\n' "1.8.1171" "${version%%-*}" | sort -V -C; then
+                echo "$version is >= 1.8.1171"
+            else
+                echo "$version is < 1.8.1171"
+                echo "this war needs to be updated, renaming old war to ${cleanedInput}_${version}.war"
+                echo "$version is < 1.8.1171" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+                echo "this war needs to be updated, renaming old war to ${cleanedInput}_${version}.war" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+                sudo mv /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war /FrinexBuildService/protected/$experimentDirectory/${cleanedInput}_${version}.war
+                echo "Please reload this page<br>"
+                echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
+            fi
+        fi
         serviceStatus=$(sudo docker service ls | grep $cleanedInput | grep "1/1" | awk '{print $3}')
         # publishedPort=$(docker service ls | grep $cleanedInput | awk '{print $6}')
         echo "serviceStatus: $serviceStatus<br>"
