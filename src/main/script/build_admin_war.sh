@@ -116,6 +116,7 @@ sudo docker run --name "$buildContainerName" \
                 -v m2Directory:/maven/.m2/ \
                 -w /ExperimentTemplate "frinexapps-jdk:$frinexVersion" \
                 /bin/bash -c "cd /ExperimentTemplate/registration; \
+                    mkdir /FrinexBuildService/artifacts/$buildName/included_artifacts; \
                     mvn clean compile package \
                     -gs /maven/.m2/settings.xml \
                     -DskipTests \
