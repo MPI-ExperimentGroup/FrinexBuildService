@@ -32,7 +32,8 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
         echo '{"status":"sleeping"}'
         # echo "$(date), status, $cleanedInput, $QUERY_STRING" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
     else
-        if [[ "$QUERY_STRING" == *_admin ]]; then
+        firstParam=${QUERY_STRING%%&*}
+        if [[ "$firstParam" == *_admin ]]; then
             version=$(
                 unzip -p /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war WEB-INF/classes/Version.properties |
                 grep '^projectVersion=' |
