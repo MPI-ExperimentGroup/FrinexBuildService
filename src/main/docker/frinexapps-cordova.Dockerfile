@@ -27,7 +27,7 @@ FROM node:22-bullseye
 RUN apt-get update # --fix-missing
 RUN apt-get -y upgrade # --fix-missing
 RUN apt-get update && apt-get install -y \
-    openjdk-11-jdk \
+    openjdk-17-jdk \
     unzip \
     file \
     imagemagick \
@@ -51,18 +51,16 @@ RUN apt-get update && apt-get install -y \
 # set up gradle manually so we get a more recent version
 ENV PATH=${PATH}:/opt/gradle/bin
 RUN mkdir /opt/gradle \
-    && wget https://services.gradle.org/distributions/gradle-7.5.1-bin.zip \
+    && wget https://services.gradle.org/distributions/gradle-8.9-bin.zip \
     && unzip -d /opt/gradle gradle-*-bin.zip \
     && mv /opt/gradle/gradle-*/bin /opt/gradle/ \
     && mv /opt/gradle/gradle-*/lib /opt/gradle/ \
     && rm gradle-*-bin.zip
 
-ENV ANDROID_VERSION=33 \
+ENV ANDROID_VERSION=34 \
     ANDROID_SDK_ROOT=/android-sdk \
     ANDROID_HOME=/android-sdk \
-    # ANDROID_BUILD_TOOLS_VERSION=34.0.0-rc3
-    ANDROID_BUILD_TOOLS_VERSION=30.0.3
-    # ANDROID_BUILD_TOOLS_VERSION=32.0.0
+    ANDROID_BUILD_TOOLS_VERSION=34.0.0
 ENV PATH=${PATH}:/android-sdk/platform-tools:/android-sdk/cmdline-tools
 # the listing of commandlinetools can be found here https://developer.android.com/studio#command-tools
 RUN mkdir /android-sdk \
@@ -80,10 +78,7 @@ RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager \
     "platforms;android-${ANDROID_VERSION}"
     #  "platform-tools" \
 RUN npm install npm -g # update npm
-RUN npm install -g cordova@11.1.0
-# rolled back to version 10 to address the admin connection issues
-# RUN npm install -g cordova@10.0.0
-# rolling back to 11 because the connection issues with the admin was due to invalid server certificates
+RUN npm install -g cordova@13.0.0
 
 # clone the Frinex repository so that the FieldKitRecorder is available
 RUN git clone https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
