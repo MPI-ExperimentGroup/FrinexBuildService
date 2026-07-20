@@ -89,6 +89,12 @@ COPY corova-plugins /corova-plugins
 
 COPY test_data_cordova /test_data_cordova
 
+# cordova-plugin-androidx-adapter is built into cordova-android 13 and no longer needed as a
+# separate plugin. Remove it from any pre-built setup-cordova.sh files so it isn't re-installed
+# (it pulls versioncompare from Maven Central which is unreachable in this build environment).
+RUN find /test_data_cordova -name "setup-cordova.sh" \
+    -exec sed -i '/cordova plugin add cordova-plugin-androidx-adapter/d' {} \;
+
 RUN cd /test_data_cordova/with_stimulus_example \
     && bash /test_data_cordova/with_stimulus_example/setup-cordova.sh \
     && stat /test_data_cordova/with_stimulus_example/app-release.apk \
