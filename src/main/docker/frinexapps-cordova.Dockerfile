@@ -79,6 +79,10 @@ RUN /android-sdk/cmdline-tools/latest/bin/sdkmanager \
     #  "platform-tools" \
 RUN npm install npm -g # update npm
 RUN npm install -g cordova@13.0.0
+# 20 July 2026 migrated from cordova@11.1.0 
+# rolled back to version 10 to address the admin connection issues
+# RUN npm install -g cordova@10.0.0
+# rolling back to 11 because the connection issues with the admin was due to invalid server certificates
 
 # clone the Frinex repository so that the FieldKitRecorder is available
 RUN git clone https://github.com/MPI-ExperimentGroup/ExperimentTemplate.git
@@ -88,12 +92,6 @@ COPY android-keys/frinex-cordova.jks /android-keys/
 COPY corova-plugins /corova-plugins
 
 COPY test_data_cordova /test_data_cordova
-
-# cordova-plugin-androidx-adapter is built into cordova-android 13 and no longer needed as a
-# separate plugin. Remove it from any pre-built setup-cordova.sh files so it isn't re-installed
-# (it pulls versioncompare from Maven Central which is unreachable in this build environment).
-RUN find /test_data_cordova -name "setup-cordova.sh" \
-    -exec sed -i '/cordova plugin add cordova-plugin-androidx-adapter/d' {} \;
 
 RUN cd /test_data_cordova/with_stimulus_example \
     && bash /test_data_cordova/with_stimulus_example/setup-cordova.sh \
