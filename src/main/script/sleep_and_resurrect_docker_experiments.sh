@@ -81,7 +81,8 @@ for serviceName in $serviceNameArray; do
     totalConsideredStaging=$(( $totalConsideredStaging + $isStaging ))
     totalConsideredProduction=$(( $totalConsideredProduction + $isProduction ))
     echo "serviceName $serviceName"
-    updatedAt=$(sudo docker service inspect --format '{{.UpdatedAt}}' "$serviceName")
+    actualServiceName=$(sudo docker service ls --format '{{.Name}}' | grep -Ei "^${serviceName}[_0-9]*$" | head -1)
+    updatedAt=$(sudo docker service inspect --format '{{.UpdatedAt}}' "${actualServiceName:-$serviceName}")
     echo "updatedAt $updatedAt"
     # note that this ignores the seconds already passed in the current minute by rounding it to YYYYMMDD HH:MM
     secondsSince1970=$(date +%s -d "${updatedAt:0:16}")
