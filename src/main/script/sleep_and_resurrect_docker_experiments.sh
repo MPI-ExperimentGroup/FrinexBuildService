@@ -128,8 +128,7 @@ for serviceName in $serviceNameArray; do
                     else
                         echo "Not proxyProductionWebHealthy $webContextPath"
                     fi
-                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproduction.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
-                    if [[ "$headerResult" == *"json"* ]]; then
+                    if grep -q "sessionFirstAndLastSeen" /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp 2>/dev/null; then
                         ((proxyProductionAdminHealthy++))
                     else
                         echo "Not proxyProductionAdminHealthy $adminContextPath"
@@ -161,8 +160,7 @@ for serviceName in $serviceNameArray; do
                     else
                         echo "Not proxyStagingWebHealthy $webContextPath"
                     fi
-                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexstaging.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
-                    if [[ "$headerResult" == *"json"* ]]; then
+                    if grep -q "sessionFirstAndLastSeen" /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp 2>/dev/null; then
                         ((proxyStagingAdminHealthy++))
                     else
                         echo "Not proxyStagingAdminHealthy $adminContextPath"
