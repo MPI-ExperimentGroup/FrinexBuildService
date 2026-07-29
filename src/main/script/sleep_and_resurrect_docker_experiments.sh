@@ -142,7 +142,7 @@ for serviceName in $serviceNameArray; do
                     else
                         echo "Not proxyProductionTestWebHealthy $webContextPath"
                     fi
-                    headerResult=$(curl -k -I --connect-timeout 1 --max-time 1 --fail-early --silent -H 'Content-Type: application/json' https://frinexproductiontest.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
+                    headerResult=$(curl -k -I --connect-timeout 5 --max-time 10 --fail-early --silent -H 'Content-Type: application/json' https://frinexproductiontest.mpi.nl/$adminContextPath/actuator/health | grep "Content-Type")
                     if [[ "$headerResult" == *"json"* ]]; then
                         ((proxyProductionTestAdminHealthy++))
                     else
