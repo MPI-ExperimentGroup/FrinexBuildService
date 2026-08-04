@@ -99,6 +99,14 @@ echo "securityGroup: $securityGroup"
             # + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             # -Dexperiment.groupsSocketUrl=$stagingGroupsSocketUrl \
 
+echo "calling frinex_db_manager for $buildName"
+dbManagerResponse=$(curl -s -o /dev/null -w "%{http_code}" "http://frinex_db_manager/cgi/frinex_db_manager.cgi?frinex_${buildName}_db")
+if [ "$dbManagerResponse" != "200" ]; then
+    echo "frinex_db_manager failed for $buildName: HTTP $dbManagerResponse" >&2
+    exit 1
+fi
+echo "frinex_db_manager: $buildName : $dbManagerResponse"
+
 echo "removing build container"
 sudo docker container rm -f "$buildContainerName" &> /dev/null;
 
