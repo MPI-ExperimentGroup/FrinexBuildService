@@ -147,6 +147,10 @@ for serviceName in $serviceNameArray; do
                         ((proxyProductionTestAdminHealthy++))
                     else
                         echo "Not proxyProductionTestAdminHealthy $adminContextPath"
+                        ((needsStarting++))
+                        needsStartingProduction=$(( $needsStartingProduction + $isProduction ))
+                        echo "$adminServiceName requesting start up"
+                        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$adminServiceName"
                     fi
                     # END during the tomcat to docker change over we are testing the production test URL here
                 else 
