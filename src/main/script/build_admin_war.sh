@@ -27,6 +27,7 @@ destinationServer=$(awk -v env="$deployEnv" '$0=="["env"]"{f=1;next} /^\[/{f=0} 
 destinationServerUrl=$(awk -v env="$deployEnv" '$0=="["env"]"{f=1;next} /^\[/{f=0} f && /^serverUrl[ ]*=/{sub(/^serverUrl[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
 destinationDbHost=$(awk -v env="$deployEnv" '$0=="["env"]"{f=1;next} /^\[/{f=0} f && /^dbHost[ ]*=/{sub(/^dbHost[ ]*=[ ]*/,""); print; exit}' /FrinexBuildService/publish.properties | tr -d "\n\r");
 allowDelete=$(grep -o 'allowDataDeletion="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/allowDataDeletion="//;s/"//' || echo 'false')
+allowDelete=${allowDelete:-false}
 securityGroup=$(grep -o 'securityGroup="[^"]*"' /FrinexBuildService/artifacts/$buildName/$buildName.xml | sed 's/securityGroup="//;s/"//' || echo '')
 # the adminPassword for staging is taken from the settings.xml rather than the publish.properties and therefore should not be passed to the build process at all
 # the adminPassword for production is taken from the /FrinexBuildService/protected/tokens.json
