@@ -20,8 +20,18 @@
 # http://<frinexbuild>:8010/frinex_stopped_experiments.txt
 # http://<frinexbuild>/frinex_restart_experient.log
 
-# make a list of all experiments that are running even if only the web or admin service is running
-serviceNameArray=$(sudo docker service ls --format '{{.Name}}' | sed -E 's/_(web|admin)([_0-9]+)?$/_admin/' | grep -E "_staging_admin$|_production_admin$" | sort | uniq)
+# staging services run for debug/draft/staging/production; production services run for production only
+serviceNameArray=$(find /FrinexBuildService/protected -name "*.xml" 2>/dev/null | while read xmlFile; do
+    deploymentState=$(grep -oP '<deployment\b[^>]*>' "$xmlFile" | grep -oP '(?<=\bstate=")[^"]*' | head -1)
+    experimentName=$(basename "$xmlFile" .xml)
+    case "$deploymentState" in
+        debug|draft|staging|production)
+            echo "${experimentName}_staging_admin" ;;
+    esac
+    if [[ "$deploymentState" == "production" ]]; then
+        echo "${experimentName}_production_admin"
+    fi
+done | sort | uniq)
 totalConsidered=0
 canBeTerminated=0
 hasRecentUse=0
@@ -81,8 +91,41 @@ for serviceName in $serviceNameArray; do
     totalConsideredStaging=$(( $totalConsideredStaging + $isStaging ))
     totalConsideredProduction=$(( $totalConsideredProduction + $isProduction ))
     echo "serviceName $serviceName"
+    adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
+    webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
+    adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
+    webContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
+    experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
     actualServiceName=$(sudo docker service ls --format '{{.Name}}' | grep -Ei "^${serviceName}[_0-9]*$" | head -1)
-    updatedAt=$(sudo docker service inspect --format '{{.UpdatedAt}}' "${actualServiceName:-$serviceName}")
+    serviceIsRunning=0
+    [[ "$actualServiceName" ]] && serviceIsRunning=1
+    if [[ $serviceIsRunning -eq 0 ]]; then
+        usageStatsJson="/FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json"
+        if [[ ! -f "$usageStatsJson" ]]; then
+            ((recentyStarted++))
+            recentyStartedStaging=$(( $recentyStartedStaging + $isStaging ))
+            recentyStartedProduction=$(( $recentyStartedProduction + $isProduction ))
+            ((needsStarting++))
+            needsStartingStaging=$(( $needsStartingStaging + $isStaging ))
+            needsStartingProduction=$(( $needsStartingProduction + $isProduction ))
+            echo 'no usage stats found, possibly newly deployed, requesting start'
+            curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?${adminServiceName}"
+        elif grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" "$usageStatsJson"; then
+            ((needsStarting++))
+            needsStartingStaging=$(( $needsStartingStaging + $isStaging ))
+            needsStartingProduction=$(( $needsStartingProduction + $isProduction ))
+            echo "${adminServiceName} has recent use but is not running, requesting start"
+            curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?${adminServiceName}"
+        else
+            ((canBeTerminated++))
+            canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
+            canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
+            echo "${adminServiceName} not running and no recent use, leaving stopped"
+        fi
+        echo ""
+        continue
+    fi
+    updatedAt=$(sudo docker service inspect --format '{{.UpdatedAt}}' "${actualServiceName}")
     echo "updatedAt $updatedAt"
     # note that this ignores the seconds already passed in the current minute by rounding it to YYYYMMDD HH:MM
     secondsSince1970=$(date +%s -d "${updatedAt:0:16}")
@@ -92,7 +135,7 @@ for serviceName in $serviceNameArray; do
         recentyStartedStaging=$(( $recentyStartedStaging + $isStaging ))
         recentyStartedProduction=$(( $recentyStartedProduction + $isProduction ))
         echo ""
-        echo 'recenty started, date not found'; 
+        echo 'recenty started, date not found';
     else
         daysSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60/24))
         hoursSinceStarted=$((($(date +%s) - $secondsSince1970)/60/60))
@@ -100,11 +143,6 @@ for serviceName in $serviceNameArray; do
         echo "daysSinceStarted $daysSinceStarted, hoursSinceStarted $hoursSinceStarted, minutesSinceStarted $minutesSinceStarted"
         if (( $minutesSinceStarted > 60 )); then
             # echo "considering: $serviceName"
-            adminServiceName=$(echo "$serviceName" | sed 's/_web$/_admin/g')
-            webServiceName=$(echo "$adminServiceName" | sed 's/_admin$/_web/g')
-            adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
-            webContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
-            experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
             # echo "adminServiceName: $adminServiceName"
             # echo "adminContextPath: $adminContextPath"
             # echo "webServiceName: $webServiceName"
