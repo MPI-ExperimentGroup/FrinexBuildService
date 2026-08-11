@@ -21,7 +21,7 @@
 # http://<frinexbuild>/frinex_restart_experient.log
 
 # staging services run for debug/draft/staging/production; production services run for production only
-serviceNameArray=$(find /FrinexBuildService/protected -name "*.xml" 2>/dev/null | while read xmlFile; do
+serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" 2>/dev/null | while read xmlFile; do
     deploymentState=$(grep -oP '<deployment\b[^>]*>' "$xmlFile" | grep -oP '(?<=\bstate=")[^"]*' | head -1)
     experimentName=$(basename "$xmlFile" .xml)
     case "$deploymentState" in
