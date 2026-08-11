@@ -22,7 +22,7 @@
 
 # staging services run for debug/draft/staging/production; production services run for production only
 serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" 2>/dev/null | while read xmlFile; do
-    deploymentState=$(grep -oP '<deployment\b[^>]*>' "$xmlFile" | grep -oP '(?<=\bstate=")[^"]*' | head -1)
+    deploymentState=$(grep -oE '<deployment [^>]*>' "$xmlFile" | grep -oE 'state="[^"]*"' | sed 's/state="//;s/"$//' | head -1)
     experimentName=$(basename "$xmlFile" .xml)
     case "$deploymentState" in
         debug|draft|staging|production)
