@@ -21,7 +21,7 @@
 # http://<frinexbuild>/frinex_restart_experient.log
 
 # staging services run for debug/draft/staging/production; production services run for production only
-serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" -print0 2>/dev/null | \
+serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" -type f -print0 2>/dev/null | \
     xargs -0 awk '
         FNR == 1 { inDep = 0; buf = ""; found = 0 }
         !found && /[[:space:]]*<deployment/ { inDep = 1; buf = "" }
