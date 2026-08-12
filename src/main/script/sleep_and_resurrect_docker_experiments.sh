@@ -21,17 +21,28 @@
 # http://<frinexbuild>/frinex_restart_experient.log
 
 # staging services run for debug/draft/staging/production; production services run for production only
-serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" 2>/dev/null | while read xmlFile; do
-    deploymentState=$(grep -oE '<deployment [^>]*>' "$xmlFile" | grep -oE 'state="[^"]*"' | sed 's/state="//;s/"$//' | head -1)
-    experimentName=$(basename "$xmlFile" .xml)
-    case "$deploymentState" in
-        debug|draft|staging|production)
-            echo "${experimentName}_staging_admin" ;;
-    esac
-    if [[ "$deploymentState" == "production" ]]; then
-        echo "${experimentName}_production_admin"
-    fi
-done | sort | uniq)
+serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" -print0 2>/dev/null | \
+    xargs -0 awk '
+        FNR == 1 { inDep = 0; buf = ""; found = 0 }
+        !found && /[[:space:]]*<deployment/ { inDep = 1; buf = "" }
+        inDep { buf = buf " " $0 }
+        inDep && />/ {
+            inDep = 0
+            if (!found && index(buf, "state=\"") > 0) {
+                found = 1
+                n = FILENAME; sub(/.*\//, "", n); sub(/\.xml$/, "", n)
+                state = substr(buf, index(buf, "state=\"") + 7)
+                state = substr(state, 1, index(state, "\"") - 1)
+                print n, state
+            }
+        }
+    ' | while IFS=" " read -r experimentName deploymentState; do
+        case "$deploymentState" in
+            debug|draft|staging|production)
+                echo "${experimentName}_staging_admin" ;;
+        esac
+        [[ "$deploymentState" == "production" ]] && echo "${experimentName}_production_admin"
+    done | sort | uniq)
 totalConsidered=0
 canBeTerminated=0
 hasRecentUse=0
