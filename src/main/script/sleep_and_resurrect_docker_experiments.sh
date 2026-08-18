@@ -217,6 +217,10 @@ for serviceName in $serviceNameArray; do
                         ((proxyStagingAdminHealthy++))
                     else
                         echo "Not proxyStagingAdminHealthy $adminContextPath"
+                        ((needsStarting++))
+                        needsStartingStaging=$(( $needsStartingStaging + $isStaging ))
+                        echo "$adminServiceName requesting rebuild"
+                        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$adminServiceName"
                     fi
                 fi
                 # end check the service connection throught the proxy
