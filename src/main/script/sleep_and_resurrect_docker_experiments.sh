@@ -273,6 +273,7 @@ for serviceName in $serviceNameArray; do
                     echo ""
                     echo 'admin not responding, needs updating';
                     rm /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
+                    curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$adminServiceName"
                 fi
             fi
             # if its not been shutdown then check the web component and kill if not healthy (we could "service update --force" but that might keep repeating)
@@ -291,14 +292,9 @@ for serviceName in $serviceNameArray; do
                 needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
                 needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
                 echo "healthResult: $healthResult"
-                # sudo docker service rm "$webServiceName"
-                # termination at this point can be too agressive because it might be a proxy issue
-                # sudo docker service ls --format '{{.Name}}' | grep -Ei "^${webServiceName}[_0-9]*" | xargs -r sudo docker service rm
-                # sudo docker service update "$webServiceName"
-                # sudo docker service update --force "$webServiceName"
                 echo ""
-                echo "broken web component";
-                # echo "updating web component";
+                echo "broken web component, requesting restart";
+                curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$webServiceName"
             fi
             # else
             #     ((needsUpdating++))
