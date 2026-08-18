@@ -267,19 +267,11 @@ for serviceName in $serviceNameArray; do
                         echo 'no recent use so can be terminated';
                     fi
                 else
-                    ((canBeTerminated++))
-                    canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
-                    canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
-                    # echo "adminServiceName: $adminServiceName"
-                    # sudo docker service rm "$adminServiceName"
-                    # termination at this point can be too agressive because it might be a proxy issue
-                    # sudo docker service ls --format '{{.Name}}' | grep -Ei "^${adminServiceName}[_0-9]*" | xargs -r sudo docker service rm
-                    # echo "webServiceName: $webServiceName"
-                    # sudo docker service rm "$webServiceName"
-                    # termination at this point can be too agressive because it might be a proxy issue
-                    # sudo docker service ls --format '{{.Name}}' | grep -Ei "^${webServiceName}[_0-9]*" | xargs -r sudo docker service rm
+                    ((needsUpdating++))
+                    needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
+                    needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
                     echo ""
-                    echo 'broken so can be terminated';
+                    echo 'admin not responding, needs updating';
                     rm /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
                 fi
             fi
