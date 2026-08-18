@@ -1170,8 +1170,9 @@ function deployProductionAdmin(currentEntry, buildArtifactsJson, buildArtifactsF
             + ' -w /ExperimentTemplate frinexapps-jdk:'
             // since you cannot deploy alpha to production this section is has been simplified
             // + ((currentEntry.frinexVersion === "alpha") ? "alpha" : 'admin-stable')
-            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0) ? currentEntry.frinexVersion : 'stable')
+            + ((currentEntry.frinexVersion != null && currentEntry.frinexVersion.length > 0 && !currentEntry.frinexVersion.startsWith('1.8.')) ? currentEntry.frinexVersion : 'stable')
             // + 'admin-stable'
+            // + '1.7.3828-stable' this is the last known version to work on the old tomcat version
             + ' /bin/bash -c "cd /ExperimentTemplate/registration;'
             // using sed to replace the deprecated DB URL in very old build images like 1.3-audiofix
             + " sed -i 's|localhost:5432|" + productionDbHost + "|g' /ExperimentTemplate/registration/src/main/resources/application.properties;"
