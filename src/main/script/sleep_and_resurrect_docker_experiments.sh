@@ -119,7 +119,7 @@ for serviceName in $serviceNameArray; do
             ((needsStarting++))
             needsStartingStaging=$(( $needsStartingStaging + $isStaging ))
             needsStartingProduction=$(( $needsStartingProduction + $isProduction ))
-            echo 'no usage stats found, possibly newly deployed, requesting start'
+            echo 'not running and no usage stats found, possibly newly deployed, requesting start'
             curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?${adminServiceName}"
         elif grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" "$usageStatsJson"; then
             ((needsStarting++))
