@@ -128,9 +128,9 @@ for serviceName in $serviceNameArray; do
             echo "${adminServiceName} has recent use but is not running, requesting start"
             curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?${adminServiceName}"
         else
-            ((canBeTerminated++))
-            canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
-            canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
+            # ((canBeTerminated++))
+            # canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
+            # canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
             echo "${adminServiceName} not running and no recent use, leaving stopped"
         fi
         echo ""
