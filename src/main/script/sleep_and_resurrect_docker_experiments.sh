@@ -21,6 +21,8 @@
 # http://<frinexbuild>/frinex_restart_experient.log
 
 # staging services run for debug/draft/staging/production; production services run for production only
+# experiments outside their publishDate/expiryDate window are excluded
+today=$(date +%Y-%m-%d)
 serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" -type f -print0 2>/dev/null | \
     xargs -0 awk '
         FNR == 1 { inDep = 0; buf = ""; found = 0 }
@@ -33,10 +35,22 @@ serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" -type f -pri
                 n = FILENAME; sub(/.*\//, "", n); sub(/\.xml$/, "", n)
                 state = substr(buf, index(buf, "state=\"") + 7)
                 state = substr(state, 1, index(state, "\"") - 1)
-                print n, state
+                publishDate = ""
+                if (index(buf, "publishDate=\"") > 0) {
+                    publishDate = substr(buf, index(buf, "publishDate=\"") + 13)
+                    publishDate = substr(publishDate, 1, index(publishDate, "\"") - 1)
+                }
+                expiryDate = ""
+                if (index(buf, "expiryDate=\"") > 0) {
+                    expiryDate = substr(buf, index(buf, "expiryDate=\"") + 12)
+                    expiryDate = substr(expiryDate, 1, index(expiryDate, "\"") - 1)
+                }
+                print n, state, publishDate, expiryDate
             }
         }
-    ' | while IFS=" " read -r experimentName deploymentState; do
+    ' | while IFS=" " read -r experimentName deploymentState publishDate expiryDate; do
+        [[ "$publishDate" && "$today" < "$publishDate" ]] && continue
+        [[ "$expiryDate" && "$today" > "$expiryDate" ]] && continue
         case "$deploymentState" in
             debug|draft|staging|production)
                 echo "${experimentName}_staging_admin" ;;
