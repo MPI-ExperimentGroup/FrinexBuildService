@@ -170,7 +170,7 @@ echo "" > /usr/local/apache2/htdocs/frinex_tomcat_staging_locations.txt
 #     fi
 # done
 
-experimentList="$(ls /FrinexBuildService/protected/*/*.war | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.war//g')"
+experimentList="$(ls /FrinexBuildService/protected/*/*.war | sed 's|^/FrinexBuildService/protected/[^/]*/||g' | sed 's/\.war//g' | grep -E '_staging_admin$|_staging_web$|_production_admin$|_production_web$')"
 echo "$experimentList" | sort > /usr/local/apache2/htdocs/frinex_all_experiments.txt
 echo "$serviceListUnique" > /usr/local/apache2/htdocs/frinex_runnning_experiments.txt
 comm -2 -3 /usr/local/apache2/htdocs/frinex_all_experiments.txt /usr/local/apache2/htdocs/frinex_runnning_experiments.txt > /usr/local/apache2/htdocs/frinex_stopped_experiments.txt

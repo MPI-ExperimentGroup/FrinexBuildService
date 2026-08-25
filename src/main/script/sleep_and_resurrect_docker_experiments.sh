@@ -23,6 +23,7 @@
 # staging services run for debug/draft/staging/production; production services run for production only
 # experiments outside their publishDate/expiryDate window are excluded
 today=$(date +%Y-%m-%d)
+recentUseDates="$(date -d "$(date +%Y-%m-01) -5 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
 serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" -type f -print0 2>/dev/null | \
     xargs -0 awk '
         FNR == 1 { inDep = 0; buf = ""; found = 0 }
@@ -50,7 +51,11 @@ serviceNameArray=$(find /FrinexBuildService/artifacts -name "*.xml" -type f -pri
         }
     ' | while IFS=" " read -r experimentName deploymentState publishDate expiryDate; do
         [[ "$publishDate" && "$today" < "$publishDate" ]] && continue
-        [[ "$expiryDate" && "$today" > "$expiryDate" ]] && continue
+        if [[ "$expiryDate" && "$today" > "$expiryDate" ]]; then
+            # keep expired experiments only if they have recent use in the last 6 months
+            hasRecentStats=$(find /FrinexBuildService/artifacts/"$experimentName" -name "*_admin-public_usage_stats.json" -exec grep -lE "sessionFirstAndLastSeen.*($recentUseDates)" {} \; 2>/dev/null | head -1)
+            [[ -z "$hasRecentStats" ]] && continue
+        fi
         case "$deploymentState" in
             debug|draft|staging|production)
                 echo "${experimentName}_staging_admin" ;;
@@ -99,7 +104,6 @@ proxyProductionTestAdminHealthy=0
 fileInNeedOfSync=""
 
 # experiments with a sessionFirstAndLastSeen record matching the following months regex will be kept running
-recentUseDates="$(date -d "$(date +%Y-%m-01) -5 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -4 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -3 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -2 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)|$(date -d "$(date +%Y-%m-01) -0 month" +%Y-%m)"
 echo "recentUseDates $recentUseDates"
 for serviceName in $serviceNameArray; do
     ((totalConsidered++))
