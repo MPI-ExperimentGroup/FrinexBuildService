@@ -346,6 +346,16 @@ for expectedServiceName in $(grep -lE "sessionFirstAndLastSeen.*($recentUseDates
     fi
 done
 
+echo "stopping excluded services"
+for runningServiceName in $serviceNameUpdatedArray; do
+    runningAdminName=$(echo "$runningServiceName" | sed 's/_web$/_admin/g')
+    if [[ $serviceNameArray != *"$runningAdminName"* ]]; then
+        ((canBeTerminated++))
+        echo "$runningServiceName excluded from serviceNameArray, stopping"
+        sudo docker service ls --format '{{.Name}}' | grep -Ei "^${runningServiceName}[_0-9]*" | xargs -r sudo docker service rm
+    fi
+done
+
 if (( $canBeTerminated > 0 )); then
     curl -k PROXY_UPDATE_TRIGGER
 fi
