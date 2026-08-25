@@ -48,6 +48,9 @@ if [ -f /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war ]; 
                 echo "$version is < 1.8.1179" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
                 echo "this war needs to be updated, renaming old war to ${cleanedInput}_${version}.war" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
                 sudo mv /FrinexBuildService/protected/$experimentDirectory/$cleanedInput.war /FrinexBuildService/protected/$experimentDirectory/${cleanedInput}_${version}.war
+                echo "terminating stale service $cleanedInput<br>"
+                echo "$(date), terminating stale service, $cleanedInput, $version" >> /usr/local/apache2/htdocs/frinex_restart_experient.log
+                sudo docker service ls --format '{{.Name}}' | grep -Ei "^${cleanedInput}[_0-9]*" | xargs -r sudo docker service rm &>> /usr/local/apache2/htdocs/frinex_restart_experient.log
                 echo "Please reload this page<br>"
                 echo "<button onClick=\"window.location.reload();\">Refresh Page</button>"
             fi
