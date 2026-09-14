@@ -83,6 +83,20 @@ const listingMap = new Map();
 const currentlyBuilding = new Map();
 const buildHistoryFileName = targetDirectory + "/buildhistory.json";
 var buildHistoryJson = { table: {} };
+
+// If the process exits for any reason (crash, SIGTERM, unhandled exception) before
+// stopUpdatingResults() runs, clear the building flag so the dashboard does not
+// show "build in progress" indefinitely.
+process.on('exit', function () {
+    if (buildHistoryJson.building) {
+        buildHistoryJson.building = false;
+        buildHistoryJson.buildDate = new Date().toISOString();
+        try {
+            fs.writeFileSync(buildHistoryFileName, JSON.stringify(buildHistoryJson, null, 4), { mode: 0o775 });
+        } catch (e) { /* ignore errors in exit handler */ }
+    }
+});
+
 const experimentTokensFileName = protectedDirectory + "/tokens.json";
 var experimentTokensJson = {};
 const buildStatisticsFileName = targetDirectory + "/buildstats.json";
@@ -2217,14 +2231,10 @@ function moveIncomingToQueued() {
 
 function convertJsonToXml() {
     //fs.writeSync(resultsFile, "<div>Converting JSON to XML, '" + new Date().toISOString() + "'</div>");
-    var dockerString = /* TODO: check for json files before the mv or just use a loop or find . -type f -name '*.avi' -exec  rename   's/\.(?=[^.]*\.)/ /g' "{}" \; ish */'mv /FrinexBuildService/incoming/queued/*.json /FrinexBuildService/incoming/prevalidation/;'
-        // + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
-        + ' mv /FrinexBuildService/incoming/queued/*.xml /FrinexBuildService/incoming/prevalidation/;'
-        // + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
-        + ' if [[ $(sudo docker container ls) == *"json_to_xml"* ]]; then'
-        // + ' sudo docker container rm -f json_to_xml'
+    var dockerString = 'find /FrinexBuildService/incoming/queued/ -maxdepth 1 -name "*.json" | xargs -r mv -t /FrinexBuildService/incoming/prevalidation/;'
+        + ' find /FrinexBuildService/incoming/queued/ -maxdepth 1 -name "*.xml" | xargs -r mv -t /FrinexBuildService/incoming/prevalidation/;'
+        + ' if sudo docker container ls | grep -q "json_to_xml"; then'
         + ' echo "json_to_xml still active";'
-        // + ' &>> ' + targetDirectory + '/json_to_xml.txt;'
         + ' else'
         + ' sudo docker run --rm '
         + taskContainerOptions

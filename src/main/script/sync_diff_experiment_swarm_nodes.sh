@@ -25,7 +25,7 @@ else if [ ! -d "/FrinexBuildService/artifacts/$buildName" ]; then
             TZ=utc ls -l /FrinexBuildService/protected/$buildName > /FrinexBuildService/artifacts/$buildName/listingLocal.txt;
             TZ=utc ls -l /FrinexBuildService/artifacts/$buildName >> /FrinexBuildService/artifacts/$buildName/listingLocal.txt;
             ssh $nodeName.mpi.nl -p $servicePort "ls -l /FrinexBuildService/protected/$buildName; ls -l /FrinexBuildService/artifacts/$buildName" > /FrinexBuildService/artifacts/$buildName/listing$servicePort.txt; 
-            diff --ignore-space-change -U 0 /FrinexBuildService/artifacts/$buildName/listingLocal.txt /FrinexBuildService/artifacts/$buildName/listing$servicePort.txt
+            diff --ignore-space-change -U 0 /FrinexBuildService/artifacts/$buildName/listingLocal.txt /FrinexBuildService/artifacts/$buildName/listing$servicePort.txt || true
         done
     fi
 fi
