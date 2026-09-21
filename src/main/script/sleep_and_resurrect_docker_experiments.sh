@@ -125,9 +125,13 @@ for serviceName in $serviceNameArray; do
     adminContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)/-admin/g')
     webContextPath=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
     experimentArtifactsDirectory=$(echo "$serviceName" | sed -E 's/(_staging_web$|_staging_admin$|_production_web$|_production_admin$)//g')
-    actualServiceName=$(sudo docker service ls --format '{{.Name}}' | grep -Ei "^${serviceName}[_0-9]*$" | head -1)
+    actualServiceInfo=$(sudo docker service ls --format '{{.Name}}\t{{.Replicas}}' | grep -Ei "^${serviceName}[_0-9]*\t" | head -1)
+    actualServiceName=$(echo "$actualServiceInfo" | awk '{print $1}')
     serviceIsRunning=0
-    [[ "$actualServiceName" ]] && serviceIsRunning=1
+    if [[ "$actualServiceName" ]]; then
+        runningReplicas=$(echo "$actualServiceInfo" | awk -F'[\t/]' '{print $2}')
+        [[ "$runningReplicas" -gt 0 ]] 2>/dev/null && serviceIsRunning=1
+    fi
     if [[ $serviceIsRunning -eq 0 ]]; then
         usageStatsJson="/FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json"
         if [[ ! -f "$usageStatsJson" ]]; then
@@ -150,6 +154,11 @@ for serviceName in $serviceNameArray; do
             # canBeTerminatedStaging=$(( $canBeTerminatedStaging + $isStaging ))
             # canBeTerminatedProduction=$(( $canBeTerminatedProduction + $isProduction ))
             echo "${adminServiceName} not running and no recent use, leaving stopped"
+            if [[ "$actualServiceName" ]]; then
+                echo "${actualServiceName} has 0 replicas and no recent use, removing from swarm"
+                sudo docker service ls --format '{{.Name}}' | grep -Ei "^${adminServiceName}[_0-9]*$" | xargs -r sudo docker service rm
+                sudo docker service ls --format '{{.Name}}' | grep -Ei "^${webServiceName}[_0-9]*$" | xargs -r sudo docker service rm
+            fi
         fi
         echo ""
         continue
