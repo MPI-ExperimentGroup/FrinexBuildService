@@ -287,13 +287,15 @@ for serviceName in $serviceNameArray; do
                         echo 'no recent use so can be terminated';
                     fi
                 else
-                    ((needsUpdating++))
-                    needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
-                    needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
-                    echo ""
-                    echo 'admin not responding, needs updating';
                     rm /FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.temp
-                    curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$adminServiceName"
+                    if grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" "/FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json" 2>/dev/null; then
+                        ((needsUpdating++))
+                        needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
+                        needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
+                        echo ""
+                        echo 'admin not responding, needs updating';
+                        curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$adminServiceName"
+                    fi
                 fi
             fi
             # if its not been shutdown then check the web component and kill if not healthy (we could "service update --force" but that might keep repeating)
