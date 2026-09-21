@@ -310,13 +310,15 @@ for serviceName in $serviceNameArray; do
             if [[ $healthResult == *"\"status\":\"UP\""* ]]; then
                 echo "web component OK"
             else
-                ((needsUpdating++))
-                needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
-                needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
                 echo "healthResult: $healthResult"
-                echo ""
-                echo "broken web component, requesting restart";
-                curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$webServiceName"
+                if grep -qE "sessionFirstAndLastSeen.*($recentUseDates).*\]\]" "/FrinexBuildService/artifacts/$experimentArtifactsDirectory/$serviceName-public_usage_stats.json" 2>/dev/null; then
+                    ((needsUpdating++))
+                    needsUpdatingStaging=$(( $needsUpdatingStaging + $isStaging ))
+                    needsUpdatingProduction=$(( $needsUpdatingProduction + $isProduction ))
+                    echo ""
+                    echo "broken web component, requesting restart";
+                    curl "http://frinexbuild:8010/cgi/frinex_restart_experient.cgi?$webServiceName"
+                fi
             fi
             # else
             #     ((needsUpdating++))
