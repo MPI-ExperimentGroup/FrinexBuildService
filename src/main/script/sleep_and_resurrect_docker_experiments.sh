@@ -375,7 +375,7 @@ for runningServiceName in $serviceNameUpdatedArray; do
     fi
 done
 
-if (( $canBeTerminated > 0 )); then
+if (( $canBeTerminated > 0 || $needsStarting > 0 || $needsUpdating > 0 )); then
     curl -k PROXY_UPDATE_TRIGGER
 fi
 
