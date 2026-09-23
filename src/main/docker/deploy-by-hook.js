@@ -634,8 +634,8 @@ function deployStagingGui(currentEntry) {
             + ' -Dexperiment.configuration.availableLocales=' + currentEntry.availableLocales
             + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlStaging
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
-            // deleting slf4j-simple which prevents the application starting up
-            + ' zip -d /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war WEB-INF/lib/slf4j-simple-1.7.36.jar'
+            // deleting slf4j-simple which prevents the application starting up, || true so it does not fail if the file is not present
+            + ' zip -d /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war WEB-INF/lib/slf4j-simple-1.7.36.jar || true'
             + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             //+ ' free -h &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;'
             // skipping electron and cordova if this is a draft build
@@ -664,7 +664,7 @@ function deployStagingGui(currentEntry) {
             + " chmod 775 -R " + targetDirectory + "/" + currentEntry.buildName + "/;"
             + " chown -R 101010 " + targetDirectory + "/" + currentEntry.buildName + "/;"
             + " chown -R 101010 " + protectedDirectory + "/" + currentEntry.buildName + "/;"
-            + ' echo "build complete" &>> ' + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
+            + " echo 'build complete' &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_staging.txt;"
             + '"';
         console.log(dockerString);
         child_process.exec(dockerString, (error, stdout, stderr) => {
@@ -840,7 +840,7 @@ function deployStagingAdmin(currentEntry, buildArtifactsJson, buildArtifactsFile
             + " chmod 775 -R " + targetDirectory + "/" + currentEntry.buildName + "/;"
             + " chown -R 101010 " + targetDirectory + "/" + currentEntry.buildName + "/;"
             + " chown -R 101010 " + protectedDirectory + "/" + currentEntry.buildName + "/;"
-            + ' echo "build complete" &>> ' + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
+            + " echo 'build complete' &>> " + targetDirectory + '/' + currentEntry.buildName + '/' + currentEntry.buildName + '_staging_admin.txt;'
             + '"';
         console.log(dockerString);
         try {
@@ -1035,8 +1035,8 @@ function deployProductionGui(currentEntry, retryCounter) {
                         + ' -Dexperiment.defaultScale=' + currentEntry.defaultScale
                         + ' -Dexperiment.registrationUrl=' + currentEntry.registrationUrlProduction
                         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
-                        // deleting slf4j-simple which prevents the application starting up
-                        + ' zip -d /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war WEB-INF/lib/slf4j-simple-1.7.36.jar'
+                        // deleting slf4j-simple which prevents the application starting up, || true so it does not fail if the file is not present
+                        + ' zip -d /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*.war WEB-INF/lib/slf4j-simple-1.7.36.jar || true'
                         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
                         + ' mv /ExperimentTemplate/gwt-cordova/target/' + currentEntry.buildName + '-frinex-gui-*-stable-cordova.zip /FrinexBuildService/processing/production-building/'
                         + " &>> " + targetDirectory + "/" + currentEntry.buildName + "/" + currentEntry.buildName + "_production.txt;"
