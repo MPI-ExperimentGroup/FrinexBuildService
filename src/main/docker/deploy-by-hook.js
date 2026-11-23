@@ -487,7 +487,9 @@ function deployDockerService(currentEntry, warFileName, serviceName, contextPath
     //const warFilePath = targetDirectory + "/" + currentEntry.buildName + "/" + warFileName;
     const dockerFilePath = protectedDirectory + "/" + currentEntry.buildName + "/" + serviceName + ".Docker";
     fs.writeFileSync(dockerFilePath,
-        "FROM eclipse-temurin:24-jdk-alpine\n"
+        "FROM eclipse-temurin:25-jdk-alpine\n"
+        // Java4Shell (CVE-2026-114938) mitigation: disables the vulnerable AVX-512 Base64 intrinsic; can be removed once all hosts run a JDK patched on/after 2026-11-17
+        + "ENV JAVA_TOOL_OPTIONS=\"-XX:-UseBASE64Intrinsics\"\n"
         // + "ENV JAVA_TOOL_OPTIONS=\"--add-opens=java.base/sun.nio.ch=org.jruby.dist --add-opens=java.base/sun.nio.ch=org.jruby.core\"\n"
         + "COPY " + warFileName + " /" + warFileName + "\n"
         // + "CMD [\"java\", \"-jar\", \"/" + warFileName + "\", \"--server.servlet.context-path=/" + contextPath + "\""

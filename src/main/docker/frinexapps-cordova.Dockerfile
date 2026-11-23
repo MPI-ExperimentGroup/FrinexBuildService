@@ -20,7 +20,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM node:22-bullseye
+FROM node:22-bookworm
 # FROM eclipse-temurin:11-jdk-jammy
 # RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 # RUN dpkg --add-architecture i386

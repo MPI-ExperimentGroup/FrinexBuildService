@@ -20,7 +20,7 @@
 # @author Peter Withers <peter.withers@mpi.nl>
 #
 
-FROM eclipse-temurin:24-jdk-alpine
+FROM eclipse-temurin:25-jdk-alpine
 
 # ENV JAVA_TOOL_OPTIONS="--add-opens=java.base/sun.nio.ch=org.jruby.dist --add-opens=java.base/sun.nio.ch=org.jruby.core"
 
