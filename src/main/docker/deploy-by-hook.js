@@ -2413,7 +2413,8 @@ async function checkServerCertificates() {
 
 function prepareImageList() {
     // generate a searchable list of frinex versions
-    var dockerString = "sudo docker image ls | grep frinexapps-jdk | awk 'NR>0 {print $2 \",\"}'"
+    // an explicit --format is required: from Docker CLI 29 the default "docker image ls" output is a tree view with repository:tag in the first column
+    var dockerString = "sudo docker image ls frinexapps-jdk --format '{{.Tag}},'"
     // console.log(dockerString);
     try {
         child_process.exec(dockerString, (error, stdout, stderr) => {
