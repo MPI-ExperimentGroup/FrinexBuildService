@@ -40,7 +40,7 @@ import got from 'got';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import diskSpace from 'check-disk-space';
+import { checkDiskSpace as diskSpace } from 'check-disk-space';
 import generatePassword from 'omgopass';
 import tls from 'node:tls';
 import ini from 'ini';

@@ -6,6 +6,6 @@
   "main": "deploy-by-hook.js",
   "author": "Peter Withers <peter.withers@mpi.nl>",
   "dependencies": {
-    "got": "^12.0.0"
+    "got": "^16.0.0"
   }
 }
